@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrandLogo } from './BrandLogo';
 import { MessageCircle, ShieldCheck, Truck, RefreshCw, Heart } from 'lucide-react';
-import { STORE_PHONE_NUMBER } from '../data/products';
+import { STORE_PHONE_NUMBER, STORE_PHONE_DISPLAY } from '../data/products';
 
 export const Footer: React.FC = () => {
   return (
@@ -61,7 +61,7 @@ export const Footer: React.FC = () => {
               className="text-sm font-semibold text-emerald-400 hover:text-emerald-300 inline-flex items-center gap-1.5 mt-1"
             >
               <MessageCircle className="w-4 h-4" />
-              <span>+595 981 123 456 (WhatsApp)</span>
+              <span>{STORE_PHONE_DISPLAY} (WhatsApp)</span>
             </a>
           </div>
         </div>

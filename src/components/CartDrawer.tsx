@@ -13,6 +13,7 @@ import {
   Sparkles,
   MapPin,
   User,
+  Link2,
 } from 'lucide-react';
 import { CartItem } from '../types';
 import { formatGuarani, STORE_PHONE_NUMBER } from '../data/products';
@@ -37,7 +38,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 }) => {
   const [customerName, setCustomerName] = useState('');
   const [customerAddress, setCustomerAddress] = useState('');
-  const [showOptionalDetails, setShowOptionalDetails] = useState(false);
+  const [googleMapsUrl, setGoogleMapsUrl] = useState('');
   const [isOrdering, setIsOrdering] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -60,14 +61,15 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
     let message = `Hola 👋 Quiero realizar el siguiente pedido:\n\n🛍️ MI PEDIDO\n\n${itemsLines}\n\n💰 TOTAL: ${formatGuarani(
       totalAmount
-    )}\n\nQuisiera confirmar disponibilidad y coordinar la entrega.\n\n¡Gracias!`;
+    )}\n\nQuisiera confirmar disponibilidad y coordinar la entrega.`;
 
-    // Optional user delivery note if filled
-    if (customerName.trim() || customerAddress.trim()) {
-      message += `\n\n📝 Datos de entrega:`;
-      if (customerName.trim()) message += `\n• Nombre: ${customerName.trim()}`;
-      if (customerAddress.trim()) message += `\n• Ciudad / Dirección: ${customerAddress.trim()}`;
-    }
+    message += `\n\n📍 DATOS PARA EL ENVÍO (REQUISITOS):\n• Nombre del cliente: ${
+      customerName.trim() ? customerName.trim() : '[Indicar mi nombre]'
+    }\n• Lugar de ubicación: ${
+      customerAddress.trim() ? customerAddress.trim() : '[Indicar ciudad/dirección]'
+    }\n• Link de Google Maps: ${
+      googleMapsUrl.trim() ? googleMapsUrl.trim() : '[Adjuntar enlace de Google Maps o ubicación]'
+    }\n\n¡Muchas gracias!`;
 
     return message;
   };
@@ -261,64 +263,78 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               </AnimatePresence>
             )}
 
-            {/* Optional Delivery Details Dropdown */}
+            {/* Requisitos para el envío (Paso 4) */}
             {cartItems.length > 0 && (
               <div className="pt-2">
-                <button
-                  type="button"
-                  onClick={() => setShowOptionalDetails(!showOptionalDetails)}
-                  className="text-xs text-[#102A43] font-medium flex items-center gap-1.5 hover:underline"
-                >
-                  <MapPin className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>
-                    {showOptionalDetails
-                      ? 'Ocultar datos de entrega (opcional)'
-                      : '+ Agregar datos de entrega al mensaje (opcional)'}
-                  </span>
-                </button>
+                <div className="p-3.5 bg-[#FAF8F5] rounded-2xl border border-emerald-600/20 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-full bg-emerald-600 text-white text-[10px] font-bold flex items-center justify-center shrink-0">
+                        4
+                      </span>
+                      <span className="text-xs font-semibold text-[#102A43]">
+                        Requisitos para el envío
+                      </span>
+                    </div>
+                    <span className="text-[10px] text-neutral-400">Paso 4 de 4</span>
+                  </div>
 
-                <AnimatePresence>
-                  {showOptionalDetails && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
-                      className="mt-2.5 p-3 bg-white rounded-xl border border-neutral-200 space-y-2.5"
-                    >
-                      <div>
-                        <label className="block text-[11px] font-medium text-neutral-600 mb-1">
-                          Tu nombre o apodo:
-                        </label>
-                        <div className="relative">
-                          <input
-                            type="text"
-                            placeholder="Ej. María Coronel"
-                            value={customerName}
-                            onChange={(e) => setCustomerName(e.target.value)}
-                            className="w-full text-xs bg-[#FAF8F5] border border-neutral-200 rounded-lg py-1.5 pl-7 pr-2 focus:outline-none focus:border-[#102A43]"
-                          />
-                          <User className="w-3.5 h-3.5 text-neutral-400 absolute left-2 top-1/2 -translate-y-1/2" />
-                        </div>
+                  <div className="space-y-2.5">
+                    {/* 1. Nombre del cliente */}
+                    <div>
+                      <label className="block text-[11px] font-medium text-neutral-700 mb-1">
+                        Nombre del cliente:
+                      </label>
+                      <div className="relative">
+                        <input
+                          type="text"
+                          placeholder="Ej. María Coronel"
+                          value={customerName}
+                          onChange={(e) => setCustomerName(e.target.value)}
+                          className="w-full text-xs bg-white border border-neutral-200 rounded-lg py-1.5 pl-7 pr-2 text-neutral-800 placeholder:text-neutral-400 focus:outline-none focus:border-[#102A43]"
+                        />
+                        <User className="w-3.5 h-3.5 text-neutral-400 absolute left-2 top-1/2 -translate-y-1/2" />
                       </div>
+                    </div>
 
-                      <div>
-                        <label className="block text-[11px] font-medium text-neutral-600 mb-1">
-                          Ciudad / Zona para delivery:
-                        </label>
-                        <div className="relative">
-                          <input
-                            type="text"
-                            placeholder="Ej. Asunción / Luque / CDE"
-                            value={customerAddress}
-                            onChange={(e) => setCustomerAddress(e.target.value)}
-                            className="w-full text-xs bg-[#FAF8F5] border border-neutral-200 rounded-lg py-1.5 pl-7 pr-2 focus:outline-none focus:border-[#102A43]"
-                          />
-                          <MapPin className="w-3.5 h-3.5 text-neutral-400 absolute left-2 top-1/2 -translate-y-1/2" />
-                        </div>
+                    {/* 2. Lugar de ubicación para envío */}
+                    <div>
+                      <label className="block text-[11px] font-medium text-neutral-700 mb-1">
+                        Lugar de ubicación para el envío:
+                      </label>
+                      <div className="relative">
+                        <input
+                          type="text"
+                          placeholder="Ej. Barrio Herrera, Asunción"
+                          value={customerAddress}
+                          onChange={(e) => setCustomerAddress(e.target.value)}
+                          className="w-full text-xs bg-white border border-neutral-200 rounded-lg py-1.5 pl-7 pr-2 text-neutral-800 placeholder:text-neutral-400 focus:outline-none focus:border-[#102A43]"
+                        />
+                        <MapPin className="w-3.5 h-3.5 text-neutral-400 absolute left-2 top-1/2 -translate-y-1/2" />
                       </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                    </div>
+
+                    {/* 3. Link de Google Maps */}
+                    <div>
+                      <label className="block text-[11px] font-medium text-neutral-700 mb-1">
+                        Link de Google Maps:
+                      </label>
+                      <div className="relative">
+                        <input
+                          type="text"
+                          placeholder="Ej. https://maps.app.goo.gl/... o enlace de ubicación"
+                          value={googleMapsUrl}
+                          onChange={(e) => setGoogleMapsUrl(e.target.value)}
+                          className="w-full text-xs bg-white border border-neutral-200 rounded-lg py-1.5 pl-7 pr-2 text-neutral-800 placeholder:text-neutral-400 focus:outline-none focus:border-[#102A43]"
+                        />
+                        <Link2 className="w-3.5 h-3.5 text-neutral-400 absolute left-2 top-1/2 -translate-y-1/2" />
+                      </div>
+                      <p className="text-[10px] text-neutral-500 mt-1">
+                        💡 Si no tenés el link ahora, también podés adjuntar tu ubicación en vivo directamente en WhatsApp.
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
           </div>

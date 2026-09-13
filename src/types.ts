@@ -1,3 +1,8 @@
+export interface ProductBenefit {
+  title: string;
+  desc: string;
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -12,6 +17,7 @@ export interface Product {
   rating: number;
   reviewsCount: number;
   description: string;
+  benefits?: ProductBenefit[];
   keyIngredients: string[];
   skinType: string;
   howToUse: string;
@@ -20,6 +26,23 @@ export interface Product {
 export interface CartItem {
   product: Product;
   quantity: number;
+}
+
+export interface RoutineStep {
+  stepNumber: number;
+  label: string;
+  productId: string;
+  note?: string;
+}
+
+export interface SkincareRoutine {
+  id: string;
+  number: string; // "01", "02", "03"
+  title: string;
+  goal: string;
+  steps: RoutineStep[];
+  instructionType: 'ORDEN' | 'IMPORTANTE';
+  instructionText: string;
 }
 
 export type CategoryId = 'all' | 'hydrate' | 'brighten' | 'calm' | 'protect' | 'cleanse';

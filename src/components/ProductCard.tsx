@@ -114,13 +114,32 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </p>
 
         {/* Rating */}
-        <div className="flex items-center gap-1.5 text-xs text-neutral-600 mb-3">
+        <div className="flex items-center gap-1.5 text-xs text-neutral-600 mb-2.5">
           <div className="flex items-center text-amber-500">
             <Star className="w-3.5 h-3.5 fill-amber-400 stroke-amber-400" />
             <span className="ml-1 font-semibold text-neutral-800">{product.rating.toFixed(1)}</span>
           </div>
           <span className="text-neutral-400">({product.reviewsCount})</span>
         </div>
+
+        {/* Compact Key Benefits (Espacio optimizado y legible) */}
+        {product.benefits && product.benefits.length > 0 && (
+          <ul className="mb-3 space-y-1 bg-neutral-50/90 rounded-xl p-2 border border-neutral-100/90 text-[11px] leading-tight">
+            {product.benefits.map((b, idx) => (
+              <li
+                key={idx}
+                className="flex items-start gap-1.5 text-neutral-600"
+                title={`${b.title}: ${b.desc}`}
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-[#102A43]/60 mt-1 shrink-0" />
+                <span className="line-clamp-1">
+                  <strong className="font-semibold text-neutral-900">{b.title}:</strong>{' '}
+                  <span className="text-neutral-500 font-normal">{b.desc}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
       {/* Price & Add Button */}

@@ -103,12 +103,35 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
           {/* Description */}
           <div>
             <h4 className="text-xs font-semibold uppercase tracking-wider text-[#102A43] mb-1.5">
-              Descripción & Beneficios
+              Descripción
             </h4>
             <p className="text-sm text-neutral-700 leading-relaxed">
               {product.description}
             </p>
           </div>
+
+          {/* Key Benefits */}
+          {product.benefits && product.benefits.length > 0 && (
+            <div>
+              <h4 className="text-xs font-semibold uppercase tracking-wider text-[#102A43] mb-2">
+                Beneficios Principales
+              </h4>
+              <ul className="space-y-2">
+                {product.benefits.map((b, i) => (
+                  <li
+                    key={i}
+                    className="flex items-start gap-2.5 text-xs sm:text-sm text-neutral-700 bg-[#FAF8F5] p-2.5 rounded-xl border border-[#102A43]/10"
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#102A43] mt-2 shrink-0" />
+                    <div>
+                      <strong className="font-semibold text-neutral-900">{b.title}:</strong>{' '}
+                      <span className="text-neutral-600">{b.desc}</span>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {/* Key Ingredients */}
           <div>

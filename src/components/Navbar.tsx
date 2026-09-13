@@ -2,7 +2,7 @@ import React from 'react';
 import { ShoppingBag, Search, MessageCircle, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { BrandLogo } from './BrandLogo';
-import { formatGuarani } from '../data/products';
+import { formatGuarani, STORE_PHONE_NUMBER } from '../data/products';
 
 interface NavbarProps {
   totalItems: number;
@@ -69,7 +69,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Direct WhatsApp help */}
           <a
-            href="https://wa.me/595981123456?text=Hola%20Skin%20Health%2C%20tengo%20una%20consulta%20sobre%20sus%20productos"
+            href={`https://wa.me/${STORE_PHONE_NUMBER}?text=Hola%20Skin%20Health%2C%20tengo%20una%20consulta%20sobre%20sus%20productos`}
             target="_blank"
             rel="noopener noreferrer"
             className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium text-[#102A43] bg-white border border-[#102A43]/15 hover:bg-[#102A43]/5 transition-all"

@@ -7,6 +7,7 @@ import { Navbar } from './components/Navbar';
 import { HeroBanner } from './components/HeroBanner';
 import { CategoryFilter } from './components/CategoryFilter';
 import { ProductCard } from './components/ProductCard';
+import { RoutinesSection } from './components/RoutinesSection';
 import { FloatingCart } from './components/FloatingCart';
 import { CartDrawer } from './components/CartDrawer';
 import { ProductQuickView } from './components/ProductQuickView';
@@ -83,6 +84,25 @@ export default function App() {
     });
 
     // Record timestamp to trigger microanimation in FloatingCart
+    setLastAddedTime(Date.now());
+  };
+
+  const handleAddMultipleToCart = (products: Product[]) => {
+    setCartItems((prev) => {
+      let updated = [...prev];
+      for (const prod of products) {
+        const existingIdx = updated.findIndex((item) => item.product.id === prod.id);
+        if (existingIdx >= 0) {
+          updated[existingIdx] = {
+            ...updated[existingIdx],
+            quantity: updated[existingIdx].quantity + 1,
+          };
+        } else {
+          updated.push({ product: prod, quantity: 1 });
+        }
+      }
+      return updated;
+    });
     setLastAddedTime(Date.now());
   };
 
@@ -265,28 +285,36 @@ export default function App() {
           )}
         </div>
 
+        {/* Section based strictly on PDF: Rutinas de Skincare */}
+        <RoutinesSection
+          onAddToCart={handleAddToCart}
+          onAddMultipleToCart={handleAddMultipleToCart}
+          onQuickView={setQuickViewProduct}
+          cartQuantities={cartQuantities}
+        />
+
         {/* Section 19: Principio Fundamental - How it works explanation */}
-        <section className="mt-14 bg-white/70 border border-[#102A43]/10 rounded-3xl p-6 sm:p-8">
-          <div className="max-w-xl mx-auto text-center">
-            <span className="text-[11px] font-bold uppercase tracking-widest text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full">
+        <section className="mt-14 bg-white/80 border border-[#102A43]/10 rounded-3xl p-6 sm:p-8 shadow-xs">
+          <div className="max-w-5xl mx-auto text-center">
+            <span className="text-[11px] font-bold uppercase tracking-widest text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-100">
               Flujo de Compra Rápido
             </span>
             <h3 className="font-serif text-xl sm:text-2xl font-semibold text-[#102A43] mt-2 mb-2">
               ¿Cómo realizo mi pedido?
             </h3>
             <p className="text-xs sm:text-sm text-neutral-500 mb-6">
-              Sin registros lentos ni pasarelas complejas. Tres simples pasos:
+              Sin registros lentos ni pasarelas complejas. Cuatro simples pasos:
             </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-left">
               <div className="p-4 bg-[#FAF8F5] rounded-2xl border border-neutral-100 flex items-start gap-3">
                 <span className="w-7 h-7 rounded-full bg-[#102A43] text-white text-xs font-bold flex items-center justify-center shrink-0">
                   1
                 </span>
                 <div>
                   <h4 className="font-semibold text-xs text-neutral-900">Elegí tus productos</h4>
-                  <p className="text-[11px] text-neutral-500 mt-0.5">
-                    Presioná &quot;+&quot; en cualquier sérum o crema.
+                  <p className="text-[11px] text-neutral-500 mt-0.5 leading-relaxed">
+                    Presioná &quot;+&quot; en cualquier sérum o crema para sumarlo al carrito.
                   </p>
                 </div>
               </div>
@@ -297,8 +325,8 @@ export default function App() {
                 </span>
                 <div>
                   <h4 className="font-semibold text-xs text-neutral-900">Revisá en tu pedido</h4>
-                  <p className="text-[11px] text-neutral-500 mt-0.5">
-                    Tocá el carrito flotante para ajustar cantidades.
+                  <p className="text-[11px] text-neutral-500 mt-0.5 leading-relaxed">
+                    Tocá el carrito flotante para verificar cantidades y el total estimado.
                   </p>
                 </div>
               </div>
@@ -309,9 +337,35 @@ export default function App() {
                 </span>
                 <div>
                   <h4 className="font-semibold text-xs text-neutral-900">Pedir por WhatsApp</h4>
-                  <p className="text-[11px] text-neutral-500 mt-0.5">
-                    Se abre tu chat con el pedido listo para enviar.
+                  <p className="text-[11px] text-neutral-500 mt-0.5 leading-relaxed">
+                    Se abrirá tu chat con la lista y el detalle de los productos listos para enviar.
                   </p>
+                </div>
+              </div>
+
+              <div className="p-4 bg-emerald-50/50 rounded-2xl border border-emerald-100/80 flex items-start gap-3">
+                <span className="w-7 h-7 rounded-full bg-[#102A43] text-white text-xs font-bold flex items-center justify-center shrink-0">
+                  4
+                </span>
+                <div>
+                  <h4 className="font-semibold text-xs text-neutral-900">Datos para el envío</h4>
+                  <p className="text-[11px] text-neutral-600 mt-0.5 leading-relaxed">
+                    Adjuntá en el chat los datos requeridos para la entrega:
+                  </p>
+                  <ul className="mt-1.5 space-y-0.5 text-[10px] text-neutral-700 font-medium">
+                    <li className="flex items-center gap-1">
+                      <span className="w-1 h-1 rounded-full bg-emerald-600"></span>
+                      <span>Nombre del cliente</span>
+                    </li>
+                    <li className="flex items-center gap-1">
+                      <span className="w-1 h-1 rounded-full bg-emerald-600"></span>
+                      <span>Lugar de ubicación para envío</span>
+                    </li>
+                    <li className="flex items-center gap-1">
+                      <span className="w-1 h-1 rounded-full bg-emerald-600"></span>
+                      <span>Link de Google Maps</span>
+                    </li>
+                  </ul>
                 </div>
               </div>
             </div>
