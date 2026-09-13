@@ -1,0 +1,6 @@
+{
+  "name": "Skin Health - Catálogo y Pedidos WhatsApp",
+  "description": "Catálogo visual de skincare de alta gama con carrito flotante persistente y pedidos directos por WhatsApp en guaraníes.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
