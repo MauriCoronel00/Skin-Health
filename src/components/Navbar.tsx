@@ -1,6 +1,6 @@
 import React from 'react';
-import { ShoppingBag, Search, MessageCircle, X } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
+import { ShoppingBag, MessageCircle } from 'lucide-react';
+import { motion } from 'motion/react';
 import { BrandLogo } from './BrandLogo';
 import { formatGuarani, STORE_PHONE_NUMBER } from '../data/products';
 
@@ -8,19 +8,13 @@ interface NavbarProps {
   totalItems: number;
   totalAmount: number;
   onOpenCart: () => void;
-  searchQuery: string;
-  onSearchChange: (query: string) => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   totalItems,
   totalAmount,
   onOpenCart,
-  searchQuery,
-  onSearchChange,
 }) => {
-  const [isSearchOpen, setIsSearchOpen] = React.useState(false);
-
   return (
     <header className="sticky top-0 z-30 bg-[#FAF8F5]/90 backdrop-blur-md border-b border-[#102A43]/10 transition-all">
       {/* Top micro announcement bar */}
@@ -36,37 +30,8 @@ export const Navbar: React.FC<NavbarProps> = ({
           <BrandLogo size="md" />
         </div>
 
-        {/* Center search for desktop */}
-        <div className="hidden md:flex flex-1 max-w-md mx-6 relative">
-          <input
-            type="text"
-            placeholder="Buscar por producto, activo o marca..."
-            value={searchQuery}
-            onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full bg-white/80 border border-[#102A43]/15 rounded-full py-2 pl-10 pr-10 text-sm focus:outline-none focus:border-[#102A43] focus:ring-1 focus:ring-[#102A43] transition-all"
-          />
-          <Search className="w-4 h-4 text-[#102A43]/50 absolute left-3.5 top-1/2 -translate-y-1/2" />
-          {searchQuery && (
-            <button
-              onClick={() => onSearchChange('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-700"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          )}
-        </div>
-
         {/* Right Actions */}
         <div className="flex items-center gap-2.5 sm:gap-3">
-          {/* Mobile search toggle */}
-          <button
-            onClick={() => setIsSearchOpen(!isSearchOpen)}
-            className="md:hidden p-2 text-[#102A43] hover:bg-[#102A43]/5 rounded-full transition-colors"
-            aria-label="Buscar"
-          >
-            <Search className="w-5 h-5" />
-          </button>
-
           {/* Direct WhatsApp help */}
           <a
             href={`https://wa.me/${STORE_PHONE_NUMBER}?text=Hola%20Skin%20Health%2C%20tengo%20una%20consulta%20sobre%20sus%20productos`}
@@ -78,7 +43,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span>Asesoría</span>
           </a>
 
-          {/* Desktop Cart Button (Section 18) */}
+          {/* Desktop Cart Button */}
           <motion.button
             id="desktop-header-cart-btn"
             onClick={onOpenCart}
@@ -113,38 +78,6 @@ export const Navbar: React.FC<NavbarProps> = ({
           </motion.button>
         </div>
       </div>
-
-      {/* Mobile search drop-down */}
-      <AnimatePresence>
-        {isSearchOpen && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="md:hidden px-4 pb-3 overflow-hidden"
-          >
-            <div className="relative">
-              <input
-                type="text"
-                autoFocus
-                placeholder="Buscar por activo, producto..."
-                value={searchQuery}
-                onChange={(e) => onSearchChange(e.target.value)}
-                className="w-full bg-white border border-[#102A43]/20 rounded-xl py-2 pl-10 pr-9 text-sm focus:outline-none focus:border-[#102A43]"
-              />
-              <Search className="w-4 h-4 text-[#102A43]/50 absolute left-3.5 top-1/2 -translate-y-1/2" />
-              {searchQuery && (
-                <button
-                  onClick={() => onSearchChange('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              )}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </header>
   );
 };

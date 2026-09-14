@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Plus, Check, Star, Eye } from 'lucide-react';
 import { Product } from '../types';
 import { formatGuarani } from '../data/products';
+import { trackAddToCart } from '../utils/analytics';
 
 interface ProductCardProps {
   product: Product;
@@ -22,7 +23,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
   const handleAddClick = (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (showAddedAnim) return;
+
     onAddToCart(product);
+    trackAddToCart(product, 1);
 
     // Micro-interaction: floating +1 bubble
     setShowAddedAnim(true);
@@ -156,8 +160,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         {/* Prominent Quick-Add "+" Button (Section 11) */}
         <div className="relative">
           <motion.button
-            whileTap={{ scale: 0.85 }}
+            whileTap={!showAddedAnim ? { scale: 0.85 } : {}}
             onClick={handleAddClick}
+            disabled={showAddedAnim}
             className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer shadow-sm relative overflow-hidden ${
               showAddedAnim
                 ? 'bg-emerald-600 text-white shadow-emerald-200'

@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Sparkles, MessageCircle, ShieldCheck, ArrowDown, PackageCheck } from 'lucide-react';
-import heroBannerImg from '../assets/images/skin_health_hero_1789268252129.jpg';
+import { Sparkles, MessageCircle, ShieldCheck, ArrowDown, Sparkle } from 'lucide-react';
+import heroRadiantBg from '../assets/images/woman_applying_skincare_cream_1789318644556.jpg';
 import { STORE_PHONE_NUMBER } from '../data/products';
 
 interface HeroBannerProps {
@@ -10,26 +10,26 @@ interface HeroBannerProps {
 
 export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog }) => {
   return (
-    <section className="relative overflow-hidden rounded-3xl bg-[#0E2338] text-white shadow-xl my-4 sm:my-6 border border-[#102A43]/30">
-      {/* Ambient background with warm overlay */}
+    <section className="relative overflow-hidden rounded-3xl bg-[#0E2338] text-white shadow-xl my-4 sm:my-6 border border-[#102A43]/30 min-h-[440px] sm:min-h-[480px] flex flex-col justify-between">
+      {/* Background with the radiant skincare woman image */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <img
-          src={heroBannerImg}
-          alt="Skin Health Colección Exclusiva"
-          className="w-full h-full object-cover object-center opacity-30 filter blur-xs"
+          src={heroRadiantBg}
+          alt="Tu piel, en su versión más radiante - Skin Health"
+          className="w-full h-full object-cover object-[75%_center] sm:object-right opacity-65 sm:opacity-75 filter contrast-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0E2338] via-[#0E2338]/90 to-[#0E2338]/70" />
+        {/* Optical gradient overlay to guarantee perfect contrast on text while showcasing the girl's face */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0E2338] via-[#0E2338]/80 to-transparent sm:bg-gradient-to-r sm:from-[#0E2338] sm:via-[#0E2338]/90 sm:via-45% sm:to-transparent" />
       </div>
 
-      {/* Main Hero Content - Responsive Grid */}
-      <div className="relative z-10 p-6 sm:p-8 md:p-10 lg:p-12 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-        {/* Left Column: Branding, Title, Description, and CTAs */}
-        <div className="lg:col-span-7 flex flex-col justify-center">
+      {/* Main Hero Content */}
+      <div className="relative z-10 p-6 sm:p-10 md:p-12 lg:p-14 flex items-center flex-1">
+        <div className="max-w-xl sm:max-w-2xl flex flex-col justify-center">
           {/* Subtle pill tag */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-xs font-medium text-white/90 mb-4 w-fit"
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-medium text-white/95 mb-4 w-fit shadow-xs"
           >
             <Sparkles className="w-3.5 h-3.5 text-emerald-300" />
             <span>Catálogo Oficial • Asunción & Gran Asunción</span>
@@ -40,7 +40,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog }) => 
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="font-serif text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight text-white leading-tight mb-3"
+            className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-[54px] font-semibold tracking-tight text-white leading-[1.15] mb-4 drop-shadow-sm"
           >
             Tu piel, en su versión más radiante.
           </motion.h1>
@@ -49,9 +49,9 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog }) => 
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-sm sm:text-base text-white/80 leading-relaxed max-w-xl mb-6 font-light"
+            className="text-sm sm:text-base md:text-lg text-white/90 leading-relaxed max-w-xl mb-7 font-light drop-shadow-xs"
           >
-            Selección exclusiva de dermocosmética premium y cuidado coreano: SKIN1004, The Ordinary y La Roche-Posay. Elegí tus favoritos y pedí directo por WhatsApp con entrega coordinada.
+            Soluciones avanzadas para la salud y el cuidado de tu piel. Trabajamos con marcas líderes en dermatología y K-Beauty: CeraVe, La Roche-Posay, SKIN1004 y The Ordinary. Asesoramiento continuo y entregas coordinadas a través de WhatsApp
           </motion.p>
 
           {/* Action CTAs */}
@@ -73,7 +73,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog }) => 
               href="#rutinas"
               className="inline-flex items-center gap-1.5 px-4 py-3 rounded-full bg-white/15 hover:bg-white/25 backdrop-blur-md border border-white/25 text-white text-sm font-semibold transition-all cursor-pointer"
             >
-              <Sparkles className="w-4 h-4 text-emerald-300" />
+              <Sparkle className="w-4 h-4 text-emerald-300" />
               <span>Ver Rutinas</span>
             </a>
 
@@ -81,38 +81,13 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog }) => 
               href={`https://wa.me/${STORE_PHONE_NUMBER}?text=Hola%20Skin%20Health%2C%20quisiera%20asesoramiento%20para%20elegir%20mi%20rutina`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-3 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white text-sm font-medium transition-all"
+              className="inline-flex items-center gap-2 px-4 py-3 rounded-full bg-[#25D366] hover:bg-[#20bd5a] text-white text-sm font-semibold transition-all shadow-md shadow-emerald-500/20"
             >
-              <MessageCircle className="w-4 h-4 text-emerald-400" />
+              <MessageCircle className="w-4 h-4 fill-white text-[#25D366]" />
               <span>Consultar por WhatsApp</span>
             </a>
           </motion.div>
         </div>
-
-        {/* Right Column: Prominent, Crisp Branding Showcase Image */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.96 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.25, duration: 0.5 }}
-          className="lg:col-span-5"
-        >
-          <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-white/20 bg-neutral-900/40 group">
-            <img
-              src={heroBannerImg}
-              alt="Línea Oficial Skin Health - Presentación de Marca"
-              className="w-full h-auto object-cover transform group-hover:scale-102 transition-transform duration-700 aspect-16/10 sm:aspect-16/9"
-              loading="eager"
-            />
-            {/* Elegant glass caption badge */}
-            <div className="absolute bottom-2.5 left-2.5 right-2.5 bg-black/50 backdrop-blur-md rounded-xl px-3 py-1.5 text-xs text-white/95 flex items-center justify-between border border-white/10">
-              <div className="flex items-center gap-1.5">
-                <PackageCheck className="w-3.5 h-3.5 text-emerald-300" />
-                <span className="font-medium">Skin Health Branding</span>
-              </div>
-              <span className="text-[11px] text-sky-200 font-light">el arte del cuidado de la piel.</span>
-            </div>
-          </div>
-        </motion.div>
       </div>
 
       {/* Brand values footer ribbon inside hero */}

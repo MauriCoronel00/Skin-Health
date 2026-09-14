@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { ArrowRight, Check, Plus, Sparkles, AlertCircle, Info, ShoppingBag } from 'lucide-react';
+import { motion } from 'motion/react';
+import { Check, Plus, Sparkles, AlertCircle, Info, ShoppingBag } from 'lucide-react';
 import { SkincareRoutine, Product } from '../types';
 import { SKINCARE_ROUTINES } from '../data/routines';
 import { PRODUCTS, formatGuarani } from '../data/products';
@@ -19,16 +19,29 @@ export const RoutinesSection: React.FC<RoutinesSectionProps> = ({
   cartQuantities,
 }) => {
   const [addedRoutineId, setAddedRoutineId] = useState<string | null>(null);
+  // Store selected option per routine step: key is `${routineId}-${stepNumber}` -> productId
+  const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
 
   // Helper to find full product by ID
   const getProduct = (productId: string): Product | undefined => {
     return PRODUCTS.find((p) => p.id === productId);
   };
 
+  const getActiveProductId = (routineId: string, stepNumber: number, defaultId: string): string => {
+    const key = `${routineId}-${stepNumber}`;
+    return selectedOptions[key] || defaultId;
+  };
+
+  const handleSelectOption = (routineId: string, stepNumber: number, productId: string) => {
+    const key = `${routineId}-${stepNumber}`;
+    setSelectedOptions((prev) => ({ ...prev, [key]: productId }));
+  };
+
   const handleAddFullRoutine = (routine: SkincareRoutine) => {
     const productsToAdd: Product[] = [];
     for (const step of routine.steps) {
-      const prod = getProduct(step.productId);
+      const activeId = getActiveProductId(routine.id, step.stepNumber, step.productId);
+      const prod = getProduct(activeId);
       if (prod) productsToAdd.push(prod);
     }
 
@@ -58,9 +71,9 @@ export const RoutinesSection: React.FC<RoutinesSectionProps> = ({
       {/* Routine Cards List */}
       <div className="space-y-6 sm:space-y-8">
         {SKINCARE_ROUTINES.map((routine) => {
-          // Calculate routine sum
+          // Calculate routine sum based on currently selected active products
           const routineProducts = routine.steps
-            .map((s) => getProduct(s.productId))
+            .map((s) => getProduct(getActiveProductId(routine.id, s.stepNumber, s.productId)))
             .filter((p): p is Product => Boolean(p));
 
           const routineTotalPrice = routineProducts.reduce(
@@ -69,6 +82,10 @@ export const RoutinesSection: React.FC<RoutinesSectionProps> = ({
           );
 
           const isJustAdded = addedRoutineId === routine.id;
+          const gridColsClass =
+            routine.steps.length === 3
+              ? 'grid-cols-1 md:grid-cols-3'
+              : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4';
 
           return (
             <motion.div
@@ -132,59 +149,96 @@ export const RoutinesSection: React.FC<RoutinesSectionProps> = ({
 
               {/* Steps Visual Layout */}
               <div className="p-5 sm:p-6">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 relative">
-                  {routine.steps.map((step, idx) => {
-                    const product = getProduct(step.productId);
+                <div className={`grid ${gridColsClass} gap-4 relative`}>
+                  {routine.steps.map((step) => {
+                    const activeId = getActiveProductId(routine.id, step.stepNumber, step.productId);
+                    const product = getProduct(activeId);
                     if (!product) return null;
 
                     const inCartCount = cartQuantities[product.id] || 0;
+                    const allOptions = [step.productId, ...(step.alternativeProductIds || [])];
+                    const hasOptions = allOptions.length > 1;
 
                     return (
                       <div
                         key={step.stepNumber}
                         className="relative group bg-[#FAF8F5] rounded-2xl p-4 border border-neutral-200/80 hover:border-[#102A43]/30 transition-all flex flex-col justify-between"
                       >
-                        {/* Step indicator tag */}
-                        <div className="flex items-center justify-between gap-2 mb-2">
-                          <div className="flex items-center gap-2">
-                            <span className="w-6 h-6 rounded-full bg-[#102A43] text-white text-xs font-bold flex items-center justify-center shadow-xs">
-                              {step.stepNumber}
-                            </span>
-                            <span className="text-xs font-bold text-neutral-800">
-                              {step.label}
-                            </span>
+                        <div>
+                          {/* Step indicator tag */}
+                          <div className="flex items-center justify-between gap-2 mb-2">
+                            <div className="flex items-center gap-2">
+                              <span className="w-6 h-6 rounded-full bg-[#102A43] text-white text-xs font-bold flex items-center justify-center shadow-xs">
+                                {step.stepNumber}
+                              </span>
+                              <span className="text-xs font-bold text-neutral-800">
+                                {step.label}
+                              </span>
+                            </div>
+
+                            {inCartCount > 0 && (
+                              <span className="text-[10px] bg-[#102A43] text-white font-bold px-1.5 py-0.5 rounded-md">
+                                {inCartCount} en carrito
+                              </span>
+                            )}
                           </div>
 
-                          {inCartCount > 0 && (
-                            <span className="text-[10px] bg-[#102A43] text-white font-bold px-1.5 py-0.5 rounded-md">
-                              {inCartCount} en carrito
-                            </span>
+                          {/* Options selector tabs if step has alternatives */}
+                          {hasOptions && (
+                            <div className="mb-2.5 p-1 bg-white/90 rounded-xl border border-neutral-200/70">
+                              <span className="text-[9px] font-bold uppercase tracking-wider text-neutral-400 block px-1 mb-1">
+                                Opciones de producto:
+                              </span>
+                              <div className="flex flex-wrap gap-1">
+                                {allOptions.map((optId) => {
+                                  const optProduct = getProduct(optId);
+                                  if (!optProduct) return null;
+                                  const isSelected = optId === activeId;
+                                  return (
+                                    <button
+                                      key={optId}
+                                      onClick={() => handleSelectOption(routine.id, step.stepNumber, optId)}
+                                      className={`text-[10px] font-semibold px-2 py-1 rounded-lg transition-all cursor-pointer truncate max-w-full ${
+                                        isSelected
+                                          ? 'bg-[#102A43] text-white shadow-2xs'
+                                          : 'bg-neutral-100/80 text-neutral-600 hover:bg-neutral-200/80'
+                                      }`}
+                                      title={optProduct.name}
+                                    >
+                                      {optProduct.brand === 'La Roche-Posay'
+                                        ? 'Effaclar'
+                                        : optProduct.name.replace('Facial Cleanser', '').replace('Solution', '').trim()}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </div>
                           )}
-                        </div>
 
-                        {/* Thumbnail & Product Details */}
-                        <div
-                          onClick={() => onQuickView(product)}
-                          className="flex items-center gap-3 cursor-pointer py-1"
-                        >
-                          <div className="w-16 h-16 rounded-xl bg-white p-1.5 flex items-center justify-center shrink-0 border border-neutral-100 overflow-hidden">
-                            <img
-                              src={product.image}
-                              alt={product.name}
-                              className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform"
-                            />
-                          </div>
+                          {/* Thumbnail & Product Details */}
+                          <div
+                            onClick={() => onQuickView(product)}
+                            className="flex items-center gap-3 cursor-pointer py-1"
+                          >
+                            <div className="w-16 h-16 rounded-xl bg-white p-1.5 flex items-center justify-center shrink-0 border border-neutral-100 overflow-hidden">
+                              <img
+                                src={product.image}
+                                alt={product.name}
+                                className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform"
+                              />
+                            </div>
 
-                          <div className="flex-1 min-w-0">
-                            <span className="text-[10px] font-semibold text-[#102A43]/70 uppercase tracking-wider block">
-                              {product.brand}
-                            </span>
-                            <h4 className="text-xs font-semibold text-neutral-900 line-clamp-2 leading-snug group-hover:text-[#102A43]">
-                              {product.name}
-                            </h4>
-                            <p className="text-[11px] text-neutral-500 mt-0.5">
-                              {step.note || product.volume}
-                            </p>
+                            <div className="flex-1 min-w-0">
+                              <span className="text-[10px] font-semibold text-[#102A43]/70 uppercase tracking-wider block">
+                                {product.brand}
+                              </span>
+                              <h4 className="text-xs font-semibold text-neutral-900 line-clamp-2 leading-snug group-hover:text-[#102A43]">
+                                {product.name}
+                              </h4>
+                              <p className="text-[11px] text-neutral-500 mt-0.5">
+                                {step.note || product.volume}
+                              </p>
+                            </div>
                           </div>
                         </div>
 
@@ -212,19 +266,26 @@ export const RoutinesSection: React.FC<RoutinesSectionProps> = ({
                 </div>
 
                 {/* Callout Notice from PDF (ORDEN / IMPORTANTE) */}
-                <div className="mt-5 p-3.5 sm:p-4 rounded-2xl bg-[#FAF8F5] border border-[#102A43]/15 flex items-start gap-2.5 text-xs text-neutral-700 leading-relaxed">
-                  {routine.instructionType === 'ORDEN' ? (
-                    <Info className="w-4 h-4 text-[#102A43] shrink-0 mt-0.5" />
-                  ) : (
-                    <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-                  )}
-                  <div>
-                    <span className="font-bold text-[#102A43] mr-1">
-                      {routine.instructionType}:
-                    </span>
-                    <span>{routine.instructionText.replace(`${routine.instructionType}: `, '')}</span>
+                {routine.instructionText && (
+                  <div className="mt-5 p-3.5 sm:p-4 rounded-2xl bg-[#FAF8F5] border border-[#102A43]/15 flex items-start gap-2.5 text-xs text-neutral-700 leading-relaxed">
+                    {routine.instructionType === 'ORDEN' ? (
+                      <Info className="w-4 h-4 text-[#102A43] shrink-0 mt-0.5" />
+                    ) : (
+                      <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                    )}
+                    <div>
+                      <span className="font-bold text-[#102A43] mr-1">
+                        {routine.instructionType || 'NOTA'}:
+                      </span>
+                      <span>
+                        {routine.instructionText.replace(
+                          `${routine.instructionType}: `,
+                          ''
+                        )}
+                      </span>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </motion.div>
           );
@@ -233,3 +294,4 @@ export const RoutinesSection: React.FC<RoutinesSectionProps> = ({
     </section>
   );
 };
+

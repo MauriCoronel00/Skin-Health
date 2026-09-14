@@ -12,6 +12,8 @@ import { FloatingCart } from './components/FloatingCart';
 import { CartDrawer } from './components/CartDrawer';
 import { ProductQuickView } from './components/ProductQuickView';
 import { Footer } from './components/Footer';
+import { OrderConfirmationModal, OrderDetails } from './components/OrderConfirmationModal';
+import { ToastContainer, ToastMessage } from './components/Toast';
 
 const CART_STORAGE_KEY = 'skinhealth_cart_v1';
 
@@ -36,6 +38,30 @@ export default function App() {
   const [selectedBrand, setSelectedBrand] = useState<string>('all');
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
   const [lastAddedTime, setLastAddedTime] = useState<number>(0);
+  const [confirmedOrder, setConfirmedOrder] = useState<OrderDetails | null>(null);
+  const [toasts, setToasts] = useState<ToastMessage[]>([]);
+
+  const showToast = (
+    title: string,
+    description?: string,
+    type: 'success' | 'error' | 'info' = 'info',
+    showWhatsAppFallback = false
+  ) => {
+    const id = `${Date.now()}-${Math.random()}`;
+    setToasts((prev) => [...prev, { id, title, description, type, showWhatsAppFallback }]);
+    setTimeout(() => {
+      setToasts((prev) => prev.filter((t) => t.id !== id));
+    }, 4500);
+  };
+
+  const dismissToast = (id: string) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id));
+  };
+
+  const handleOrderSuccess = (order: OrderDetails) => {
+    setConfirmedOrder(order);
+    setIsCartOpen(false);
+  };
 
   const catalogRef = useRef<HTMLDivElement>(null);
 
@@ -188,8 +214,6 @@ export default function App() {
         totalItems={totalItems}
         totalAmount={totalAmount}
         onOpenCart={() => setIsCartOpen(true)}
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
       />
 
       {/* Main Content Area - Note the extra bottom padding (pb-36 sm:pb-44) to ensure the floating cart NEVER obstructs content */}
@@ -218,7 +242,7 @@ export default function App() {
                   'Catálogo'}
             </h2>
             <p className="text-xs text-neutral-500 mt-0.5">
-              10 fórmulas esenciales seleccionadas para resultados visibles.
+              20 fórmulas esenciales seleccionadas para resultados visibles.
             </p>
           </div>
 
@@ -227,7 +251,7 @@ export default function App() {
             <span className="text-[11px] text-neutral-400 font-medium mr-1 hidden sm:inline">
               Marca:
             </span>
-            {['all', 'SKIN1004', 'The Ordinary', 'La Roche-Posay'].map((brand) => (
+            {['all', 'SKIN1004', 'The Ordinary', 'La Roche-Posay', 'CeraVe'].map((brand) => (
               <button
                 key={brand}
                 onClick={() => setSelectedBrand(brand)}
@@ -331,26 +355,14 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="p-4 bg-[#FAF8F5] rounded-2xl border border-neutral-100 flex items-start gap-3">
-                <span className="w-7 h-7 rounded-full bg-[#25D366] text-white text-xs font-bold flex items-center justify-center shrink-0">
-                  3
-                </span>
-                <div>
-                  <h4 className="font-semibold text-xs text-neutral-900">Pedir por WhatsApp</h4>
-                  <p className="text-[11px] text-neutral-500 mt-0.5 leading-relaxed">
-                    Se abrirá tu chat con la lista y el detalle de los productos listos para enviar.
-                  </p>
-                </div>
-              </div>
-
               <div className="p-4 bg-emerald-50/50 rounded-2xl border border-emerald-100/80 flex items-start gap-3">
                 <span className="w-7 h-7 rounded-full bg-[#102A43] text-white text-xs font-bold flex items-center justify-center shrink-0">
-                  4
+                  3
                 </span>
                 <div>
                   <h4 className="font-semibold text-xs text-neutral-900">Datos para el envío</h4>
                   <p className="text-[11px] text-neutral-600 mt-0.5 leading-relaxed">
-                    Adjuntá en el chat los datos requeridos para la entrega:
+                    Completá en el carrito tus datos para coordinar la entrega:
                   </p>
                   <ul className="mt-1.5 space-y-0.5 text-[10px] text-neutral-700 font-medium">
                     <li className="flex items-center gap-1">
@@ -366,6 +378,18 @@ export default function App() {
                       <span>Link de Google Maps</span>
                     </li>
                   </ul>
+                </div>
+              </div>
+
+              <div className="p-4 bg-[#FAF8F5] rounded-2xl border border-neutral-100 flex items-start gap-3">
+                <span className="w-7 h-7 rounded-full bg-[#25D366] text-white text-xs font-bold flex items-center justify-center shrink-0">
+                  4
+                </span>
+                <div>
+                  <h4 className="font-semibold text-xs text-neutral-900">Pedir por WhatsApp</h4>
+                  <p className="text-[11px] text-neutral-500 mt-0.5 leading-relaxed">
+                    Se abrirá tu chat con la lista completa de productos y todos tus datos listos para confirmar.
+                  </p>
                 </div>
               </div>
             </div>
@@ -391,9 +415,25 @@ export default function App() {
             onUpdateQuantity={handleUpdateQuantity}
             onRemoveItem={handleRemoveItem}
             onClearCart={handleClearCart}
+            onOrderSuccess={handleOrderSuccess}
+            onShowToast={showToast}
           />
         )}
       </AnimatePresence>
+
+      {/* Post-Purchase Order Confirmation Modal */}
+      <AnimatePresence>
+        {confirmedOrder && (
+          <OrderConfirmationModal
+            isOpen={!!confirmedOrder}
+            onClose={() => setConfirmedOrder(null)}
+            order={confirmedOrder}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Global Toast Notification System */}
+      <ToastContainer toasts={toasts} onDismiss={dismissToast} />
 
       {/* Product Quick View Modal */}
       <AnimatePresence>

@@ -6,7 +6,7 @@ export interface ProductBenefit {
 export interface Product {
   id: string;
   name: string;
-  brand: 'SKIN1004' | 'The Ordinary' | 'La Roche-Posay';
+  brand: 'SKIN1004' | 'The Ordinary' | 'La Roche-Posay' | 'CeraVe';
   subtitle: string;
   category: 'hydrate' | 'brighten' | 'calm' | 'protect' | 'cleanse';
   categoryLabel: string;
@@ -32,17 +32,19 @@ export interface RoutineStep {
   stepNumber: number;
   label: string;
   productId: string;
+  alternativeProductIds?: string[];
   note?: string;
+  timing?: string;
 }
 
 export interface SkincareRoutine {
   id: string;
-  number: string; // "01", "02", "03"
+  number: string; // "01", "02", "03", "04", "05"
   title: string;
   goal: string;
   steps: RoutineStep[];
-  instructionType: 'ORDEN' | 'IMPORTANTE';
-  instructionText: string;
+  instructionType?: 'ORDEN' | 'IMPORTANTE';
+  instructionText?: string;
 }
 
 export type CategoryId = 'all' | 'hydrate' | 'brighten' | 'calm' | 'protect' | 'cleanse';

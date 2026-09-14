@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import { X, Star, Plus, Check, ShieldCheck, Sparkles, Droplets } from 'lucide-react';
 import { Product } from '../types';
 import { formatGuarani } from '../data/products';
+import { trackAddToCart } from '../utils/analytics';
 
 interface ProductQuickViewProps {
   product: Product | null;
@@ -22,9 +23,11 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
   if (!product) return null;
 
   const handleAdd = () => {
+    if (justAdded) return;
     onAddToCart(product);
+    trackAddToCart(product, 1);
     setJustAdded(true);
-    setTimeout(() => setJustAdded(false), 1000);
+    setTimeout(() => setJustAdded(false), 900);
   };
 
   return (
@@ -179,8 +182,9 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
           </div>
 
           <motion.button
-            whileTap={{ scale: 0.95 }}
+            whileTap={!justAdded ? { scale: 0.95 } : {}}
             onClick={handleAdd}
+            disabled={justAdded}
             className={`flex-1 max-w-xs py-3 px-5 rounded-2xl font-bold text-sm sm:text-base flex items-center justify-center gap-2 cursor-pointer shadow-md transition-all ${
               justAdded
                 ? 'bg-emerald-600 text-white'
