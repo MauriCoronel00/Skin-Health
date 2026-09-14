@@ -14,8 +14,14 @@ import { ProductQuickView } from './components/ProductQuickView';
 import { Footer } from './components/Footer';
 import { OrderConfirmationModal, OrderDetails } from './components/OrderConfirmationModal';
 import { ToastContainer, ToastMessage } from './components/Toast';
+import { ProductReview, ReviewUser } from './types';
+import { INITIAL_DEMO_REVIEWS, getProductRatingStats } from './data/demoReviews';
+import { ReviewFormModal } from './components/ReviewFormModal';
+import { AdminReviewsModal } from './components/AdminReviewsModal';
+import { getSavedGoogleUser } from './utils/reviewsStorage';
 
 const CART_STORAGE_KEY = 'skinhealth_cart_v1';
+const REVIEWS_STORAGE_KEY = 'skinhealth_reviews_v1';
 
 export default function App() {
   // Cart state initialized from localStorage for persistence (Section 15)
@@ -40,6 +46,93 @@ export default function App() {
   const [lastAddedTime, setLastAddedTime] = useState<number>(0);
   const [confirmedOrder, setConfirmedOrder] = useState<OrderDetails | null>(null);
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
+
+  // Persistent Reviews State initialized with DEMO reviews and user saved submissions
+  const [reviews, setReviews] = useState<ProductReview[]>(() => {
+    try {
+      const saved = localStorage.getItem(REVIEWS_STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch {
+      // ignore
+    }
+    return INITIAL_DEMO_REVIEWS;
+  });
+
+  // Current authenticated Google user state
+  const [googleUser, setGoogleUser] = useState<ReviewUser | null>(() => getSavedGoogleUser());
+
+  // Review Form Modal target product
+  const [reviewingProduct, setReviewingProduct] = useState<Product | null>(null);
+
+  // Admin moderation modal
+  const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
+
+  // Persist reviews to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(reviews));
+    } catch {
+      // fallback
+    }
+  }, [reviews]);
+
+  const handleOpenReviewModal = (product: Product) => {
+    setReviewingProduct(product);
+  };
+
+  const handleCloseReviewModal = () => {
+    setReviewingProduct(null);
+  };
+
+  const handleSubmitReview = (reviewData: {
+    productId: string;
+    rating: number;
+    comment: string;
+    author: ReviewUser;
+    city?: string;
+  }) => {
+    const newReview: ProductReview = {
+      id: `rev-${Date.now()}`,
+      productId: reviewData.productId,
+      rating: reviewData.rating,
+      comment: reviewData.comment,
+      author: reviewData.author,
+      createdAt: new Date().toISOString(),
+      isExample: false,
+      // If the user previously completed an order in this browser session, mark verified purchase
+      isVerifiedPurchase: !!confirmedOrder,
+      status: 'approved',
+      city: reviewData.city || 'Paraguay',
+    };
+
+    setReviews((prev) => [newReview, ...prev]);
+    showToast('¡Reseña publicada!', 'Tu valoración ha sido compartida con éxito.', 'success');
+  };
+
+  const handleToggleReviewStatus = (reviewId: string, newStatus: 'approved' | 'hidden') => {
+    setReviews((prev) =>
+      prev.map((r) => (r.id === reviewId ? { ...r, status: newStatus } : r))
+    );
+    showToast(
+      newStatus === 'hidden' ? 'Reseña oculta' : 'Reseña aprobada',
+      undefined,
+      'info'
+    );
+  };
+
+  const handleDeleteReview = (reviewId: string) => {
+    setReviews((prev) => prev.filter((r) => r.id !== reviewId));
+    showToast('Reseña eliminada', undefined, 'info');
+  };
+
+  const handleToggleFeatured = (reviewId: string) => {
+    setReviews((prev) =>
+      prev.map((r) => (r.id === reviewId ? { ...r, isFeatured: !r.isFeatured } : r))
+    );
+  };
 
   const showToast = (
     title: string,
@@ -296,15 +389,20 @@ export default function App() {
               layout
               className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5"
             >
-              {filteredProducts.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  quantityInCart={cartQuantities[product.id] || 0}
-                  onAddToCart={handleAddToCart}
-                  onQuickView={setQuickViewProduct}
-                />
-              ))}
+              {filteredProducts.map((product) => {
+                const stats = getProductRatingStats(product.id, reviews);
+                return (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    quantityInCart={cartQuantities[product.id] || 0}
+                    onAddToCart={handleAddToCart}
+                    onQuickView={setQuickViewProduct}
+                    ratingAverage={stats.averageRating}
+                    reviewsCount={stats.totalReviews}
+                  />
+                );
+              })}
             </motion.div>
           )}
         </div>
@@ -435,7 +533,7 @@ export default function App() {
       {/* Global Toast Notification System */}
       <ToastContainer toasts={toasts} onDismiss={dismissToast} />
 
-      {/* Product Quick View Modal */}
+      {/* Product Quick View Modal with Reviews */}
       <AnimatePresence>
         {quickViewProduct && (
           <ProductQuickView
@@ -443,12 +541,43 @@ export default function App() {
             onClose={() => setQuickViewProduct(null)}
             onAddToCart={handleAddToCart}
             quantityInCart={cartQuantities[quickViewProduct.id] || 0}
+            reviews={reviews}
+            onOpenReviewModal={handleOpenReviewModal}
+            currentUser={googleUser}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Review Form Modal */}
+      <AnimatePresence>
+        {reviewingProduct && (
+          <ReviewFormModal
+            isOpen={!!reviewingProduct}
+            onClose={handleCloseReviewModal}
+            product={reviewingProduct}
+            currentUser={googleUser}
+            onUserAuthenticated={setGoogleUser}
+            onSubmitReview={handleSubmitReview}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Admin Moderation Modal */}
+      <AnimatePresence>
+        {isAdminModalOpen && (
+          <AdminReviewsModal
+            isOpen={isAdminModalOpen}
+            onClose={() => setIsAdminModalOpen(false)}
+            reviews={reviews}
+            onToggleStatus={handleToggleReviewStatus}
+            onDeleteReview={handleDeleteReview}
+            onToggleFeatured={handleToggleFeatured}
           />
         )}
       </AnimatePresence>
 
       {/* Footer */}
-      <Footer />
+      <Footer onOpenAdminReviews={() => setIsAdminModalOpen(true)} />
     </div>
   );
 }

@@ -1,15 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion } from 'motion/react';
-import { X, Star, Plus, Check, ShieldCheck, Sparkles, Droplets } from 'lucide-react';
-import { Product } from '../types';
+import { X, Star, Plus, Check, ShieldCheck, Sparkles, Droplets, MessageSquarePlus } from 'lucide-react';
+import { Product, ProductReview, ReviewUser } from '../types';
 import { formatGuarani } from '../data/products';
 import { trackAddToCart } from '../utils/analytics';
+import { ProductReviewsSection } from './ProductReviewsSection';
+import { getProductRatingStats } from '../data/demoReviews';
 
 interface ProductQuickViewProps {
   product: Product | null;
   onClose: () => void;
   onAddToCart: (product: Product) => void;
   quantityInCart: number;
+  reviews: ProductReview[];
+  onOpenReviewModal: (product: Product) => void;
+  currentUser: ReviewUser | null;
 }
 
 export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
@@ -17,10 +22,20 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
   onClose,
   onAddToCart,
   quantityInCart,
+  reviews,
+  onOpenReviewModal,
+  currentUser,
 }) => {
   const [justAdded, setJustAdded] = useState(false);
+  const reviewsSectionRef = useRef<HTMLDivElement>(null);
 
   if (!product) return null;
+
+  const stats = getProductRatingStats(product.id, reviews);
+
+  const scrollToReviews = () => {
+    reviewsSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   const handleAdd = () => {
     if (justAdded) return;
@@ -87,13 +102,31 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
                 {product.subtitle}
               </p>
 
-              {/* Rating & reviews */}
-              <div className="flex items-center justify-center sm:justify-start gap-2 text-sm text-neutral-600 mb-4">
-                <div className="flex text-amber-500">
+              {/* Rating & reviews shortcut */}
+              <div className="flex items-center justify-center sm:justify-start gap-2.5 text-sm text-neutral-600 mb-4 flex-wrap">
+                <button
+                  type="button"
+                  onClick={scrollToReviews}
+                  className="flex items-center text-amber-500 hover:opacity-80 transition-opacity cursor-pointer"
+                >
                   <Star className="w-4 h-4 fill-amber-400 stroke-amber-400" />
-                  <span className="ml-1 font-bold text-neutral-900">{product.rating.toFixed(1)}</span>
-                </div>
-                <span className="text-neutral-400">({product.reviewsCount} reseñas verificadas)</span>
+                  <span className="ml-1 font-bold text-neutral-900">{stats.averageRating.toFixed(1)}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={scrollToReviews}
+                  className="text-neutral-500 hover:text-[#102A43] hover:underline cursor-pointer text-xs"
+                >
+                  ({stats.totalReviews} opiniones de clientes)
+                </button>
+                <span className="text-neutral-300">•</span>
+                <button
+                  type="button"
+                  onClick={() => onOpenReviewModal(product)}
+                  className="text-xs font-semibold text-[#102A43] hover:underline cursor-pointer"
+                >
+                  Dejar opinión
+                </button>
               </div>
 
               {/* Price */}
@@ -167,6 +200,16 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
               </span>
               <p className="text-neutral-600">{product.howToUse}</p>
             </div>
+          </div>
+
+          {/* Section: Opiniones de clientes */}
+          <div ref={reviewsSectionRef} className="pt-2">
+            <ProductReviewsSection
+              product={product}
+              reviews={reviews}
+              onOpenReviewModal={() => onOpenReviewModal(product)}
+              currentUser={currentUser}
+            />
           </div>
         </div>
 

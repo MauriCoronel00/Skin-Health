@@ -3,7 +3,11 @@ import { BrandLogo } from './BrandLogo';
 import { MessageCircle, ShieldCheck, Truck, RefreshCw, Heart } from 'lucide-react';
 import { STORE_PHONE_NUMBER, STORE_PHONE_DISPLAY } from '../data/products';
 
-export const Footer: React.FC = () => {
+interface FooterProps {
+  onOpenAdminReviews?: () => void;
+}
+
+export const Footer: React.FC<FooterProps> = ({ onOpenAdminReviews }) => {
   return (
     <footer className="mt-16 bg-[#0E2338] text-white pt-12 pb-24 sm:pb-16 border-t border-white/10">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
@@ -69,9 +73,20 @@ export const Footer: React.FC = () => {
         {/* Bottom copyright */}
         <div className="pt-6 border-t border-white/10 text-center text-xs text-white/50 flex flex-col sm:flex-row items-center justify-between gap-2">
           <span>© {new Date().getFullYear()} Skin Health. Todos los derechos reservados.</span>
-          <span className="inline-flex items-center gap-1 text-white/60">
-            Dermocosmética hecha con <Heart className="w-3.5 h-3.5 text-rose-400 fill-rose-400" /> para tu piel.
-          </span>
+          <div className="flex items-center gap-4">
+            <span className="inline-flex items-center gap-1 text-white/60">
+              Dermocosmética hecha con <Heart className="w-3.5 h-3.5 text-rose-400 fill-rose-400" /> para tu piel.
+            </span>
+            {onOpenAdminReviews && (
+              <button
+                type="button"
+                onClick={onOpenAdminReviews}
+                className="text-white/40 hover:text-white/80 transition-colors text-[11px] underline cursor-pointer"
+              >
+                Moderación de reseñas
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </footer>

@@ -55,3 +55,36 @@ export interface CategoryOption {
   icon: string;
   description: string;
 }
+
+export interface ReviewUser {
+  name: string;
+  email?: string;
+  avatarUrl?: string;
+  isVerifiedBuyer?: boolean;
+}
+
+export interface ProductReview {
+  id: string;
+  productId: string;
+  rating: number; // 1 to 5
+  comment: string;
+  author: ReviewUser;
+  createdAt: string; // ISO string
+  isExample?: boolean; // Identified internally as demo content
+  isVerifiedPurchase?: boolean;
+  status?: 'approved' | 'pending' | 'hidden';
+  isFeatured?: boolean;
+  city?: string;
+}
+
+export interface ProductRatingStats {
+  averageRating: number;
+  totalReviews: number;
+  distribution: {
+    5: number;
+    4: number;
+    3: number;
+    2: number;
+    1: number;
+  };
+}
