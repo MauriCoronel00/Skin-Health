@@ -3,7 +3,7 @@ import { motion } from 'motion/react';
 import { Check, Plus, Sparkles, AlertCircle, Info, ShoppingBag } from 'lucide-react';
 import { SkincareRoutine, Product } from '../types';
 import { SKINCARE_ROUTINES } from '../data/routines';
-import { PRODUCTS, formatGuarani } from '../data/products';
+import { formatGuarani } from '../data/products';
 
 interface RoutinesSectionProps {
   onAddToCart: (product: Product) => void;
