@@ -24,9 +24,9 @@ export const RoutinesSection: React.FC<RoutinesSectionProps> = ({
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
 
   // Helper to find full product by ID
-  const getProduct = (productId: string): Product | undefined => {
-    return PRODUCTS.find((p) => p.id === productId);
-  };
+const getProduct = (productId: string): Product | undefined => {
+  return products.find((p) => p.id === productId);
+};
 
   const getActiveProductId = (routineId: string, stepNumber: number, defaultId: string): string => {
     const key = `${routineId}-${stepNumber}`;
