@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { Sparkles, SlidersHorizontal, ArrowRight, MessageCircle } from 'lucide-react';
-import { Product, CartItem, CategoryId } from './types';
-import { PRODUCTS, CATEGORIES } from './data/products';
+import { Product, CartItem, CategoryId, CategoryOption } from './types';
+import { fetchProducts, fetchCategories } from './data/products';
 import { Navbar } from './components/Navbar';
 import { HeroBanner } from './components/HeroBanner';
 import { CategoryFilter } from './components/CategoryFilter';
@@ -24,6 +24,25 @@ const CART_STORAGE_KEY = 'skinhealth_cart_v1';
 const REVIEWS_STORAGE_KEY = 'skinhealth_reviews_v1';
 
 export default function App() {
+  // Productos y categorías ahora vienen de Supabase (antes eran PRODUCTS/CATEGORIES fijos)
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<CategoryOption[]>([]);
+  const [isLoadingProducts, setIsLoadingProducts] = useState(true);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const [prods, cats] = await Promise.all([fetchProducts(), fetchCategories()]);
+        setProducts(prods);
+        setCategories(cats);
+      } catch (err) {
+        console.error('Error cargando el catálogo desde Supabase:', err);
+      } finally {
+        setIsLoadingProducts(false);
+      }
+    })();
+  }, []);
+
   // Cart state initialized from localStorage for persistence (Section 15)
   const [cartItems, setCartItems] = useState<CartItem[]>(() => {
     try {
@@ -249,7 +268,7 @@ export default function App() {
 
   // Filtered products
   const filteredProducts = useMemo(() => {
-    return PRODUCTS.filter((product) => {
+    return products.filter((product) => {
       // Category filter
       if (selectedCategory !== 'all' && product.category !== selectedCategory) {
         return false;
@@ -276,25 +295,25 @@ export default function App() {
 
       return true;
     });
-  }, [selectedCategory, selectedBrand, searchQuery]);
+  }, [products, selectedCategory, selectedBrand, searchQuery]);
 
   // Product count by category
   const productCounts = useMemo(() => {
     const counts: Record<CategoryId, number> = {
-      all: PRODUCTS.length,
+      all: products.length,
       hydrate: 0,
       brighten: 0,
       calm: 0,
       protect: 0,
       cleanse: 0,
     };
-    for (const product of PRODUCTS) {
+    for (const product of products) {
       if (counts[product.category] !== undefined) {
         counts[product.category]++;
       }
     }
     return counts;
-  }, []);
+  }, [products]);
 
   const scrollToCatalog = () => {
     catalogRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -316,7 +335,7 @@ export default function App() {
 
         {/* Category Pills (Hydrate, Brighten, Calm, Protect, Cleanse) */}
         <CategoryFilter
-          categories={CATEGORIES}
+          categories={categories}
           selectedCategory={selectedCategory}
           onSelectCategory={setSelectedCategory}
           productCounts={productCounts}
@@ -331,7 +350,7 @@ export default function App() {
             <h2 className="font-serif text-2xl sm:text-3xl font-semibold text-[#102A43]">
               {selectedCategory === 'all'
                 ? 'Catálogo Completo'
-                : CATEGORIES.find((c) => c.id === selectedCategory)?.label ||
+                : categories.find((c) => c.id === selectedCategory)?.label ||
                   'Catálogo'}
             </h2>
             <p className="text-xs text-neutral-500 mt-0.5">
@@ -362,7 +381,11 @@ export default function App() {
 
         {/* Catalog Grid */}
         <div className="mt-6">
-          {filteredProducts.length === 0 ? (
+          {isLoadingProducts ? (
+            <div className="text-center py-16 text-neutral-400 text-sm">
+              Cargando catálogo...
+            </div>
+          ) : filteredProducts.length === 0 ? (
             <div className="text-center py-16 bg-white rounded-3xl border border-neutral-100 p-8">
               <div className="w-12 h-12 rounded-full bg-[#FAF8F5] flex items-center justify-center mx-auto text-neutral-400 mb-3">
                 <SlidersHorizontal className="w-5 h-5" />
@@ -371,7 +394,7 @@ export default function App() {
                 No encontramos productos con esos filtros
               </h3>
               <p className="text-sm text-neutral-500 max-w-sm mx-auto mb-5">
-                Intenta buscar con otro término o limpia los filtros para ver los 10 productos disponibles.
+                Intenta buscar con otro término o limpia los filtros para ver los productos disponibles.
               </p>
               <button
                 onClick={() => {
