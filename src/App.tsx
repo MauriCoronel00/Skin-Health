@@ -1,3 +1,5 @@
+import { AuthProvider } from './contexts/AuthContext';
+import { LoginButton } from './components/LoginButton';
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { Sparkles, SlidersHorizontal, ArrowRight, MessageCircle } from 'lucide-react';
