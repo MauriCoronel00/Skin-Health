@@ -13,6 +13,7 @@ interface RoutinesSectionProps {
   cartQuantities: Record<string, number>;
 }
 export const RoutinesSection: React.FC<RoutinesSectionProps> = ({
+  products,
   onAddToCart,
   onAddMultipleToCart,
   onQuickView,
