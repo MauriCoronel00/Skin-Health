@@ -22,6 +22,8 @@ import { CartItem } from '../types';
 import { formatGuarani, STORE_PHONE_NUMBER } from '../data/products';
 import { trackBeginCheckout, trackOrderSubmitted } from '../utils/analytics';
 import { OrderDetails } from './OrderConfirmationModal';
+import { supabase } from '../lib/supabaseClient';
+import { useAuth } from '../contexts/AuthContext';
 
 const CUSTOMER_DATA_KEY = 'skinhealth_customer_data_v1';
 
@@ -88,6 +90,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
   const [isOrdering, setIsOrdering] = useState(false);
   const [copied, setCopied] = useState(false);
+
+  const { user, signInWithGoogle } = useAuth();
 
   // Synchronize customer info with localStorage
   useEffect(() => {
@@ -157,13 +161,12 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     return message;
   };
 
-  const handleOrderWhatsApp = () => {
+  const handleOrderWhatsApp = async () => {
     if (cartItems.length === 0) {
       onShowToast('El carrito está vacío', 'Agregá productos antes de confirmar.', 'error');
       return;
     }
 
-    // Require at least name or address, but guide user gently
     if (!customerName.trim() || !customerAddress.trim()) {
       setTouched({ name: true, address: true });
       onShowToast(
@@ -171,11 +174,67 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
         'Por favor completa tu nombre y ubicación para que podamos coordinar la entrega.',
         'info'
       );
+      return;
+    }
+
+    if (!user) {
+      onShowToast(
+        'Iniciá sesión para continuar',
+        'Necesitás ingresar con tu cuenta de Google antes de confirmar el pedido.',
+        'info'
+      );
+      signInWithGoogle();
+      return;
     }
 
     setIsOrdering(true);
 
     const orderId = `#SKIN-${Math.floor(10000 + Math.random() * 90000)}`;
+
+    try {
+      const { data: pedido, error: pedidoError } = await supabase
+        .from('pedidos')
+        .insert({
+          user_id: user.id,
+          cliente_nombre: customerName.trim(),
+          cliente_telefono: customerPhone.trim(),
+          total_gs: totalAmount,
+          estado: 'pendiente',
+          direccion_envio: `${customerAddress.trim()}${
+            googleMapsUrl.trim() ? ' — ' + googleMapsUrl.trim() : ''
+          }`,
+          codigo_pedido: orderId,
+        })
+        .select()
+        .single();
+
+      if (pedidoError) throw pedidoError;
+
+      const itemsToInsert = cartItems.map((item) => ({
+        pedido_id: pedido.id,
+        producto_id: item.product.id,
+        cantidad: item.quantity,
+        precio_unitario_gs: item.product.price,
+      }));
+
+      const { error: itemsError } = await supabase.from('pedido_items').insert(itemsToInsert);
+      if (itemsError) throw itemsError;
+
+      if (customerPhone.trim()) {
+        await supabase
+          .from('perfiles')
+          .update({ telefono: customerPhone.trim() })
+          .eq('id', user.id);
+      }
+    } catch (err) {
+      console.error('Error guardando el pedido en Supabase:', err);
+      onShowToast(
+        'No pudimos registrar tu pedido',
+        'Igual podés continuar por WhatsApp, pero avisanos si el error persiste.',
+        'error'
+      );
+    }
+
     const message = buildWhatsAppMessage(orderId);
     const encoded = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/${STORE_PHONE_NUMBER}?text=${encoded}`;
