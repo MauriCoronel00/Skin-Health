@@ -432,6 +432,7 @@ export default function App() {
 
         {/* Section based strictly on PDF: Rutinas de Skincare */}
         <RoutinesSection
+          products={products}
           onAddToCart={handleAddToCart}
           onAddMultipleToCart={handleAddMultipleToCart}
           onQuickView={setQuickViewProduct}
