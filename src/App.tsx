@@ -322,6 +322,7 @@ export default function App() {
   };
 
   return (
+    <AuthProvider>
     <div className="min-h-screen bg-[#FAF8F5] text-neutral-900 flex flex-col selection:bg-[#102A43] selection:text-white">
       {/* Top Navbar with logo and desktop cart shortcut */}
       <Navbar
@@ -329,6 +330,9 @@ export default function App() {
         totalAmount={totalAmount}
         onOpenCart={() => setIsCartOpen(true)}
       />
+      <div className="fixed top-3 right-3 z-40">
+        <LoginButton />
+      </div>
 
       {/* Main Content Area - Note the extra bottom padding (pb-36 sm:pb-44) to ensure the floating cart NEVER obstructs content */}
       <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 pb-36 sm:pb-44">
@@ -605,5 +609,6 @@ export default function App() {
       {/* Footer */}
       <Footer onOpenAdminReviews={() => setIsAdminModalOpen(true)} />
     </div>
+    </AuthProvider>
   );
 }
