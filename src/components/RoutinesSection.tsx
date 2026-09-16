@@ -6,12 +6,12 @@ import { SKINCARE_ROUTINES } from '../data/routines';
 import { formatGuarani } from '../data/products';
 
 interface RoutinesSectionProps {
+  products: Product[];
   onAddToCart: (product: Product) => void;
   onAddMultipleToCart: (products: Product[]) => void;
   onQuickView: (product: Product) => void;
   cartQuantities: Record<string, number>;
 }
-
 export const RoutinesSection: React.FC<RoutinesSectionProps> = ({
   onAddToCart,
   onAddMultipleToCart,
