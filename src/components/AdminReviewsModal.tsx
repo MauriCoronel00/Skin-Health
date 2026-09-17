@@ -21,7 +21,7 @@ export const AdminReviewsModal: React.FC<AdminReviewsModalProps> = ({
   onDeleteReview,
   onToggleFeatured,
 }) => {
-  const [filter, setFilter] = useState<'all' | 'user' | 'example' | 'hidden'>('all');
+  const [filter, setFilter] = useState<'all' | 'user' | 'example' | 'hidden' | 'pending'>('all');
 
   if (!isOpen) return null;
 
@@ -29,6 +29,7 @@ export const AdminReviewsModal: React.FC<AdminReviewsModalProps> = ({
     if (filter === 'user') return !r.isExample;
     if (filter === 'example') return !!r.isExample;
     if (filter === 'hidden') return r.status === 'hidden';
+    if (filter === 'pending') return r.status === 'pending';
     return true;
   });
 
@@ -112,6 +113,16 @@ export const AdminReviewsModal: React.FC<AdminReviewsModalProps> = ({
             }`}
           >
             Ocultas ({reviews.filter((r) => r.status === 'hidden').length})
+          </button>
+          <button
+            onClick={() => setFilter('pending')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold cursor-pointer ${
+              filter === 'pending'
+                ? 'bg-[#102A43] text-white'
+                : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
+            }`}
+          >
+            Pendientes ({reviews.filter((r) => r.status === 'pending').length})
           </button>
         </div>
 

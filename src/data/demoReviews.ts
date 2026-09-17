@@ -363,7 +363,7 @@ export const INITIAL_DEMO_REVIEWS: ProductReview[] = [
   // CeraVe SA Smoothing Cleanser
   {
     id: 'rev-demo-24',
-    productId: 'cerave-sa-cleanser',
+    productId: 'cerave-sa-smoothing-cleanser',
     rating: 5,
     comment: 'Me ayudó muchísimo con los granitos de los brazos y la textura de la frente. 100% satisfecho.',
     author: {
@@ -378,7 +378,7 @@ export const INITIAL_DEMO_REVIEWS: ProductReview[] = [
   },
   {
     id: 'rev-demo-25',
-    productId: 'cerave-sa-cleanser',
+    productId: 'cerave-sa-smoothing-cleanser',
     rating: 4,
     comment: 'Muy buen limpiador con ácido salicílico. Llegó en el horario coordinado por WhatsApp.',
     author: {
@@ -510,7 +510,7 @@ export const INITIAL_DEMO_REVIEWS: ProductReview[] = [
   // CeraVe Daily Moisturizing Lotion
   {
     id: 'rev-demo-33',
-    productId: 'cerave-daily-lotion',
+    productId: 'cerave-daily-moisturizing-lotion',
     rating: 5,
     comment: 'Textura ligera pero hidrata todo el día sin dejar pegajoso. Es básica en mi rutina.',
     author: {
@@ -527,7 +527,7 @@ export const INITIAL_DEMO_REVIEWS: ProductReview[] = [
   // CeraVe Resurfacing Retinol Serum
   {
     id: 'rev-demo-34',
-    productId: 'cerave-retinol-serum',
+    productId: 'cerave-resurfacing-retinol-serum',
     rating: 5,
     comment: 'Retinol muy suave, ideal para principiantes como yo. No me descamó nada y se nota la piel más suave.',
     author: {

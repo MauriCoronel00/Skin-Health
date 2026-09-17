@@ -131,8 +131,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       ? 'Indicá tu barrio y ciudad para coordinar el envío.'
       : null;
 
-  // Generate WhatsApp Message
-  const buildWhatsAppMessage = (orderId: string) => {
+  // Generate WhatsApp Message (código y total validados por el servidor)
+  const buildWhatsAppMessage = (orderId: string, serverTotal: number) => {
     const itemsLines = cartItems
       .map(
         (item) =>
@@ -142,8 +142,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       )
       .join('\n');
 
-    let message = `Hola 👋 Quiero realizar el pedido *${orderId}* en *Skin Health*:\n\n🛍️ *PRODUCTOS SELECCIONADOS*\n${itemsLines}\n\n💰 *TOTAL ESTIMADO*: ${formatGuarani(
-      totalAmount
+    let message = `Hola 👋 Quiero realizar el pedido *${orderId}* en *Skin Health*:\n\n🛍️ *PRODUCTOS SELECCIONADOS*\n${itemsLines}\n\n💰 *TOTAL*: ${formatGuarani(
+      serverTotal
     )}\n\n📍 *REQUISITOS PARA EL ENVÍO*:\n• *Nombre del cliente*: ${
       customerName.trim() ? customerName.trim() : '[Por especificar]'
     }\n• *Teléfono de contacto*: ${
@@ -189,36 +189,34 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
     setIsOrdering(true);
 
-    const orderId = `#SKIN-${Math.floor(10000 + Math.random() * 90000)}`;
+    // El pedido se crea vía RPC: total y stock validados en el servidor (ADR-003).
+    // Si falla, NO se abre WhatsApp: Supabase es la fuente de verdad (ADR-002).
+    let orderId = '';
+    let serverTotal = totalAmount;
 
     try {
+      const { data: pedidoId, error: rpcError } = await supabase.rpc('crear_pedido', {
+        p_cliente_nombre: customerName.trim(),
+        p_cliente_telefono: customerPhone.trim(),
+        p_direccion_envio: `${customerAddress.trim()}${
+          googleMapsUrl.trim() ? ' — ' + googleMapsUrl.trim() : ''
+        }`,
+        p_items: cartItems.map((item) => ({
+          producto_id: item.product.id,
+          cantidad: item.quantity,
+        })),
+      });
+      if (rpcError) throw rpcError;
+
       const { data: pedido, error: pedidoError } = await supabase
         .from('pedidos')
-        .insert({
-          user_id: user.id,
-          cliente_nombre: customerName.trim(),
-          cliente_telefono: customerPhone.trim(),
-          total_gs: totalAmount,
-          estado: 'pendiente',
-          direccion_envio: `${customerAddress.trim()}${
-            googleMapsUrl.trim() ? ' — ' + googleMapsUrl.trim() : ''
-          }`,
-          codigo_pedido: orderId,
-        })
-        .select()
+        .select('codigo_pedido, total_gs')
+        .eq('id', pedidoId)
         .single();
+      if (pedidoError || !pedido) throw pedidoError ?? new Error('ORDER_NOT_FOUND');
 
-      if (pedidoError) throw pedidoError;
-
-      const itemsToInsert = cartItems.map((item) => ({
-        pedido_id: pedido.id,
-        producto_id: item.product.id,
-        cantidad: item.quantity,
-        precio_unitario_gs: item.product.price,
-      }));
-
-      const { error: itemsError } = await supabase.from('pedido_items').insert(itemsToInsert);
-      if (itemsError) throw itemsError;
+      orderId = (pedido as { codigo_pedido: string }).codigo_pedido;
+      serverTotal = (pedido as { total_gs: number }).total_gs;
 
       if (customerPhone.trim()) {
         await supabase
@@ -227,20 +225,37 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
           .eq('id', user.id);
       }
     } catch (err) {
-      console.error('Error guardando el pedido en Supabase:', err);
-      onShowToast(
-        'No pudimos registrar tu pedido',
-        'Igual podés continuar por WhatsApp, pero avisanos si el error persiste.',
-        'error'
-      );
+      console.error('Error registrando el pedido:', err);
+      setIsOrdering(false);
+      const msg = err instanceof Error ? err.message : '';
+      if (msg.includes('NO_STOCK')) {
+        onShowToast(
+          'Sin stock suficiente',
+          'Algún producto se quedó sin stock. Ajustá cantidades e intentá de nuevo.',
+          'error'
+        );
+      } else if (msg.includes('UNAVAILABLE')) {
+        onShowToast(
+          'Producto no disponible',
+          'Algún producto ya no está disponible. Revisá tu carrito e intentá de nuevo.',
+          'error'
+        );
+      } else {
+        onShowToast(
+          'No pudimos registrar tu pedido',
+          'Tu carrito está a salvo. Probá de nuevo en unos segundos.',
+          'error'
+        );
+      }
+      return;
     }
 
-    const message = buildWhatsAppMessage(orderId);
+    const message = buildWhatsAppMessage(orderId, serverTotal);
     const encoded = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/${STORE_PHONE_NUMBER}?text=${encoded}`;
 
     // Track purchase / order submission event
-    trackOrderSubmitted(orderId, cartItems, totalAmount);
+    trackOrderSubmitted(orderId, cartItems, serverTotal);
 
     setTimeout(() => {
       let opened = false;
@@ -263,7 +278,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
         customerAddress: customerAddress.trim(),
         googleMapsUrl: googleMapsUrl.trim(),
         items: [...cartItems],
-        totalAmount,
+        totalAmount: serverTotal,
         date: new Date().toLocaleDateString('es-PY', {
           day: '2-digit',
           month: 'long',
@@ -284,7 +299,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
   const handleCopyOrder = () => {
     const tempOrderId = `#SKIN-${Math.floor(10000 + Math.random() * 90000)}`;
-    const message = buildWhatsAppMessage(tempOrderId);
+    const message = buildWhatsAppMessage(tempOrderId, totalAmount);
     try {
       navigator.clipboard.writeText(message);
       setCopied(true);

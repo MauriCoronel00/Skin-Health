@@ -18,7 +18,7 @@ interface ReviewFormModalProps {
     comment: string;
     author: ReviewUser;
     city?: string;
-  }) => void;
+  }) => Promise<{ ok: boolean; message?: string }>;
 }
 
 export const ReviewFormModal: React.FC<ReviewFormModalProps> = ({
@@ -37,7 +37,7 @@ export const ReviewFormModal: React.FC<ReviewFormModalProps> = ({
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg(null);
 
@@ -62,25 +62,28 @@ export const ReviewFormModal: React.FC<ReviewFormModalProps> = ({
 
     setIsSubmitting(true);
 
-    // Simulate smooth processing
+    const result = await onSubmitReview({
+      productId: product.id,
+      rating,
+      comment: comment.trim(),
+      author: currentUser,
+    });
+
+    setIsSubmitting(false);
+
+    if (!result.ok) {
+      setErrorMsg(result.message || 'No pudimos guardar tu reseña. Probá de nuevo.');
+      return;
+    }
+
+    setIsSuccess(true);
+
+    // Auto close after showing thank you state
     setTimeout(() => {
-      onSubmitReview({
-        productId: product.id,
-        rating,
-        comment: comment.trim(),
-        author: currentUser,
-      });
-
-      setIsSubmitting(false);
-      setIsSuccess(true);
-
-      // Auto close after showing thank you state
-      setTimeout(() => {
-        setIsSuccess(false);
-        setComment('');
-        onClose();
-      }, 1600);
-    }, 450);
+      setIsSuccess(false);
+      setComment('');
+      onClose();
+    }, 1600);
   };
 
   return (
@@ -123,7 +126,7 @@ export const ReviewFormModal: React.FC<ReviewFormModalProps> = ({
               ¡Muchas gracias por tu opinión!
             </h3>
             <p className="text-xs sm:text-sm text-neutral-600 max-w-sm mx-auto">
-              Tu calificación ayuda a que la comunidad de skincare en Paraguay elija con mayor confianza.
+              Tu opinión quedó en revisión y será visible tras la moderación. ¡Gracias por ayudar a la comunidad!
             </p>
           </motion.div>
         ) : (

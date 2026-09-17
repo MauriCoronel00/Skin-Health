@@ -1,0 +1,98 @@
+import { supabase } from '../lib/supabaseClient';
+
+export type PedidoEstado = 'pendiente' | 'pagado' | 'enviado' | 'entregado' | 'cancelado';
+
+export interface AdminPedido {
+  id: string;
+  codigo_pedido: string | null;
+  cliente_nombre: string;
+  cliente_telefono: string;
+  total_gs: number;
+  estado: PedidoEstado;
+  creado_en: string;
+  direccion_envio: string | null;
+  metodo_pago: string | null;
+  referencia_pago: string | null;
+  comprobante_url: string | null;
+}
+
+export interface AdminPedidoItem {
+  id: string;
+  producto_id: string | null;
+  cantidad: number;
+  precio_unitario_gs: number;
+  producto_nombre?: string;
+}
+
+export interface StockRow {
+  id: string;
+  nombre: string;
+  marca: string;
+  stock: number;
+  precio_gs: number;
+  activo: boolean;
+}
+
+/** true si la sesión actual tiene rol admin en perfiles. */
+export async function isCurrentUserAdmin(): Promise<boolean> {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return false;
+  const { data, error } = await supabase
+    .from('perfiles')
+    .select('rol')
+    .eq('id', user.id)
+    .single();
+  if (error) return false;
+  return (data as { rol: string } | null)?.rol === 'admin';
+}
+
+export async function fetchPedidos(): Promise<AdminPedido[]> {
+  const { data, error } = await supabase
+    .from('pedidos')
+    .select(
+      'id, codigo_pedido, cliente_nombre, cliente_telefono, total_gs, estado, creado_en, direccion_envio, metodo_pago, referencia_pago, comprobante_url'
+    )
+    .order('creado_en', { ascending: false });
+  if (error) throw error;
+  return (data ?? []) as AdminPedido[];
+}
+
+export async function fetchPedidoItems(pedidoId: string): Promise<AdminPedidoItem[]> {
+  const { data, error } = await supabase
+    .from('pedido_items')
+    .select('id, producto_id, cantidad, precio_unitario_gs, productos ( nombre )')
+    .eq('pedido_id', pedidoId);
+  if (error) throw error;
+  return ((data ?? []) as unknown[]).map((r) => {
+    const row = r as {
+      id: string;
+      producto_id: string | null;
+      cantidad: number;
+      precio_unitario_gs: number;
+      productos: { nombre: string } | null;
+    };
+    return {
+      id: row.id,
+      producto_id: row.producto_id,
+      cantidad: row.cantidad,
+      precio_unitario_gs: row.precio_unitario_gs,
+      producto_nombre: row.productos?.nombre,
+    };
+  });
+}
+
+export async function setPedidoEstado(id: string, estado: PedidoEstado): Promise<void> {
+  const { error } = await supabase.from('pedidos').update({ estado }).eq('id', id);
+  if (error) throw error;
+}
+
+export async function fetchStock(): Promise<StockRow[]> {
+  const { data, error } = await supabase
+    .from('productos')
+    .select('id, nombre, marca, stock, precio_gs, activo')
+    .order('stock', { ascending: true });
+  if (error) throw error;
+  return (data ?? []) as StockRow[];
+}

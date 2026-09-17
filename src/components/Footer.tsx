@@ -5,9 +5,11 @@ import { STORE_PHONE_NUMBER, STORE_PHONE_DISPLAY } from '../data/products';
 
 interface FooterProps {
   onOpenAdminReviews?: () => void;
+  onOpenAdminPanel?: () => void;
+  isAdmin?: boolean;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onOpenAdminReviews }) => {
+export const Footer: React.FC<FooterProps> = ({ onOpenAdminReviews, onOpenAdminPanel, isAdmin }) => {
   return (
     <footer className="mt-16 bg-[#0E2338] text-white pt-12 pb-24 sm:pb-16 border-t border-white/10">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
@@ -77,6 +79,15 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdminReviews }) => {
             <span className="inline-flex items-center gap-1 text-white/60">
               Dermocosmética hecha con <Heart className="w-3.5 h-3.5 text-rose-400 fill-rose-400" /> para tu piel.
             </span>
+            {isAdmin && onOpenAdminPanel && (
+              <button
+                type="button"
+                onClick={onOpenAdminPanel}
+                className="text-emerald-300/80 hover:text-emerald-200 transition-colors text-[11px] underline cursor-pointer"
+              >
+                Panel admin
+              </button>
+            )}
             {onOpenAdminReviews && (
               <button
                 type="button"
