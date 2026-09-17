@@ -265,6 +265,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       direccion: `${customerAddress.trim()}${
         googleMapsUrl.trim() ? ' — ' + googleMapsUrl.trim() : ''
       }`,
+      totalLabel: 'TOTAL ESTIMADO',
     });
     try {
       navigator.clipboard.writeText(message);

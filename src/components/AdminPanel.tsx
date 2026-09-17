@@ -22,6 +22,7 @@ import {
   fetchPedidos,
   fetchPedidoItems,
   setPedidoEstado,
+  registrarPago,
   fetchStock,
   ajustarStock,
   actualizarPrecio,
@@ -56,10 +57,10 @@ const ESTADO_STYLE: Record<PedidoEstado, string> = {
 };
 
 /** Siguiente acción válida según estado (flujo manual: transferencia + WhatsApp). */
-function nextActions(estado: PedidoEstado): { label: string; to: PedidoEstado; icon: React.ReactNode }[] {
+function nextActions(estado: PedidoEstado): { label: string; to: PedidoEstado; icon: React.ReactNode; form?: boolean }[] {
   if (estado === 'pendiente')
     return [
-      { label: 'Marcar pagado', to: 'pagado', icon: <CheckCircle2 className="w-3.5 h-3.5" /> },
+      { label: 'Registrar pago', to: 'pagado', icon: <CheckCircle2 className="w-3.5 h-3.5" />, form: true },
       { label: 'Cancelar', to: 'cancelado', icon: <Ban className="w-3.5 h-3.5" /> },
     ];
   if (estado === 'pagado')
@@ -174,6 +175,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
   const [stock, setStock] = useState<StockRow[]>([]);
   const [pendingReviews, setPendingReviews] = useState<ProductReview[]>([]);
   const [savingStock, setSavingStock] = useState<Record<string, boolean>>({});
+  const [payingId, setPayingId] = useState<string | null>(null);
+  const [payRef, setPayRef] = useState('');
+  const [payUrl, setPayUrl] = useState('');
+  const [payingBusy, setPayingBusy] = useState(false);
 
   const load = async () => {
     setLoading(true);
@@ -228,6 +233,33 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
       );
     } catch {
       onShowToast('No se pudo actualizar el estado', undefined, 'error');
+    }
+  };
+
+  const handleConfirmPago = async (pedido: AdminPedido) => {
+    setPayingBusy(true);
+    try {
+      await registrarPago(pedido.id, { referencia: payRef, comprobanteUrl: payUrl });
+      setPedidos((prev) =>
+        prev.map((p) =>
+          p.id === pedido.id
+            ? {
+                ...p,
+                estado: 'pagado' as PedidoEstado,
+                referencia_pago: payRef.trim() || null,
+                comprobante_url: payUrl.trim() || null,
+              }
+            : p
+        )
+      );
+      setPayingId(null);
+      setPayRef('');
+      setPayUrl('');
+      onShowToast('Pago registrado', 'Se descontó stock automáticamente.', 'success');
+    } catch {
+      onShowToast('No se pudo registrar el pago', undefined, 'error');
+    } finally {
+      setPayingBusy(false);
     }
   };
 
@@ -445,11 +477,18 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
                             Ver comprobante
                           </a>
                         )}
+                        {p.confirmado_por && (
+                          <p className="text-neutral-500">✅ Confirmado por: {p.confirmado_por}</p>
+                        )}
                         <div className="flex items-center gap-2 pt-1">
                           {nextActions(p.estado).map((a) => (
                             <button
                               key={a.to}
-                              onClick={() => void handleEstado(p, a.to)}
+                              onClick={() =>
+                                a.form
+                                  ? (setPayingId(p.id), setPayRef(''), setPayUrl(''))
+                                  : void handleEstado(p, a.to)
+                              }
                               className="px-3 py-1.5 rounded-xl bg-[#102A43] text-white text-xs font-semibold flex items-center gap-1.5 hover:bg-[#102A43]/90 cursor-pointer"
                             >
                               {a.icon}
@@ -457,6 +496,40 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
                             </button>
                           ))}
                         </div>
+                        {payingId === p.id && (
+                          <div className="pt-3 mt-1 border-t border-neutral-100 space-y-2">
+                            <p className="font-semibold text-neutral-800">Registrar pago</p>
+                            <input
+                              type="text"
+                              value={payRef}
+                              onChange={(e) => setPayRef(e.target.value)}
+                              placeholder="Referencia / N° de comprobante (opcional)"
+                              className="w-full px-3 py-2 rounded-xl border border-neutral-300 text-xs focus:outline-none focus:border-[#102A43]"
+                            />
+                            <input
+                              type="url"
+                              value={payUrl}
+                              onChange={(e) => setPayUrl(e.target.value)}
+                              placeholder="URL del comprobante (opcional)"
+                              className="w-full px-3 py-2 rounded-xl border border-neutral-300 text-xs focus:outline-none focus:border-[#102A43]"
+                            />
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={() => void handleConfirmPago(p)}
+                                disabled={payingBusy}
+                                className="px-3 py-1.5 rounded-xl bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700 disabled:opacity-50 cursor-pointer"
+                              >
+                                {payingBusy ? 'Guardando…' : 'Confirmar pago'}
+                              </button>
+                              <button
+                                onClick={() => setPayingId(null)}
+                                className="px-3 py-1.5 rounded-xl bg-neutral-100 text-neutral-700 text-xs font-semibold hover:bg-neutral-200 cursor-pointer"
+                              >
+                                Cancelar
+                              </button>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>

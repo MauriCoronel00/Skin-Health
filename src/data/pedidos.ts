@@ -56,12 +56,14 @@ export function buildPedidoMessage(opts: {
   nombre: string;
   telefono: string;
   direccion: string;
+  /** El borrador copiado a mano es estimado; el registrado es final. */
+  totalLabel?: 'TOTAL' | 'TOTAL ESTIMADO';
 }): string {
   const itemsLines = opts.lines
     .map((l) => `• ${l.name} x${l.quantity} — ${formatGuarani(l.lineTotal)}`)
     .join('\n');
 
-  let message = `Hola 👋 Quiero realizar el pedido *${opts.codigo}* en *Skin Health*:\n\n🛍️ *PRODUCTOS SELECCIONADOS*\n${itemsLines}\n\n💰 *TOTAL*: ${formatGuarani(
+  let message = `Hola 👋 Quiero realizar el pedido *${opts.codigo}* en *Skin Health*:\n\n🛍️ *PRODUCTOS SELECCIONADOS*\n${itemsLines}\n\n💰 *${opts.totalLabel ?? 'TOTAL'}*: ${formatGuarani(
     opts.totalGs
   )}\n\n📍 *REQUISITOS PARA EL ENVÍO*:\n• *Nombre del cliente*: ${
     opts.nombre.trim() ? opts.nombre.trim() : '[Por especificar]'
@@ -75,7 +77,7 @@ export function buildPedidoMessage(opts: {
   return message;
 }
 
-function rpcErrorToPedidoError(err: unknown): PedidoError {
+export function rpcErrorToPedidoError(err: unknown): PedidoError {
   const msg = err instanceof Error ? err.message : '';
   if (msg.includes('NO_STOCK'))
     return new PedidoError(

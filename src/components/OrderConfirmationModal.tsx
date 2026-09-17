@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { CartItem } from '../types';
 import { formatGuarani, STORE_PHONE_NUMBER, STORE_PHONE_DISPLAY } from '../data/products';
+import { buildPedidoMessage } from '../data/pedidos';
 
 export interface OrderDetails {
   orderId: string;
@@ -47,26 +48,22 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
   };
 
   const reOpenWhatsApp = () => {
-    const itemsLines = order.items
-      .map(
-        (item) =>
-          `• ${item.product.name} x${item.quantity} — ${formatGuarani(
-            item.product.price * item.quantity
-          )}`
-      )
-      .join('\n');
+    const message = buildPedidoMessage({
+      codigo: order.orderId,
+      lines: order.items.map((item) => ({
+        productId: item.product.id,
+        name: item.product.name,
+        quantity: item.quantity,
+        unitPrice: item.product.price,
+        lineTotal: item.product.price * item.quantity,
+      })),
+      totalGs: order.totalAmount,
+      nombre: order.customerName,
+      telefono: order.customerPhone ?? '',
+      direccion: `${order.customerAddress}${order.googleMapsUrl ? ' — ' + order.googleMapsUrl : ''}`,
+    });
 
-    let msg = `Hola 👋 Pedido ${order.orderId}\n\n🛍️ RESUMEN:\n${itemsLines}\n\n💰 TOTAL: ${formatGuarani(
-      order.totalAmount
-    )}\n\n📍 DATOS DE ENTREGA:\n• Cliente: ${order.customerName || '[Sin especificar]'}\n• Ubicación: ${
-      order.customerAddress || '[Sin especificar]'
-    }`;
-
-    if (order.googleMapsUrl) {
-      msg += `\n• Google Maps: ${order.googleMapsUrl}`;
-    }
-
-    const encoded = encodeURIComponent(msg);
+    const encoded = encodeURIComponent(message);
     window.open(`https://wa.me/${STORE_PHONE_NUMBER}?text=${encoded}`, '_blank', 'noopener,noreferrer');
   };
 

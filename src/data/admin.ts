@@ -14,6 +14,7 @@ export interface AdminPedido {
   metodo_pago: string | null;
   referencia_pago: string | null;
   comprobante_url: string | null;
+  confirmado_por: string | null;
 }
 
 export interface AdminPedidoItem {
@@ -52,7 +53,7 @@ export async function fetchPedidos(): Promise<AdminPedido[]> {
   const { data, error } = await supabase
     .from('pedidos')
     .select(
-      'id, codigo_pedido, cliente_nombre, cliente_telefono, total_gs, estado, creado_en, direccion_envio, metodo_pago, referencia_pago, comprobante_url'
+      'id, codigo_pedido, cliente_nombre, cliente_telefono, total_gs, estado, creado_en, direccion_envio, metodo_pago, referencia_pago, comprobante_url, confirmado_por'
     )
     .order('creado_en', { ascending: false });
   if (error) throw error;
@@ -85,6 +86,30 @@ export async function fetchPedidoItems(pedidoId: string): Promise<AdminPedidoIte
 
 export async function setPedidoEstado(id: string, estado: PedidoEstado): Promise<void> {
   const { error } = await supabase.from('pedidos').update({ estado }).eq('id', id);
+  if (error) throw error;
+}
+
+/**
+ * Registra un pago: pasa a 'pagado' (dispara stock) y deja quién lo confirmó,
+ * con referencia y comprobante. Requiere admin.
+ */
+export async function registrarPago(
+  pedidoId: string,
+  input: { referencia?: string; comprobanteUrl?: string }
+): Promise<void> {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error('NOT_AUTHENTICATED');
+  const { error } = await supabase
+    .from('pedidos')
+    .update({
+      estado: 'pagado',
+      referencia_pago: input.referencia?.trim() || null,
+      comprobante_url: input.comprobanteUrl?.trim() || null,
+      confirmado_por: user.email ?? user.id,
+    })
+    .eq('id', pedidoId);
   if (error) throw error;
 }
 
