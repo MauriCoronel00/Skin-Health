@@ -5,7 +5,6 @@ import { Product, ProductReview, ReviewUser } from '../types';
 import { formatGuarani } from '../data/products';
 import { trackAddToCart } from '../utils/analytics';
 import { ProductReviewsSection } from './ProductReviewsSection';
-import { getProductRatingStats } from '../data/demoReviews';
 
 interface ProductQuickViewProps {
   product: Product | null;
@@ -30,8 +29,6 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
   const reviewsSectionRef = useRef<HTMLDivElement>(null);
 
   if (!product) return null;
-
-  const stats = getProductRatingStats(product.id, reviews);
 
   const scrollToReviews = () => {
     reviewsSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -110,14 +107,14 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
                   className="flex items-center text-amber-500 hover:opacity-80 transition-opacity cursor-pointer"
                 >
                   <Star className="w-4 h-4 fill-amber-400 stroke-amber-400" />
-                  <span className="ml-1 font-bold text-neutral-900">{stats.averageRating.toFixed(1)}</span>
+                  <span className="ml-1 font-bold text-neutral-900">{product.rating.toFixed(1)}</span>
                 </button>
                 <button
                   type="button"
                   onClick={scrollToReviews}
                   className="text-neutral-500 hover:text-[#102A43] hover:underline cursor-pointer text-xs"
                 >
-                  ({stats.totalReviews} opiniones de clientes)
+                  ({product.reviewsCount} opiniones de clientes)
                 </button>
                 <span className="text-neutral-300">•</span>
                 <button

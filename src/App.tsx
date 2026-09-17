@@ -16,25 +16,17 @@ import { ProductQuickView } from './components/ProductQuickView';
 import { Footer } from './components/Footer';
 import { OrderConfirmationModal, OrderDetails } from './components/OrderConfirmationModal';
 import { ToastContainer, ToastMessage } from './components/Toast';
-import { ProductReview, ReviewUser } from './types';
-import { INITIAL_DEMO_REVIEWS, getProductRatingStats } from './data/demoReviews';
+import { ReviewUser } from './types';
 import { ReviewFormModal } from './components/ReviewFormModal';
 import { AdminReviewsModal } from './components/AdminReviewsModal';
 import { AdminPanel } from './components/AdminPanel';
 import { getSavedGoogleUser } from './utils/reviewsStorage';
 import { supabase } from './lib/supabaseClient';
-import {
-  fetchApprovedReviews,
-  fetchAllReviews,
-  submitReview,
-  setReviewStatus,
-  deleteReview,
-  setReviewFeatured,
-} from './data/reviews';
+import { useReviews } from './hooks/useReviews';
+import { currentReviewer } from './data/identity';
 import { isCurrentUserAdmin } from './data/admin';
 
 const CART_STORAGE_KEY = 'skinhealth_cart_v1';
-const REVIEWS_STORAGE_KEY = 'skinhealth_reviews_v1';
 
 export default function App() {
   // Productos y categorías ahora vienen de Supabase (antes eran PRODUCTS/CATEGORIES fijos)
@@ -79,19 +71,14 @@ export default function App() {
   const [confirmedOrder, setConfirmedOrder] = useState<OrderDetails | null>(null);
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
-  // Persistent Reviews State initialized with DEMO reviews and user saved submissions
-  const [reviews, setReviews] = useState<ProductReview[]>(() => {
-    try {
-      const saved = localStorage.getItem(REVIEWS_STORAGE_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-      }
-    } catch {
-      // ignore
-    }
-    return INITIAL_DEMO_REVIEWS;
-  });
+  // Reviews module: lectura, envío y moderación tras una sola interfaz
+  const {
+    reviews,
+    adminReviews,
+    submit: submitReviewHook,
+    loadForModeration,
+    moderate,
+  } = useReviews();
 
   // Current authenticated Google user state
   const [googleUser, setGoogleUser] = useState<ReviewUser | null>(() => getSavedGoogleUser());
@@ -104,29 +91,7 @@ export default function App() {
   // Panel admin (pedidos + stock). Solo visible con rol admin.
   const [isAdminPanelOpen, setIsAdminPanelOpen] = useState(false);
   // Reviews visibles para moderación (incluye pending/hidden) + rol admin
-  const [adminReviews, setAdminReviews] = useState<ProductReview[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
-
-  // Persist reviews to localStorage
-  useEffect(() => {
-    try {
-      localStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(reviews));
-    } catch {
-      // fallback
-    }
-  }, [reviews]);
-
-  // Refrescar reviews aprobadas desde Supabase (fallback: caché local/demos)
-  useEffect(() => {
-    (async () => {
-      try {
-        const fresh = await fetchApprovedReviews();
-        setReviews(fresh);
-      } catch {
-        // sin conexión: se mantiene caché local o demos
-      }
-    })();
-  }, []);
 
   // Detectar rol admin de la sesión (para moderación y panel)
   useEffect(() => {
@@ -159,10 +124,9 @@ export default function App() {
     author: ReviewUser;
     city?: string;
   }): Promise<{ ok: boolean; message?: string }> => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) {
+    // Identidad unificada: el nombre sale del módulo identity, el user_id de la sesión
+    const reviewer = await currentReviewer();
+    if (!reviewer?.userId) {
       await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: { redirectTo: window.location.origin },
@@ -173,29 +137,20 @@ export default function App() {
       };
     }
 
-    try {
-      await submitReview({
-        productId: reviewData.productId,
-        rating: reviewData.rating,
-        comment: reviewData.comment,
-        authorName: reviewData.author.name,
-        city: reviewData.city,
-      });
+    const result = await submitReviewHook(reviewer, {
+      productId: reviewData.productId,
+      rating: reviewData.rating,
+      comment: reviewData.comment,
+      city: reviewData.city,
+    });
+    if (result.ok) {
       showToast(
         '¡Reseña enviada!',
         'Quedará visible luego de la moderación. ¡Gracias!',
         'success'
       );
-      return { ok: true };
-    } catch (err) {
-      if ((err as { code?: string })?.code === '23505') {
-        return {
-          ok: false,
-          message: 'Ya tenés una reseña enviada para este producto.',
-        };
-      }
-      return { ok: false, message: 'No pudimos guardar tu reseña. Probá de nuevo.' };
     }
+    return result;
   };
 
   const handleOpenAdminReviews = async () => {
@@ -208,10 +163,9 @@ export default function App() {
       return;
     }
     try {
-      setAdminReviews(await fetchAllReviews());
+      await loadForModeration();
     } catch {
-      // muestra lo que haya en caché de la vista pública
-      setAdminReviews(reviews);
+      // el hook ya aplica fallback
     }
     setIsAdminModalOpen(true);
   };
@@ -221,11 +175,7 @@ export default function App() {
     newStatus: 'approved' | 'hidden'
   ) => {
     try {
-      const updated = await setReviewStatus(reviewId, newStatus);
-      setAdminReviews((prev) =>
-        prev.map((r) => (r.id === reviewId ? updated : r))
-      );
-      setReviews(await fetchApprovedReviews());
+      await moderate(reviewId, newStatus === 'approved' ? 'approve' : 'hide');
       showToast(
         newStatus === 'hidden' ? 'Reseña oculta' : 'Reseña aprobada',
         undefined,
@@ -238,9 +188,7 @@ export default function App() {
 
   const handleDeleteReview = async (reviewId: string) => {
     try {
-      await deleteReview(reviewId);
-      setAdminReviews((prev) => prev.filter((r) => r.id !== reviewId));
-      setReviews((prev) => prev.filter((r) => r.id !== reviewId));
+      await moderate(reviewId, 'delete');
       showToast('Reseña eliminada', undefined, 'info');
     } catch {
       showToast('No se pudo eliminar', 'Probá de nuevo en unos segundos.', 'error');
@@ -248,12 +196,8 @@ export default function App() {
   };
 
   const handleToggleFeatured = async (reviewId: string) => {
-    const current = adminReviews.find((r) => r.id === reviewId);
     try {
-      await setReviewFeatured(reviewId, !(current?.isFeatured ?? false));
-      setAdminReviews((prev) =>
-        prev.map((r) => (r.id === reviewId ? { ...r, isFeatured: !r.isFeatured } : r))
-      );
+      await moderate(reviewId, 'feature');
     } catch {
       showToast('No se pudo actualizar', 'Probá de nuevo en unos segundos.', 'error');
     }
@@ -523,7 +467,6 @@ export default function App() {
               className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5"
             >
               {filteredProducts.map((product) => {
-                const stats = getProductRatingStats(product.id, reviews);
                 return (
                   <ProductCard
                     key={product.id}
@@ -531,8 +474,8 @@ export default function App() {
                     quantityInCart={cartQuantities[product.id] || 0}
                     onAddToCart={handleAddToCart}
                     onQuickView={setQuickViewProduct}
-                    ratingAverage={stats.averageRating}
-                    reviewsCount={stats.totalReviews}
+                    ratingAverage={product.rating}
+                    reviewsCount={product.reviewsCount}
                   />
                 );
               })}

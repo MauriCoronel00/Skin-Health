@@ -19,11 +19,16 @@ import {
   AlertCircle,
 } from 'lucide-react';
 import { CartItem } from '../types';
-import { formatGuarani, STORE_PHONE_NUMBER } from '../data/products';
-import { trackBeginCheckout, trackOrderSubmitted } from '../utils/analytics';
+import { formatGuarani } from '../data/products';
+import { trackBeginCheckout } from '../utils/analytics';
 import { OrderDetails } from './OrderConfirmationModal';
-import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../contexts/AuthContext';
+import {
+  createPedido,
+  buildPedidoMessage,
+  PedidoError,
+  PedidoReceipt,
+} from '../data/pedidos';
 
 const CUSTOMER_DATA_KEY = 'skinhealth_customer_data_v1';
 
@@ -131,36 +136,6 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       ? 'Indicá tu barrio y ciudad para coordinar el envío.'
       : null;
 
-  // Generate WhatsApp Message (código y total validados por el servidor)
-  const buildWhatsAppMessage = (orderId: string, serverTotal: number) => {
-    const itemsLines = cartItems
-      .map(
-        (item) =>
-          `• ${item.product.name} x${item.quantity} — ${formatGuarani(
-            item.product.price * item.quantity
-          )}`
-      )
-      .join('\n');
-
-    let message = `Hola 👋 Quiero realizar el pedido *${orderId}* en *Skin Health*:\n\n🛍️ *PRODUCTOS SELECCIONADOS*\n${itemsLines}\n\n💰 *TOTAL*: ${formatGuarani(
-      serverTotal
-    )}\n\n📍 *REQUISITOS PARA EL ENVÍO*:\n• *Nombre del cliente*: ${
-      customerName.trim() ? customerName.trim() : '[Por especificar]'
-    }\n• *Teléfono de contacto*: ${
-      customerPhone.trim() ? customerPhone.trim() : '[Por especificar]'
-    }\n• *Lugar de ubicación*: ${
-      customerAddress.trim() ? customerAddress.trim() : '[Por especificar]'
-    }`;
-
-    if (googleMapsUrl.trim()) {
-      message += `\n• *Link de Google Maps*: ${googleMapsUrl.trim()}`;
-    }
-
-    message += `\n\nQuedo a la espera de confirmación de stock y métodos de pago. ¡Muchas gracias!`;
-
-    return message;
-  };
-
   const handleOrderWhatsApp = async () => {
     if (cartItems.length === 0) {
       onShowToast('El carrito está vacío', 'Agregá productos antes de confirmar.', 'error');
@@ -189,57 +164,38 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
     setIsOrdering(true);
 
-    // El pedido se crea vía RPC: total y stock validados en el servidor (ADR-003).
-    // Si falla, NO se abre WhatsApp: Supabase es la fuente de verdad (ADR-002).
-    let orderId = '';
-    let serverTotal = totalAmount;
-
+    // Pedido intake module: valida, registra en Supabase y arma el aviso (ADR-002/003).
+    // Si falla, no hay recibo: no se abre WhatsApp.
+    let receipt: PedidoReceipt;
     try {
-      const { data: pedidoId, error: rpcError } = await supabase.rpc('crear_pedido', {
-        p_cliente_nombre: customerName.trim(),
-        p_cliente_telefono: customerPhone.trim(),
-        p_direccion_envio: `${customerAddress.trim()}${
+      receipt = await createPedido({
+        nombre: customerName,
+        telefono: customerPhone,
+        direccion: `${customerAddress.trim()}${
           googleMapsUrl.trim() ? ' — ' + googleMapsUrl.trim() : ''
         }`,
-        p_items: cartItems.map((item) => ({
-          producto_id: item.product.id,
+        items: cartItems.map((item) => ({
+          productoId: item.product.id,
           cantidad: item.quantity,
         })),
       });
-      if (rpcError) throw rpcError;
-
-      const { data: pedido, error: pedidoError } = await supabase
-        .from('pedidos')
-        .select('codigo_pedido, total_gs')
-        .eq('id', pedidoId)
-        .single();
-      if (pedidoError || !pedido) throw pedidoError ?? new Error('ORDER_NOT_FOUND');
-
-      orderId = (pedido as { codigo_pedido: string }).codigo_pedido;
-      serverTotal = (pedido as { total_gs: number }).total_gs;
-
-      if (customerPhone.trim()) {
-        await supabase
-          .from('perfiles')
-          .update({ telefono: customerPhone.trim() })
-          .eq('id', user.id);
-      }
     } catch (err) {
       console.error('Error registrando el pedido:', err);
       setIsOrdering(false);
-      const msg = err instanceof Error ? err.message : '';
-      if (msg.includes('NO_STOCK')) {
-        onShowToast(
-          'Sin stock suficiente',
-          'Algún producto se quedó sin stock. Ajustá cantidades e intentá de nuevo.',
-          'error'
-        );
-      } else if (msg.includes('UNAVAILABLE')) {
-        onShowToast(
-          'Producto no disponible',
-          'Algún producto ya no está disponible. Revisá tu carrito e intentá de nuevo.',
-          'error'
-        );
+      if (err instanceof PedidoError) {
+        if (err.code === 'EMPTY' || err.code === 'CUSTOMER_DATA') {
+          setTouched({ name: true, address: true });
+        }
+        if (err.code === 'NOT_AUTHENTICATED') {
+          onShowToast('Iniciá sesión para continuar', err.userMessage, 'info');
+          signInWithGoogle();
+        } else if (err.code === 'NO_STOCK') {
+          onShowToast('Sin stock suficiente', err.userMessage, 'error');
+        } else if (err.code === 'UNAVAILABLE') {
+          onShowToast('Producto no disponible', err.userMessage, 'error');
+        } else {
+          onShowToast('No pudimos registrar tu pedido', err.userMessage, 'error');
+        }
       } else {
         onShowToast(
           'No pudimos registrar tu pedido',
@@ -250,12 +206,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       return;
     }
 
-    const message = buildWhatsAppMessage(orderId, serverTotal);
-    const encoded = encodeURIComponent(message);
-    const whatsappUrl = `https://wa.me/${STORE_PHONE_NUMBER}?text=${encoded}`;
-
-    // Track purchase / order submission event
-    trackOrderSubmitted(orderId, cartItems, serverTotal);
+    const { codigo: orderId, totalGs: serverTotal, whatsappUrl } = receipt;
 
     setTimeout(() => {
       let opened = false;
@@ -299,7 +250,22 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
   const handleCopyOrder = () => {
     const tempOrderId = `#SKIN-${Math.floor(10000 + Math.random() * 90000)}`;
-    const message = buildWhatsAppMessage(tempOrderId, totalAmount);
+    const message = buildPedidoMessage({
+      codigo: tempOrderId,
+      lines: cartItems.map((item) => ({
+        productId: item.product.id,
+        name: item.product.name,
+        quantity: item.quantity,
+        unitPrice: item.product.price,
+        lineTotal: item.product.price * item.quantity,
+      })),
+      totalGs: totalAmount,
+      nombre: customerName,
+      telefono: customerPhone,
+      direccion: `${customerAddress.trim()}${
+        googleMapsUrl.trim() ? ' — ' + googleMapsUrl.trim() : ''
+      }`,
+    });
     try {
       navigator.clipboard.writeText(message);
       setCopied(true);
