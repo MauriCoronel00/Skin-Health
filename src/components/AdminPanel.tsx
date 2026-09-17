@@ -11,6 +11,8 @@ import {
   Ban,
   AlertCircle,
   Loader2,
+  Minus,
+  Plus,
 } from 'lucide-react';
 import {
   AdminPedido,
@@ -21,6 +23,7 @@ import {
   fetchPedidoItems,
   setPedidoEstado,
   fetchStock,
+  ajustarStock,
 } from '../data/admin';
 import { ProductReview } from '../types';
 import { fetchAllReviews, setReviewStatus } from '../data/reviews';
@@ -68,6 +71,64 @@ function nextActions(estado: PedidoEstado): { label: string; to: PedidoEstado; i
   return [];
 }
 
+/** Editor inline de stock: steppers + input con commit en blur/Enter. */
+const StockEditor: React.FC<{
+  row: StockRow;
+  saving: boolean;
+  onSave: (nuevo: number) => void;
+}> = ({ row, saving, onSave }) => {
+  const [draft, setDraft] = useState<string | null>(null);
+  const shown = draft ?? String(row.stock);
+  const parsed = Number.parseInt(shown, 10);
+
+  const commit = () => {
+    setDraft(null);
+    if (Number.isFinite(parsed) && parsed >= 0) onSave(parsed);
+  };
+
+  return (
+    <span className="inline-flex items-center gap-1 justify-end">
+      <button
+        type="button"
+        disabled={saving}
+        onClick={() => onSave(row.stock - 1)}
+        className="w-6 h-6 rounded-lg bg-neutral-100 hover:bg-neutral-200 flex items-center justify-center text-neutral-600 disabled:opacity-40 cursor-pointer"
+        aria-label="Quitar uno"
+      >
+        <Minus className="w-3.5 h-3.5" />
+      </button>
+      <input
+        type="number"
+        min={0}
+        disabled={saving}
+        value={shown}
+        onChange={(e) => setDraft(e.target.value)}
+        onBlur={commit}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') (e.target as HTMLInputElement).blur();
+        }}
+        className={`w-14 text-center font-bold text-sm border rounded-lg py-1 px-1 focus:outline-none focus:border-[#102A43] disabled:opacity-40 ${
+          row.stock <= 0
+            ? 'text-rose-600 border-rose-200 bg-rose-50/50'
+            : row.stock <= 3
+              ? 'text-amber-600 border-amber-200 bg-amber-50/50'
+              : 'text-emerald-700 border-neutral-200'
+        }`}
+        aria-label={`Stock de ${row.nombre}`}
+      />
+      <button
+        type="button"
+        disabled={saving}
+        onClick={() => onSave(row.stock + 1)}
+        className="w-6 h-6 rounded-lg bg-neutral-100 hover:bg-neutral-200 flex items-center justify-center text-neutral-600 disabled:opacity-40 cursor-pointer"
+        aria-label="Agregar uno"
+      >
+        <Plus className="w-3.5 h-3.5" />
+      </button>
+    </span>
+  );
+};
+
 export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowToast }) => {
   const [tab, setTab] = useState<Tab>('pedidos');
   const [loading, setLoading] = useState(false);
@@ -78,6 +139,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
   const [itemsCache, setItemsCache] = useState<Record<string, AdminPedidoItem[]>>({});
   const [stock, setStock] = useState<StockRow[]>([]);
   const [pendingReviews, setPendingReviews] = useState<ProductReview[]>([]);
+  const [savingStock, setSavingStock] = useState<Record<string, boolean>>({});
 
   const load = async () => {
     setLoading(true);
@@ -152,6 +214,21 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
       onShowToast('Reseña ocultada', undefined, 'info');
     } catch {
       onShowToast('No se pudo ocultar', undefined, 'error');
+    }
+  };
+
+  const handleStockSave = async (id: string, nuevo: number) => {
+    const current = stock.find((p) => p.id === id);
+    if (!current || nuevo < 0 || nuevo === current.stock) return;
+    setSavingStock((prev) => ({ ...prev, [id]: true }));
+    try {
+      await ajustarStock(id, nuevo);
+      setStock((prev) => prev.map((p) => (p.id === id ? { ...p, stock: nuevo } : p)));
+      onShowToast('Stock actualizado', `${current.nombre}: ${nuevo} unidades.`, 'success');
+    } catch {
+      onShowToast('No se pudo actualizar el stock', undefined, 'error');
+    } finally {
+      setSavingStock((prev) => ({ ...prev, [id]: false }));
     }
   };
 
@@ -358,16 +435,12 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
                       <td className="px-4 py-2.5 text-right text-neutral-600">
                         {formatGuarani(s.precio_gs)}
                       </td>
-                      <td
-                        className={`px-4 py-2.5 text-right font-bold ${
-                          s.stock <= 0
-                            ? 'text-rose-600'
-                            : s.stock <= 3
-                              ? 'text-amber-600'
-                              : 'text-emerald-700'
-                        }`}
-                      >
-                        {s.stock}
+                      <td className="px-4 py-2.5 text-right">
+                        <StockEditor
+                          row={s}
+                          saving={!!savingStock[s.id]}
+                          onSave={(nuevo) => void handleStockSave(s.id, nuevo)}
+                        />
                       </td>
                     </tr>
                   ))}

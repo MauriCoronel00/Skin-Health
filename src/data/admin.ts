@@ -96,3 +96,13 @@ export async function fetchStock(): Promise<StockRow[]> {
   if (error) throw error;
   return (data ?? []) as StockRow[];
 }
+
+/** Ajusta el stock vía RPC (valida admin, registra movimiento 'ajuste'). */
+export async function ajustarStock(productoId: string, nuevoStock: number): Promise<number> {
+  const { data, error } = await supabase.rpc('ajustar_stock', {
+    p_producto_id: productoId,
+    p_nuevo_stock: nuevoStock,
+  });
+  if (error) throw error;
+  return data as number;
+}
