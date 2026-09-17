@@ -24,6 +24,7 @@ import {
   setPedidoEstado,
   fetchStock,
   ajustarStock,
+  actualizarPrecio,
 } from '../data/admin';
 import { ProductReview } from '../types';
 import { fetchAllReviews, setReviewStatus } from '../data/reviews';
@@ -129,6 +130,39 @@ const StockEditor: React.FC<{
   );
 };
 
+/** Editor inline de precio (Gs): input con commit en blur/Enter. */
+const PriceEditor: React.FC<{
+  row: StockRow;
+  saving: boolean;
+  onSave: (nuevo: number) => void;
+}> = ({ row, saving, onSave }) => {
+  const [draft, setDraft] = useState<string | null>(null);
+  const shown = draft ?? String(row.precio_gs);
+  const parsed = Number.parseInt(shown.replace(/\D/g, ''), 10);
+
+  const commit = () => {
+    setDraft(null);
+    if (Number.isFinite(parsed) && parsed > 0) onSave(parsed);
+  };
+
+  return (
+    <input
+      type="text"
+      inputMode="numeric"
+      disabled={saving}
+      value={draft ?? formatGuarani(row.precio_gs).replace('₲', '').trim()}
+      onChange={(e) => setDraft(e.target.value)}
+      onBlur={commit}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') (e.target as HTMLInputElement).blur();
+      }}
+      className="w-28 text-right text-sm text-neutral-700 border border-neutral-200 rounded-lg py-1 px-2 focus:outline-none focus:border-[#102A43] disabled:opacity-40"
+      aria-label={`Precio de ${row.nombre}`}
+      title={formatGuarani(row.precio_gs)}
+    />
+  );
+};
+
 export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowToast }) => {
   const [tab, setTab] = useState<Tab>('pedidos');
   const [loading, setLoading] = useState(false);
@@ -227,6 +261,25 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
       onShowToast('Stock actualizado', `${current.nombre}: ${nuevo} unidades.`, 'success');
     } catch {
       onShowToast('No se pudo actualizar el stock', undefined, 'error');
+    } finally {
+      setSavingStock((prev) => ({ ...prev, [id]: false }));
+    }
+  };
+
+  const handlePrecioSave = async (id: string, nuevo: number) => {
+    const current = stock.find((p) => p.id === id);
+    if (!current || nuevo <= 0 || nuevo === current.precio_gs) return;
+    setSavingStock((prev) => ({ ...prev, [id]: true }));
+    try {
+      await actualizarPrecio(id, nuevo);
+      setStock((prev) => prev.map((p) => (p.id === id ? { ...p, precio_gs: nuevo } : p)));
+      onShowToast(
+        'Precio actualizado',
+        `${current.nombre}: ${formatGuarani(nuevo)}.`,
+        'success'
+      );
+    } catch {
+      onShowToast('No se pudo actualizar el precio', undefined, 'error');
     } finally {
       setSavingStock((prev) => ({ ...prev, [id]: false }));
     }
@@ -432,8 +485,12 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
                           </span>
                         )}
                       </td>
-                      <td className="px-4 py-2.5 text-right text-neutral-600">
-                        {formatGuarani(s.precio_gs)}
+                      <td className="px-4 py-2.5 text-right">
+                        <PriceEditor
+                          row={s}
+                          saving={!!savingStock[s.id]}
+                          onSave={(nuevo) => void handlePrecioSave(s.id, nuevo)}
+                        />
                       </td>
                       <td className="px-4 py-2.5 text-right">
                         <StockEditor

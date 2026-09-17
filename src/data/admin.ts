@@ -106,3 +106,19 @@ export async function ajustarStock(productoId: string, nuevoStock: number): Prom
   if (error) throw error;
   return data as number;
 }
+
+/** Actualiza el precio vía RPC (requiere admin). Mantiene el stock actual. */
+export async function actualizarPrecio(productoId: string, precioGs: number): Promise<void> {
+  const { data: row, error: readError } = await supabase
+    .from('productos')
+    .select('stock')
+    .eq('id', productoId)
+    .single();
+  if (readError) throw readError;
+  const { error } = await supabase.rpc('ajustar_stock', {
+    p_producto_id: productoId,
+    p_nuevo_stock: (row as { stock: number }).stock,
+    p_precio_gs: precioGs,
+  });
+  if (error) throw error;
+}
