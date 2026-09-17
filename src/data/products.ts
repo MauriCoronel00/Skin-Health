@@ -31,24 +31,24 @@ export async function fetchProducts(): Promise<Product[]> {
 
   return (data ?? []).map((p) => ({
     id: p.id,
-    name: p.nombre,
+    name: p.nombre ?? '',
     brand: p.marca,
-    subtitle: p.subtitle,
+    subtitle: p.subtitle ?? '',
     category: p.categoria_id,
-    categoryLabel: p.categoria_label,
-    price: p.precio_gs,
-    image: p.imagen_url,
-    volume: p.volumen,
-    badge: p.badge,
-    rating: p.rating,
-    reviewsCount: p.reviews_count,
-    description: p.descripcion,
+    categoryLabel: p.categoria_label ?? '',
+    price: p.precio_gs ?? 0,
+    image: p.imagen_url ?? '',
+    volume: p.volumen ?? '',
+    badge: p.badge ?? undefined,
+    rating: Number(p.rating ?? 0),
+    reviewsCount: p.reviews_count ?? 0,
+    description: p.descripcion ?? '',
     benefits: (p.producto_beneficios ?? [])
       .sort((a: any, b: any) => a.orden - b.orden)
       .map((b: any) => ({ title: b.titulo, desc: b.descripcion })),
     keyIngredients: p.key_ingredients ?? [],
-    skinType: p.skin_type,
-    howToUse: p.how_to_use,
+    skinType: p.skin_type ?? '',
+    howToUse: p.how_to_use ?? '',
   }));
 }
 

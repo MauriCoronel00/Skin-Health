@@ -2,6 +2,7 @@ import React from 'react';
 import { ShoppingBag, MessageCircle } from 'lucide-react';
 import { motion } from 'motion/react';
 import { BrandLogo } from './BrandLogo';
+import { LoginButton } from './LoginButton';
 import { formatGuarani, STORE_PHONE_NUMBER } from '../data/products';
 
 interface NavbarProps {
@@ -32,6 +33,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Right Actions */}
         <div className="flex items-center gap-2.5 sm:gap-3">
+          <LoginButton />
           {/* Direct WhatsApp help */}
           <a
             href={`https://wa.me/${STORE_PHONE_NUMBER}?text=Hola%20Skin%20Health%2C%20tengo%20una%20consulta%20sobre%20sus%20productos`}

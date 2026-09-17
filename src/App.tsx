@@ -1,5 +1,4 @@
 import { AuthProvider } from './contexts/AuthContext';
-import { LoginButton } from './components/LoginButton';
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { Sparkles, SlidersHorizontal, ArrowRight, MessageCircle } from 'lucide-react';
@@ -33,19 +32,25 @@ export default function App() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<CategoryOption[]>([]);
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
+  const [catalogError, setCatalogError] = useState(false);
+
+  const loadCatalog = async () => {
+    setIsLoadingProducts(true);
+    setCatalogError(false);
+    try {
+      const [prods, cats] = await Promise.all([fetchProducts(), fetchCategories()]);
+      setProducts(prods);
+      setCategories(cats);
+    } catch (err) {
+      console.error('Error cargando el catálogo desde Supabase:', err);
+      setCatalogError(true);
+    } finally {
+      setIsLoadingProducts(false);
+    }
+  };
 
   useEffect(() => {
-    (async () => {
-      try {
-        const [prods, cats] = await Promise.all([fetchProducts(), fetchCategories()]);
-        setProducts(prods);
-        setCategories(cats);
-      } catch (err) {
-        console.error('Error cargando el catálogo desde Supabase:', err);
-      } finally {
-        setIsLoadingProducts(false);
-      }
-    })();
+    void loadCatalog();
   }, []);
 
   // Cart state initialized from localStorage for persistence (Section 15)
@@ -332,11 +337,11 @@ export default function App() {
       // Search query
       if (searchQuery.trim()) {
         const query = searchQuery.toLowerCase().trim();
-        const matchesName = product.name.toLowerCase().includes(query);
-        const matchesBrand = product.brand.toLowerCase().includes(query);
-        const matchesSubtitle = product.subtitle.toLowerCase().includes(query);
-        const matchesIngredients = product.keyIngredients.some((ing) =>
-          ing.toLowerCase().includes(query)
+        const matchesName = (product.name ?? '').toLowerCase().includes(query);
+        const matchesBrand = (product.brand ?? '').toLowerCase().includes(query);
+        const matchesSubtitle = (product.subtitle ?? '').toLowerCase().includes(query);
+        const matchesIngredients = (product.keyIngredients ?? []).some((ing) =>
+          (ing ?? '').toLowerCase().includes(query)
         );
         return (
           matchesName || matchesBrand || matchesSubtitle || matchesIngredients
@@ -347,20 +352,12 @@ export default function App() {
     });
   }, [products, selectedCategory, selectedBrand, searchQuery]);
 
-  // Product count by category
+  // Product count by category (dynamic: works with any category id from Supabase)
   const productCounts = useMemo(() => {
-    const counts: Record<CategoryId, number> = {
-      all: products.length,
-      hydrate: 0,
-      brighten: 0,
-      calm: 0,
-      protect: 0,
-      cleanse: 0,
-    };
+    const counts: Record<string, number> = { all: products.length };
     for (const product of products) {
-      if (counts[product.category] !== undefined) {
-        counts[product.category]++;
-      }
+      const key = product.category ?? 'all';
+      counts[key] = (counts[key] ?? 0) + 1;
     }
     return counts;
   }, [products]);
@@ -378,9 +375,6 @@ export default function App() {
         totalAmount={totalAmount}
         onOpenCart={() => setIsCartOpen(true)}
       />
-      <div className="fixed top-3 right-3 z-40">
-        <LoginButton />
-      </div>
 
       {/* Main Content Area - Note the extra bottom padding (pb-36 sm:pb-44) to ensure the floating cart NEVER obstructs content */}
       <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 pb-36 sm:pb-44">
@@ -438,6 +432,21 @@ export default function App() {
           {isLoadingProducts ? (
             <div className="text-center py-16 text-neutral-400 text-sm">
               Cargando catálogo...
+            </div>
+          ) : catalogError ? (
+            <div className="text-center py-16 bg-white rounded-3xl border border-red-100 p-8">
+              <h3 className="font-semibold text-neutral-800 text-lg mb-1">
+                No pudimos cargar el catálogo
+              </h3>
+              <p className="text-sm text-neutral-500 max-w-sm mx-auto mb-5">
+                Revisá tu conexión e intentá de nuevo. Si sigue fallando, escribinos por WhatsApp.
+              </p>
+              <button
+                onClick={() => void loadCatalog()}
+                className="px-5 py-2.5 bg-[#102A43] text-white text-xs font-semibold rounded-full hover:bg-[#102A43]/90 transition-colors"
+              >
+                Reintentar
+              </button>
             </div>
           ) : filteredProducts.length === 0 ? (
             <div className="text-center py-16 bg-white rounded-3xl border border-neutral-100 p-8">

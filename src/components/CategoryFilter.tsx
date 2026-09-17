@@ -7,7 +7,7 @@ interface CategoryFilterProps {
   categories: CategoryOption[];
   selectedCategory: CategoryId;
   onSelectCategory: (id: CategoryId) => void;
-  productCounts: Record<CategoryId, number>;
+  productCounts: Record<string, number>;
 }
 
 export const CategoryFilter: React.FC<CategoryFilterProps> = ({
