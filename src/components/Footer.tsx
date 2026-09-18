@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrandLogo } from './BrandLogo';
-import { MessageCircle, ShieldCheck, Truck, RefreshCw, Heart } from 'lucide-react';
+import { MessageCircle, ShieldCheck, Truck, RefreshCw, Heart, Instagram } from 'lucide-react';
 import { STORE_PHONE_NUMBER, STORE_PHONE_DISPLAY } from '../data/products';
 
 interface FooterProps {
@@ -55,6 +55,21 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdminReviews, onOpenAdminP
         {/* Main footer content */}
         <div className="py-8 flex flex-col sm:flex-row items-center justify-between gap-6">
           <BrandLogo size="md" inverted={true} />
+
+          <div className="text-center sm:text-right">
+            <p className="text-xs text-white/60">
+              Síguenos en las redes:
+            </p>
+            <a
+              href="https://www.instagram.com/skinhealthpy"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram de Skin Health"
+              className="inline-flex items-center justify-center w-10 h-10 mt-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+            >
+              <Instagram className="w-5 h-5 text-white" />
+            </a>
+          </div>
 
           <div className="text-center sm:text-right">
             <p className="text-xs text-white/60">
