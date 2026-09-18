@@ -51,28 +51,8 @@ export default async function handler(req: any, res: any) {
       const text = msg.text?.body || msg.message?.text?.body || (evt as any).message?.text?.body || '';
       console.log(`Inbound from ${from}: ${text}`);
 
-      // Respuesta directa desde Vercel (Flow Kapso no dispara para 1302822526251600 aún, webhook sí llega 200)
-      if (from) {
-        const phoneNumberId = process.env.KAPSO_PHONE_NUMBER_ID || '1302822526251600';
-        const apiKey = process.env.KAPSO_API_KEY;
-        if (!apiKey) {
-          console.warn('KAPSO_API_KEY missing in Vercel — set it to enable auto-reply. From:', from);
-        } else {
-          try {
-            const resp = await fetch(`https://api.kapso.ai/meta/whatsapp/v24.0/${phoneNumberId}/messages`, {
-              method: 'POST',
-              headers: { 'X-API-Key': apiKey, 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                messaging_product: 'whatsapp',
-                to: from,
-                type: 'text',
-                text: { body: '¡Hola! 👋 Aquí Skin Health 💙✨ ¿En qué puedo ayudarte hoy?' },
-              }),
-            });
-            console.log(`Auto-reply to ${from}: ${resp.status} ${await resp.text().then(t=>t.slice(0,300))}`);
-          } catch (e) { console.error('Auto-reply failed', e); }
-        }
-      }
+      // Repo webhook ahora solo loguea — Flow Kapso whats-app-support-agent maneja saludo + lookupPedido + handoff
+      // Si deshabilitas el Flow, descomenta el bloque de fetch con KAPSO_API_KEY para auto-responder desde Vercel
     }
   }
 
