@@ -12,12 +12,15 @@ export interface CreatePedidoInput {
   telefono: string;
   direccion: string;
   items: CreatePedidoItemInput[];
+  /** Costo de envío en Gs (calculado en cliente, validado server-side). */
+  costoEnvioGs?: number;
 }
 
 export interface PedidoReceipt {
   pedidoId: string;
   codigo: string;
   totalGs: number;
+  costoEnvioGs: number;
   message: string;
   whatsappUrl: string;
 }
@@ -53,6 +56,7 @@ export function buildPedidoMessage(opts: {
   codigo: string;
   lines: PedidoMessageLine[];
   totalGs: number;
+  costoEnvioGs?: number;
   nombre: string;
   telefono: string;
   direccion: string;
@@ -63,8 +67,12 @@ export function buildPedidoMessage(opts: {
     .map((l) => `• ${l.name} x${l.quantity} — ${formatGuarani(l.lineTotal)}`)
     .join('\n');
 
-  let message = `Hola 👋 Quiero realizar el pedido *${opts.codigo}* en *Skin Health*:\n\n🛍️ *PRODUCTOS SELECCIONADOS*\n${itemsLines}\n\n💰 *${opts.totalLabel ?? 'TOTAL'}*: ${formatGuarani(
+  const envio = opts.costoEnvioGs ?? 0;
+
+  let message = `Hola 👋 Quiero realizar el pedido *${opts.codigo}* en *Skin Health*:\n\n🛍️ *PRODUCTOS SELECCIONADOS*\n${itemsLines}\n\n💰 *Subtotal*: ${formatGuarani(
     opts.totalGs
+  )}\n🚚 *Envío*: ${formatGuarani(envio)}\n💰 *${opts.totalLabel ?? 'TOTAL'}*: ${formatGuarani(
+    opts.totalGs + envio
   )}\n\n📍 *REQUISITOS PARA EL ENVÍO*:\n• *Nombre del cliente*: ${
     opts.nombre.trim() ? opts.nombre.trim() : '[Por especificar]'
   }\n• *Teléfono de contacto*: ${
@@ -127,11 +135,13 @@ export async function createPedido(input: CreatePedidoInput): Promise<PedidoRece
   }
 
   let pedidoId: string;
+  const costoEnvio = Math.max(0, Math.floor(input.costoEnvioGs ?? 0));
   try {
     const { data, error } = await supabase.rpc('crear_pedido', {
       p_cliente_nombre: input.nombre.trim(),
       p_cliente_telefono: input.telefono.trim(),
       p_direccion_envio: input.direccion.trim(),
+      p_costo_envio_gs: costoEnvio,
       p_items: input.items.map((item) => ({
         producto_id: item.productoId,
         cantidad: item.cantidad,
@@ -145,7 +155,7 @@ export async function createPedido(input: CreatePedidoInput): Promise<PedidoRece
 
   const { data: pedido, error: pedidoError } = await supabase
     .from('pedidos')
-    .select('codigo_pedido, total_gs')
+    .select('codigo_pedido, total_gs, costo_envio_gs')
     .eq('id', pedidoId)
     .single();
   if (pedidoError || !pedido) {
@@ -157,6 +167,7 @@ export async function createPedido(input: CreatePedidoInput): Promise<PedidoRece
 
   const codigo = (pedido as { codigo_pedido: string }).codigo_pedido;
   const totalGs = (pedido as { total_gs: number }).total_gs;
+  const costoEnvioGs = (pedido as { costo_envio_gs: number }).costo_envio_gs ?? costoEnvio;
 
   // Mejor esfuerzo: no bloquea el pedido si falla.
   if (input.telefono.trim()) {
@@ -170,6 +181,7 @@ export async function createPedido(input: CreatePedidoInput): Promise<PedidoRece
     pedidoId,
     codigo,
     totalGs,
+    costoEnvioGs,
     input.nombre,
     input.telefono,
     input.direccion
@@ -185,7 +197,7 @@ export async function createPedido(input: CreatePedidoInput): Promise<PedidoRece
     totalGs
   );
 
-  return { pedidoId, codigo, totalGs, message: message.text, whatsappUrl };
+  return { pedidoId, codigo, totalGs, costoEnvioGs, message: message.text, whatsappUrl };
 }
 
 /** Arma las líneas del recibo desde la DB (nombres y precios reales). */
@@ -193,6 +205,7 @@ async function buildReceiptMessage(
   pedidoId: string,
   codigo: string,
   totalGs: number,
+  costoEnvioGs: number,
   nombre: string,
   telefono: string,
   direccion: string
@@ -219,6 +232,7 @@ async function buildReceiptMessage(
     codigo,
     lines,
     totalGs,
+    costoEnvioGs,
     nombre,
     telefono,
     direccion,

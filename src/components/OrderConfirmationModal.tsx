@@ -23,6 +23,7 @@ export interface OrderDetails {
   googleMapsUrl?: string;
   items: CartItem[];
   totalAmount: number;
+  costoEnvioGs?: number;
   date: string;
 }
 
@@ -58,6 +59,7 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
         lineTotal: item.product.price * item.quantity,
       })),
       totalGs: order.totalAmount,
+      costoEnvioGs: order.costoEnvioGs ?? 0,
       nombre: order.customerName,
       telefono: order.customerPhone ?? '',
       direccion: `${order.customerAddress}${order.googleMapsUrl ? ' — ' + order.googleMapsUrl : ''}`,
@@ -188,9 +190,15 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
                 </div>
               ))}
 
+              <div className="pt-2.5 mt-1 border-t border-neutral-200 flex justify-between items-baseline text-xs text-neutral-500">
+                <span>Envío</span>
+                <span className="font-semibold text-neutral-700">
+                  {formatGuarani(order.costoEnvioGs ?? 0)}
+                </span>
+              </div>
               <div className="pt-2.5 mt-1 border-t border-neutral-200 flex justify-between items-baseline font-bold text-sm text-[#102A43]">
                 <span>Total</span>
-                <span>{formatGuarani(order.totalAmount)}</span>
+                <span>{formatGuarani(order.totalAmount + (order.costoEnvioGs ?? 0))}</span>
               </div>
             </div>
           </div>

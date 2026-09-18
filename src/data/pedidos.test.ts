@@ -32,6 +32,13 @@ describe('buildPedidoMessage', () => {
     const msg = buildPedidoMessage({ ...base, totalLabel: 'TOTAL ESTIMADO' });
     expect(msg).toContain('*TOTAL ESTIMADO*');
   });
+
+  it('muestra subtotal, envío y total sumado', () => {
+    const msg = buildPedidoMessage({ ...base, costoEnvioGs: 11000 });
+    expect(msg).toContain('*Subtotal*');
+    expect(msg).toContain('*Envío*');
+    expect(msg).toContain('₲ 211.000');
+  });
 });
 
 describe('rpcErrorToPedidoError', () => {

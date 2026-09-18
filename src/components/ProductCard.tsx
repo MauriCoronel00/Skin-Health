@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Plus, Check, Star, Eye } from 'lucide-react';
+import { Plus, Check, Star, Eye, Share2, Link2 } from 'lucide-react';
 import { Product } from '../types';
 import { formatGuarani } from '../data/products';
+import { productLink } from '../utils/productLink';
 import { trackAddToCart } from '../utils/analytics';
 
 interface ProductCardProps {
@@ -23,6 +24,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   reviewsCount,
 }) => {
   const [showAddedAnim, setShowAddedAnim] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
   const [clickCoordinates, setClickCoordinates] = useState<{ id: number; x: number; y: number }[]>([]);
 
   const displayRating = ratingAverage !== undefined ? ratingAverage : product.rating;
@@ -69,14 +71,33 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           )}
 
           {/* Quick View Button on Desktop Hover */}
-          <button
-            onClick={() => onQuickView(product)}
-            className="text-neutral-400 hover:text-[#102A43] p-1 rounded-full hover:bg-neutral-100 transition-colors"
-            title="Ver detalles del producto"
-            aria-label="Ver detalles"
-          >
-            <Eye className="w-3.5 h-3.5" />
-          </button>
+          <div className="flex items-center gap-0.5">
+            <button
+              onClick={async (e) => {
+                e.stopPropagation();
+                try {
+                  await navigator.clipboard.writeText(productLink(product.id));
+                  setLinkCopied(true);
+                  setTimeout(() => setLinkCopied(false), 1500);
+                } catch {
+                  // Portapapeles no disponible: no hace nada.
+                }
+              }}
+              className="text-neutral-400 hover:text-[#102A43] p-1 rounded-full hover:bg-neutral-100 transition-colors"
+              title="Copiar link del producto"
+              aria-label="Copiar link del producto"
+            >
+              {linkCopied ? <Link2 className="w-3.5 h-3.5 text-emerald-600" /> : <Share2 className="w-3.5 h-3.5" />}
+            </button>
+            <button
+              onClick={() => onQuickView(product)}
+              className="text-neutral-400 hover:text-[#102A43] p-1 rounded-full hover:bg-neutral-100 transition-colors"
+              title="Ver detalles del producto"
+              aria-label="Ver detalles"
+            >
+              <Eye className="w-3.5 h-3.5" />
+            </button>
+          </div>
         </div>
 
         {/* Product Image */}

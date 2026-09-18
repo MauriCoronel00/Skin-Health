@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { CartItem } from '../types';
 import { formatGuarani } from '../data/products';
+import { calcularEnvio, ENVIO_BASE_GS } from '../utils/envio';
 import { trackBeginCheckout } from '../utils/analytics';
 import { OrderDetails } from './OrderConfirmationModal';
 import { useAuth } from '../contexts/AuthContext';
@@ -95,6 +96,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
   const [isOrdering, setIsOrdering] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [distanciaKm, setDistanciaKm] = useState('');
 
   const { user, signInWithGoogle } = useAuth();
 
@@ -118,6 +120,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     0
   );
   const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+
+  const envioGs = calcularEnvio(distanciaKm.trim() === '' ? null : Number(distanciaKm));
+  const totalConEnvio = totalAmount + (envioGs ?? 0);
 
   // Track begin_checkout when the drawer opens with items
   useEffect(() => {
@@ -174,6 +179,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
         direccion: `${customerAddress.trim()}${
           googleMapsUrl.trim() ? ' — ' + googleMapsUrl.trim() : ''
         }`,
+        costoEnvioGs: envioGs ?? 0,
         items: cartItems.map((item) => ({
           productoId: item.product.id,
           cantidad: item.quantity,
@@ -206,7 +212,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       return;
     }
 
-    const { codigo: orderId, totalGs: serverTotal, whatsappUrl } = receipt;
+    const { codigo: orderId, totalGs: serverTotal, costoEnvioGs: serverEnvio, whatsappUrl } = receipt;
 
     setTimeout(() => {
       let opened = false;
@@ -230,6 +236,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
         googleMapsUrl: googleMapsUrl.trim(),
         items: [...cartItems],
         totalAmount: serverTotal,
+        costoEnvioGs: serverEnvio,
         date: new Date().toLocaleDateString('es-PY', {
           day: '2-digit',
           month: 'long',
@@ -260,6 +267,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
         lineTotal: item.product.price * item.quantity,
       })),
       totalGs: totalAmount,
+      costoEnvioGs: envioGs ?? 0,
       nombre: customerName,
       telefono: customerPhone,
       direccion: `${customerAddress.trim()}${
@@ -580,21 +588,44 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   <span>Productos ({totalItems})</span>
                   <span>{formatGuarani(totalAmount)}</span>
                 </div>
-                <div className="flex justify-between text-neutral-500 text-xs">
-                  <span>Envío</span>
-                  <span className="text-emerald-600 font-medium">A coordinar por WhatsApp</span>
+                <div className="flex items-center justify-between gap-2 text-xs">
+                  <label htmlFor="envio-km" className="text-neutral-500 shrink-0">
+                    Envío · distancia (km)
+                  </label>
+                  <input
+                    id="envio-km"
+                    type="number"
+                    min={0}
+                    max={200}
+                    inputMode="decimal"
+                    value={distanciaKm}
+                    onChange={(e) => setDistanciaKm(e.target.value)}
+                    placeholder="Ej. 5"
+                    className="w-20 text-right font-semibold text-neutral-800 border border-neutral-200 rounded-lg py-1 px-2 focus:outline-none focus:border-[#102A43]"
+                  />
                 </div>
+                <div className="flex justify-between text-neutral-500 text-xs">
+                  <span>Costo de envío</span>
+                  {envioGs === null ? (
+                    <span className="text-neutral-400">Ingresá los km</span>
+                  ) : (
+                    <span className="font-semibold text-neutral-800">{formatGuarani(envioGs)}</span>
+                  )}
+                </div>
+                <p className="text-[10px] text-neutral-400">
+                  Base {formatGuarani(ENVIO_BASE_GS)} hasta 3 km + ₲ 3.000 por km adicional.
+                </p>
                 <div className="flex justify-between items-baseline pt-1.5 border-t border-neutral-100">
                   <span className="font-semibold text-sm sm:text-base text-neutral-900">
                     TOTAL ESTIMADO
                   </span>
                   <motion.span
-                    key={totalAmount}
+                    key={totalConEnvio}
                     initial={{ scale: 0.95 }}
                     animate={{ scale: 1 }}
                     className="font-bold text-lg sm:text-xl text-[#102A43]"
                   >
-                    {formatGuarani(totalAmount)}
+                    {formatGuarani(totalConEnvio)}
                   </motion.span>
                 </div>
               </div>

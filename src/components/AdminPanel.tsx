@@ -437,7 +437,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
                         <div className="font-bold text-neutral-900 text-sm">
                           {p.codigo_pedido ?? p.id.slice(0, 8)}
                           <span className="ml-2 font-semibold text-[#102A43]">
-                            {formatGuarani(p.total_gs)}
+                            {formatGuarani(p.total_gs + (p.costo_envio_gs ?? 0))}
                           </span>
                         </div>
                         <div className="text-neutral-500 mt-0.5 truncate">
@@ -467,6 +467,12 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
                             </span>
                           </div>
                         ))}
+                        <div className="flex items-center justify-between text-neutral-500">
+                          <span>Envío</span>
+                          <span className="font-semibold">
+                            {formatGuarani(p.costo_envio_gs ?? 0)}
+                          </span>
+                        </div>
                         {p.direccion_envio && (
                           <p className="text-neutral-500">📍 {p.direccion_envio}</p>
                         )}

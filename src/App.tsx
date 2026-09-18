@@ -9,6 +9,7 @@ import { HeroBanner } from './components/HeroBanner';
 import { CategoryFilter } from './components/CategoryFilter';
 import { ProductCard } from './components/ProductCard';
 import { RoutinesSection } from './components/RoutinesSection';
+import { TestimoniosSection } from './components/TestimoniosSection';
 import { FloatingCart } from './components/FloatingCart';
 import { CartDrawer } from './components/CartDrawer';
 import { ProductQuickView } from './components/ProductQuickView';
@@ -24,6 +25,7 @@ import { supabase } from './lib/supabaseClient';
 import { useReviews } from './hooks/useReviews';
 import { currentReviewer } from './data/identity';
 import { isCurrentUserAdmin } from './data/admin';
+import { productIdFromUrl, syncProductUrl } from './utils/productLink';
 
 const CART_STORAGE_KEY = 'skinhealth_cart_v1';
 
@@ -113,6 +115,20 @@ export default function App() {
     });
     return () => listener.subscription.unsubscribe();
   }, []);
+
+  // Deep link ?p=id: abre el QuickView del producto al cargar
+  useEffect(() => {
+    if (isLoadingProducts || products.length === 0) return;
+    const id = productIdFromUrl();
+    if (!id) return;
+    const found = products.find((p) => p.id === id);
+    if (found) setQuickViewProduct(found);
+  }, [isLoadingProducts, products]);
+
+  // Refleja el QuickView en la URL para compartir
+  useEffect(() => {
+    syncProductUrl(quickViewProduct?.id ?? null);
+  }, [quickViewProduct]);
 
   const handleOpenReviewModal = (product: Product) => {
     setReviewingProduct(product);
@@ -502,6 +518,9 @@ export default function App() {
           onQuickView={setQuickViewProduct}
           cartQuantities={cartQuantities}
         />
+
+        {/* Testimonios: reseñas aprobadas visibles */}
+        <TestimoniosSection />
 
         {/* Section 19: Principio Fundamental - How it works explanation */}
         <section className="mt-14 bg-white/80 border border-[#102A43]/10 rounded-3xl p-6 sm:p-8 shadow-xs">

@@ -8,6 +8,7 @@ export interface AdminPedido {
   cliente_nombre: string;
   cliente_telefono: string;
   total_gs: number;
+  costo_envio_gs: number | null;
   estado: PedidoEstado;
   creado_en: string;
   direccion_envio: string | null;
@@ -53,7 +54,7 @@ export async function fetchPedidos(): Promise<AdminPedido[]> {
   const { data, error } = await supabase
     .from('pedidos')
     .select(
-      'id, codigo_pedido, cliente_nombre, cliente_telefono, total_gs, estado, creado_en, direccion_envio, metodo_pago, referencia_pago, comprobante_url, confirmado_por'
+      'id, codigo_pedido, cliente_nombre, cliente_telefono, total_gs, costo_envio_gs, estado, creado_en, direccion_envio, metodo_pago, referencia_pago, comprobante_url, confirmado_por'
     )
     .order('creado_en', { ascending: false });
   if (error) throw error;
