@@ -37,6 +37,7 @@ import {
   mensajeReactivacion,
   mensajeRecuperacion,
 } from '../utils/recuperacion';
+import { trackingLink } from '../data/tracking';
 
 interface AdminPanelProps {
   isOpen: boolean;
@@ -535,6 +536,29 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
                                 >
                                   <MessageCircle className="w-3.5 h-3.5" />
                                   <span>Reclamar</span>
+                                </a>
+                              );
+                            })()}
+                          {(p.estado === 'pagado' || p.estado === 'enviado' || p.estado === 'entregado') &&
+                            (() => {
+                              const primero = (p.cliente_nombre ?? '').trim().split(' ')[0] || 'hola';
+                              const estadoTxt =
+                                p.estado === 'pagado' ? 'confirmado el pago ✅' :
+                                p.estado === 'enviado' ? 'va en camino 🛵' : 'fue entregado 📦';
+                              const link = linkRecuperacion(
+                                p.cliente_telefono,
+                                `Hola ${primero}, somos Skin Health 💙 tu pedido ${p.codigo_pedido ?? p.id.slice(0, 8)} ${estadoTxt}. Seguilo en vivo acá: ${trackingLink(p.codigo_pedido ?? p.id.slice(0, 8))}`
+                              );
+                              if (!link) return null;
+                              return (
+                                <a
+                                  href={link}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="px-3 py-1.5 rounded-xl bg-sky-600 text-white text-xs font-semibold flex items-center gap-1.5 hover:bg-sky-500 cursor-pointer"
+                                >
+                                  <MessageCircle className="w-3.5 h-3.5" />
+                                  <span>Avisar</span>
                                 </a>
                               );
                             })()}

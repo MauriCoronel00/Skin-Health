@@ -58,6 +58,19 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdminReviews, onOpenAdminP
 
           <div className="text-center sm:text-right">
             <p className="text-xs text-white/60">
+              ¿Ya pediste?
+            </p>
+            <a
+              href="?track="
+              className="text-sm font-semibold text-white hover:text-emerald-300 inline-flex items-center gap-1.5 mt-1"
+            >
+              <Truck className="w-4 h-4" />
+              <span>Seguir mi pedido</span>
+            </a>
+          </div>
+
+          <div className="text-center sm:text-right">
+            <p className="text-xs text-white/60">
               Síguenos en las redes:
             </p>
             <a

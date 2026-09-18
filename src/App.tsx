@@ -26,6 +26,7 @@ import { useReviews } from './hooks/useReviews';
 import { currentReviewer } from './data/identity';
 import { isCurrentUserAdmin } from './data/admin';
 import { productIdFromUrl, syncProductUrl } from './utils/productLink';
+import { TrackingView } from './components/TrackingView';
 
 const CART_STORAGE_KEY = 'skinhealth_cart_v1';
 
@@ -248,6 +249,27 @@ export default function App() {
 
   const catalogRef = useRef<HTMLDivElement>(null);
 
+  // Vista de seguimiento ?track=CODIGO (se evalúa una vez al cargar)
+  const [trackCode] = useState<string | null>(() => {
+    try {
+      return new URLSearchParams(window.location.search).get('track');
+    } catch {
+      return null;
+    }
+  });
+
+  const exitTracking = () => {
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.delete('track');
+      window.history.replaceState(null, '', url.toString());
+    } catch {
+      // Sin historial: no hace nada.
+    }
+    window.scrollTo({ top: 0 });
+    window.location.reload();
+  };
+
   // Persist cart changes to localStorage (Section 15)
   useEffect(() => {
     try {
@@ -396,6 +418,10 @@ export default function App() {
 
       {/* Main Content Area - Note the extra bottom padding (pb-36 sm:pb-44) to ensure the floating cart NEVER obstructs content */}
       <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 pb-36 sm:pb-44">
+        {trackCode !== null ? (
+          <TrackingView codigoInicial={trackCode} onVolver={exitTracking} />
+        ) : (
+        <>
         {/* Editorial Luxury Hero Banner */}
         <HeroBanner onScrollToCatalog={scrollToCatalog} />
 
@@ -600,6 +626,8 @@ export default function App() {
             </div>
           </div>
         </section>
+        </>
+        )}
       </main>
 
       {/* SECTION 10 & 17: CARRITO FLOTANTE (ELEMENTO CENTRAL) */}

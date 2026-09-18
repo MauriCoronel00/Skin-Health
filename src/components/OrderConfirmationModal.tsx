@@ -14,6 +14,7 @@ import {
 import { CartItem } from '../types';
 import { formatGuarani, STORE_PHONE_NUMBER, STORE_PHONE_DISPLAY } from '../data/products';
 import { buildPedidoMessage } from '../data/pedidos';
+import { trackingLink } from '../data/tracking';
 
 export interface OrderDetails {
   orderId: string;
@@ -220,6 +221,13 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
 
         {/* Modal footer actions */}
         <div className="p-4 sm:p-5 bg-white border-t border-neutral-100 flex flex-col sm:flex-row items-center gap-3">
+          <a
+            href={trackingLink(order.orderId)}
+            className="w-full sm:flex-1 py-3 px-4 rounded-xl bg-[#102A43] hover:bg-[#102A43]/90 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-colors cursor-pointer"
+          >
+            <MapPin className="w-4 h-4" />
+            <span>Seguir mi pedido en vivo</span>
+          </a>
           <button
             onClick={reOpenWhatsApp}
             className="w-full sm:flex-1 py-3 px-4 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-md shadow-emerald-500/20"
