@@ -374,6 +374,8 @@ export default function App() {
         totalItems={totalItems}
         totalAmount={totalAmount}
         onOpenCart={() => setIsCartOpen(true)}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
       />
 
       {/* Main Content Area - Note the extra bottom padding (pb-36 sm:pb-44) to ensure the floating cart NEVER obstructs content */}

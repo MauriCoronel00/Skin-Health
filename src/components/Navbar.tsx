@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShoppingBag, MessageCircle } from 'lucide-react';
+import { ShoppingBag, MessageCircle, Search, X } from 'lucide-react';
 import { motion } from 'motion/react';
 import { BrandLogo } from './BrandLogo';
 import { LoginButton } from './LoginButton';
@@ -9,30 +9,54 @@ interface NavbarProps {
   totalItems: number;
   totalAmount: number;
   onOpenCart: () => void;
+  searchQuery: string;
+  onSearchChange: (value: string) => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   totalItems,
   totalAmount,
   onOpenCart,
+  searchQuery,
+  onSearchChange,
 }) => {
   return (
-    <header className="sticky top-0 z-30 bg-[#FAF8F5]/90 backdrop-blur-md border-b border-[#102A43]/10 transition-all">
-      {/* Top micro announcement bar */}
-      <div className="bg-[#102A43] text-[#FAF8F5] text-xs py-1.5 px-4 text-center font-medium tracking-wide flex items-center justify-center gap-2">
-        <span>✨ Cosmética Dermatológica & Coreana 100% Original</span>
-        <span className="hidden sm:inline">•</span>
-        <span className="hidden sm:inline">Envíos a todo el país vía WhatsApp</span>
+    <header className="sticky top-0 z-30 bg-[#FAF8F5]/95 backdrop-blur-md border-b border-[#102A43]/10 transition-all">
+      {/* Announcement bar */}
+      <div className="bg-[#102A43] text-[#FAF8F5] text-[11px] py-1.5 px-4 text-center font-medium uppercase tracking-[0.18em]">
+        Productos 100% originales • Envíos a todo Paraguay
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-18 flex items-center justify-between gap-4">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3 sm:gap-4">
         {/* Logo */}
-        <div className="cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+        <div className="cursor-pointer shrink-0" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
           <BrandLogo size="md" />
         </div>
 
+        {/* Search (desktop) */}
+        <div className="hidden md:flex flex-1 max-w-md relative">
+          <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400 pointer-events-none" />
+          <input
+            type="search"
+            value={searchQuery}
+            onChange={(e) => onSearchChange(e.target.value)}
+            placeholder="Buscar producto, marca o ingrediente…"
+            aria-label="Buscar productos"
+            className="w-full h-10 pl-10 pr-9 rounded-full bg-white border border-neutral-200 text-sm text-neutral-800 placeholder:text-neutral-400 outline-none focus:border-[#102A43]/40 focus:ring-2 focus:ring-[#102A43]/10 transition-all"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => onSearchChange('')}
+              aria-label="Limpiar búsqueda"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-700 cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+
         {/* Right Actions */}
-        <div className="flex items-center gap-2.5 sm:gap-3">
+        <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
           <LoginButton />
           {/* Direct WhatsApp help */}
           <a
@@ -79,6 +103,28 @@ export const Navbar: React.FC<NavbarProps> = ({
             )}
           </motion.button>
         </div>
+      </div>
+
+      {/* Search (mobile) */}
+      <div className="md:hidden px-4 pb-3 relative">
+        <Search className="w-4 h-4 absolute left-7 top-1/2 -translate-y-[calc(50%+6px)] text-neutral-400 pointer-events-none" />
+        <input
+          type="search"
+          value={searchQuery}
+          onChange={(e) => onSearchChange(e.target.value)}
+          placeholder="Buscar producto, marca o ingrediente…"
+          aria-label="Buscar productos"
+          className="w-full h-10 pl-10 pr-9 rounded-full bg-white border border-neutral-200 text-sm text-neutral-800 placeholder:text-neutral-400 outline-none focus:border-[#102A43]/40 focus:ring-2 focus:ring-[#102A43]/10 transition-all"
+        />
+        {searchQuery && (
+          <button
+            onClick={() => onSearchChange('')}
+            aria-label="Limpiar búsqueda"
+            className="absolute right-6 top-1/2 -translate-y-[calc(50%+6px)] text-neutral-400 hover:text-neutral-700 cursor-pointer"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        )}
       </div>
     </header>
   );
