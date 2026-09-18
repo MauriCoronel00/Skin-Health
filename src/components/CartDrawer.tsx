@@ -613,7 +613,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   )}
                 </div>
                 <p className="text-[10px] text-neutral-400">
-                  Salimos de {ENVIO_ORIGEN} ({formatGuarani(ENVIO_BASE_GS)} hasta 3 km + ₲ 3.000/km).{' '}
+                  Salimos de {ENVIO_ORIGEN} ({formatGuarani(ENVIO_BASE_GS)} hasta 3 km + ₲ 2.000/km).{' '}
                   <a
                     href={ENVIO_ORIGEN_MAPS_URL}
                     target="_blank"

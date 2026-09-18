@@ -1,7 +1,7 @@
-/** Tarifa de delivery: base 8.000 Gs (primeros 3 km) + 3.000 Gs por km adicional. */
+/** Tarifa de delivery: base 8.000 Gs (primeros 3 km) + 2.000 Gs por km adicional. */
 export const ENVIO_BASE_GS = 8000;
 export const ENVIO_KM_BASE = 3;
-export const ENVIO_EXTRA_POR_KM_GS = 3000;
+export const ENVIO_EXTRA_POR_KM_GS = 2000;
 export const ENVIO_MAX_GS = 200000;
 /** Punto de partida del delivery (lo ve el cliente para calcular su distancia). */
 export const ENVIO_ORIGEN = 'Nuestro local';

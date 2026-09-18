@@ -1,5 +1,5 @@
 -- Migración 005: costo de envío en pedidos
--- Proyecto: Skin Health Shop | Tarifa: 8.000 base (3 km) + 3.000/km adicional
+-- Proyecto: Skin Health Shop | Tarifa: 8.000 base (3 km) + 2.000/km adicional
 -- Aplicar DESPUÉS de 004.
 
 alter table public.pedidos
