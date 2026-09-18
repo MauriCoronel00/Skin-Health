@@ -31,7 +31,7 @@ export function mensajeRecuperacion(
 ): string {
   const primero = (nombre ?? '').trim().split(' ')[0] || 'hola';
   return (
-    `Hola ${primero}, soy de Skin Health 💙\n` +
+    `Hola ${primero}, somos Skin Health 💙\n` +
     `Vimos tu pedido ${codigo} por ${formatGuarani(totalGs)}:\n` +
     `${resumenItems(items)}\n\n` +
     `¿Te lo reservo? Solo pasame la captura del pago y tu dirección y te lo enviamos hoy.`
@@ -47,7 +47,7 @@ export function mensajeReactivacion(
 ): string {
   const primero = (nombre ?? '').trim().split(' ')[0] || 'hola';
   return (
-    `Hola ${primero}, soy de Skin Health 💙\n` +
+    `Hola ${primero}, somos Skin Health 💙\n` +
     `Tu pedido ${codigo} por ${formatGuarani(totalGs)} quedó pendiente:\n` +
     `${resumenItems(items)}\n\n` +
     `Si lo retomás hoy te asesoramos gratis tu rutina. ¿Te lo armamos de nuevo?`
