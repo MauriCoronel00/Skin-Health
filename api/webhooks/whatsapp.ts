@@ -47,13 +47,37 @@ export default async function handler(req: any, res: any) {
     const type = evt.type || evt.event || event;
     if (type === 'whatsapp.message.received' || event === 'whatsapp.message.received') {
       const msg = evt.data || evt.payload || evt;
-      const from = msg.from || msg.source || msg.contact?.wa_id;
+      const from = msg.from || msg.source || msg.contact?.wa_id || msg.from_number;
       const text = msg.text?.body || msg.message?.text?.body || '';
       console.log(`Inbound from ${from}: ${text}`);
 
-      // Auto-reply demo SKIN HEALTH — extend with your logic / Kapso reply via API
-      // For now just log. To auto-reply, call Kapso send API here:
-      // await fetch(`https://api.kapso.ai/meta/whatsapp/v24.0/${process.env.KAPSO_PHONE_NUMBER_ID}/messages`, {...})
+      // SKIN HEALTH auto-reply
+      if (from) {
+        const phoneNumberId = process.env.KAPSO_PHONE_NUMBER_ID || '597907523413541';
+        const apiKey = process.env.KAPSO_API_KEY;
+        if (!apiKey) {
+          console.warn('KAPSO_API_KEY missing — skipping auto-reply');
+        } else {
+          try {
+            const resp = await fetch(`https://api.kapso.ai/meta/whatsapp/v24.0/${phoneNumberId}/messages`, {
+              method: 'POST',
+              headers: {
+                'X-API-Key': apiKey,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                messaging_product: 'whatsapp',
+                to: from,
+                type: 'text',
+                text: { body: '¡Hola! 👋 Aquí Skin Health 💙✨ ¿En qué puedo ayudarte hoy?' },
+              }),
+            });
+            console.log(`Auto-reply to ${from}: ${resp.status} ${await resp.text().then(t=>t.slice(0,300))}`);
+          } catch (e) {
+            console.error('Auto-reply failed', e);
+          }
+        }
+      }
     }
   }
 
