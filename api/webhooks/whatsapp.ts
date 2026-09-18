@@ -47,8 +47,8 @@ export default async function handler(req: any, res: any) {
     const type = evt.type || evt.event || event;
     if (type === 'whatsapp.message.received' || event === 'whatsapp.message.received') {
       const msg = evt.data || evt.payload || evt;
-      const from = msg.from || msg.source || msg.contact?.wa_id || msg.from_number;
-      const text = msg.text?.body || msg.message?.text?.body || '';
+      const from = msg.from || msg.source || msg.contact?.wa_id || msg.from_number || msg.message?.from || msg.conversation?.phone_number || (evt as any).message?.from;
+      const text = msg.text?.body || msg.message?.text?.body || (evt as any).message?.text?.body || '';
       console.log(`Inbound from ${from}: ${text}`);
 
       // Respuesta directa desde Vercel (Flow Kapso no dispara para 1302822526251600 aún, webhook sí llega 200)
