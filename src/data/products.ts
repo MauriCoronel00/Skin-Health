@@ -57,5 +57,5 @@ export const formatGuarani = (amount: number): string => {
   return `₲ ${amount.toLocaleString('es-PY')}`;
 };
 
-export const STORE_PHONE_NUMBER = '595972800993';
-export const STORE_PHONE_DISPLAY = '+595 972 800 993';
+export const STORE_PHONE_NUMBER = '595976659748';
+export const STORE_PHONE_DISPLAY = '+595 976 659 748';

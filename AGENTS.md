@@ -54,7 +54,7 @@ created in-app, paid by bank transfer, confirmed via WhatsApp. Prices in PYG.
 
 ## Marketing (do not mix with app code)
 
-- CTA is always the store link (link in bio); WhatsApp (+595 972 800 993) is for
+- CTA is always the store link (link in bio); WhatsApp (+595 976 659 748) is for
   advice/closing only. Prices always in Gs.
 - `redes/` holds calendar, closing script (`CIERRE.md`), n8n template.
   n8n has no MCP access in this setup — credentials/publish happen in n8n UI.

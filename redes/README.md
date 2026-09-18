@@ -1,6 +1,6 @@
 # Redes Skin Health — calendario 30 días + ideas que venden
 
-Pedidos: https://skin-health-three.vercel.app/ (link en bio). Asesoría: WhatsApp +595 972 800 993. Precio en Gs siempre.
+Pedidos: https://skin-health-three.vercel.app/ (link en bio). Asesoría: WhatsApp +595 976 659 748. Precio en Gs siempre.
 
 ## 7 ideas exactas (empezar aquí)
 1. Reel "Rutina acné 3 pasos": Effaclar Gel 219.000 + Salicylic 149.000 + CeraVe Foaming 249.000. Hook: "3 pasos, 0 filtro". CTA: pedí tu rutina en la tienda (link bio).
