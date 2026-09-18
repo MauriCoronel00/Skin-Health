@@ -18,13 +18,13 @@ export default async function handler(req: any, res: any) {
   const raw = await getRawBody(req);
   const signature = req.headers['x-webhook-signature'] as string | undefined;
   const event = req.headers['x-webhook-event'] as string | undefined;
-  const secret = process.env.KAPSO_WEBHOOK_SECRET;
+  const secrets = (process.env.KAPSO_WEBHOOK_SECRET || "").split(",").map(s=>s.trim()).filter(Boolean);
 
-  // Verify signature if secret configured (SKILL: references/webhooks-overview.md:35)
-  if (secret && signature) {
-    const expected = crypto.createHmac('sha256', secret).update(raw).digest('hex');
-    if (expected !== signature) {
-      console.error('Invalid webhook signature', { event, expected: expected.slice(0,8)+'…' });
+  // Verify signature if secret configured (SKILL: references/webhooks-overview.md:35) — soporta múltiples secrets (sandbox + producción)
+  if (secrets.length && signature) {
+    const valid = secrets.some(secret => crypto.createHmac('sha256', secret).update(raw).digest('hex') === signature);
+    if (!valid) {
+      console.error('Invalid webhook signature', { event, secrets: secrets.length });
       return res.status(401).send('Invalid signature');
     }
   }
