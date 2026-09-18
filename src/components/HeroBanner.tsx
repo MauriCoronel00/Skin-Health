@@ -67,7 +67,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog }) => 
               ))}
             </span>
             <span className="text-xs sm:text-sm text-white/85 font-medium">
-              4.8 promedio • +3.500 reseñas verificadas
+              4.8 promedio • +600 reseñas
             </span>
           </motion.div>
 
