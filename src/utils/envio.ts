@@ -3,6 +3,9 @@ export const ENVIO_BASE_GS = 8000;
 export const ENVIO_KM_BASE = 3;
 export const ENVIO_EXTRA_POR_KM_GS = 3000;
 export const ENVIO_MAX_GS = 200000;
+/** Punto de partida del delivery (lo ve el cliente para calcular su distancia). */
+export const ENVIO_ORIGEN = 'Nuestro local';
+export const ENVIO_ORIGEN_MAPS_URL = 'https://maps.app.goo.gl/zrNpMzAYC9oZBLLh8';
 
 /** Costo de envío en Gs para una distancia en km. Null si la distancia es inválida. */
 export function calcularEnvio(distKm: number | null | undefined): number | null {

@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 import { CartItem } from '../types';
 import { formatGuarani } from '../data/products';
-import { calcularEnvio, ENVIO_BASE_GS } from '../utils/envio';
+import { calcularEnvio, ENVIO_BASE_GS, ENVIO_ORIGEN, ENVIO_ORIGEN_MAPS_URL } from '../utils/envio';
 import { trackBeginCheckout } from '../utils/analytics';
 import { OrderDetails } from './OrderConfirmationModal';
 import { useAuth } from '../contexts/AuthContext';
@@ -613,7 +613,16 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   )}
                 </div>
                 <p className="text-[10px] text-neutral-400">
-                  Base {formatGuarani(ENVIO_BASE_GS)} hasta 3 km + ₲ 3.000 por km adicional.
+                  Salimos de {ENVIO_ORIGEN} ({formatGuarani(ENVIO_BASE_GS)} hasta 3 km + ₲ 3.000/km).{' '}
+                  <a
+                    href={ENVIO_ORIGEN_MAPS_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline hover:text-neutral-600"
+                  >
+                    Medí tu distancia en Maps
+                  </a>
+                  . Si no sabés, dejalo en 0 y lo coordinamos por WhatsApp.
                 </p>
                 <div className="flex justify-between items-baseline pt-1.5 border-t border-neutral-100">
                   <span className="font-semibold text-sm sm:text-base text-neutral-900">
