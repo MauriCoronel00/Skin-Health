@@ -5,6 +5,7 @@ import {
   Package,
   Boxes,
   MessageSquareText,
+  MessageCircle,
   CheckCircle2,
   Truck,
   Home,
@@ -31,6 +32,11 @@ import { ProductReview } from '../types';
 import { fetchAllReviews, setReviewStatus } from '../data/reviews';
 import { formatGuarani } from '../data/products';
 import { formatReviewDate } from '../utils/reviewsStorage';
+import {
+  linkRecuperacion,
+  mensajeReactivacion,
+  mensajeRecuperacion,
+} from '../utils/recuperacion';
 
 interface AdminPanelProps {
   isOpen: boolean;
@@ -480,7 +486,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
                         {p.confirmado_por && (
                           <p className="text-neutral-500">✅ Confirmado por: {p.confirmado_por}</p>
                         )}
-                        <div className="flex items-center gap-2 pt-1">
+                        <div className="flex items-center gap-2 pt-1 flex-wrap">
                           {nextActions(p.estado).map((a) => (
                             <button
                               key={a.to}
@@ -495,6 +501,37 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
                               <span>{a.label}</span>
                             </button>
                           ))}
+                          {(p.estado === 'pendiente' || p.estado === 'cancelado') &&
+                            (() => {
+                              const items = itemsCache[p.id] ?? [];
+                              const msg =
+                                p.estado === 'pendiente'
+                                  ? mensajeRecuperacion(
+                                      p.cliente_nombre,
+                                      p.codigo_pedido ?? p.id.slice(0, 8),
+                                      p.total_gs,
+                                      items
+                                    )
+                                  : mensajeReactivacion(
+                                      p.cliente_nombre,
+                                      p.codigo_pedido ?? p.id.slice(0, 8),
+                                      p.total_gs,
+                                      items
+                                    );
+                              const link = linkRecuperacion(p.cliente_telefono, msg);
+                              if (!link) return null;
+                              return (
+                                <a
+                                  href={link}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="px-3 py-1.5 rounded-xl bg-[#25D366] text-white text-xs font-semibold flex items-center gap-1.5 hover:bg-[#20bd5a] cursor-pointer"
+                                >
+                                  <MessageCircle className="w-3.5 h-3.5" />
+                                  <span>Reclamar</span>
+                                </a>
+                              );
+                            })()}
                         </div>
                         {payingId === p.id && (
                           <div className="pt-3 mt-1 border-t border-neutral-100 space-y-2">
