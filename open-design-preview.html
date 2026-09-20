@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
@@ -19,49 +19,54 @@ tailwind.config = {
         serif: ['"Playfair Display"', 'Georgia', 'serif'],
       },
       colors: {
-        skinBg: '#FFFFFF',
-        skinText: '#1A202C',
-        skinNavy: '#1e3a5f',
-        skinLight: '#a8c5e0',
-        pureGreen: '#5a6b5a',
-        pureDark: '#1e2e28',
+        ink: '#0F1F33',
+        glacier: '#E8F2FA',
+        paper: '#FFFFFF',
+        alabaster: '#F6F4F0',
+        sage: '#7FA094',
+        skinNavy: '#0F1F33',
       }
     }
   }
 }
 </script>
 <style>
-  body{ background:#FFFFFF; color:#1A202C; font-family:'Plus Jakarta Sans', system-ui, sans-serif; }
+  body{ background:#FFFFFF; color:#0F1F33; font-family:'Plus Jakarta Sans', system-ui, sans-serif; }
   .font-serif{ font-family:'Playfair Display', Georgia, serif; }
   .scrollbar-none::-webkit-scrollbar{display:none}
   .scrollbar-none{ -ms-overflow-style:none; scrollbar-width:none }
-  /* subtle card hover */
-  .cat-card:hover img{ transform: scale(1.04) }
-  .cat-card img{ transition: transform 500ms cubic-bezier(0.23,1,0.32,1) }
-  /* llamativa: animaciones CRO */
-  @keyframes floatBadge{ 0%,100%{ transform: translateY(0)} 50%{ transform: translateY(-4px)} }
-  @keyframes pulseSoft{ 0%,100%{ transform: scale(1); opacity:1} 50%{ transform: scale(1.05); opacity:0.9} }
-  @keyframes flyToCart{ 0%{ transform: translate(0,0) scale(1); opacity:1} 100%{ transform: translate(40vw,-40vh) scale(0.2); opacity:0} }
-  .float-badge{ animation: floatBadge 3s ease-in-out infinite }
-  .pulse-badge{ animation: pulseSoft 2s ease-in-out infinite }
-  .cta-pulse:hover{ transform: scale(1.02); transition: transform 150ms ease }
-  .price-accent{ color:#0E4A6D; font-weight:800 }
-  .zoom-lupa{ transition: transform 300ms ease; cursor: zoom-in }
-  .zoom-lupa:hover{ transform: scale(1.08) }
+  /* editorial — intentional quiet */
+  .cat-card:hover img{ transform: scale(1.02) }
+  .cat-card img{ transition: transform 600ms cubic-bezier(0.22,1,0.36,1) }
+  @keyframes heroReveal{ from{ opacity:0; transform: translateY(10px)} to{ opacity:1; transform: translateY(0)} }
+  @keyframes floatBadge{ 0%,100%{ transform: translateY(0)} 50%{ transform: translateY(-3px)} }
+  .hero-reveal{ animation: heroReveal 700ms cubic-bezier(0.22,1,0.36,1) both }
+  .float-badge{ animation: floatBadge 4s ease-in-out infinite }
+  .zoom-lupa{ transition: transform 400ms ease; cursor: zoom-in }
+  .zoom-lupa:hover{ transform: scale(1.06) }
   .parallax-hero{ will-change: transform }
+  @media (prefers-reduced-motion: reduce){ .hero-reveal,.float-badge{ animation:none } }
 </style>
 </head>
 <body class="min-h-screen bg-white" style="background:#ffffff !important; color-scheme: light;">
-<!-- TRUST BAR — CRO fix #1: 100% Original es lo #1 en PY -->
-<div class="w-full bg-[#1e3a5f] text-white py-2.5 px-4">
-  <div class="max-w-[1280px] mx-auto flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-[10px] sm:text-[11px] font-semibold tracking-[0.12em] uppercase">
-    <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> 100% ORIGINAL • Lote verificable</span>
-    <span class="hidden sm:inline opacity-30">•</span>
-    <span>Envío 24-48hs a todo Paraguay</span>
-    <span class="hidden sm:inline opacity-30">•</span>
-    <span class="flex items-center gap-1.5">Asesoría <a href="https://wa.me/595976659748" target="_blank" class="underline decoration-white/30 hover:decoration-white">+595 976 659 748</a></span>
+<!-- TRUST BAR — quiet, sentence case, not ALL CAPS -->
+<div class="w-full bg-[#0F1F33] text-white py-2.5 px-4">
+  <div class="max-w-[1280px] mx-auto flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-[11px] font-medium">
+    <span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-[#7FA094]"></span> 100% originales</span>
+    <span class="hidden sm:inline opacity-25">—</span>
+    <span>Envío 24–48 h a todo Paraguay</span>
+    <span class="hidden sm:inline opacity-25">—</span>
+    <span>Asesoría <a href="https://wa.me/595976659748" target="_blank" class="underline decoration-white/30 hover:decoration-white">+595 976 659 748</a></span>
   </div>
 </div>
+
+<!-- TICKER — atrapa atención mobile -->
+<div class="w-full bg-[#E8F2FA] border-y border-[#0F1F33]/[0.06] overflow-hidden">
+  <div class="whitespace-nowrap animate-[ticker_18s_linear_infinite] flex items-center gap-8 py-2 text-[11px] font-medium text-[#0F1F33]/80">
+    <span>Últimas 24 h: 12 rutinas armadas</span><span class="opacity-30">•</span><span>Envío hoy si pedís antes de las 16 h</span><span class="opacity-30">•</span><span>100% original, lote verificable</span><span class="opacity-30">•</span><span>Asesoría incluida por WhatsApp</span><span class="opacity-30">•</span><span>Últimas 24 h: 12 rutinas armadas</span><span class="opacity-30">•</span><span>Envío hoy si pedís antes de las 16 h</span>
+  </div>
+</div>
+<style>@keyframes ticker{ from{ transform: translateX(0)} to{ transform: translateX(-50%)} }</style>
 
 <!-- NAVBAR - PURELIS clean + Skin Health logo -->
 <nav class="sticky top-0 z-40 bg-[#FAF8F5]/90 backdrop-blur-xl border-b border-[#102A43]/[0.07]">
@@ -116,23 +121,19 @@ tailwind.config = {
   <div class="relative overflow-hidden rounded-[28px] sm:rounded-[36px] bg-white border border-[#102A43]/[0.06] shadow-[0_20px_60px_rgba(16,42,67,0.06)]">
     <img src="./public/hero-mujer.jpg" alt="Fondo hero mujer" class="parallax-hero absolute inset-0 w-full h-full object-cover" id="heroImg" />
     <div class="absolute inset-0 bg-white/30"></div>
-    <div class="float-badge absolute top-4 right-4 sm:top-6 sm:right-6 bg-white/95 backdrop-blur border border-black/5 rounded-full px-3 py-1.5 sm:px-4 sm:py-2 flex items-center gap-2 shadow-lg text-[11px] sm:text-xs font-bold text-[#0E4A6D]">
-      <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> 100% Original • Verificado
+    <div class="float-badge absolute top-4 right-4 sm:top-6 sm:right-6 bg-white/95 backdrop-blur border border-black/5 rounded-full px-3 py-1.5 sm:px-4 sm:py-2 flex items-center gap-2 shadow-lg text-[11px] sm:text-xs font-bold text-[#0F1F33]">
+      <span class="w-2 h-2 rounded-full bg-[#0E4A6D]"></span> Pensado para vos <span class="text-[#0E4A6D]">💙</span>
     </div>
     <div class="relative grid lg:grid-cols-[1.05fr_0.95fr] min-h-[520px] sm:min-h-[560px]">
       <!-- Left copy - texto principal sobre foto completa -->
       <div class="px-6 sm:px-10 lg:px-14 py-10 sm:py-12 lg:py-14 flex flex-col justify-center order-2 lg:order-1">
-        <p class="inline-flex items-center gap-2 text-[11px] tracking-[0.18em] uppercase font-semibold text-[#5a6b5a] mb-4">
-          <span class="w-6 h-px bg-[#5a6b5a]/40"></span>
-          CIENCIA Y RESULTADOS
-        </p>
-        <h1 class="font-serif text-[30px] sm:text-[42px] lg:text-[48px] font-[600] leading-[0.95] tracking-tight text-[#1A202C]">
-          Rutinas reales.<br/>Piel real.<br/><span class="text-[#1e3a5f]">Resultados en 21 días.</span>
+
+        <h1 class="hero-reveal font-serif text-[32px] sm:text-[44px] lg:text-[50px] font-[600] leading-[0.92] tracking-tight text-[#0F1F33]">
+          Rutinas reales, piel real, resultados en 21 días
         </h1>
-        <p class="mt-3 text-sm sm:text-[15px] leading-relaxed text-[#1A202C]/65 max-w-[46ch]">
-          Productos importados, lote verificable. Asesoría incluida por especialistas — 600+ paraguayas ya armaron su rutina.
+        <p class="mt-4 text-[15px] leading-relaxed text-[#0F1F33]/65 max-w-[44ch]">
+          Productos importados con lote verificable y asesoría de especialista. Más de 600 rutinas armadas en Paraguay.
         </p>
-        <p class="mt-2 text-[11px] tracking-[0.12em] uppercase font-semibold text-[#1e3a5f]/60">SKIN HEALTH • 100% Original</p>
 
         <!-- CTAs -->
         <div class="mt-7 flex flex-wrap items-center gap-3">
@@ -205,83 +206,8 @@ tailwind.config = {
       </div>
     </div>
   </div>
-</section>
-
-<!-- SHOP BY CATEGORY - PURELIS 4 cards -->
-<section id="categorias" class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 mt-10 sm:mt-14">
-  <div class="flex items-end justify-between gap-4 mb-6">
-    <div>
-      <h2 class="font-serif text-[28px] sm:text-3xl font-semibold tracking-tight text-[#1A202C]">Comprar por categoría</h2>
-      <p class="text-sm text-[#1A202C]/60 mt-1">Cuatro colecciones curadas. Datos reales: <span id="catCountLabel">6 categorías • 20 productos • Supabase activo=true</span> — Recomendación de rutinas incluida</p>
-    </div>
-    <a href="#todos-productos" id="verTodoBtn" class="inline-flex text-sm font-semibold underline underline-offset-4 decoration-[#5a6b5a]/30 hover:decoration-[#5a6b5a]">Ver los 20 productos →</a>
-  </div>
-
-  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-    <!-- Card 1: Skincare -> Hidratar -->
-    <div onclick="showTodosProductos('hydrate')" class="cat-card group relative overflow-hidden rounded-[24px] bg-white border border-[#102A43]/[0.08] shadow-[0_2px_12px_rgba(30,58,95,0.06)] hover:shadow-lg transition-all cursor-pointer">
-      <div class="aspect-[4/5] bg-[#f6f1e8] relative overflow-hidden flex items-center justify-center p-4">
-        <img src="https://utiwzektfctdfyhgqode.supabase.co/storage/v1/object/public/Imagenes-Productos/skin-health-imagenes/cerave-moisturizing-cream-340g.avif" alt="Skincare - Hidratar" class="w-full h-full object-contain mix-blend-multiply" />
-        <span class="absolute top-3 left-3 bg-white/90 backdrop-blur text-[11px] font-semibold px-2.5 py-1 rounded-full border border-black/5">5 productos</span>
-      </div>
-      <div class="p-4">
-        <div class="text-[11px] tracking-[0.16em] uppercase font-semibold text-[#5a6b5a]">Skincare</div>
-        <h3 class="font-serif text-lg font-semibold leading-none mt-1">Hidratar</h3>
-        <p class="text-xs text-neutral-500 mt-1 line-clamp-1">Fórmulas para restaurar agua y luminosidad</p>
-        <a href="#" class="mt-3 inline-flex items-center gap-1.5 text-xs font-bold tracking-wide uppercase text-[#1A202C] group-hover:gap-2 transition-all">Comprar ahora <span>→</span></a>
-      </div>
-    </div>
-    <!-- Card 2: Haircare -> Limpiar (re-mapped) -->
-    <div onclick="showTodosProductos('cleanse')" class="cat-card group relative overflow-hidden rounded-[24px] bg-white border border-[#102A43]/[0.08] shadow-[0_2px_12px_rgba(30,58,95,0.06)] hover:shadow-lg transition-all cursor-pointer">
-      <div class="aspect-[4/5] bg-[#eef3ee] relative overflow-hidden flex items-center justify-center p-4">
-        <img src="https://utiwzektfctdfyhgqode.supabase.co/storage/v1/object/public/Imagenes-Productos/skin-health-imagenes/cerave-hydrating-facial-cleanser-355ml.jpg" alt="Haircare - Limpiar" class="w-full h-full object-contain mix-blend-multiply" />
-        <span class="absolute top-3 left-3 bg-white/90 backdrop-blur text-[11px] font-semibold px-2.5 py-1 rounded-full border border-black/5">7 productos</span>
-      </div>
-      <div class="p-4">
-        <div class="text-[11px] tracking-[0.16em] uppercase font-semibold text-[#5a6b5a]">Cleanse</div>
-        <h3 class="font-serif text-lg font-semibold leading-none mt-1">Limpiar</h3>
-        <p class="text-xs text-neutral-500 mt-1 line-clamp-1">Limpieza purificante y control de poros</p>
-        <a href="#" class="mt-3 inline-flex items-center gap-1.5 text-xs font-bold tracking-wide uppercase text-[#1A202C] group-hover:gap-2 transition-all">Comprar ahora <span>→</span></a>
-      </div>
-    </div>
-    <!-- Card 3: Body -> Proteger -->
-    <div onclick="showTodosProductos('protect')" class="cat-card group relative overflow-hidden rounded-[24px] bg-white border border-[#102A43]/[0.08] shadow-[0_2px_12px_rgba(30,58,95,0.06)] hover:shadow-lg transition-all cursor-pointer">
-      <div class="aspect-[4/5] bg-[#fdf0e8] relative overflow-hidden flex items-center justify-center p-4">
-        <img src="https://utiwzektfctdfyhgqode.supabase.co/storage/v1/object/public/Imagenes-Productos/skin-health-imagenes/skin1004-madagascar-centella-hyalu-cica-water-fit-sun-serum-50ml.jpeg" alt="Body - Proteger" class="w-full h-full object-contain mix-blend-multiply" />
-        <span class="absolute top-3 left-3 bg-white/90 backdrop-blur text-[11px] font-semibold px-2.5 py-1 rounded-full border border-black/5">2 productos</span>
-      </div>
-      <div class="p-4">
-        <div class="text-[11px] tracking-[0.16em] uppercase font-semibold text-[#5a6b5a]">Body & Sun</div>
-        <h3 class="font-serif text-lg font-semibold leading-none mt-1">Proteger</h3>
-        <p class="text-xs text-neutral-500 mt-1 line-clamp-1">Protección solar avanzada FPS 50+</p>
-        <a href="#" class="mt-3 inline-flex items-center gap-1.5 text-xs font-bold tracking-wide uppercase text-[#1A202C] group-hover:gap-2 transition-all">Comprar ahora <span>→</span></a>
-      </div>
-    </div>
-    <!-- Card 4: Makeup -> Iluminar / Calmar -->
-    <div onclick="showTodosProductos('brighten')" class="cat-card group relative overflow-hidden rounded-[24px] bg-white border border-[#102A43]/[0.08] shadow-[0_2px_12px_rgba(30,58,95,0.06)] hover:shadow-lg transition-all cursor-pointer">
-      <div class="aspect-[4/5] bg-[#f7eef3] relative overflow-hidden flex items-center justify-center p-4">
-        <img src="https://utiwzektfctdfyhgqode.supabase.co/storage/v1/object/public/Imagenes-Productos/skin-health-imagenes/la-roche-posay-pure-vitamin-c10-serum-30ml.jpeg" alt="Makeup - Iluminar" class="w-full h-full object-contain mix-blend-multiply" />
-        <span class="absolute top-3 left-3 bg-white/90 backdrop-blur text-[11px] font-semibold px-2.5 py-1 rounded-full border border-black/5">4 productos</span>
-      </div>
-      <div class="p-4">
-        <div class="text-[11px] tracking-[0.16em] uppercase font-semibold text-[#5a6b5a]">Glow</div>
-        <h3 class="font-serif text-lg font-semibold leading-none mt-1">Iluminar</h3>
-        <p class="text-xs text-neutral-500 mt-1 line-clamp-1">Vitamina C, exfoliantes y antioxidantes</p>
-        <a href="#" class="mt-3 inline-flex items-center gap-1.5 text-xs font-bold tracking-wide uppercase text-[#1A202C] group-hover:gap-2 transition-all">Comprar ahora <span>→</span></a>
-      </div>
-    </div>
-  </div>
-
-  <!-- Real categories strip (6 categorias) -->
-  <div class="mt-6 flex items-center gap-2 overflow-x-auto scrollbar-none pb-1 -mx-4 px-4 sm:mx-0 sm:px-0">
-    <span class="text-xs font-semibold text-[#102A43]/60 whitespace-nowrap mr-1">Categorías reales (Supabase):</span>
-    <button onclick="showTodosProductos('todos')" class="cat-filter active px-3 py-1.5 rounded-full bg-[#1A202C] text-white text-xs font-medium whitespace-nowrap">Todos (20)</button>
-    <button onclick="showTodosProductos('hydrate')" class="cat-filter px-3 py-1.5 rounded-full bg-white border border-black/10 text-xs whitespace-nowrap">Hidratar</button>
-    <button onclick="showTodosProductos('calm')" class="cat-filter px-3 py-1.5 rounded-full bg-white border border-black/10 text-xs whitespace-nowrap">Calmar</button>
-    <button onclick="showTodosProductos('brighten')" class="cat-filter px-3 py-1.5 rounded-full bg-white border border-black/10 text-xs whitespace-nowrap">Iluminar</button>
-    <button onclick="showTodosProductos('cleanse')" class="cat-filter px-3 py-1.5 rounded-full bg-white border border-black/10 text-xs whitespace-nowrap">Limpiar</button>
-    <button onclick="showTodosProductos('protect')" class="cat-filter px-3 py-1.5 rounded-full bg-white border border-black/10 text-xs whitespace-nowrap">Proteger</button>
-    <span class="px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs whitespace-nowrap">+ “Todos” virtual</span>
+  <div class="flex justify-end mt-3">
+    <a href="https://wa.me/595976659748?text=Hola%20Skin%20Health%20quiero%20dejar%20mi%20opinión" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#0F1F33] text-white text-xs font-semibold hover:bg-black transition-colors">Déjanos tu opinión →</a>
   </div>
 </section>
 
@@ -315,16 +241,16 @@ tailwind.config = {
 <section id="bestsellers" class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 mt-10 sm:mt-14">
   <div class="grid lg:grid-cols-[380px_1fr] gap-6">
     <!-- Loyalty card dark green -->
-    <div class="rounded-[28px] bg-[#E0F2FE] border border-[#0E4A6D]/10 p-7 sm:p-8 flex flex-col justify-between min-h-[420px] relative overflow-hidden shadow-sm">
+    <div class="rounded-[28px] bg-[#E0F2FE] border border-[#0E4A6D]/10 p-5 sm:p-8 flex flex-col justify-between min-h-0 sm:min-h-[420px] max-w-[420px] sm:max-w-none mx-auto sm:mx-0 w-full relative overflow-hidden shadow-sm">
       <div class="absolute -top-10 -right-10 w-20 h-20 rounded-full bg-white border border-[#0E4A6D]/10 shadow-sm"></div>
       <div class="absolute -bottom-8 -left-8 w-20 h-20 rounded-full bg-white border border-[#0E4A6D]/10 shadow-sm"></div>
       <div class="relative text-center">
-        <div class="w-full flex flex-col items-center bg-[#faf8f5] rounded-2xl p-4 sm:p-6 border border-[#1e3a5f]/5">
-          <img src="./public/logo-skin-health.png" alt="Skin Health" class="w-16 h-16 sm:w-20 sm:h-20 object-contain" />
+        <div class="w-full flex flex-col items-center py-2">
+          <img src="./public/logo-skin-health.png" alt="Skin Health" class="w-14 h-14 sm:w-20 sm:h-20 object-contain" />
           <div class="font-serif text-[18px] sm:text-[22px] font-semibold tracking-[0.08em] text-[#0E4A6D] mt-2 sm:mt-3">SKIN HEALTH</div>
-          <div class="text-[10px] sm:text-[11px] tracking-wide text-[#0E4A6D]/70 mt-1">el arte del cuidado de la piel.</div>
+          <div class="text-[10px] sm:text-[11px] tracking-wide text-[#0E4A6D] mt-1">el arte del cuidado de la piel.</div>
         </div>
-        <h3 class="font-serif text-[22px] sm:text-[26px] font-semibold leading-tight mt-4 text-[#0E4A6D]">💎 Suscripción Premium</h3>
+        <h3 class="font-serif text-[20px] sm:text-[26px] font-semibold leading-tight mt-4 text-[#0E4A6D]">💎 Suscripción Premium</h3>
         <p class="text-sm text-[#0E4A6D]/80 mt-3 leading-relaxed">Acceso exclusivo para cuidar tu piel sin equivocarte. Asesoría directa con especialista y beneficios pensados para vos.</p>
         <ul class="mt-5 space-y-2.5 text-sm text-[#0E4A6D]">
           <li class="flex items-center gap-2"><span class="w-6 h-6 rounded-full bg-[#0E4A6D]/10 flex items-center justify-center text-xs text-[#0E4A6D]">🔹</span> Rutina 100% personalizada + seguimiento mensual</li>
@@ -334,7 +260,7 @@ tailwind.config = {
         </ul>
       </div>
       <div class="relative mt-8">
-        <a href="https://wa.me/595976659748?text=Hola%20Skin%20Health%20quiero%20la%20suscripcion%20Premium%2055.000Gs" target="_blank" class="inline-flex items-center justify-center w-full py-3.5 rounded-full bg-[#0E4A6D] text-white text-sm font-bold hover:bg-[#08344f] transition-colors">💙 Suscribirme — 55.000 Gs./mes</a>
+        <a href="https://wa.me/595976659748?text=Hola%20Skin%20Health%20quiero%20la%20suscripcion%20Premium%2055.000Gs" target="_blank" class="inline-flex items-center justify-center w-full py-3 sm:py-3.5 rounded-full bg-[#0E4A6D] text-white text-sm font-bold hover:bg-[#08344f] transition-colors">💙 Suscribirme — 55.000 Gs./mes</a>
         <p class="text-center text-[11px] text-[#0E4A6D]/70 mt-2">Cancelás cuando quieras. Atención directa por WhatsApp.</p>
       </div>
     </div>
@@ -589,13 +515,13 @@ function renderRutinas(){
   const grid = document.getElementById('rutinasGrid');
   if(!grid) return;
   const rutinas = [
-    { nombre:"Rutina Piel Grasa con Acné", pasos:["Limpieza","Tratamiento acné","Hidratación ligera","Protección solar"], queries:["limpiador","salicylic acido","hidratante","protector solar"] },
-    { nombre:"Rutina Manchas y Luminosidad", pasos:["Limpieza suave","Despigmante","Hidratación","Protección"], queries:["limpiador","alpha arbutin","hidratante","protector solar"] },
-    { nombre:"Rutina Piel Seca Sensible", pasos:["Limpieza hidratante","Calmante","Hidratación intensa","Protección"], queries:["hydrating cleanser","centella","moisturizing cream","hyalu cica"] },
+    { nombre:"Rutina Piel grasa con acné", pasos:["Limpieza","Tratamiento acné","Hidratación ligera","Protección solar"], ids:["laroche-effaclar-gel","ordinary-salicylic-acid-solution","cerave-daily-moisturizing-lotion","laroche-anthelios-oil-control"] },
+    { nombre:"Rutina Manchas y Luminosidad", pasos:["Limpieza suave","Despigmante","Hidratación","Protección"], ids:["cerave-hydrating-facial-cleanser","ordinary-alpha-arbutin-ha","ordinary-hyaluronic-acid","centella-hyalu-cica-sun-serum"] },
+    { nombre:"Rutina Piel Seca Sensible", pasos:["Limpieza hidratante","Calmante","Hidratación intensa","Protección"], ids:["ordinary-squalane-cleanser","madagascar-centella-ampoule","cerave-moisturizing-cream","centella-hyalu-cica-sun-serum"] },
   ];
   grid.innerHTML = rutinas.map((r, idx) => {
-    const productos = r.queries.map((q, i) => {
-      const match = PRODUCTOS.find(p => p.nombre.toLowerCase().includes(q.split(' ')[0].toLowerCase()) || p.categoria_id.includes(q.split(' ')[0].slice(0,4)) ) || PRODUCTOS[i % PRODUCTOS.length];
+    const productos = r.ids.map((id, i) => {
+      const match = PRODUCTOS.find(p => p.id===id) || PRODUCTOS[i % PRODUCTOS.length];
       return `<div onclick="openProductModal('${match.id}')" class="flex items-center gap-3 p-4 sm:p-3 bg-white rounded-xl border border-black/5 cursor-pointer hover:border-[#1e3a5f]/20">
         <img src="${match.imagen_url}" alt="${match.nombre} - ${match.marca} ${match.volumen || ''}" class="w-12 h-12 object-contain bg-[#fafafa] rounded-lg" />
         <div class="flex-1">
@@ -736,6 +662,8 @@ window.makeRutinasClickable = () => {
     }catch(e){}
   })();
 
+window.quizData={};window.quizPick=function(s,v){window.quizData['step'+s]=v;document.getElementById('quizStep'+s).classList.add('hidden');var n=document.getElementById('quizStep'+(s+1));if(n)n.classList.remove('hidden');};window.quizFinish=function(t){window.quizData.tipo=t;document.getElementById('quizStep3').classList.add('hidden');var piel=window.quizData.step1||'mixta';var prob=window.quizData.step2||'manchas';var txt='Piel '+piel+', preocupacion '+prob+', rutina '+t+' - 3 productos reales: limpiador + tratamiento + proteccion. Te armamos la lista exacta por WhatsApp.';document.getElementById('quizText').textContent=txt;document.getElementById('quizWa').href='https://wa.me/595976659748?text='+encodeURIComponent('Hola Skin Health, hice el quiz: piel '+piel+', me preocupa '+prob+', quiero rutina '+t+' - que me recomiendan?');document.getElementById('quizResult').classList.remove('hidden');};window.quizReset=function(){window.quizData={};document.getElementById('quizResult').classList.add('hidden');document.getElementById('quizStep2').classList.add('hidden');document.getElementById('quizStep3').classList.add('hidden');document.getElementById('quizStep1').classList.remove('hidden');};
+window.opRating=0;document.querySelectorAll('#opStars span').forEach(s=>{s.addEventListener('click',()=>{window.opRating=parseInt(s.dataset.v);document.querySelectorAll('#opStars span').forEach((e,i)=>e.style.opacity=i<window.opRating?'1':'0.3');document.getElementById('opStarsLabel').textContent=window.opRating+' / 5';});});document.getElementById('opSubmit')?.addEventListener('click', async()=>{const txt=document.getElementById('opText').value.trim();const st=document.getElementById('opStatus');if(!window.opRating){st.textContent='Elegí una calificación';return;}if(txt.length<10){st.textContent='Escribí al menos 10 caracteres';return;}const supa=window.supabase?.createClient ? window.supabase.createClient('https://utiwzektfctdfyhgqode.supabase.co','sb_publishable_r25cWAmCVO5PDGKvCqe_VA_5SX0yqhD') : null;if(supa){const {data:{user}}=await supa.auth.getUser();if(!user){st.textContent='Iniciando sesión con Gmail...';const {error}=await supa.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.href}});if(error) st.textContent=error.message;return;}}st.textContent='¡Gracias! Tu opinión quedará como verificada tras revisión.';document.getElementById('opText').value='';});
 // Daemon health check
 (async()=>{
   const banner = document.getElementById('daemonBanner');
@@ -825,6 +753,26 @@ document.getElementById('bsNext')?.addEventListener('click', ()=> document.getEl
 </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
