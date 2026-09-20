@@ -27,6 +27,7 @@ import { currentReviewer } from './data/identity';
 import { isCurrentUserAdmin } from './data/admin';
 import { productIdFromUrl, syncProductUrl } from './utils/productLink';
 import { TrackingView } from './components/TrackingView';
+import { PWAInstallPrompt } from './components/PWAInstallPrompt';
 
 const CART_STORAGE_KEY = 'skinhealth_cart_v1';
 
@@ -415,6 +416,8 @@ export default function App() {
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
       />
+
+      <PWAInstallPrompt />
 
       {/* Main Content Area - Note the extra bottom padding (pb-36 sm:pb-44) to ensure the floating cart NEVER obstructs content */}
       <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 pb-36 sm:pb-44">

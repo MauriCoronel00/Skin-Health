@@ -54,7 +54,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
                 // filtra por marca via evento
                 window.dispatchEvent(new CustomEvent('filterByBrand', { detail: brand.id }));
               }}
-              className="shrink-0 w-16 h-16 rounded-full bg-white border border-[#102A43]/10 flex items-center justify-center hover:border-[#E8E6FF] hover:bg-[#E8E6FF]/30 shadow-xs transition-colors"
+              className="shrink-0 w-16 h-16 rounded-full bg-white border border-[#102A43]/10 flex items-center justify-center hover:border-[#dbeafe] hover:bg-[#dbeafe]/30 shadow-xs transition-colors"
             >
               <span className="text-[10px] font-bold text-[#102A43] text-center leading-tight">{brand.label}</span>
             </button>
@@ -89,7 +89,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
                 className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
                   isSelected
                     ? 'bg-white/15 text-white'
-                    : 'bg-[#E8E6FF] text-[#102A43]'
+                    : 'bg-[#dbeafe] text-[#102A43]'
                 }`}
               >
                 {getIcon(cat.icon)}
