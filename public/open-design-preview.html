@@ -5542,6 +5542,7 @@ tailwind.config = {
   </div>
 </section>
 
+<!-- MARCAS - carrusel interactivo --><section class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 mt-6"><div class="flex items-center gap-3 overflow-x-auto scrollbar-none pb-2"><button onclick="filterByBrand('CeraVe')" class="shrink-0 w-16 h-16 rounded-full bg-white border border-[#102A43]/10 flex items-center justify-center hover:border-[#102A43]/30 shadow-xs"><span class="text-xs font-bold text-[#102A43]">CeraVe</span></button><button onclick="filterByBrand('La Roche-Posay')" class="shrink-0 w-16 h-16 rounded-full bg-white border border-[#102A43]/10 flex items-center justify-center hover:border-[#102A43]/30 shadow-xs"><span class="text-[10px] font-bold text-[#102A43] text-center leading-tight">La Roche<br>Posay</span></button><button onclick="filterByBrand('The Ordinary')" class="shrink-0 w-16 h-16 rounded-full bg-white border border-[#102A43]/10 flex items-center justify-center hover:border-[#102A43]/30 shadow-xs"><span class="text-[9px] font-bold text-[#102A43] text-center">The Ordinary</span></button><button onclick="filterByBrand('SKIN1004')" class="shrink-0 w-16 h-16 rounded-full bg-white border border-[#102A43]/10 flex items-center justify-center hover:border-[#102A43]/30 shadow-xs"><span class="text-xs font-bold text-[#102A43]">SKIN1004</span></button><button onclick="filterByBrand('todos')" class="shrink-0 px-4 h-16 rounded-full bg-[#102A43] text-white text-xs font-semibold">Todos</button></div></section>
 <!-- SHOP BY CATEGORY - PURELIS 4 cards -->
 <section id="categorias" class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 mt-10 sm:mt-14">
   <div class="flex items-end justify-between gap-4 mb-6">
@@ -5626,7 +5627,7 @@ tailwind.config = {
     <h2 class="font-serif text-2xl font-semibold tracking-tight">Todos los productos <span id="todosCount" class="text-sm font-sans font-medium text-neutral-500"></span></h2>
     <button onclick="hideTodosProductos()" class="text-sm font-semibold px-4 py-2 rounded-full border border-black/10 hover:border-black/20">Cerrar ✕</button>
   </div>
-  <div id="todosGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
+  <div id="todosGrid" class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
     <!-- JS inyecta todos los productos de Supabase -->
   </div>
 </section>
@@ -5773,40 +5774,6 @@ tailwind.config = {
       <div class="mt-4 flex flex-wrap gap-2 text-[11px]">
         <span class="px-2.5 py-1 rounded-full bg-white/10 border border-white/10">Admin único: theskinhealth777@gmail.com</span>
         <span class="px-2.5 py-1 rounded-full bg-white/10 border border-white/10">RLS Supabase • isCurrentUserAdmin()</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- NOSOTROS — ¿Quiénes somos? -->
-<section id="nosotros" class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 mt-10 sm:mt-14 scroll-mt-24">
-  <div class="rounded-[28px] bg-[#faf8f5] border border-[#1e3a5f]/10 p-7 sm:p-10 lg:p-12 relative overflow-hidden">
-    <div class="absolute -top-12 -right-12 w-40 h-40 rounded-full bg-white border border-[#1e3a5f]/5 hidden sm:block"></div>
-    <div class="absolute -bottom-10 -left-10 w-32 h-32 rounded-full bg-white border border-[#1e3a5f]/5 hidden sm:block"></div>
-    <div class="relative">
-      <p class="text-[11px] tracking-[0.18em] uppercase font-semibold text-[#1e3a5f]/60 mb-3 flex items-center gap-2"><span class="w-6 h-px bg-[#1e3a5f]/20"></span> Nosotros</p>
-      <h2 class="font-serif text-[26px] sm:text-[32px] font-semibold tracking-tight text-[#1e3a5f] leading-tight">¿Quiénes somos?</h2>
-      <p class="mt-2 text-sm sm:text-[15px] leading-relaxed text-[#1A202C]/70 max-w-[72ch]">Somos una tienda especializada en <strong class="text-[#1A202C]">skincare</strong>, dedicada al cuidado y la salud de tu piel.</p>
-      <div class="mt-6 grid sm:grid-cols-2 gap-4 sm:gap-5">
-        <div class="flex gap-3 p-4 rounded-2xl bg-[#1e3a5f] text-white shadow-sm">
-          <span class="w-9 h-9 rounded-full bg-white/15 flex items-center justify-center shrink-0">🔹</span>
-          <p class="text-sm leading-relaxed text-white/90">Importamos todos nuestros productos directamente, garantizando que sean <strong class="text-white">efectivos y de la más alta calidad</strong>.</p>
-        </div>
-        <div class="flex gap-3 p-4 rounded-2xl bg-[#1e3a5f] text-white shadow-sm">
-          <span class="w-9 h-9 rounded-full bg-white/15 flex items-center justify-center shrink-0">💎</span>
-          <p class="text-sm leading-relaxed text-white/90"><strong class="text-white">Nuestra prioridad sos vos.</strong> Estamos dedicados al 100% a la atención al cliente y a la calidad del producto, con asesoramiento personalizado para cada tipo de piel.</p>
-        </div>
-        <div class="flex gap-3 p-4 rounded-2xl bg-[#1e3a5f] text-white shadow-sm">
-          <span class="w-9 h-9 rounded-full bg-white/15 flex items-center justify-center shrink-0">💙</span>
-          <p class="text-sm leading-relaxed text-white/90">En <strong class="text-white">SKIN HEALTH</strong> no solo vendemos skincare, <strong class="text-white">te acompañamos a construir tu mejor rutina</strong>.</p>
-        </div>
-        <div class="flex gap-3 p-4 rounded-2xl bg-[#1e3a5f] text-white shadow-sm items-center">
-          <span class="w-9 h-9 rounded-full bg-white/15 flex items-center justify-center shrink-0">🔹</span>
-          <p class="text-sm font-semibold tracking-wide">Tu piel, nuestra prioridad.</p>
-        </div>
-      </div>
-      <div class="mt-6 flex flex-wrap gap-3">
-        <a href="https://wa.me/595976659748?text=Hola%20Skin%20Health%20quiero%20asesoria%20personalizada%20para%20mi%20tipo%20de%20piel" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#1e3a5f] text-white text-sm font-semibold hover:bg-[#102a43] transition-colors">Asesoría personalizada por WhatsApp →</a>
       </div>
     </div>
   </div>
