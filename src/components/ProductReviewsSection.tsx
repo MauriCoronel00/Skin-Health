@@ -154,7 +154,7 @@ export const ProductReviewsSection: React.FC<ProductReviewsSectionProps> = ({
         </div>
       )}
 
-      {/* Reviews List */}
+      {/* Reviews List - solo 3 + link pequeño Gmail */}
       <div className="space-y-3.5">
         {displayedReviews.length === 0 ? (
           <div className="text-center py-8 bg-neutral-50 rounded-2xl border border-neutral-100 p-6">
@@ -169,7 +169,7 @@ export const ProductReviewsSection: React.FC<ProductReviewsSectionProps> = ({
             </button>
           </div>
         ) : (
-          displayedReviews.map((rev) => {
+          displayedReviews.slice(0, 3).map((rev) => {
             const isHelpful = !!helpfulIds[rev.id];
 
             return (
@@ -276,6 +276,14 @@ export const ProductReviewsSection: React.FC<ProductReviewsSectionProps> = ({
             );
           })
         )}
+        <div className="flex justify-end mt-3">
+          <button
+            onClick={onOpenReviewModal}
+            className="text-[11px] text-neutral-500 hover:text-[#102A43] underline underline-offset-2"
+          >
+            Déjanos tu opinión
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -15,8 +15,9 @@
   }
   :root {
     --brand-navy: #1e3a5f;
-    --brand-light: #a8c5e0;
-    --brand-accent: #E8E6FF;
+    --brand-blue: #2563eb;
+    --brand-light: #dbeafe;
+    --brand-accent: #E0F2FE;
   }
 
   h1, h2, h3, .font-serif {

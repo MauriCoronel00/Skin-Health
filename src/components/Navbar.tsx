@@ -22,9 +22,9 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   return (
     <header className="sticky top-0 z-30 bg-[#FAF8F5]/95 backdrop-blur-md border-b border-[#102A43]/10 transition-all">
-      {/* Announcement bar - brand navy */}
-      <div className="bg-[#1e3a5f] text-white text-[11px] py-1.5 px-4 text-center font-medium tracking-wide">
-        Productos 100% originales • Envíos a todo Paraguay
+      {/* Announcement bar - azul marino ordenado */}
+      <div className="bg-[#1e3a5f] text-white text-[11px] py-2 px-4 text-center font-medium tracking-wide">
+        Productos 100% originales — Envíos a todo Paraguay
       </div>
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-2 sm:gap-4">
