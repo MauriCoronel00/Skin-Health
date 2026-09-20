@@ -56,7 +56,7 @@ export const TestimoniosSection: React.FC = () => {
           Opiniones reales
         </span>
         <h3 className="font-serif text-xl sm:text-2xl font-semibold text-[#102A43] mt-2">
-          Lo que dicen nuestras clientas
+          Lo que dicen nuestros clientes
         </h3>
       </div>
 
