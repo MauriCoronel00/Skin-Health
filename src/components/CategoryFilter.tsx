@@ -89,7 +89,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
                 className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
                   isSelected
                     ? 'bg-white/15 text-white'
-                    : 'bg-[#FAF8F5] text-[#102A43]'
+                    : 'bg-[#E8E6FF] text-[#102A43]'
                 }`}
               >
                 {getIcon(cat.icon)}
