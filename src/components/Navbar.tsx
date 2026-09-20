@@ -22,12 +22,12 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   return (
     <header className="sticky top-0 z-30 bg-[#FAF8F5]/95 backdrop-blur-md border-b border-[#102A43]/10 transition-all">
-      {/* Announcement bar - azul marino ordenado */}
-      <div className="bg-[#1e3a5f] text-white text-[11px] py-2 px-4 text-center font-medium tracking-wide">
+      {/* Announcement bar - azul marino ordenado con más espacio */}
+      <div className="bg-[#1e3a5f] text-white text-[11px] py-2 px-4 text-center font-medium tracking-wide border-b border-white/10">
         Productos 100% originales — Envíos a todo Paraguay
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-2 sm:gap-4">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-2 sm:gap-4 pt-1">
         {/* Mobile: hamburger */}
         <button className="sm:hidden w-9 h-9 rounded-full bg-white border border-black/5 flex items-center justify-center">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1e3a5f" strokeWidth="1.8"><path d="M4 7h16M4 12h16M4 17h16"/></svg>

@@ -57,7 +57,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
         loading="eager"
       />
 
-      {/* Typography: "SKIN HEALTH" + "el arte del cuidado de la piel." */}
+      {/* Typography: "SKIN HEALTH" - sin tagline para look más limpio */}
       {variant === 'full' && (
         <div className="flex flex-col leading-tight">
           <span
@@ -67,15 +67,6 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
           >
             SKIN HEALTH
           </span>
-          {showTagline && (
-            <span
-              className={`font-normal tracking-wide lowercase ${tagSize} ${
-                inverted ? 'text-neutral-300' : 'text-[#102A43]/70'
-              }`}
-            >
-              el arte del cuidado de la piel.
-            </span>
-          )}
         </div>
       )}
     </div>
