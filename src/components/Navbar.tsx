@@ -1,9 +1,9 @@
 import React from 'react';
-import { ShoppingBag, MessageCircle, Search, X } from 'lucide-react';
+import { ShoppingBag, Search, X, LogIn, Chrome } from 'lucide-react';
 import { motion } from 'motion/react';
 import { BrandLogo } from './BrandLogo';
 import { LoginButton } from './LoginButton';
-import { formatGuarani, STORE_PHONE_NUMBER } from '../data/products';
+import { formatGuarani } from '../data/products';
 
 interface NavbarProps {
   totalItems: number;
@@ -22,23 +22,19 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   return (
     <header className="sticky top-0 z-30 bg-[#FAF8F5]/95 backdrop-blur-md border-b border-[#102A43]/10 transition-all">
-      {/* Announcement bar - azul marino centrado con espacio suficiente */}
-      <div className="bg-[#1e3a5f] text-white text-[11px] py-2.5 px-4 text-center font-medium tracking-wide border-b border-white/10 flex justify-center items-center min-h-[28px]">
+      {/* Announcement bar - navy centered, proper height */}
+      <div className="bg-[#102A43] text-white text-[11px] py-2.5 px-4 text-center font-medium tracking-wide border-b border-white/10 flex justify-center items-center min-h-[28px]">
         Productos 100% originales — Envíos a todo Paraguay
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-2 sm:gap-4 pt-1">
-        {/* Mobile: hamburger */}
-        <button className="sm:hidden w-9 h-9 rounded-full bg-white border border-black/5 flex items-center justify-center">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1e3a5f" strokeWidth="1.8"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-        </button>
-        {/* Logo centered on mobile */}
-        <div className="cursor-pointer flex-1 sm:flex-none flex justify-center sm:justify-start" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-          <BrandLogo size="sm" />
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-2 sm:gap-4">
+        {/* Logo - LEFT */}
+        <div className="cursor-pointer flex-shrink-0" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+          <BrandLogo size="sm" variant="full" />
         </div>
 
-        {/* Search (desktop) */}
-        <div className="hidden md:flex flex-1 max-w-md relative">
+        {/* Search (desktop) - CENTER */}
+        <div className="hidden md:flex flex-1 max-w-md relative mx-4">
           <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400 pointer-events-none" />
           <input
             type="search"
@@ -59,19 +55,9 @@ export const Navbar: React.FC<NavbarProps> = ({
           )}
         </div>
 
-        {/* Right Actions */}
+        {/* Right Actions - Google Login + Cart */}
         <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
           <LoginButton />
-          {/* Direct WhatsApp help */}
-          <a
-            href={`https://wa.me/${STORE_PHONE_NUMBER}?text=Hola%20Skin%20Health%2C%20tengo%20una%20consulta%20sobre%20sus%20productos`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium text-[#102A43] bg-white border border-[#102A43]/15 hover:bg-[#102A43]/5 transition-all"
-          >
-            <MessageCircle className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Asesoría</span>
-          </a>
 
           {/* Desktop Cart Button */}
           <motion.button

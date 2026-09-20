@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Star, Quote } from 'lucide-react';
+import { Star, Quote, Chrome } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 
 interface Testimonio {
@@ -11,17 +11,18 @@ interface Testimonio {
   productName: string;
 }
 
-/** Reseñas destacadas (featured) o últimas aprobadas, con nombre del producto. */
-export async function fetchTestimonios(limit = 6): Promise<Testimonio[]> {
+/** Reseñas destacadas (featured) o últimas aprobadas, con nombre del producto. Obtiene un pool mayor y selecciona 4 aleatorios para diversidad. */
+export async function fetchTestimonios(limit = 4): Promise<Testimonio[]> {
+  const poolLimit = 12; // pool mayor para diversidad de género
   const { data, error } = await supabase
     .from('reviews')
     .select('id, author_name, city, rating, comment, productos ( nombre )')
     .eq('status', 'approved')
     .order('is_featured', { ascending: false })
     .order('creado_en', { ascending: false })
-    .limit(limit);
+    .limit(poolLimit);
   if (error) throw error;
-  return ((data ?? []) as unknown as {
+  const all = ((data ?? []) as unknown as {
     id: string;
     author_name: string;
     city: string | null;
@@ -36,6 +37,12 @@ export async function fetchTestimonios(limit = 6): Promise<Testimonio[]> {
     comment: r.comment,
     productName: r.productos?.nombre ?? '',
   }));
+  // Fisher-Yates shuffle para mezcla aleatoria
+  for (let i = all.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [all[i], all[j]] = [all[j], all[i]];
+  }
+  return all.slice(0, limit);
 }
 
 export const TestimoniosSection: React.FC = () => {
@@ -52,21 +59,25 @@ export const TestimoniosSection: React.FC = () => {
   return (
     <section className="mt-14">
       <div className="text-center mb-6">
-        <span className="text-[11px] font-bold uppercase tracking-widest text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-100">
-          Opiniones reales
+        <span className="text-[11px] font-bold uppercase tracking-widest text-[#102A43] bg-white px-3 py-1 rounded-full border border-[#102A43]/20 flex items-center justify-center gap-1.5 mx-auto">
+          <Chrome className="w-3.5 h-3.5 text-[#102A43]" />
+          <span>Reseñas de Google</span>
         </span>
         <h3 className="font-serif text-xl sm:text-2xl font-semibold text-[#102A43] mt-2">
           Lo que dicen nuestros clientes
         </h3>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {items.map((t) => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto">
+        {items.slice(0, 4).map((t) => (
           <figure
             key={t.id}
-            className="bg-white rounded-2xl border border-[#102A43]/10 p-5 shadow-xs flex flex-col"
+            className="bg-white rounded-2xl border border-[#102A43]/10 p-5 shadow-xs flex flex-col h-full transition-shadow hover:shadow-md"
           >
-            <Quote className="w-5 h-5 text-[#102A43]/20 mb-2" />
+            <div className="flex items-center justify-between mb-3">
+              <Quote className="w-5 h-5 text-[#102A43]/15" />
+              <Chrome className="w-4 h-4 text-[#102A43]/40" title="Reseña de Google" />
+            </div>
             <div className="flex items-center gap-0.5 mb-2" aria-label={`${t.rating} de 5 estrellas`}>
               {Array.from({ length: 5 }).map((_, i) => (
                 <Star
@@ -77,14 +88,17 @@ export const TestimoniosSection: React.FC = () => {
                 />
               ))}
             </div>
-            <blockquote className="text-sm text-neutral-700 leading-relaxed flex-1">
+            <blockquote className="text-sm text-neutral-700 leading-relaxed flex-1 min-h-[60px]">
               “{t.comment}”
             </blockquote>
-            <figcaption className="mt-3 pt-3 border-t border-neutral-100 text-xs">
-              <span className="font-semibold text-neutral-900">{t.author}</span>
-              {t.city && <span className="text-neutral-400"> · {t.city}</span>}
+            <figcaption className="mt-3 pt-3 border-t border-neutral-100 text-xs space-y-0.5">
+              <span className="font-semibold text-neutral-900 flex items-center gap-1.5">
+                {t.author}
+                <Chrome className="w-3 h-3 text-[#102A43]/40" />
+              </span>
+              {t.city && <span className="text-neutral-400">{t.city}</span>}
               {t.productName && (
-                <span className="block text-[#102A43]/70 mt-0.5">compró: {t.productName}</span>
+                <span className="text-[#102A43]/70 mt-0.5">compró: {t.productName}</span>
               )}
             </figcaption>
           </figure>

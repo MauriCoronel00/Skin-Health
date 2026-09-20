@@ -90,7 +90,7 @@ export const HeroRitualCTA: React.FC<{
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={onScrollToCatalog}
-            className="flex-1 sm:w-auto py-4 px-8 bg-white text-[#102A43] font-bold text-sm sm:text-base rounded-2xl shadow-xl flex items-center justify-center gap-2 transition-all group"
+            className="flex-1 sm:w-auto py-4 px-8 bg-[#102A43] text-white font-bold text-sm sm:text-base rounded-2xl shadow-xl flex items-center justify-center gap-2 transition-all group border border-white/20"
           >
             <span>Empezar mi diagnóstico</span>
             <motion.div

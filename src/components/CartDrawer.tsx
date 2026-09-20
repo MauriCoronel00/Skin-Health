@@ -730,7 +730,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 className={`w-full font-bold text-base py-3.5 px-5 rounded-2xl shadow-lg flex items-center justify-center gap-2.5 transition-all cursor-pointer relative overflow-hidden ${
                   isOrdering
                     ? 'bg-neutral-400 text-white cursor-not-allowed shadow-none'
-                    : 'bg-[#25D366] hover:bg-[#20bd5a] text-white shadow-emerald-500/25'
+                    : 'bg-[#102A43] hover:bg-[#1e3a5f] text-white shadow-[#102A43]/25'
                 }`}
               >
                 {isOrdering ? (
@@ -740,7 +740,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   </>
                 ) : (
                   <>
-                    <MessageCircle className="w-5 h-5 fill-white text-[#25D366]" />
+                    <MessageCircle className="w-5 h-5" />
                     <span>PEDIR POR WHATSAPP →</span>
                   </>
                 )}
@@ -763,12 +763,12 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               </div>
 
               {/* Fallback to copy order text */}
-              <div className="flex items-center justify-between text-[11px] text-neutral-400 pt-0.5">
-                <span>Atención oficial Skin Health</span>
+              <div className="flex items-center justify-between text-[11px] pt-0.5">
+                <span className="text-neutral-400">Atención oficial Skin Health</span>
                 <button
                   type="button"
                   onClick={handleCopyOrder}
-                  className="hover:text-[#102A43] flex items-center gap-1 transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#102A43]/10 text-[#102A43] font-medium text-xs hover:bg-[#102A43]/20 transition-colors cursor-pointer"
                 >
                   {copied ? (
                     <>
