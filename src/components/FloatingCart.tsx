@@ -17,22 +17,40 @@ export const FloatingCart: React.FC<FloatingCartProps> = ({
   lastAddedTime,
 }) => {
   const [pulse, setPulse] = useState(false);
+  const [pressed, setPressed] = useState(false);
+
+  // Haptic feedback
+  const triggerHaptic = (type: 'light' | 'medium' = 'light') => {
+    if ('vibrate' in navigator) {
+      navigator.vibrate(type === 'light' ? 10 : 20);
+    }
+  };
 
   // Trigger pulse effect when an item is added
   useEffect(() => {
     if (lastAddedTime) {
       setPulse(true);
+      triggerHaptic('medium');
       const timer = setTimeout(() => setPulse(false), 500);
       return () => clearTimeout(timer);
     }
   }, [lastAddedTime, totalItems]);
+
+  const handleTouchStart = () => {
+    setPressed(true);
+    triggerHaptic('light');
+  };
+
+  const handleTouchEnd = () => {
+    setPressed(false);
+  };
 
   return (
     <AnimatePresence>
       {totalItems > 0 && (
         <aside
           aria-label="Carrito flotante de compras"
-          className="fixed bottom-4 sm:bottom-6 left-0 right-0 z-40 px-4 pointer-events-none flex justify-center"
+          className="fixed bottom-4 sm:bottom-6 left-0 right-0 z-40 px-4 pointer-events-none flex justify-center pb-safe"
         >
           <motion.div
             id="floating-cart-bar"
@@ -42,7 +60,7 @@ export const FloatingCart: React.FC<FloatingCartProps> = ({
             animate={{
               y: 0,
               opacity: 1,
-              scale: pulse ? 1.03 : 1,
+              scale: pulse ? 1.03 : pressed ? 0.98 : 1,
             }}
             exit={{ y: 90, opacity: 0, scale: 0.9 }}
             transition={{
@@ -50,7 +68,12 @@ export const FloatingCart: React.FC<FloatingCartProps> = ({
               stiffness: 380,
               damping: 26,
             }}
-            className="pointer-events-auto w-full max-w-md sm:max-w-lg bg-[#0E2338]/95 backdrop-blur-xl text-white rounded-2xl sm:rounded-3xl p-3.5 sm:p-4 shadow-2xl border border-white/15 shadow-black/25 select-none"
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+            onMouseDown={handleTouchStart}
+            onMouseUp={handleTouchEnd}
+            onMouseLeave={handleTouchEnd}
+            className="pointer-events-auto w-full max-w-md sm:max-w-lg bg-[#0E2338]/95 backdrop-blur-xl text-white rounded-2xl sm:rounded-3xl p-3.5 sm:p-4 shadow-2xl border border-white/15 shadow-black/25 select-none active:scale-[0.98] transition-transform"
           >
             {/* Top row: Cart icon + count and Total price */}
             <div className="flex items-center justify-between gap-3 mb-2.5 px-1">

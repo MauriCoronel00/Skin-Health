@@ -1,6 +1,6 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { X, Star, Plus, Check, ShieldCheck, Sparkles, Droplets, MessageSquarePlus } from 'lucide-react';
+import { X, Star, Plus, Check, ShieldCheck, Sparkles, Droplets, MessageSquarePlus, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Product, ProductReview, ReviewUser } from '../types';
 import { formatGuarani } from '../data/products';
 import { trackAddToCart } from '../utils/analytics';
@@ -14,6 +14,9 @@ interface ProductQuickViewProps {
   reviews: ProductReview[];
   onOpenReviewModal: (product: Product) => void;
   currentUser: ReviewUser | null;
+  allProducts?: Product[];
+  currentIndex?: number;
+  onNavigate?: (direction: 'prev' | 'next') => void;
 }
 
 export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
@@ -24,9 +27,57 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
   reviews,
   onOpenReviewModal,
   currentUser,
+  allProducts = [],
+  currentIndex = 0,
+  onNavigate,
 }) => {
   const [justAdded, setJustAdded] = useState(false);
   const reviewsSectionRef = useRef<HTMLDivElement>(null);
+  const [dragX, setDragX] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStartRef = useRef<number>(0);
+  const canNavigatePrev = currentIndex > 0;
+  const canNavigateNext = allProducts.length > 0 && currentIndex < allProducts.length - 1;
+
+  // Haptic feedback
+  const triggerHaptic = (type: 'light' | 'medium' = 'light') => {
+    if ('vibrate' in navigator) {
+      navigator.vibrate(type === 'light' ? 10 : 20);
+    }
+  };
+
+  // Swipe navigation handlers
+  const handleDragStart = (e: React.TouchEvent | React.MouseEvent) => {
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    dragStartRef.current = clientX;
+    setIsDragging(true);
+  };
+
+  const handleDragMove = (e: React.TouchEvent | React.MouseEvent) => {
+    if (!isDragging) return;
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    const delta = clientX - dragStartRef.current;
+    // Allow dragging both ways if navigation is possible
+    if ((delta < 0 && canNavigateNext) || (delta > 0 && canNavigatePrev)) {
+      setDragX(delta * 0.3); // Resistance
+    }
+  };
+
+  const handleDragEnd = () => {
+    if (!isDragging) return;
+    setIsDragging(false);
+    if (Math.abs(dragX) > 80) {
+      if (dragX < 0 && canNavigateNext) {
+        triggerHaptic('medium');
+        onNavigate?.('next');
+      } else if (dragX > 0 && canNavigatePrev) {
+        triggerHaptic('medium');
+        onNavigate?.('prev');
+      }
+    }
+    setDragX(0);
+    dragStartRef.current = 0;
+  };
 
   if (!product) return null;
 
@@ -38,6 +89,7 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
     if (justAdded) return;
     onAddToCart(product);
     trackAddToCart(product, 1);
+    triggerHaptic('medium');
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 900);
   };
@@ -59,6 +111,14 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.94, y: 15 }}
         className="relative bg-white w-full max-w-xl rounded-3xl shadow-2xl overflow-hidden z-10 max-h-[90vh] flex flex-col"
+        style={{ transform: `translateX(${dragX}px)` }}
+        onTouchStart={handleDragStart}
+        onTouchMove={handleDragMove}
+        onTouchEnd={handleDragEnd}
+        onMouseDown={handleDragStart}
+        onMouseMove={handleDragMove}
+        onMouseUp={handleDragEnd}
+        onMouseLeave={handleDragEnd}
       >
         {/* Close Button */}
         <button
@@ -68,6 +128,32 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
         >
           <X className="w-5 h-5" />
         </button>
+
+        {/* Navigation Arrows - Swipe between products */}
+        {(canNavigatePrev || canNavigateNext) && (
+          <>
+            {canNavigatePrev && (
+              <motion.button
+                onClick={() => { triggerHaptic('light'); onNavigate?.('prev'); }}
+                whileTap={{ scale: 0.9 }}
+                className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/90 hover:bg-white flex items-center justify-center text-neutral-600 hover:text-neutral-900 shadow-lg transition-all"
+                aria-label="Producto anterior"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </motion.button>
+            )}
+            {canNavigateNext && (
+              <motion.button
+                onClick={() => { triggerHaptic('light'); onNavigate?.('next'); }}
+                whileTap={{ scale: 0.9 }}
+                className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/90 hover:bg-white flex items-center justify-center text-neutral-600 hover:text-neutral-900 shadow-lg transition-all"
+                aria-label="Producto siguiente"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </motion.button>
+            )}
+          </>
+        )}
 
         <div className="overflow-y-auto flex-1 p-6 sm:p-8 space-y-6">
           {/* Header & Brand */}

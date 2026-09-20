@@ -31,7 +31,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog }) => 
             animate={{ opacity: 1, y: 0 }}
             className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-[#E8E6FF] text-xs font-medium text-[#1A202C] mb-4 w-fit shadow-xs"
           >
-            <Sparkles className="w-3.5 h-3.5 text-[#8B7FF7]" />
+            <Sparkles className="w-3.5 h-3.5 text-[#1e3a5f]" />
             <span>Skincare dermatológico • Asunción, Paraguay</span>
           </motion.div>
 
@@ -63,7 +63,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog }) => 
           >
             <button
               onClick={onScrollToCatalog}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#8B7FF7] text-white text-sm font-semibold hover:bg-[#7A6EE6] transition-all shadow-md cursor-pointer group"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#1e3a5f] text-white text-sm font-semibold hover:bg-[#102A43] transition-all shadow-md cursor-pointer group"
             >
               <span>Descubrí tu rutina</span>
               <ArrowDown className="w-4 h-4 transition-transform group-hover:translate-y-0.5" />
@@ -75,19 +75,19 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog }) => 
       {/* Brand values footer ribbon - Lumina style */}
       <div className="relative z-10 border-t border-[#E8E6FF] bg-white/80 backdrop-blur-sm px-6 py-3 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs text-[#1A202C]/70">
         <div className="flex items-center gap-2">
-          <ShieldCheck className="w-4 h-4 text-[#8B7FF7] shrink-0" />
+          <ShieldCheck className="w-4 h-4 text-[#1e3a5f] shrink-0" />
           <span>Science backed</span>
         </div>
         <div className="flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-[#8B7FF7] shrink-0" />
+          <Sparkles className="w-4 h-4 text-[#1e3a5f] shrink-0" />
           <span>Clean ingredients</span>
         </div>
         <div className="flex items-center gap-2">
-          <Star className="w-4 h-4 text-[#8B7FF7] shrink-0" />
+          <Star className="w-4 h-4 text-[#1e3a5f] shrink-0" />
           <span>Visible results</span>
         </div>
         <div className="hidden sm:flex items-center gap-2">
-          <MessageCircle className="w-4 h-4 text-[#8B7FF7] shrink-0" />
+          <MessageCircle className="w-4 h-4 text-[#1e3a5f] shrink-0" />
           <span>Made for you</span>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import { AuthProvider } from './contexts/AuthContext';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { Sparkles, SlidersHorizontal, ArrowRight, MessageCircle } from 'lucide-react';
@@ -27,7 +27,9 @@ import { currentReviewer } from './data/identity';
 import { isCurrentUserAdmin } from './data/admin';
 import { productIdFromUrl, syncProductUrl } from './utils/productLink';
 import { TrackingView } from './components/TrackingView';
-import { PWAInstallPrompt } from './components/PWAInstallPrompt';
+import { MobileBottomNav, TabId } from './components/MobileBottomNav';
+import { HeroRitualCTA } from './components/HeroRitualCTA';
+import { ProductGridSkeleton, CategoryPillsSkeleton, RoutinesSectionSkeleton, TestimoniosSectionSkeleton } from './components/Skeleton';
 
 const CART_STORAGE_KEY = 'skinhealth_cart_v1';
 
@@ -37,6 +39,22 @@ export default function App() {
   const [categories, setCategories] = useState<CategoryOption[]>([]);
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
   const [catalogError, setCatalogError] = useState(false);
+
+  // Mobile bottom navigation tabs state
+  const [activeTab, setActiveTab] = useState<TabId>('home');
+
+  const { user } = useAuth();
+
+  // Handle auth-required event from MobileBottomNav
+  useEffect(() => {
+    const handler = () => {
+      // The LoginButton will handle the auth flow
+      // We just need to trigger a re-render or the user will be redirected
+      console.log('Auth required for account tab');
+    };
+    window.addEventListener('auth-required', handler);
+    return () => window.removeEventListener('auth-required', handler);
+  }, []);
 
   const loadCatalog = async () => {
     setIsLoadingProducts(true);
@@ -417,8 +435,6 @@ export default function App() {
         onSearchChange={setSearchQuery}
       />
 
-      <PWAInstallPrompt />
-
       {/* Main Content Area - Note the extra bottom padding (pb-36 sm:pb-44) to ensure the floating cart NEVER obstructs content */}
       <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 pb-36 sm:pb-44">
         {trackCode !== null ? (
@@ -428,13 +444,20 @@ export default function App() {
         {/* Editorial Luxury Hero Banner */}
         <HeroBanner onScrollToCatalog={scrollToCatalog} />
 
+        {/* Hero Ritual CTA - Premium diagnostic flow */}
+        <HeroRitualCTA onScrollToCatalog={scrollToCatalog} />
+
         {/* Category Pills (Hydrate, Brighten, Calm, Protect, Cleanse) */}
-        <CategoryFilter
-          categories={categories}
-          selectedCategory={selectedCategory}
-          onSelectCategory={setSelectedCategory}
-          productCounts={productCounts}
-        />
+        {isLoadingProducts ? (
+          <CategoryPillsSkeleton />
+        ) : (
+          <CategoryFilter
+            categories={categories}
+            selectedCategory={selectedCategory}
+            onSelectCategory={setSelectedCategory}
+            productCounts={productCounts}
+          />
+        )}
 
         {/* Catalog Section Header & Brand Filter */}
         <div
@@ -477,9 +500,7 @@ export default function App() {
         {/* Catalog Grid */}
         <div className="mt-6">
           {isLoadingProducts ? (
-            <div className="text-center py-16 text-neutral-400 text-sm">
-              Cargando catálogo...
-            </div>
+            <ProductGridSkeleton count={8} />
           ) : catalogError ? (
             <div className="text-center py-16 bg-white rounded-3xl border border-red-100 p-8">
               <h3 className="font-semibold text-neutral-800 text-lg mb-1">
@@ -540,16 +561,24 @@ export default function App() {
         </div>
 
         {/* Section based strictly on PDF: Rutinas de Skincare */}
-        <RoutinesSection
-          products={products}
-          onAddToCart={handleAddToCart}
-          onAddMultipleToCart={handleAddMultipleToCart}
-          onQuickView={setQuickViewProduct}
-          cartQuantities={cartQuantities}
-        />
+        {isLoadingProducts ? (
+          <RoutinesSectionSkeleton />
+        ) : (
+          <RoutinesSection
+            products={products}
+            onAddToCart={handleAddToCart}
+            onAddMultipleToCart={handleAddMultipleToCart}
+            onQuickView={setQuickViewProduct}
+            cartQuantities={cartQuantities}
+          />
+        )}
 
         {/* Testimonios: reseñas aprobadas visibles */}
-        <TestimoniosSection />
+        {isLoadingProducts ? (
+          <TestimoniosSectionSkeleton />
+        ) : (
+          <TestimoniosSection />
+        )}
 
         {/* Suscripción Premium - Purelis adaptada 55k - azul */}
         <section className="mt-10 bg-[#E0F2FE] border border-[#1e3a5f]/10 rounded-3xl p-6 sm:p-8">
@@ -698,6 +727,15 @@ export default function App() {
             reviews={reviews}
             onOpenReviewModal={handleOpenReviewModal}
             currentUser={googleUser}
+            allProducts={filteredProducts}
+            currentIndex={filteredProducts.findIndex(p => p.id === quickViewProduct.id)}
+            onNavigate={(direction) => {
+              const idx = filteredProducts.findIndex(p => p.id === quickViewProduct.id);
+              const newIdx = direction === 'next' ? idx + 1 : idx - 1;
+              if (newIdx >= 0 && newIdx < filteredProducts.length) {
+                setQuickViewProduct(filteredProducts[newIdx]);
+              }
+            }}
           />
         )}
       </AnimatePresence>
@@ -741,7 +779,16 @@ export default function App() {
         )}
       </AnimatePresence>
 
-      {/* Footer */}
+      {/* Mobile Bottom Navigation */}
+      <MobileBottomNav
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        cartCount={totalItems}
+        isCartOpen={isCartOpen}
+        onOpenCart={() => setIsCartOpen(true)}
+      />
+
+        {/* Footer */}
       <Footer
         onOpenAdminReviews={() => void handleOpenAdminReviews()}
         onOpenAdminPanel={() => setIsAdminPanelOpen(true)}

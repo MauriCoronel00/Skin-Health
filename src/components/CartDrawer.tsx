@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   X,
@@ -17,6 +17,7 @@ import {
   Truck,
   Loader2,
   AlertCircle,
+  ChevronDown,
 } from 'lucide-react';
 import { CartItem } from '../types';
 import { formatGuarani } from '../data/products';
@@ -98,6 +99,12 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   const [copied, setCopied] = useState(false);
   const [distanciaKm, setDistanciaKm] = useState('');
 
+  // Swipe to close state
+  const [dragY, setDragY] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStartRef = useRef<number>(0);
+  const lastHapticRef = useRef<number>(0);
+
   const { user, signInWithGoogle } = useAuth();
 
   // Synchronize customer info with localStorage
@@ -114,6 +121,72 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       );
     } catch {}
   }, [customerName, customerPhone, customerAddress, googleMapsUrl]);
+
+  // Haptic feedback helper
+  const triggerHaptic = (type: 'light' | 'medium' | 'heavy' = 'light') => {
+    if ('vibrate' in navigator) {
+      const patterns = {
+        light: 10,
+        medium: 20,
+        heavy: 30,
+      };
+      navigator.vibrate(patterns[type]);
+    }
+  };
+
+  // Drag to close handlers
+  const handleDragStart = (e: React.TouchEvent | React.MouseEvent) => {
+    if (!isOpen) return;
+    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+    dragStartRef.current = clientY;
+    setIsDragging(true);
+    triggerHaptic('light');
+  };
+
+  const handleDragMove = (e: React.TouchEvent | React.MouseEvent) => {
+    if (!isDragging) return;
+    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+    const delta = clientY - dragStartRef.current;
+    // Only allow dragging down (positive delta)
+    if (delta > 0) {
+      setDragY(delta);
+      // Haptic at thresholds
+      if (delta > 100 && Date.now() - lastHapticRef.current > 100) {
+        triggerHaptic('light');
+        lastHapticRef.current = Date.now();
+      }
+      if (delta > 200 && Date.now() - lastHapticRef.current > 100) {
+        triggerHaptic('medium');
+        lastHapticRef.current = Date.now();
+      }
+    }
+  };
+
+  const handleDragEnd = () => {
+    if (!isDragging) return;
+    setIsDragging(false);
+    if (dragY > 150) {
+      triggerHaptic('medium');
+      onClose();
+    } else {
+      // Snap back
+      triggerHaptic('light');
+    }
+    setDragY(0);
+    dragStartRef.current = 0;
+  };
+
+  // Prevent body scroll when drawer is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      document.body.style.touchAction = 'none';
+    }
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.touchAction = '';
+    };
+  }, [isOpen]);
 
   const totalAmount = cartItems.reduce(
     (acc, item) => acc + item.product.price * item.quantity,
@@ -306,6 +379,14 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
           exit={{ y: '100%', opacity: 0 }}
           transition={{ type: 'spring', damping: 28, stiffness: 300 }}
           className="pointer-events-auto w-screen max-w-full sm:max-w-md bg-white rounded-t-3xl sm:rounded-l-3xl sm:rounded-tr-none shadow-2xl flex flex-col max-h-[92vh] sm:max-h-screen h-full"
+          style={{ transform: `translateY(${dragY}px)` }}
+          onTouchStart={handleDragStart}
+          onTouchMove={handleDragMove}
+          onTouchEnd={handleDragEnd}
+          onMouseDown={handleDragStart}
+          onMouseMove={handleDragMove}
+          onMouseUp={handleDragEnd}
+          onMouseLeave={handleDragEnd}
         >
           {/* Mobile Drag Indicator Pill */}
           <div className="sm:hidden pt-3 pb-1 flex justify-center">
