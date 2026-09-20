@@ -55,7 +55,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.3 }}
-      className="group relative bg-white rounded-2xl p-3 sm:p-4 border border-[#102A43]/10 hover:border-[#102A43]/25 shadow-xs hover:shadow-md transition-all duration-300 flex flex-col justify-between"
+      className="group relative bg-white rounded-2xl p-2 sm:p-3 border border-[#102A43]/10 hover:border-[#E8E6FF] hover:shadow-md transition-all duration-300 flex flex-col justify-between"
     >
       <div>
         {/* Top Badges */}

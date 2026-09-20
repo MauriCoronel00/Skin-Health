@@ -548,8 +548,8 @@ export default function App() {
         {/* Testimonios: reseñas aprobadas visibles */}
         <TestimoniosSection />
 
-        {/* Section 19: Principio Fundamental - How it works explanation */}
-        <section className="mt-14 bg-white/80 border border-[#102A43]/10 rounded-3xl p-6 sm:p-8 shadow-xs">
+        {/* Section 19: Principio Fundamental - How it works - hidden on mobile for app feel */}
+        <section className="mt-14 bg-white/80 border border-[#102A43]/10 rounded-3xl p-6 sm:p-8 shadow-xs hidden sm:block">
           <div className="max-w-5xl mx-auto text-center">
             <span className="text-[11px] font-bold uppercase tracking-widest text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-100">
               Flujo de Compra Rápido

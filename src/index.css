@@ -8,9 +8,10 @@
   }
 
   body {
-    background-color: #FAF8F5;
+    background-color: #FFFFFF;
     color: #1A202C;
     overflow-x: hidden;
+    letter-spacing: 0.01em;
   }
 
   h1, h2, h3, .font-serif {
