@@ -13890,7 +13890,7 @@
 
 <!-- PRUEBA SOCIAL VIVA — CRO llamativa -->
 <section class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 mt-6">
-  <div class="rounded-[20px] bg-[#faf8f5] border border-black/5 p-4 sm:p-5 flex gap-4 overflow-x-auto scrollbar-none snap-x snap-mandatory">
+  <div class="rounded-[20px] bg-[#faf8f5] border border-black/5 p-4 sm:p-5 flex gap-4 overflow-x-auto scrollbar-none snap-x snap-mandatory snap-center">
     <div class="min-w-[280px] snap-start bg-white rounded-2xl p-4 border border-black/5 flex gap-3">
       <img src="https://i.pravatar.cc/100?img=32" alt="Andrea" class="w-10 h-10 rounded-full object-cover" />
       <div class="flex-1">
@@ -13917,7 +13917,7 @@
     </div>
   </div>
   <div class="flex justify-end mt-3">
-    <a href="https://wa.me/595976659748?text=Hola%20Skin%20Health%20quiero%20dejar%20mi%20opinión" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#0F1F33] text-white text-xs font-semibold hover:bg-black transition-colors">Déjanos tu opinión →</a>
+    <a button onclick="openOpinionModal()" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#0F1F33] text-white text-xs font-semibold hover:bg-black transition-colors">Déjanos tu opinión →</button>
   </div>
 </section>
 
@@ -14005,7 +14005,7 @@
     <h2 class="font-serif text-2xl font-semibold tracking-tight">Todos los productos <span id="todosCount" class="text-sm font-sans font-medium text-neutral-500"></span></h2>
     <button onclick="hideTodosProductos()" class="text-sm font-semibold px-4 py-2 rounded-full border border-black/10 hover:border-black/20">Cerrar ✕</button>
   </div>
-  <div id="todosGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
+  <div id="todosGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5 max-w-[1280px] mx-auto">
     <!-- JS inyecta todos los productos de Supabase -->
   </div>
 </section>
@@ -14017,7 +14017,7 @@
     <h2 class="font-serif text-2xl font-semibold tracking-tight">Todos los productos <span id="todosCount" class="text-sm font-sans font-medium text-neutral-500"></span></h2>
     <button onclick="hideTodosProductos()" class="text-sm font-semibold px-4 py-2 rounded-full border border-black/10 hover:border-black/20">Cerrar ✕</button>
   </div>
-  <div id="todosGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
+  <div id="todosGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5 max-w-[1280px] mx-auto">
     <!-- JS inyecta todos los productos de Supabase -->
   </div>
 </section>
@@ -14254,6 +14254,7 @@
   </div>
 </div>
 
+<!-- OPINION MODAL Gmail -> Supabase pending --><div id="opinionModal" class="fixed inset-0 z-50 hidden"><div id="opinionBackdrop" class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div><div class="relative max-w-lg mx-auto mt-10 bg-white rounded-3xl p-6 shadow-2xl m-4"><button onclick="closeOpinionModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-neutral-100 flex items-center justify-center">x</button><h3 class="font-semibold text-lg">Deja tu opinion</h3><p class="text-xs text-neutral-500">Tu opinion quedara pendiente hasta que el admin la apruebe</p><div class="mt-3 flex gap-1 text-xl cursor-pointer" id="opStarsModal"><span data-v="1">★</span><span data-v="2">★</span><span data-v="3">★</span><span data-v="4">★</span><span data-v="5">★</span></div><textarea id="opTextModal" rows="3" placeholder="Tu experiencia..." class="mt-3 w-full border rounded-xl p-3 text-sm"></textarea><button onclick="submitOpinion()" class="mt-3 w-full py-3 rounded-full bg-[#0F1F33] text-white font-semibold">Publicar con Gmail →</button><p id="opStatusModal" class="text-xs text-center mt-2"></p></div></div>
 <!-- Daemon status banner - OCULTO por solicitud -->
 <div id="daemonBanner" style="display:none"></div>
 
@@ -14395,7 +14396,8 @@ document.getElementById('productModalClose')?.addEventListener('click', window.c
 document.addEventListener('keydown', e=>{ if(e.key==='Escape') window.closeProductModal(); });
 // TODOS LOS PRODUCTOS — Ver todo
 window.currentFilter = 'todos';
-window.renderTodosProductos = () => {
+window.renderTodosProductos = () => { // FIX: asegura PRODUCTOS cargado y formato ProductCard profesional
+  if (!window.PRODUCTOS || window.PRODUCTOS.length===0) { console.warn("PRODUCTOS vacio, reintentando fetch"); setTimeout(()=>window.renderTodosProductos(), 500); return; }
   const grid = document.getElementById('todosGrid');
   const count = document.getElementById('todosCount');
   if(!grid) return;
@@ -14464,6 +14466,7 @@ window.makeRutinasClickable = () => {
 
 window.quizData={};window.quizPick=function(s,v){window.quizData['step'+s]=v;document.getElementById('quizStep'+s).classList.add('hidden');var n=document.getElementById('quizStep'+(s+1));if(n)n.classList.remove('hidden');};window.quizFinish=function(t){window.quizData.tipo=t;document.getElementById('quizStep3').classList.add('hidden');var piel=window.quizData.step1||'mixta';var prob=window.quizData.step2||'manchas';var txt='Piel '+piel+', preocupacion '+prob+', rutina '+t+' - 3 productos reales: limpiador + tratamiento + proteccion. Te armamos la lista exacta por WhatsApp.';document.getElementById('quizText').textContent=txt;document.getElementById('quizWa').href='https://wa.me/595976659748?text='+encodeURIComponent('Hola Skin Health, hice el quiz: piel '+piel+', me preocupa '+prob+', quiero rutina '+t+' - que me recomiendan?');document.getElementById('quizResult').classList.remove('hidden');};window.quizReset=function(){window.quizData={};document.getElementById('quizResult').classList.add('hidden');document.getElementById('quizStep2').classList.add('hidden');document.getElementById('quizStep3').classList.add('hidden');document.getElementById('quizStep1').classList.remove('hidden');};
 window.opRating=0;document.querySelectorAll('#opStars span').forEach(s=>{s.addEventListener('click',()=>{window.opRating=parseInt(s.dataset.v);document.querySelectorAll('#opStars span').forEach((e,i)=>e.style.opacity=i<window.opRating?'1':'0.3');document.getElementById('opStarsLabel').textContent=window.opRating+' / 5';});});document.getElementById('opSubmit')?.addEventListener('click', async()=>{const txt=document.getElementById('opText').value.trim();const st=document.getElementById('opStatus');if(!window.opRating){st.textContent='Elegí una calificación';return;}if(txt.length<10){st.textContent='Escribí al menos 10 caracteres';return;}const supa=window.supabase?.createClient ? window.supabase.createClient('https://utiwzektfctdfyhgqode.supabase.co','sb_publishable_r25cWAmCVO5PDGKvCqe_VA_5SX0yqhD') : null;if(supa){const {data:{user}}=await supa.auth.getUser();if(!user){st.textContent='Iniciando sesión con Gmail...';const {error}=await supa.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.href}});if(error) st.textContent=error.message;return;}}st.textContent='¡Gracias! Tu opinión quedará como verificada tras revisión.';document.getElementById('opText').value='';});
+window.openOpinionModal=()=>{document.getElementById("opinionModal").classList.remove("hidden");};window.closeOpinionModal=()=>{document.getElementById("opinionModal").classList.add("hidden");};let opRatingModal=0;document.querySelectorAll("#opStarsModal span").forEach(s=>{s.addEventListener("click",()=>{opRatingModal=parseInt(s.dataset.v);document.querySelectorAll("#opStarsModal span").forEach((e,i)=>e.style.color=i<opRatingModal?"#f59e0b":"#e5e7eb");});});window.submitOpinion=async()=>{const txt=document.getElementById("opTextModal").value.trim();const st=document.getElementById("opStatusModal");if(!opRatingModal){st.textContent="Elegi una calificacion";return;}if(txt.length<10){st.textContent="Escribi al menos 10 caracteres";return;}const supa=window.supabase?.createClient ? window.supabase.createClient("https://utiwzektfctdfyhgqode.supabase.co","sb_publishable_r25cWAmCVO5PDGKvCqe_VA_5SX0yqhD") : null;if(supa){const {data:{user}}=await supa.auth.getUser();if(!user){st.textContent="Iniciando sesion con Gmail...";const {error}=await supa.auth.signInWithOAuth({provider:"google",options:{redirectTo:location.href}});if(error) st.textContent=error.message;return;}try{const {error}=await supa.from("reviews").insert({producto_id:"general",user_id:user.id,author_name:user.user_metadata?.full_name||user.email,rating:opRatingModal,comment:txt,status:"pending"});if(error) throw error;st.textContent="Gracias! Tu opinion quedo pendiente para aprobacion del admin.";setTimeout(()=>{closeOpinionModal();document.getElementById("opTextModal").value="";},1500);}catch(e){st.textContent="Error: "+e.message;}}}
 // Daemon health check
 (async()=>{
   const banner = document.getElementById('daemonBanner');
