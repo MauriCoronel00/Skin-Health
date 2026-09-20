@@ -5396,7 +5396,7 @@ tailwind.config = {
       </a>
 
       <!-- Right icons -->
-      <div class="flex items-center gap-1 sm:gap-2">
+      <div class="flex items-center gap-2 sm:gap-3">
         <div class="hidden sm:flex items-center gap-2 text-xs text-neutral-500 mr-2">
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
         </div>
@@ -5411,7 +5411,7 @@ tailwind.config = {
           <span id="userName" class="text-xs font-semibold max-w-[120px] truncate"></span>
           <button id="logoutBtn" class="text-[11px] px-2.5 py-1 rounded-full border border-black/10 hover:border-black/20">Salir</button>
         </div>
-        <button id="cartBtn" class="flex items-center gap-2 pl-3 pr-1 py-1 rounded-full bg-[#1A202C] text-white text-xs font-semibold hover:bg-black transition-colors">
+        <button id="cartBtn" class="flex items-center gap-2 pl-3 pr-1 py-1 rounded-full shrink-0 bg-[#1A202C] text-white text-xs font-semibold hover:bg-black transition-colors">
           <span class="hidden sm:inline">Carrito</span>
           <span id="cartCount" class="bg-white text-[#1A202C] w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold">0</span>
         </button>
@@ -5432,7 +5432,7 @@ tailwind.config = {
     <div class="float-badge absolute top-4 right-4 sm:top-6 sm:right-6 bg-white/95 backdrop-blur border border-black/5 rounded-full px-3 py-1.5 sm:px-4 sm:py-2 flex items-center gap-2 shadow-lg text-[11px] sm:text-xs font-bold text-[#0E4A6D]">
       <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> 100% Original • Verificado
     </div>
-    <div class="relative grid lg:grid-cols-[1.05fr_0.95fr] min-h-[520px] sm:min-h-[560px]">
+    <div class="relative grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] min-h-[520px] sm:min-h-[560px]">
       <!-- Left copy - texto principal sobre foto completa -->
       <div class="px-6 sm:px-10 lg:px-14 py-10 sm:py-12 lg:py-14 flex flex-col justify-center order-2 lg:order-1">
         <p class="inline-flex items-center gap-2 text-[11px] tracking-[0.18em] uppercase font-semibold text-[#5a6b5a] mb-4">
@@ -5527,14 +5527,14 @@ tailwind.config = {
       <h2 class="font-serif text-[28px] sm:text-3xl font-semibold tracking-tight text-[#1A202C]">Comprar por categoría</h2>
       <p class="text-sm text-[#1A202C]/60 mt-1">Cuatro colecciones curadas. Datos reales: <span id="catCountLabel">6 categorías • 20 productos • Supabase activo=true</span> — Recomendación de rutinas incluida</p>
     </div>
-    <a href="#todos-productos" id="verTodoBtn" class="inline-flex text-sm font-semibold underline underline-offset-4 decoration-[#5a6b5a]/30 hover:decoration-[#5a6b5a]">Ver los 20 productos →</a>
+    <a href="#todos-productos" id="verTodoBtn" class="relative z-10 inline-flex text-sm font-semibold underline underline-offset-4 decoration-[#5a6b5a]/30 hover:decoration-[#5a6b5a]">Ver los 20 productos →</a>
   </div>
 
-  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
     <!-- Card 1: Skincare -> Hidratar -->
     <div onclick="showTodosProductos('hydrate')" class="cat-card group relative overflow-hidden rounded-[24px] bg-white border border-[#102A43]/[0.08] shadow-[0_2px_12px_rgba(30,58,95,0.06)] hover:shadow-lg transition-all cursor-pointer">
       <div class="aspect-[4/5] bg-[#f6f1e8] relative overflow-hidden flex items-center justify-center p-4">
-        <img src="https://utiwzektfctdfyhgqode.supabase.co/storage/v1/object/public/Imagenes-Productos/skin-health-imagenes/cerave-moisturizing-cream-340g.avif" alt="Skincare - Hidratar" class="w-full h-full object-contain mix-blend-multiply" />
+        <img src="https://utiwzektfctdfyhgqode.supabase.co/storage/v1/object/public/Imagenes-Productos/skin-health-imagenes/cerave-moisturizing-cream-340g.avif" alt="Skincare - Hidratar" class="w-full h-full object-cover object-center mix-blend-multiply" />
         <span class="absolute top-3 left-3 bg-white/90 backdrop-blur text-[11px] font-semibold px-2.5 py-1 rounded-full border border-black/5">5 productos</span>
       </div>
       <div class="p-4">
@@ -5547,7 +5547,7 @@ tailwind.config = {
     <!-- Card 2: Haircare -> Limpiar (re-mapped) -->
     <div onclick="showTodosProductos('cleanse')" class="cat-card group relative overflow-hidden rounded-[24px] bg-white border border-[#102A43]/[0.08] shadow-[0_2px_12px_rgba(30,58,95,0.06)] hover:shadow-lg transition-all cursor-pointer">
       <div class="aspect-[4/5] bg-[#eef3ee] relative overflow-hidden flex items-center justify-center p-4">
-        <img src="https://utiwzektfctdfyhgqode.supabase.co/storage/v1/object/public/Imagenes-Productos/skin-health-imagenes/cerave-hydrating-facial-cleanser-355ml.jpg" alt="Haircare - Limpiar" class="w-full h-full object-contain mix-blend-multiply" />
+        <img src="https://utiwzektfctdfyhgqode.supabase.co/storage/v1/object/public/Imagenes-Productos/skin-health-imagenes/cerave-hydrating-facial-cleanser-355ml.jpg" alt="Haircare - Limpiar" class="w-full h-full object-cover object-center mix-blend-multiply" />
         <span class="absolute top-3 left-3 bg-white/90 backdrop-blur text-[11px] font-semibold px-2.5 py-1 rounded-full border border-black/5">7 productos</span>
       </div>
       <div class="p-4">
@@ -5560,7 +5560,7 @@ tailwind.config = {
     <!-- Card 3: Body -> Proteger -->
     <div onclick="showTodosProductos('protect')" class="cat-card group relative overflow-hidden rounded-[24px] bg-white border border-[#102A43]/[0.08] shadow-[0_2px_12px_rgba(30,58,95,0.06)] hover:shadow-lg transition-all cursor-pointer">
       <div class="aspect-[4/5] bg-[#fdf0e8] relative overflow-hidden flex items-center justify-center p-4">
-        <img src="https://utiwzektfctdfyhgqode.supabase.co/storage/v1/object/public/Imagenes-Productos/skin-health-imagenes/skin1004-madagascar-centella-hyalu-cica-water-fit-sun-serum-50ml.jpeg" alt="Body - Proteger" class="w-full h-full object-contain mix-blend-multiply" />
+        <img src="https://utiwzektfctdfyhgqode.supabase.co/storage/v1/object/public/Imagenes-Productos/skin-health-imagenes/skin1004-madagascar-centella-hyalu-cica-water-fit-sun-serum-50ml.jpeg" alt="Body - Proteger" class="w-full h-full object-cover object-center mix-blend-multiply" />
         <span class="absolute top-3 left-3 bg-white/90 backdrop-blur text-[11px] font-semibold px-2.5 py-1 rounded-full border border-black/5">2 productos</span>
       </div>
       <div class="p-4">
@@ -5573,7 +5573,7 @@ tailwind.config = {
     <!-- Card 4: Makeup -> Iluminar / Calmar -->
     <div onclick="showTodosProductos('brighten')" class="cat-card group relative overflow-hidden rounded-[24px] bg-white border border-[#102A43]/[0.08] shadow-[0_2px_12px_rgba(30,58,95,0.06)] hover:shadow-lg transition-all cursor-pointer">
       <div class="aspect-[4/5] bg-[#f7eef3] relative overflow-hidden flex items-center justify-center p-4">
-        <img src="https://utiwzektfctdfyhgqode.supabase.co/storage/v1/object/public/Imagenes-Productos/skin-health-imagenes/la-roche-posay-pure-vitamin-c10-serum-30ml.jpeg" alt="Makeup - Iluminar" class="w-full h-full object-contain mix-blend-multiply" />
+        <img src="https://utiwzektfctdfyhgqode.supabase.co/storage/v1/object/public/Imagenes-Productos/skin-health-imagenes/la-roche-posay-pure-vitamin-c10-serum-30ml.jpeg" alt="Makeup - Iluminar" class="w-full h-full object-cover object-center mix-blend-multiply" />
         <span class="absolute top-3 left-3 bg-white/90 backdrop-blur text-[11px] font-semibold px-2.5 py-1 rounded-full border border-black/5">4 productos</span>
       </div>
       <div class="p-4">
@@ -5872,7 +5872,7 @@ function renderBestSellers(){
   track.innerHTML = list.map(p => `
     <div onclick="openProductModal('${p.id}')" class="group min-w-[160px] sm:min-w-[180px] w-[160px] sm:w-[180px] flex-shrink-0 snap-start rounded-2xl border border-black/5 bg-[#FAF8F5] overflow-hidden hover:border-black/10 hover:shadow-md transition-all flex flex-col cursor-pointer">
       <div class="aspect-square bg-white flex items-center justify-center p-3 relative">
-        <img src="${p.imagen_url}" alt="${p.nombre} - ${p.marca} ${p.volumen || ''}" class="w-full h-full object-contain mix-blend-multiply group-hover:scale-[1.03] transition-transform duration-500" loading="lazy"/>
+        <img src="${p.imagen_url}" alt="${p.nombre} - ${p.marca} ${p.volumen || ''}" class="w-full h-full object-cover object-center mix-blend-multiply group-hover:scale-[1.03] transition-transform duration-500" loading="lazy"/>
         <span class="absolute top-2 left-2 text-[10px] font-bold tracking-wide uppercase px-2 py-1 rounded-full bg-[#1A202C] text-white">${p.badge || p.volumen}</span>
         <span class="absolute top-2 right-2 text-[11px] font-bold bg-white border border-black/5 px-2 py-1 rounded-full">★ ${Number(p.rating).toFixed(1)} • ${p.reviews_count}</span>
       </div>
@@ -5991,7 +5991,7 @@ window.renderTodosProductos = () => {
   grid.innerHTML = filtered.map(p=> `
     <div onclick="openProductModal('${p.id}')" class="group rounded-2xl border border-black/5 bg-[#FAF8F5] overflow-hidden hover:border-black/10 hover:shadow-md transition-all flex flex-col cursor-pointer">
       <div class="aspect-square bg-white flex items-center justify-center p-3 relative">
-        <img src="${p.imagen_url}" alt="${p.nombre} - ${p.marca}" class="w-full h-full object-contain mix-blend-multiply group-hover:scale-[1.03] transition-transform duration-500" loading="lazy"/>
+        <img src="${p.imagen_url}" alt="${p.nombre} - ${p.marca}" class="w-full h-full object-cover object-center mix-blend-multiply group-hover:scale-[1.03] transition-transform duration-500" loading="lazy"/>
         <span class="absolute top-2 left-2 text-[10px] font-bold tracking-wide uppercase px-2 py-1 rounded-full bg-[#1A202C] text-white">${p.badge || p.volumen || ''}</span>
         <span class="absolute top-2 right-2 text-[11px] font-bold bg-white border border-black/5 px-2 py-1 rounded-full">★ ${Number(p.rating||0).toFixed(1)}</span>
       </div>
