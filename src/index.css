@@ -8,10 +8,15 @@
   }
 
   body {
-    background-color: #FFFFFF;
+    background-color: #FAF8F5;
     color: #1A202C;
     overflow-x: hidden;
     letter-spacing: 0.01em;
+  }
+  :root {
+    --brand-navy: #1e3a5f;
+    --brand-light: #a8c5e0;
+    --brand-accent: #E8E6FF;
   }
 
   h1, h2, h3, .font-serif {

@@ -22,15 +22,19 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   return (
     <header className="sticky top-0 z-30 bg-[#FAF8F5]/95 backdrop-blur-md border-b border-[#102A43]/10 transition-all">
-      {/* Announcement bar */}
-      <div className="bg-[#102A43] text-[#FAF8F5] text-[11px] py-1.5 px-4 text-center font-medium uppercase tracking-[0.18em]">
+      {/* Announcement bar - brand navy */}
+      <div className="bg-[#1e3a5f] text-white text-[11px] py-1.5 px-4 text-center font-medium tracking-wide">
         Productos 100% originales • Envíos a todo Paraguay
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3 sm:gap-4">
-        {/* Logo */}
-        <div className="cursor-pointer shrink-0" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-          <BrandLogo size="md" />
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-2 sm:gap-4">
+        {/* Mobile: hamburger */}
+        <button className="sm:hidden w-9 h-9 rounded-full bg-white border border-black/5 flex items-center justify-center">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1e3a5f" strokeWidth="1.8"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+        {/* Logo centered on mobile */}
+        <div className="cursor-pointer flex-1 sm:flex-none flex justify-center sm:justify-start" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+          <BrandLogo size="sm" />
         </div>
 
         {/* Search (desktop) */}
