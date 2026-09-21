@@ -30,6 +30,8 @@ import { TrackingView } from './components/TrackingView';
 import { MobileBottomNav, TabId } from './components/MobileBottomNav';
 import { HeroRitualCTA } from './components/HeroRitualCTA';
 import { ProductGridSkeleton, CategoryPillsSkeleton, RoutinesSectionSkeleton, TestimoniosSectionSkeleton } from './components/Skeleton';
+import { DiagnosticQuiz } from './components/DiagnosticQuiz';
+import { CollapsibleRoutines } from './components/CollapsibleRoutines';
 
 const CART_STORAGE_KEY = 'skinhealth_cart_v1';
 
@@ -42,6 +44,12 @@ export default function App() {
 
   // Mobile bottom navigation tabs state
   const [activeTab, setActiveTab] = useState<TabId>('home');
+
+  // State for collapsible routines
+  const [openRoutines, setOpenRoutines] = useState<Set<string>>(new Set());
+
+  // State for diagnostic quiz
+  const [quizOpen, setQuizOpen] = useState(false);
 
   const { user } = useAuth();
 
@@ -446,6 +454,19 @@ export default function App() {
 
         {/* Hero Ritual CTA - Premium diagnostic flow */}
         <HeroRitualCTA onScrollToCatalog={scrollToCatalog} />
+
+        {/* Diagnostic Quiz - 4 steps */}
+        <DiagnosticQuiz
+          isOpen={quizOpen}
+          onClose={() => setQuizOpen(false)}
+          onComplete={(routineId) => {
+            setQuizOpen(false);
+            console.log('Rutina recomendada:', routineId);
+          }}
+        />
+
+        {/* Collapsible Routines List - 5 routines with expand/collapse */}
+        <CollapsibleRoutines />
 
         {/* Category Pills (Hydrate, Brighten, Calm, Protect, Cleanse) */}
         {isLoadingProducts ? (
