@@ -474,7 +474,7 @@ export default function App() {
             
             const routineName = routineNames[routineId] || 'Rutina recomendada';
             const mensaje = `¡Hola! Completé el diagnóstico de piel y me recomendaron ${routineName}. Quiero conocer los 4 pasos personalizados para mi tipo de piel.`;
-            const whatsappUrl = `https://wa.me/595981659748?text=${encodeURIComponent(mensaje)}`;
+            const whatsappUrl = `https://wa.me/595976659748?text=${encodeURIComponent(mensaje)}`;
             
             // Redireccionar a WhatsApp
             window.location.href = whatsappUrl;
