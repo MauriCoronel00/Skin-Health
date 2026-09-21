@@ -4,7 +4,8 @@ import { Sparkles, Leaf, Droplets, ShieldCheck, ArrowRight } from 'lucide-react'
 
 export const HeroRitualCTA: React.FC<{
   onScrollToCatalog: () => void;
-}> = ({ onScrollToCatalog }) => {
+  onOpenQuiz: () => void;
+}> = ({ onScrollToCatalog, onOpenQuiz }) => {
   const steps = [
     { icon: Leaf, label: 'Diagnóstico', desc: 'Tu tipo de piel y necesidades' },
     { icon: Sparkles, label: 'Rutina', desc: '4 pasos personalizados' },
@@ -86,13 +87,13 @@ export const HeroRitualCTA: React.FC<{
           transition={{ delay: 0.7 }}
           className="flex flex-col sm:flex-row gap-3 items-center justify-center"
         >
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={onScrollToCatalog}
-            className="flex-1 sm:w-auto py-4 px-8 bg-[#102A43] text-white font-bold text-sm sm:text-base rounded-2xl shadow-xl flex items-center justify-center gap-2 transition-all group border border-white/20"
-          >
-            <span>Empezar mi diagnóstico</span>
+<motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={onOpenQuiz}
+              className="flex-1 sm:w-auto py-4 px-8 bg-[#102A43] text-white font-bold text-sm sm:text-base rounded-2xl shadow-xl flex items-center justify-center gap-2 transition-all group border border-white/20"
+            >
+              <span>Empezar mi diagnóstico</span>
             <motion.div
               animate={{ x: [0, 4, 0] }}
               transition={{ duration: 1.5, repeat: Infinity }}

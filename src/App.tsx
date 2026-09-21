@@ -453,7 +453,7 @@ export default function App() {
         <HeroBanner onScrollToCatalog={scrollToCatalog} />
 
         {/* Hero Ritual CTA - Premium diagnostic flow */}
-        <HeroRitualCTA onScrollToCatalog={scrollToCatalog} />
+        <HeroRitualCTA onScrollToCatalog={scrollToCatalog} onOpenQuiz={() => setQuizOpen(true)} />
 
         {/* Diagnostic Quiz - 4 steps */}
         <DiagnosticQuiz
