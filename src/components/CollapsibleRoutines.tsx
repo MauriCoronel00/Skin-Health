@@ -1,30 +1,46 @@
-import React, { useState, SetStateAction } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import { SKINCARE_ROUTINES } from '../data/routines';
-import { formatGuarani } from '../data/products';
+import { useSupabase } from '../hooks/useSupabase';
 
 export const CollapsibleRoutines: React.FC = () => {
+  const { supabase } = useSupabase();
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
+  const [routines, setRoutines] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetchRoutines();
+  }, [supabase]);
+
+  const fetchRoutines = async () => {
+    const { data, error } = await supabase
+      .from('skincare_routines')
+      .select('*');
+    
+    if (error) {
+      console.error('Error fetching routines:', error);
+      return;
+    }
+    
+    setRoutines(data || []);
+  };
 
   const toggleRoutine = (id: string) => {
-  setExpanded(prev => {
-    const next = new Set(prev);
-    if (next.has(id)) {
-      next.delete(id);
-    } else {
-      next.forEach(currentId => {
-        if (currentId !== id) next.delete(currentId);
-      });
-      next.add(id);
-    }
-    return next;
-  });
-};
+    setExpanded(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.forEach(currentId => {
+          if (currentId !== id) next.delete(currentId);
+        });
+        next.add(id);
+      }
+      return next;
+    });
+  };
 
   const isRoutineOpen = (id: string) => expanded.has(id);
-
-  const routineHeights = SKINCARE_ROUTINES.map(() => '96px');
 
   return (
     <>
@@ -45,7 +61,7 @@ export const CollapsibleRoutines: React.FC = () => {
         </div>
 
         <div className="space-y-6 sm:space-y-8">
-          {SKINCARE_ROUTINES.map((routine) => {
+          {routines.map((routine) => {
             const id = routine.id;
             const isOpen = isRoutineOpen(id);
             const arrowIcon = isOpen ? <ChevronUp className="w-4 h-4 mt-1" /> : <ChevronDown className="w-4 h-4 mt-1" />;
@@ -75,87 +91,89 @@ export const CollapsibleRoutines: React.FC = () => {
                         {routine.title}
                       </h3>
                     </div>
-                    <p className="text-xs sm:text-sm text-[#102A43]/80 font-medium mt-1">
-                      {routine.goal}
-                    </p>
-                  </div>
 
-                  {/* Toggle arrow in top right */}
-                  <div className="flex items-center gap-2">
-                    {arrowIcon}
-                  </div>
-                </div>
-
-                {/* Routine Content - collapsible height */}
-                <motion.div
-                  style={{ height: containerHeight }}
-                  transition={{
-                    type: 'spring',
-                    stiffness: 300,
-                    damping: 30,
-                    duration: isOpen ? 300 : 150,
-                  }}
-                  className="p-5 sm:p-6 border-t border-neutral-100"
-                >
-                  {/* Steps Grid */}
-                  <div className={`grid ${routine.steps.length === 3 ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'} gap-4 relative`}>
-                    {routine.steps.map((step) => (
-                      <motion.div
-                        key={step.stepNumber}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.1 + step.stepNumber * 0.05, duration: 0.2 }}
-                        className="bg-[#FAF8F5] rounded-2xl p-4 border border-neutral-200/80 hover:border-[#102A43]/30 transition-all flex flex-col justify-between"
-                      >
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="w-6 h-6 rounded-full bg-[#102A43] text-white text-xs font-bold flex items-center justify-center shadow-xs">
-                            {step.stepNumber}
-                          </span>
-                          <span className="text-xs font-bold text-neutral-800">
-                            {step.label}
-                          </span>
-                        </div>
-
-                        {/* Product info simplified */}
-                        {step.productId && (
-                          <div className="mt-2 text-xs text-neutral-600">
-                            <span>{step.stepNumber}: Producto</span>
-                          </div>
-                        )}
-
-                        {/* Price */}
-                        {step.productId && (
-                          <div className="mt-1 text-[10px] font-bold text-[#102A43]">
-                            Gs.
-                          </div>
-                        )}
-                      </motion.div>
-                    ))}
-                  </div>
-
-                  {/* Instruction notice */}
-                  {routine.instructionText && (
-                    <div className="mt-4 p-3.5 sm:p-4 rounded-2xl bg-[#FAF8F5] border border-[#102A43]/15 flex items-start gap-2.5 text-xs text-neutral-700 leading-relaxed">
-                      {routine.instructionType === 'ORDEN' ? (
-                        <span className="w-4 h-4 text-[#102A43] shrink-0 mt-0.5" />
-                      ) : (
-                        <span className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-                      )}
-                      <span className="font-bold text-[#102A43] mr-1">
-                        {routine.instructionType || 'NOTA'}:
-                      </span>
-                      <span>
-                        {routine.instructionText.replace(
-                          `${routine.instructionType}: `,
-                          ''
-                        )}
-                      </span>
+                    {/* Toggle arrow in top right */}
+                    <div className="flex items-center gap-2">
+                      {arrowIcon}
                     </div>
-                  )}
-                </motion.div>
+                  </div>
+
+                  {/* Routine Content - collapsible height */}
+                  <motion.div
+                    style={{ height: containerHeight }}
+                    transition={{
+                      type: 'spring',
+                      stiffness: 300,
+                      damping: 30,
+                      duration: isOpen ? 300 : 150,
+                    }}
+                    className="p-5 sm:p-6 border-t border-neutral-100"
+                  >
+                    {/* Steps Grid */}
+                    <div className={`grid ${routine.steps.length === 3 ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'} gap-4 relative`}>
+                      {routine.steps.map((step) => (
+                        <motion.div
+                          key={step.stepNumber}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.1 + step.stepNumber * 0.05, duration: 0.2 }}
+                          className="bg-[#FAF8F5] rounded-2xl p-4 border border-neutral-200/80 hover:border-[#102A43]/30 transition-all flex flex-col justify-between"
+                        >
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="w-6 h-6 rounded-full bg-[#102A43] text-white text-xs font-bold flex items-center justify-center shadow-xs">
+                              {step.stepNumber}
+                            </span>
+                            <span className="text-xs font-bold text-neutral-800">
+                              {step.label}
+                            </span>
+                          </div>
+
+                          {/* Product info - from DB */}
+                          {step.productId && (
+                            <div className="mt-2 text-xs text-neutral-600">
+                              <span>{step.stepNumber}: Producto</span>
+                            </div>
+                          )}
+
+                          {/* Price */}
+                          {step.productId && (
+                            <div className="mt-1 text-[10px] font-bold text-[#102A43]">
+                              Gs.
+                            </div>
+                          )}
+                        </motion.div>
+                      ))}
+                    </div>
+
+                    {/* Instruction notice */}
+                    {routine.instructionText && (
+                      <div className="mt-4 p-3.5 sm:p-4 rounded-2xl bg-[#FAF8F5] border border-[#102A43]/15 flex items-start gap-2.5 text-xs text-neutral-700 leading-relaxed">
+                        {routine.instructionType === 'ORDEN' ? (
+                          <span className="w-4 h-4 text-[#102A43] shrink-0 mt-0.5" />
+                        ) : (
+                          <span className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                        )}
+                        <span className="font-bold text-[#102A43] mr-1">
+                          {routine.instructionType || 'NOTA'}:
+                        </span>
+                        <span>
+                          {routine.instructionText.replace(
+                            `${routine.instructionType}: `,
+                            ''
+                          )}
+                        </span>
+                      </div>
+                    )}
+                  </motion.div>
+                </div>
               </motion.div>
             );
           })}
+          {routines.length === 0 && (
+            <div className="text-center py-12 text-neutral-500">
+              Cargando rutinas...
+            </div>
+          )}
         </div>
       </section>
     </>

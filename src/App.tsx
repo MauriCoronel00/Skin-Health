@@ -462,6 +462,22 @@ export default function App() {
           onComplete={(routineId) => {
             setQuizOpen(false);
             console.log('Rutina recomendada:', routineId);
+            
+            // Generar enlace de WhatsApp con los resultados
+            const routineNames: Record<string, string> = {
+              'piel-grasa': 'Rutina para Piel Grasa y Tendencia al Acné',
+              'hidratacion-sensible': 'Rutina para Piel Sensible y Barrera Cutánea',
+              'manchas-luminosidad': 'Rutina para Manchas, Hiperpigmentación y Luminosidad',
+              'anti-edad-renovacion': 'Rutina Anti-Edad y Textura (Renovación)',
+              'hidratacion-universal': 'Rutina Básica de Hidratación Universal',
+            };
+            
+            const routineName = routineNames[routineId] || 'Rutina recomendada';
+            const mensaje = `¡Hola! Completé el diagnóstico de piel y me recomendaron ${routineName}. Quiero conocer los 4 pasos personalizados para mi tipo de piel.`;
+            const whatsappUrl = `https://wa.me/595981659748?text=${encodeURIComponent(mensaje)}`;
+            
+            // Redireccionar a WhatsApp
+            window.location.href = whatsappUrl;
           }}
         />
 
@@ -569,7 +585,7 @@ export default function App() {
         </div>
 
         {/* Section based strictly on PDF: Rutinas de Skincare */}
-        <CollapsibleRoutines />
+
 
         {/* Testimonios: reseñas aprobadas visibles */}
         {isLoadingProducts ? (
