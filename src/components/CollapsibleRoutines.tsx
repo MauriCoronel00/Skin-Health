@@ -21,11 +21,16 @@ export const CollapsibleRoutines: React.FC = () => {
         .select('*')
         .order('number', { ascending: true });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error fetching routines:', error);
+        throw error;
+      }
+      console.log('Routines data from Supabase:', data);
       setRoutines(data || []);
-    } catch (err) {
-      console.error('Error fetching routines from Supabase:', err);
-    } finally {
+      setLoading(false);
+    } catch (err: any) {
+      console.error('Error fetching routines from Supabase:', err.message || err);
+      // We still set loading to false so UI doesn't get stuck
       setLoading(false);
     }
   };
