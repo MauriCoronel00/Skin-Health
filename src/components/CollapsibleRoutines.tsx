@@ -7,22 +7,27 @@ export const CollapsibleRoutines: React.FC = () => {
   const { supabase } = useSupabase();
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [routines, setRoutines] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchRoutines();
   }, [supabase]);
 
   const fetchRoutines = async () => {
-    const { data, error } = await supabase
-      .from('skincare_routines')
-      .select('*');
-    
-    if (error) {
-      console.error('Error fetching routines:', error);
-      return;
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('skincare_routines')
+        .select('*')
+        .order('number', { ascending: true });
+
+      if (error) throw error;
+      setRoutines(data || []);
+    } catch (err) {
+      console.error('Error fetching routines from Supabase:', err);
+    } finally {
+      setLoading(false);
     }
-    
-    setRoutines(data || []);
   };
 
   const toggleRoutine = (id: string) => {
@@ -41,6 +46,14 @@ export const CollapsibleRoutines: React.FC = () => {
   };
 
   const isRoutineOpen = (id: string) => expanded.has(id);
+
+  if (loading) {
+    return (
+      <div className="text-center py-12 text-neutral-500">
+        Cargando rutinas de skincare...
+      </div>
+    );
+  }
 
   return (
     <>
@@ -61,6 +74,12 @@ export const CollapsibleRoutines: React.FC = () => {
         </div>
 
         <div className="space-y-6 sm:space-y-8">
+          {routines.length === 0 && !loading && (
+            <div className="text-center py-12 text-neutral-500">
+              No se encontraron rutinas
+            </div>
+          )}
+
           {routines.map((routine) => {
             const id = routine.id;
             const isOpen = isRoutineOpen(id);
@@ -128,10 +147,10 @@ export const CollapsibleRoutines: React.FC = () => {
                             </span>
                           </div>
 
-                          {/* Product info - from DB */}
+                          {/* Product info from DB */}
                           {step.productId && (
                             <div className="mt-2 text-xs text-neutral-600">
-                              <span>{step.stepNumber}: Producto</span>
+                              <span>{step.stepNumber}: {step.productId || 'Producto'}</span>
                             </div>
                           )}
 
@@ -169,11 +188,6 @@ export const CollapsibleRoutines: React.FC = () => {
               </motion.div>
             );
           })}
-          {routines.length === 0 && (
-            <div className="text-center py-12 text-neutral-500">
-              Cargando rutinas...
-            </div>
-          )}
         </div>
       </section>
     </>
