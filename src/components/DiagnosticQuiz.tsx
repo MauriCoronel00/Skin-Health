@@ -12,7 +12,7 @@ type Step = 1 | 2 | 3 | 4 | 'result';
 
 const QUESTIONS = {
   1: {
-    title: '¿Cómo es tu tipo de piel?',
+    title: 'Tipo de piel',
     subtitle: 'Seleccioná la que mejor te describe',
     options: [
       { id: 'grasa', label: 'Piel grasa / con brillo', desc: 'Brillo en zona T, poros visibles, tendencia a granos', icon: Droplets },
@@ -22,7 +22,7 @@ const QUESTIONS = {
     ],
   },
   2: {
-    title: '¿Cuál es tu principal preocupación?',
+    title: 'Preocupación principal',
     subtitle: 'Podés elegir más de una',
     multiSelect: true,
     options: [
@@ -35,7 +35,7 @@ const QUESTIONS = {
     ],
   },
   3: {
-    title: '¿Qué nivel de rutina buscás?',
+    title: 'Nivel de rutina',
     subtitle: 'Según tu tiempo y compromiso',
     options: [
       { id: 'basica', label: 'Básica (3 pasos)', desc: 'Limpieza + Tratamiento + Protección — 2 min', icon: Leaf },
@@ -44,7 +44,7 @@ const QUESTIONS = {
     ],
   },
   4: {
-    title: '¿Cuándo aplicás protector solar?',
+    title: 'Protector solar',
     subtitle: 'Clave para definir tu rutina de día',
     options: [
       { id: 'siempre', label: 'Todos los días, llueva o truene', desc: 'Hábito instalado, reaplico cada 2-3hs', icon: ShieldCheck },

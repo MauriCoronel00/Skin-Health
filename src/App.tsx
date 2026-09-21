@@ -8,7 +8,7 @@ import { Navbar } from './components/Navbar';
 import { HeroBanner } from './components/HeroBanner';
 import { CategoryFilter } from './components/CategoryFilter';
 import { ProductCard } from './components/ProductCard';
-import { RoutinesSection } from './components/RoutinesSection';
+
 import { TestimoniosSection } from './components/TestimoniosSection';
 import { FloatingCart } from './components/FloatingCart';
 import { CartDrawer } from './components/CartDrawer';
@@ -29,7 +29,7 @@ import { productIdFromUrl, syncProductUrl } from './utils/productLink';
 import { TrackingView } from './components/TrackingView';
 import { MobileBottomNav, TabId } from './components/MobileBottomNav';
 import { HeroRitualCTA } from './components/HeroRitualCTA';
-import { ProductGridSkeleton, CategoryPillsSkeleton, RoutinesSectionSkeleton, TestimoniosSectionSkeleton } from './components/Skeleton';
+import { ProductGridSkeleton, CategoryPillsSkeleton, TestimoniosSectionSkeleton } from './components/Skeleton';
 import { DiagnosticQuiz } from './components/DiagnosticQuiz';
 import { CollapsibleRoutines } from './components/CollapsibleRoutines';
 
@@ -468,18 +468,6 @@ export default function App() {
         {/* Collapsible Routines List - 5 routines with expand/collapse */}
         <CollapsibleRoutines />
 
-        {/* Category Pills (Hydrate, Brighten, Calm, Protect, Cleanse) */}
-        {isLoadingProducts ? (
-          <CategoryPillsSkeleton />
-        ) : (
-          <CategoryFilter
-            categories={categories}
-            selectedCategory={selectedCategory}
-            onSelectCategory={setSelectedCategory}
-            productCounts={productCounts}
-          />
-        )}
-
         {/* Catalog Section Header & Brand Filter */}
         <div
           ref={catalogRef}
@@ -487,10 +475,9 @@ export default function App() {
         >
           <div>
             <h2 className="font-serif text-2xl sm:text-3xl font-semibold text-[#102A43]">
-              {selectedCategory === 'all'
+                {selectedCategory === 'all'
                 ? 'Catálogo Completo'
-                : categories.find((c) => c.id === selectedCategory)?.label ||
-                  'Catálogo'}
+                : categories.find((c) => c.id === selectedCategory)?.label || 'Catálogo Completo'}
             </h2>
             <p className="text-xs text-neutral-500 mt-0.5">
               20 fórmulas esenciales seleccionadas para resultados visibles.
@@ -582,17 +569,7 @@ export default function App() {
         </div>
 
         {/* Section based strictly on PDF: Rutinas de Skincare */}
-        {isLoadingProducts ? (
-          <RoutinesSectionSkeleton />
-        ) : (
-          <RoutinesSection
-            products={products}
-            onAddToCart={handleAddToCart}
-            onAddMultipleToCart={handleAddMultipleToCart}
-            onQuickView={setQuickViewProduct}
-            cartQuantities={cartQuantities}
-          />
-        )}
+        <CollapsibleRoutines />
 
         {/* Testimonios: reseñas aprobadas visibles */}
         {isLoadingProducts ? (

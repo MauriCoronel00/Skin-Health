@@ -94,12 +94,8 @@ export const TestimoniosSection: React.FC = () => {
             <figcaption className="mt-3 pt-3 border-t border-neutral-100 text-xs space-y-0.5">
               <span className="font-semibold text-neutral-900 flex items-center gap-1.5">
                 {t.author}
-                <Chrome className="w-3 h-3 text-[#102A43]/40" />
+                {t.city && <span className="text-neutral-400">— {t.city}</span>}
               </span>
-              {t.city && <span className="text-neutral-400">{t.city}</span>}
-              {t.productName && (
-                <span className="text-[#102A43]/70 mt-0.5">compró: {t.productName}</span>
-              )}
             </figcaption>
           </figure>
         ))}

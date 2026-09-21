@@ -54,7 +54,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdminReviews, onOpenAdminP
 
         {/* Main footer content */}
         <div className="py-8 flex flex-col sm:flex-row items-center justify-between gap-6">
-          <BrandLogo size="md" inverted={true} />
+          <BrandLogo size="sm" variant="full" />
 
           <div className="text-center sm:text-right">
             <p className="text-xs text-white/60">
