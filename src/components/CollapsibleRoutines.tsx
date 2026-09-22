@@ -8,6 +8,7 @@ export const CollapsibleRoutines: React.FC = () => {
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [routines, setRoutines] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchRoutines();
@@ -15,21 +16,39 @@ export const CollapsibleRoutines: React.FC = () => {
 
   const fetchRoutines = async () => {
     setLoading(true);
+    setError(null);
     try {
-      const { data, error } = await supabase
+      console.log('🔄 Iniciando fetch de rutinas desde Supabase...');
+      console.log('📡 Cliente Supabase disponible:', !!supabase);
+
+      const { data, error: supaError } = await supabase
         .from('skincare_routines')
         .select('*')
         .order('number', { ascending: true });
 
-      if (error) {
-        console.error('Supabase error fetching routines:', error);
-        throw error;
+      if (supaError) {
+        console.error('❌ Error de Supabase:', supaError);
+        setError(supaError.message || 'Error desconocido');
+        throw supaError;
       }
-      console.log('Routines data from Supabase:', data);
+
+      console.log('✅ Datos recibidos de Supabase:', data);
+      console.log('📊 Cantidad de rutinas:', data?.length || 0);
+      console.log('🔍 Primera rutina:', data?.[0]);
+
       setRoutines(data || []);
       setLoading(false);
+
+      if (!data || data.length === 0) {
+        console.warn('⚠️ No hay rutinas en la base de datos. Verificar:');
+        console.warn('   1. Tabla skincare_routines existe en Supabase');
+        console.warn('   2. RLS (Row Level Security) está configurado para role anon/public');
+        console.warn('   3. Hay datos INSERTados en la tabla');
+        console.warn('   4. Estructura de columnas: id, title, number, steps, instructionText, instructionType');
+      }
     } catch (err: any) {
-      console.error('Error fetching routines from Supabase:', err.message || err);
+      console.error('❌ Excepción al fetch rutinas:', err.message || err);
+      setError(err.message || 'Error inesperado');
       // Still set loading to false so UI doesn't get stuck
       setLoading(false);
     }
@@ -60,6 +79,24 @@ export const CollapsibleRoutines: React.FC = () => {
     );
   }
 
+  // Si hubo error, mostrar mensaje útil
+  if (error && !loading) {
+    return (
+      <div className="text-center py-12 text-red-600">
+        <p>Error cargando rutinas:</p>
+        <p className="mt-2 break-all">{error}</p>
+        <p className="mt-4 text-sm text-neutral-600">
+          Possibles causas:
+        </p>
+        <ul className="mt-2 text-left text-neutral-600 text-xs max-w-lg mx-auto">
+          <li>Tabla skincare_routines sin datos</li>
+          <li>RLS (Row Level Security) bloqueando acceso anon</li>
+          <li>Estructura de tabla incorrecta</li>
+        </ul>
+      </div>
+    );
+  }
+
   return (
     <>
       <section id="rutinas" className="my-12 sm:my-16 scroll-mt-20">
@@ -79,7 +116,7 @@ export const CollapsibleRoutines: React.FC = () => {
         </div>
 
         <div className="space-y-6 sm:space-y-8">
-          {routines.length === 0 && !loading && (
+          {routines.length === 0 && !loading && !error && (
             <div className="text-center py-12 text-neutral-500">
               No se encontraron rutinas
             </div>
@@ -135,11 +172,8 @@ export const CollapsibleRoutines: React.FC = () => {
                   >
                     {/* Steps Grid */}
                     <div className={`grid ${routine.steps.length === 3 ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'} gap-4 relative`}>
-{routine.steps.map((step) => {
+                      {routine.steps.map((step) => {
                         const productId = step.productId || step.stepNumber.toString();
-                        const price = step.priceGs || 0;
-                        const productNote = step.note || '';
-                        // Acortar nombre del producto para display en circulo
                         const shortLabel = step.label.length > 12 ? `${step.label.substring(0, 10)}...` : step.label;
 
                         return (
