@@ -30,7 +30,7 @@ export const CollapsibleRoutines: React.FC = () => {
       setLoading(false);
     } catch (err: any) {
       console.error('Error fetching routines from Supabase:', err.message || err);
-      // We still set loading to false so UI doesn't get stuck
+      // Still set loading to false so UI doesn't get stuck
       setLoading(false);
     }
   };
@@ -135,38 +135,51 @@ export const CollapsibleRoutines: React.FC = () => {
                   >
                     {/* Steps Grid */}
                     <div className={`grid ${routine.steps.length === 3 ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'} gap-4 relative`}>
-                      {routine.steps.map((step) => (
-                        <motion.div
-                          key={step.stepNumber}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: 0.1 + step.stepNumber * 0.05, duration: 0.2 }}
-                          className="bg-[#FAF8F5] rounded-2xl p-4 border border-neutral-200/80 hover:border-[#102A43]/30 transition-all flex flex-col justify-between"
-                        >
-                          <div className="flex items-center gap-2 mb-2">
-                            <span className="w-6 h-6 rounded-full bg-[#102A43] text-white text-xs font-bold flex items-center justify-center shadow-xs">
-                              {step.stepNumber}
-                            </span>
-                            <span className="text-xs font-bold text-neutral-800">
-                              {step.label}
-                            </span>
-                          </div>
+                      {routine.steps.map((step) => {
+                        const productId = step.productId || step.stepNumber.toString();
+                        const price = step.priceGs || 0;
+                        const productNote = step.note || '';
 
-                          {/* Product info from DB */}
-                          {step.productId && (
-                            <div className="mt-2 text-xs text-neutral-600">
-                              <span>{step.stepNumber}: {step.productId || 'Producto'}</span>
+                        return (
+                          <motion.div
+                            key={step.stepNumber}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.1 + step.stepNumber * 0.05, duration: 0.2 }}
+                            className="bg-[#FAF8F5] rounded-2xl p-4 border border-neutral-200/80 hover:border-[#102A43]/30 transition-all flex flex-col justify-between"
+                          >
+                            <div className="flex items-center gap-2 mb-2">
+                              <span className="w-6 h-6 rounded-full bg-[#102A43] text-white text-xs font-bold flex items-center justify-center shadow-xs">
+                                {step.stepNumber}
+                              </span>
+                              <span className="text-xs font-bold text-neutral-800">
+                                {step.label}
+                              </span>
                             </div>
-                          )}
 
-                          {/* Price */}
-                          {step.productId && (
-                            <div className="mt-1 text-[10px] font-bold text-[#102A43]">
-                              Gs.
-                            </div>
-                          )}
-                        </motion.div>
-                      ))}
+                            {/* Product info from DB with price and description */}
+                            {step.productId && (
+                              <div className="mt-2 text-xs text-neutral-600">
+                                <span>{productId}</span>
+                              </div>
+                            )}
+
+                            {/* Step description/note */}
+                            {productNote && (
+                              <div className="mt-1 text-xs text-neutral-600 leading-relaxed">
+                                {productNote}
+                              </div>
+                            )}
+
+                            {/* Price line - show generic price format */}
+                            {step.productId && (
+                              <div className="mt-1 text-[10px] font-bold text-[#102A43]">
+                                Gs.
+                              </div>
+                            )}
+                          </motion.div>
+                        );
+                      })}
                     </div>
 
                     {/* Instruction notice */}
