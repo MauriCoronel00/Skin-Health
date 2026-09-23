@@ -328,36 +328,6 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     }, 400);
   };
 
-  const handleCopyOrder = () => {
-    const tempOrderId = `#SKIN-${Math.floor(10000 + Math.random() * 90000)}`;
-    const message = buildPedidoMessage({
-      codigo: tempOrderId,
-      lines: cartItems.map((item) => ({
-        productId: item.product.id,
-        name: item.product.name,
-        quantity: item.quantity,
-        unitPrice: item.product.price,
-        lineTotal: item.product.price * item.quantity,
-      })),
-      totalGs: totalAmount,
-      costoEnvioGs: envioGs ?? 0,
-      nombre: customerName,
-      telefono: customerPhone,
-      direccion: `${customerAddress.trim()}${
-        googleMapsUrl.trim() ? ' — ' + googleMapsUrl.trim() : ''
-      }`,
-      totalLabel: 'TOTAL ESTIMADO',
-    });
-    try {
-      navigator.clipboard.writeText(message);
-      setCopied(true);
-      onShowToast('Copiado al portapapeles', 'Texto del pedido listo para pegar en WhatsApp.', 'success');
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      onShowToast('Error al copiar', 'Copia manualmente el texto del pedido.', 'error');
-    }
-  };
-
   if (!isOpen) return null;
 
   return (
@@ -762,26 +732,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 </div>
               </div>
 
-              {/* Fallback to copy order text */}
-              <div className="flex items-center justify-between text-[11px] pt-0.5">
+              {/* Atención oficial */}
+              <div className="flex items-center text-[11px] pt-0.5">
                 <span className="text-neutral-400">Atención oficial Skin Health</span>
-                <button
-                  type="button"
-                  onClick={handleCopyOrder}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#102A43]/10 text-[#102A43] font-medium text-xs hover:bg-[#102A43]/20 transition-colors cursor-pointer"
-                >
-                  {copied ? (
-                    <>
-                      <Check className="w-3 h-3 text-emerald-600" />
-                      <span className="text-emerald-600 font-medium">Copiado al portapapeles</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="w-3 h-3" />
-                      <span>Copiar texto del pedido</span>
-                    </>
-                  )}
-                </button>
               </div>
             </div>
           )}

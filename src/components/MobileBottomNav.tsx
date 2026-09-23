@@ -6,9 +6,9 @@ import {
   ShoppingBag,
   MessageCircle,
   User,
-  Sparkles,
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { STORE_PHONE_NUMBER } from '../data/products';
 
 export type TabId = 'home' | 'search' | 'cart' | 'chat' | 'account';
 
@@ -41,6 +41,29 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
     // Special handling for cart - open drawer instead of switching tab
     if (tabId === 'cart') {
       onOpenCart();
+      return;
+    }
+
+    // Asesoría: abrir WhatsApp de Skin Health directamente
+    if (tabId === 'chat') {
+      const mensaje = 'Hola Skin Health, necesito asesoría para elegir mi rutina.';
+      const whatsappUrl = `https://wa.me/${STORE_PHONE_NUMBER}?text=${encodeURIComponent(mensaje)}`;
+      window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+      return;
+    }
+
+    // Buscar: scroll al top y focus en el input de búsqueda del Navbar
+    if (tabId === 'search') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Delay para esperar el scroll antes de hacer focus
+      setTimeout(() => {
+        const input = document.getElementById('mobile-search-input') as HTMLInputElement | null;
+        if (input) {
+          input.focus();
+          input.select();
+        }
+      }, 400);
+      onTabChange(tabId);
       return;
     }
 

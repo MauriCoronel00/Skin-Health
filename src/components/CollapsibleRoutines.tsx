@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { ChevronDown, ChevronUp, ShoppingBag } from 'lucide-react';
+import { ChevronDown, ChevronUp, ShoppingBag, Repeat } from 'lucide-react';
 import { useSupabase } from '../hooks/useSupabase';
 import { fetchProducts, formatGuarani } from '../data/products';
+import { SKINCARE_ROUTINES } from '../data/routines';
 import type { Product } from '../types';
 
 type ProductLookup = Record<string, Product>;
@@ -205,6 +206,15 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
                         const productBrand = product?.brand || '';
                         const productImage = product?.image;
 
+                        // Enriquecer con alternativas + nota desde datos hardcodeados
+                        const hardcodedRoutine = SKINCARE_ROUTINES.find((r) => r.id === routine.id);
+                        const hardcodedStep = hardcodedRoutine?.steps.find((s) => s.stepNumber === step.stepNumber);
+                        const alternativeIds = hardcodedStep?.alternativeProductIds || [];
+                        const alternatives = alternativeIds
+                          .map((id) => products[id])
+                          .filter((p): p is Product => !!p);
+                        const stepNote = hardcodedStep?.note;
+
                         return (
                           <motion.div
                             key={step.stepNumber}
@@ -239,6 +249,31 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
                                 {productName}
                               </span>
                             </div>
+
+                            {/* Alternativas reemplazables */}
+                            {alternatives.length > 0 && (
+                              <div className="w-full mt-1 pt-2 border-t border-dashed border-neutral-200 flex flex-col items-center gap-1">
+                                <span className="inline-flex items-center gap-1 text-[9px] font-semibold text-amber-700 uppercase tracking-wider">
+                                  <Repeat className="w-2.5 h-2.5" />
+                                  O reemplazar por
+                                </span>
+                                <div className="flex flex-col gap-0.5">
+                                  {alternatives.map((alt) => (
+                                    <span key={alt.id} className="text-[10px] text-neutral-600 leading-tight">
+                                      <span className="font-semibold text-[#102A43]/70">{alt.brand}</span>{' '}
+                                      {alt.name}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Nota clínica del paso */}
+                            {stepNote && (
+                              <p className="text-[9px] text-neutral-500 italic leading-tight mt-1">
+                                {stepNote}
+                              </p>
+                            )}
                           </motion.div>
                         );
                       })}

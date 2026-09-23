@@ -780,20 +780,6 @@ export default function App() {
         )}
       </AnimatePresence>
 
-      {/* Admin Moderation Modal */}
-      <AnimatePresence>
-        {isAdminModalOpen && (
-          <AdminReviewsModal
-            isOpen={isAdminModalOpen}
-            onClose={() => setIsAdminModalOpen(false)}
-            reviews={adminReviews}
-            onToggleStatus={handleToggleReviewStatus}
-            onDeleteReview={handleDeleteReview}
-            onToggleFeatured={handleToggleFeatured}
-          />
-        )}
-      </AnimatePresence>
-
       {/* Admin Panel (pedidos + stock + reseñas) */}
       <AnimatePresence>
         {isAdminPanelOpen && (
@@ -816,7 +802,6 @@ export default function App() {
 
         {/* Footer */}
       <Footer
-        onOpenAdminReviews={() => void handleOpenAdminReviews()}
         onOpenAdminPanel={() => setIsAdminPanelOpen(true)}
         isAdmin={isAdmin}
       />

@@ -99,6 +99,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       <div className="md:hidden px-4 pb-3 relative">
         <Search className="w-4 h-4 absolute left-7 top-1/2 -translate-y-[calc(50%+6px)] text-neutral-400 pointer-events-none" />
         <input
+          id="mobile-search-input"
           type="search"
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
