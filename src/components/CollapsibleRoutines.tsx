@@ -10,9 +10,10 @@ type ProductLookup = Record<string, Product>;
 
 interface CollapsibleRoutinesProps {
   onAddRoutineToCart?: (products: Product[]) => void;
+  onQuickView?: (product: Product) => void;
 }
 
-export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddRoutineToCart }) => {
+export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddRoutineToCart, onQuickView }) => {
   const { supabase } = useSupabase();
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [routines, setRoutines] = useState<any[]>([]);
@@ -221,25 +222,38 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
                           .filter((p): p is Product => !!p);
                         const stepNote = hardcodedStep?.note;
 
+                        const canQuickView = !!(product && onQuickView);
+                        const openQuickView = (e: React.MouseEvent, target: Product) => {
+                          e.stopPropagation();
+                          onQuickView?.(target);
+                        };
+
                         return (
                           <motion.div
                             key={step.stepNumber}
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.1 + step.stepNumber * 0.05, duration: 0.2 }}
-                            className="bg-white rounded-2xl p-3 border border-neutral-200/80 hover:border-[#102A43]/30 hover:shadow-sm transition-all flex flex-col items-center text-center gap-2"
+                            className={`bg-white rounded-2xl p-3 border border-neutral-200/80 hover:border-[#102A43]/30 hover:shadow-sm transition-all flex flex-col items-center text-center gap-2 ${
+                              canQuickView ? 'cursor-pointer' : ''
+                            }`}
+                            onClick={(e) => {
+                              if (canQuickView && product) openQuickView(e, product);
+                            }}
+                            role={canQuickView ? 'button' : undefined}
+                            aria-label={canQuickView ? `Ver detalles de ${productBrand} ${productName}` : undefined}
                           >
                             {/* Paso */}
-                            <span className="text-[10px] font-bold text-[#102A43]/60 uppercase tracking-wider">
+                            <span className="text-xs font-bold text-[#102A43]/70 uppercase tracking-wider">
                               Paso {step.stepNumber} · {step.label}
                             </span>
 
-                            {/* Imagen del producto (si existe) */}
+                            {/* Imagen del producto (80px) */}
                             {productImage && (
                               <img
                                 src={productImage}
                                 alt={productName}
-                                className="w-14 h-14 object-contain rounded-full bg-[#FAF8F5] p-1"
+                                className="w-20 h-20 object-contain rounded-full bg-[#FAF8F5] p-2 shadow-sm"
                                 loading="lazy"
                               />
                             )}
@@ -247,36 +261,57 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
                             {/* Marca + Nombre del producto */}
                             <div className="flex flex-col items-center gap-0.5">
                               {productBrand && (
-                                <span className="text-[10px] font-semibold text-[#102A43]/70 uppercase">
+                                <span className="text-xs font-semibold text-[#102A43]/70 uppercase">
                                   {productBrand}
                                 </span>
                               )}
-                              <span className="text-xs font-semibold text-neutral-800 leading-tight">
+                              <span className="text-xs font-semibold text-neutral-800 leading-tight line-clamp-2">
                                 {productName}
                               </span>
+                              {product?.price && (
+                                <span className="text-xs font-semibold text-[#102A43] mt-1">
+                                  {formatGuarani(product.price)}
+                                </span>
+                              )}
                             </div>
 
-                            {/* Alternativas reemplazables */}
+                            {/* Alternativas como chips clickeables */}
                             {alternatives.length > 0 && (
-                              <div className="w-full mt-1 pt-2 border-t border-dashed border-neutral-200 flex flex-col items-center gap-1">
-                                <span className="inline-flex items-center gap-1 text-[9px] font-semibold text-amber-700 uppercase tracking-wider">
-                                  <Repeat className="w-2.5 h-2.5" />
+                              <div className="w-full mt-1 pt-2 border-t border-dashed border-neutral-200 flex flex-col items-center gap-1.5">
+                                <span className="inline-flex items-center gap-1 text-xs font-semibold text-amber-700 uppercase tracking-wider">
+                                  <Repeat className="w-3 h-3" />
                                   O reemplazar por
                                 </span>
-                                <div className="flex flex-col gap-0.5">
-                                  {alternatives.map((alt) => (
-                                    <span key={alt.id} className="text-[10px] text-neutral-600 leading-tight">
-                                      <span className="font-semibold text-[#102A43]/70">{alt.brand}</span>{' '}
-                                      {alt.name}
-                                    </span>
-                                  ))}
+                                <div className="flex flex-wrap justify-center gap-1">
+                                  {alternatives.map((alt) => {
+                                    const chipClickable = !!onQuickView;
+                                    return (
+                                      <button
+                                        key={alt.id}
+                                        type="button"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          if (chipClickable) onQuickView?.(alt);
+                                        }}
+                                        disabled={!chipClickable}
+                                        className={`text-xs px-2 py-1 rounded-full border border-amber-200 bg-amber-50 text-amber-900 ${
+                                          chipClickable
+                                            ? 'hover:bg-amber-100 hover:border-amber-300 cursor-pointer transition-colors'
+                                            : 'cursor-default'
+                                        }`}
+                                        aria-label={`Ver detalles de ${alt.brand} ${alt.name}`}
+                                      >
+                                        <span className="font-semibold">{alt.brand}</span> · {alt.name}
+                                      </button>
+                                    );
+                                  })}
                                 </div>
                               </div>
                             )}
 
                             {/* Nota clínica del paso */}
                             {stepNote && (
-                              <p className="text-[9px] text-neutral-500 italic leading-tight mt-1">
+                              <p className="text-xs text-neutral-500 italic leading-tight mt-1">
                                 {stepNote}
                               </p>
                             )}

@@ -509,7 +509,10 @@ export default function App() {
         )}
 
         {/* Collapsible Routines List - 5 routines with expand/collapse */}
-        <CollapsibleRoutines onAddRoutineToCart={handleAddMultipleToCart} />
+        <CollapsibleRoutines
+          onAddRoutineToCart={handleAddMultipleToCart}
+          onQuickView={setQuickViewProduct}
+        />
 
         {/* Catalog Section Header & Brand Filter */}
         <div
