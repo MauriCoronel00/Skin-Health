@@ -140,13 +140,13 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
             <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <path d="M12 2L2 7l10 5 10-5-10-5z" />
             </svg>
-            <span>Guía visual simple y ordenada</span>
+            <span>5 rituales · 5 tipos de piel</span>
           </div>
           <h2 className="font-serif text-3xl sm:text-4xl font-semibold text-[#102A43] tracking-tight">
-            Rutinas de Skincare
+            Encontrá tu rutina
           </h2>
           <p className="text-xs sm:text-sm text-neutral-600 mt-2 leading-relaxed">
-            Guía Orientativa: Productos organizados por necesidad de la piel, con el orden de aplicación indicado para facilitar la venta y explicar cada rutina al cliente.
+            Cada rutina son 3 a 4 pasos con productos oficiales, en el orden correcto de aplicación. Elegí la que va con tu piel y llevala completa.
           </p>
         </div>
 
@@ -350,8 +350,8 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
                       return (
                         <div className="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl bg-gradient-to-r from-[#102A43]/5 to-[#102A43]/10 border border-[#102A43]/20">
                           <div className="flex flex-col">
-                            <span className="text-[11px] font-semibold text-[#102A43]/70 uppercase tracking-wider">
-                              Total de la rutina ({routineProducts.length} productos)
+                            <span className="text-xs font-semibold text-[#102A43]/70 uppercase tracking-wider">
+                              Rutina completa · {routineProducts.length} productos
                             </span>
                             <span className="text-lg font-bold text-[#102A43]">
                               {formatGuarani(total)}
@@ -370,7 +370,7 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
                             }`}
                           >
                             <ShoppingBag className="w-4 h-4" />
-                            {isAdded ? '✓ Agregado al carrito' : 'Agregar rutina completa'}
+                            {isAdded ? '✓ Listo, va en tu pedido' : `Llevo esta rutina (${routineProducts.length})`}
                           </button>
                         </div>
                       );
