@@ -61,13 +61,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         {/* Top Badges */}
         <div className="flex items-center justify-between gap-1 mb-2">
           {product.badge ? (
-            <span className="inline-block text-[10px] sm:text-xs font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#102A43]/5 text-[#102A43]">
+            <span className="inline-block text-xs font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#102A43]/5 text-[#102A43]">
               {product.badge}
             </span>
           ) : (
-            <span className="inline-block text-[10px] text-neutral-400 font-medium">
-              {product.volume}
-            </span>
+            <span className="inline-block text-xs text-transparent select-none">·</span>
           )}
 
           {/* Quick View Button on Desktop Hover */}
@@ -135,59 +133,46 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         {/* Product Title */}
         <h3
           onClick={() => onQuickView(product)}
-          className="font-medium text-sm sm:text-base text-neutral-900 leading-snug line-clamp-2 hover:text-[#102A43] cursor-pointer mb-1"
+          className="font-medium text-sm sm:text-base text-neutral-900 leading-snug line-clamp-2 hover:text-[#102A43] cursor-pointer mb-1 min-h-[2.4em]"
         >
           {product.name}
         </h3>
 
         {/* Subtitle / Key Benefit */}
-        <p className="text-xs text-neutral-500 line-clamp-1 mb-2 font-normal">
-          {product.subtitle}
-        </p>
+        {product.subtitle && (
+          <p className="text-xs text-neutral-500 line-clamp-1 mb-2 font-normal">
+            {product.subtitle}
+          </p>
+        )}
 
-        {/* Rating */}
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            onQuickView(product);
-          }}
-          className="flex items-center gap-1.5 text-xs text-neutral-600 mb-2.5 hover:opacity-80 transition-opacity cursor-pointer group/rating"
-          title="Ver opiniones del producto"
-        >
-          <div className="flex items-center text-amber-500">
-            <Star className="w-3.5 h-3.5 fill-amber-400 stroke-amber-400" />
-            <span className="ml-1 font-semibold text-neutral-800">{displayRating.toFixed(1)}</span>
-          </div>
-          <span className="text-neutral-400 group-hover/rating:text-[#102A43] transition-colors">
-            ({displayCount})
-          </span>
-        </button>
-
-        {/* Compact Key Benefits (Espacio optimizado y legible) */}
-        {product.benefits && product.benefits.length > 0 && (
-          <ul className="mb-3 space-y-1 bg-neutral-50/90 rounded-xl p-2 border border-neutral-100/90 text-[11px] leading-tight">
-            {product.benefits.map((b, idx) => (
-              <li
-                key={idx}
-                className="flex items-start gap-1.5 text-neutral-600"
-                title={`${b.title}: ${b.desc}`}
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-[#102A43]/60 mt-1 shrink-0" />
-                <span className="line-clamp-1">
-                  <strong className="font-semibold text-neutral-900">{b.title}:</strong>{' '}
-                  <span className="text-neutral-500 font-normal">{b.desc}</span>
-                </span>
-              </li>
-            ))}
-          </ul>
+        {/* Rating: solo si hay >= 3 reseñas (evita señal negativa de 0.0 stars) */}
+        {displayCount >= 3 ? (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onQuickView(product);
+            }}
+            className="flex items-center gap-1.5 text-xs text-neutral-600 mb-2.5 hover:opacity-80 transition-opacity cursor-pointer group/rating"
+            title="Ver opiniones del producto"
+          >
+            <div className="flex items-center text-amber-500">
+              <Star className="w-3.5 h-3.5 fill-amber-400 stroke-amber-400" />
+              <span className="ml-1 font-semibold text-neutral-800">{displayRating.toFixed(1)}</span>
+            </div>
+            <span className="text-neutral-400 group-hover/rating:text-[#102A43] transition-colors">
+              ({displayCount})
+            </span>
+          </button>
+        ) : (
+          <div className="mb-2.5" />
         )}
       </div>
 
       {/* Price & Add Button */}
       <div className="pt-2 border-t border-neutral-100 flex items-center justify-between gap-2 mt-auto">
         <div className="flex flex-col">
-          <span className="text-[10px] uppercase tracking-wider text-neutral-400 font-medium">
+          <span className="text-xs uppercase tracking-wider text-neutral-400 font-medium">
             Precio
           </span>
           <span className="font-semibold text-sm sm:text-base text-[#102A43] tracking-tight">
@@ -195,13 +180,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </span>
         </div>
 
-        {/* Prominent Quick-Add "+" Button (Section 11) */}
+        {/* Add Button (P4: pill con label para mejor discoverability) */}
         <div className="relative">
           <motion.button
-            whileTap={!showAddedAnim ? { scale: 0.85 } : {}}
+            whileTap={!showAddedAnim ? { scale: 0.95 } : {}}
             onClick={handleAddClick}
             disabled={showAddedAnim}
-            className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer shadow-sm relative overflow-hidden ${
+            className={`inline-flex items-center gap-1.5 px-3 h-10 rounded-full font-semibold text-xs sm:text-sm transition-all duration-200 cursor-pointer shadow-sm relative overflow-hidden ${
               showAddedAnim
                 ? 'bg-emerald-600 text-white shadow-emerald-200'
                 : 'bg-[#102A43] hover:bg-[#102A43]/90 text-white hover:shadow-md'
@@ -210,24 +195,28 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           >
             <AnimatePresence mode="wait">
               {showAddedAnim ? (
-                <motion.div
+                <motion.span
                   key="check"
                   initial={{ scale: 0, rotate: -45 }}
                   animate={{ scale: 1, rotate: 0 }}
                   exit={{ scale: 0 }}
                   transition={{ duration: 0.2 }}
+                  className="inline-flex items-center gap-1.5"
                 >
-                  <Check className="w-5 h-5 stroke-[2.5]" />
-                </motion.div>
+                  <Check className="w-4 h-4 stroke-[2.5]" />
+                  <span>Agregado</span>
+                </motion.span>
               ) : (
-                <motion.div
+                <motion.span
                   key="plus"
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   exit={{ scale: 0 }}
+                  className="inline-flex items-center gap-1.5"
                 >
-                  <Plus className="w-5 h-5 stroke-[2.5]" />
-                </motion.div>
+                  <Plus className="w-4 h-4 stroke-[2.5]" />
+                  <span>Agregar</span>
+                </motion.span>
               )}
             </AnimatePresence>
           </motion.button>
