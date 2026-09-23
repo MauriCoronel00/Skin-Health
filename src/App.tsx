@@ -1,5 +1,5 @@
 import { AuthProvider, useAuth } from './contexts/AuthContext';
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef, lazy, Suspense } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { Sparkles, SlidersHorizontal, ArrowRight, MessageCircle } from 'lucide-react';
 import { Product, CartItem, CategoryId, CategoryOption } from './types';
@@ -11,28 +11,30 @@ import { ProductCard } from './components/ProductCard';
 
 import { TestimoniosSection } from './components/TestimoniosSection';
 import { FloatingCart } from './components/FloatingCart';
-import { CartDrawer } from './components/CartDrawer';
-import { ProductQuickView } from './components/ProductQuickView';
 import { Footer } from './components/Footer';
-import { OrderConfirmationModal, OrderDetails } from './components/OrderConfirmationModal';
+import { OrderDetails } from './components/OrderConfirmationModal';
 import { ToastContainer, ToastMessage } from './components/Toast';
 import { ReviewUser } from './types';
-import { ReviewFormModal } from './components/ReviewFormModal';
-import { AdminReviewsModal } from './components/AdminReviewsModal';
-import { AdminPanel } from './components/AdminPanel';
 import { getSavedGoogleUser } from './utils/reviewsStorage';
 import { supabase } from './lib/supabaseClient';
 import { useReviews } from './hooks/useReviews';
 import { currentReviewer } from './data/identity';
 import { isCurrentUserAdmin } from './data/admin';
 import { productIdFromUrl, syncProductUrl } from './utils/productLink';
-import { TrackingView } from './components/TrackingView';
 import { MobileBottomNav, TabId } from './components/MobileBottomNav';
 import { HeroRitualCTA } from './components/HeroRitualCTA';
 import { ProductGridSkeleton, CategoryPillsSkeleton, TestimoniosSectionSkeleton } from './components/Skeleton';
-import { DiagnosticQuiz } from './components/DiagnosticQuiz';
 import { CollapsibleRoutines } from './components/CollapsibleRoutines';
 import { SKINCARE_ROUTINES } from './data/routines';
+
+// Lazy: solo se cargan cuando se abren (no bloquean primera carga)
+const CartDrawer = lazy(() => import('./components/CartDrawer').then((m) => ({ default: m.CartDrawer })));
+const ProductQuickView = lazy(() => import('./components/ProductQuickView').then((m) => ({ default: m.ProductQuickView })));
+const DiagnosticQuiz = lazy(() => import('./components/DiagnosticQuiz').then((m) => ({ default: m.DiagnosticQuiz })));
+const AdminPanel = lazy(() => import('./components/AdminPanel').then((m) => ({ default: m.AdminPanel })));
+const TrackingView = lazy(() => import('./components/TrackingView').then((m) => ({ default: m.TrackingView })));
+const OrderConfirmationModal = lazy(() => import('./components/OrderConfirmationModal').then((m) => ({ default: m.OrderConfirmationModal })));
+const ReviewFormModal = lazy(() => import('./components/ReviewFormModal').then((m) => ({ default: m.ReviewFormModal })));
 
 const CART_STORAGE_KEY = 'skinhealth_cart_v1';
 
@@ -447,7 +449,9 @@ export default function App() {
       {/* Main Content Area - Note the extra bottom padding (pb-36 sm:pb-44) to ensure the floating cart NEVER obstructs content */}
       <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 pb-36 sm:pb-44">
         {trackCode !== null ? (
-          <TrackingView codigoInicial={trackCode} onVolver={exitTracking} />
+          <Suspense fallback={<div className="py-20 text-center text-neutral-500 text-sm">Cargando seguimiento…</div>}>
+            <TrackingView codigoInicial={trackCode} onVolver={exitTracking} />
+          </Suspense>
         ) : (
         <>
         {/* Editorial Luxury Hero Banner */}
@@ -456,7 +460,9 @@ export default function App() {
         {/* Hero Ritual CTA - Premium diagnostic flow */}
         <HeroRitualCTA onScrollToCatalog={scrollToCatalog} onOpenQuiz={() => setQuizOpen(true)} />
 
-        {/* Diagnostic Quiz - 4 steps */}
+        {/* Diagnostic Quiz - 4 steps (lazy: solo carga al abrir) */}
+        {quizOpen && (
+        <Suspense fallback={null}>
         <DiagnosticQuiz
           isOpen={quizOpen}
           onClose={() => setQuizOpen(false)}
@@ -492,6 +498,8 @@ export default function App() {
             setTimeout(() => setIsCartOpen(true), 300);
           }}
         />
+        </Suspense>
+        )}
 
         {/* Collapsible Routines List - 5 routines with expand/collapse */}
         <CollapsibleRoutines onAddRoutineToCart={handleAddMultipleToCart} />
@@ -715,27 +723,31 @@ export default function App() {
       {/* SECTION 12, 13 & 14: CART BOTTOM SHEET (MOBILE) / SIDE CART (DESKTOP) */}
       <AnimatePresence>
         {isCartOpen && (
-          <CartDrawer
-            isOpen={isCartOpen}
-            onClose={() => setIsCartOpen(false)}
-            cartItems={cartItems}
-            onUpdateQuantity={handleUpdateQuantity}
-            onRemoveItem={handleRemoveItem}
-            onClearCart={handleClearCart}
-            onOrderSuccess={handleOrderSuccess}
-            onShowToast={showToast}
-          />
+          <Suspense fallback={null}>
+            <CartDrawer
+              isOpen={isCartOpen}
+              onClose={() => setIsCartOpen(false)}
+              cartItems={cartItems}
+              onUpdateQuantity={handleUpdateQuantity}
+              onRemoveItem={handleRemoveItem}
+              onClearCart={handleClearCart}
+              onOrderSuccess={handleOrderSuccess}
+              onShowToast={showToast}
+            />
+          </Suspense>
         )}
       </AnimatePresence>
 
       {/* Post-Purchase Order Confirmation Modal */}
       <AnimatePresence>
         {confirmedOrder && (
-          <OrderConfirmationModal
-            isOpen={!!confirmedOrder}
-            onClose={() => setConfirmedOrder(null)}
-            order={confirmedOrder}
-          />
+          <Suspense fallback={null}>
+            <OrderConfirmationModal
+              isOpen={!!confirmedOrder}
+              onClose={() => setConfirmedOrder(null)}
+              order={confirmedOrder}
+            />
+          </Suspense>
         )}
       </AnimatePresence>
 
@@ -745,49 +757,55 @@ export default function App() {
       {/* Product Quick View Modal with Reviews */}
       <AnimatePresence>
         {quickViewProduct && (
-          <ProductQuickView
-            product={quickViewProduct}
-            onClose={() => setQuickViewProduct(null)}
-            onAddToCart={handleAddToCart}
-            quantityInCart={cartQuantities[quickViewProduct.id] || 0}
-            reviews={reviews}
-            onOpenReviewModal={handleOpenReviewModal}
-            currentUser={googleUser}
-            allProducts={filteredProducts}
-            currentIndex={filteredProducts.findIndex(p => p.id === quickViewProduct.id)}
-            onNavigate={(direction) => {
-              const idx = filteredProducts.findIndex(p => p.id === quickViewProduct.id);
-              const newIdx = direction === 'next' ? idx + 1 : idx - 1;
-              if (newIdx >= 0 && newIdx < filteredProducts.length) {
-                setQuickViewProduct(filteredProducts[newIdx]);
-              }
-            }}
-          />
+          <Suspense fallback={null}>
+            <ProductQuickView
+              product={quickViewProduct}
+              onClose={() => setQuickViewProduct(null)}
+              onAddToCart={handleAddToCart}
+              quantityInCart={cartQuantities[quickViewProduct.id] || 0}
+              reviews={reviews}
+              onOpenReviewModal={handleOpenReviewModal}
+              currentUser={googleUser}
+              allProducts={filteredProducts}
+              currentIndex={filteredProducts.findIndex(p => p.id === quickViewProduct.id)}
+              onNavigate={(direction) => {
+                const idx = filteredProducts.findIndex(p => p.id === quickViewProduct.id);
+                const newIdx = direction === 'next' ? idx + 1 : idx - 1;
+                if (newIdx >= 0 && newIdx < filteredProducts.length) {
+                  setQuickViewProduct(filteredProducts[newIdx]);
+                }
+              }}
+            />
+          </Suspense>
         )}
       </AnimatePresence>
 
       {/* Review Form Modal */}
       <AnimatePresence>
         {reviewingProduct && (
-          <ReviewFormModal
-            isOpen={!!reviewingProduct}
-            onClose={handleCloseReviewModal}
-            product={reviewingProduct}
-            currentUser={googleUser}
-            onUserAuthenticated={setGoogleUser}
-            onSubmitReview={handleSubmitReview}
-          />
+          <Suspense fallback={null}>
+            <ReviewFormModal
+              isOpen={!!reviewingProduct}
+              onClose={handleCloseReviewModal}
+              product={reviewingProduct}
+              currentUser={googleUser}
+              onUserAuthenticated={setGoogleUser}
+              onSubmitReview={handleSubmitReview}
+            />
+          </Suspense>
         )}
       </AnimatePresence>
 
       {/* Admin Panel (pedidos + stock + reseñas) */}
       <AnimatePresence>
         {isAdminPanelOpen && (
-          <AdminPanel
-            isOpen={isAdminPanelOpen}
-            onClose={() => setIsAdminPanelOpen(false)}
-            onShowToast={showToast}
-          />
+          <Suspense fallback={null}>
+            <AdminPanel
+              isOpen={isAdminPanelOpen}
+              onClose={() => setIsAdminPanelOpen(false)}
+              onShowToast={showToast}
+            />
+          </Suspense>
         )}
       </AnimatePresence>
 

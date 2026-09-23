@@ -68,6 +68,24 @@ export default defineConfig(() => {
         '@': path.resolve(__dirname, '.'),
       },
     },
+    build: {
+      // Aumentamos el limite (con manualChunks los chunks bajan naturalmente)
+      chunkSizeWarningLimit: 600,
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            // Vendor: React + ecosistema
+            'vendor-react': ['react', 'react-dom'],
+            // Motion (Framer) — libreria pesada de animaciones
+            'vendor-motion': ['motion/react'],
+            // Supabase — cliente + auth
+            'vendor-supabase': ['@supabase/supabase-js'],
+            // Lucide icons — tree-shaking parcial, agrupar reduce fragmentacion
+            'vendor-icons': ['lucide-react'],
+          },
+        },
+      },
+    },
     server: {
       hmr: process.env.DISABLE_HMR !== 'true',
       watch: process.env.DISABLE_HMR === 'true' ? null : {},
