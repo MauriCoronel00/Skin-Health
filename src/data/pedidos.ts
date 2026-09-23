@@ -97,6 +97,11 @@ export function rpcErrorToPedidoError(err: unknown): PedidoError {
       'UNAVAILABLE',
       'Algún producto ya no está disponible. Revisá tu carrito e intentá de nuevo.'
     );
+  if (msg.includes('INVALID_PHONE'))
+    return new PedidoError(
+      'CUSTOMER_DATA',
+      'El teléfono no es válido. Necesitamos un número real para coordinar la entrega.'
+    );
   if (msg.includes('EMPTY_ORDER') || msg.includes('MISSING_CUSTOMER_DATA'))
     return new PedidoError(
       'CUSTOMER_DATA',
@@ -123,16 +128,17 @@ export async function createPedido(input: CreatePedidoInput): Promise<PedidoRece
       'Completá tu nombre y ubicación para coordinar la entrega.'
     );
   }
+  if (!input.telefono.trim() || input.telefono.replace(/\D/g, '').length < 8) {
+    throw new PedidoError(
+      'CUSTOMER_DATA',
+      'Ingresá un teléfono válido (mínimo 8 dígitos) para coordinar la entrega.'
+    );
+  }
 
+  // Checkout guest permitido: la RPC acepta user_id NULL con teléfono válido.
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) {
-    throw new PedidoError(
-      'NOT_AUTHENTICATED',
-      'Iniciá sesión para continuar con tu pedido.'
-    );
-  }
 
   let pedidoId: string;
   const costoEnvio = Math.max(0, Math.floor(input.costoEnvioGs ?? 0));
@@ -169,8 +175,9 @@ export async function createPedido(input: CreatePedidoInput): Promise<PedidoRece
   const totalGs = (pedido as { total_gs: number }).total_gs;
   const costoEnvioGs = (pedido as { costo_envio_gs: number }).costo_envio_gs ?? costoEnvio;
 
+  // Sincronizar teléfono en el perfil solo si hay sesión autenticada.
   // Mejor esfuerzo: no bloquea el pedido si falla.
-  if (input.telefono.trim()) {
+  if (user && input.telefono.trim()) {
     await supabase
       .from('perfiles')
       .update({ telefono: input.telefono.trim() })

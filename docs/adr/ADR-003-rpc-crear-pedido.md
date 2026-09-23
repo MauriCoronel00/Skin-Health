@@ -12,17 +12,24 @@ solo falla tardío, al confirmar el pago.
 
 ## Decisión
 
-- Nueva función `public.crear_pedido(...)` `SECURITY DEFINER` (ver
-  `docs/migraciones/002_rpc_crear_pedido.sql`) que, en una transacción:
-  1. exige usuario autenticado y al menos 1 ítem;
-  2. por cada ítem: verifica producto `activo`, lee `precio_gs` y `stock` reales,
+- Función `public.crear_pedido(...)` `SECURITY DEFINER` (ver migración vigente
+  `docs/migraciones/007_checkout_guest.sql`, reemplaza a 002/005) que, en una
+  transacción:
+  1. exige al menos 1 ítem, nombre y teléfono válidos;
+  2. si el usuario no está autenticado, exige teléfono con al menos 8 dígitos
+     como identidad alternativa (checkout guest);
+  3. por cada ítem: verifica producto `activo`, lee `precio_gs` y `stock` reales,
      rechaza si no hay stock suficiente;
-  3. recalcula el total (ignora el total del cliente);
-  4. genera `codigo_pedido` server-side (`SKIN-XXXXXXXX`, único por constraint);
-  5. inserta pedido + ítems con `precio_unitario_gs` de la DB y retorna el `id`.
-- `EXECUTE` revocado a `public`, otorgado solo a `authenticated`.
+  4. recalcula el total (ignora el total del cliente);
+  5. genera `codigo_pedido` server-side (`SKIN-XXXXXXXX`, único por constraint);
+  6. inserta pedido + ítems con `precio_unitario_gs` de la DB (con `user_id`
+     NULL si es guest) y retorna el `id`.
+- `EXECUTE` otorgado a `anon` y `authenticated`. Como `SECURITY DEFINER` corre
+  con permisos del owner, los INSERT pasan las RLS aunque el llamador sea anon.
 - El frontend deja de insertar directo en `pedidos`/`pedido_items` para el checkout
   (las policies de INSERT se mantienen como red de seguridad, no como vía principal).
+- Los pedidos guest se consultan solo por `get_pedido_tracking(codigo)`
+  (migración 006), que solo expone datos no sensibles.
 
 ## Consecuencias
 
