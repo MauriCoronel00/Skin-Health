@@ -63,6 +63,8 @@ export interface ReviewUser {
   isVerifiedBuyer?: boolean;
 }
 
+export type TipoPiel = 'grasa' | 'seca' | 'mixta' | 'sensible' | 'normal';
+
 export interface ProductReview {
   id: string;
   productId: string;
@@ -75,6 +77,12 @@ export interface ProductReview {
   status?: 'approved' | 'pending' | 'hidden';
   isFeatured?: boolean;
   city?: string;
+  tipoPiel?: TipoPiel;
+  fotos?: string[];
+  utilesCount?: number;
+  usuarioMarcoUtil?: boolean;
+  respuestaAdmin?: string;
+  respuestaAdminCreadaEn?: string;
 }
 
 export interface ProductRatingStats {

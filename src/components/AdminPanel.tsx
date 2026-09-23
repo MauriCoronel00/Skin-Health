@@ -29,7 +29,7 @@ import {
   actualizarPrecio,
 } from '../data/admin';
 import { ProductReview } from '../types';
-import { fetchAllReviews, setReviewStatus } from '../data/reviews';
+import { fetchAllReviews, setReviewStatus, responderReview } from '../data/reviews';
 import { formatGuarani } from '../data/products';
 import { formatReviewDate } from '../utils/reviewsStorage';
 import {
@@ -287,6 +287,50 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
       onShowToast('Reseña ocultada', undefined, 'info');
     } catch {
       onShowToast('No se pudo ocultar', undefined, 'error');
+    }
+  };
+
+  // R14: estado local para responder reseñas desde el admin
+  const [respondingId, setRespondingId] = useState<string | null>(null);
+  const [respuestaText, setRespuestaText] = useState('');
+  const [savingRespuesta, setSavingRespuesta] = useState(false);
+
+  const startResponder = (r: ProductReview) => {
+    setRespondingId(r.id);
+    setRespuestaText(r.respuestaAdmin || '');
+  };
+
+  const cancelResponder = () => {
+    setRespondingId(null);
+    setRespuestaText('');
+  };
+
+  const saveResponder = async () => {
+    if (!respondingId) return;
+    setSavingRespuesta(true);
+    try {
+      await responderReview(respondingId, respuestaText);
+      setPendingReviews((prev) =>
+        prev.map((r) =>
+          r.id === respondingId
+            ? {
+                ...r,
+                respuestaAdmin: respuestaText.trim() || undefined,
+                respuestaAdminCreadaEn: respuestaText.trim() ? new Date().toISOString() : undefined,
+              }
+            : r
+        )
+      );
+      onShowToast(
+        respuestaText.trim() ? 'Respuesta publicada' : 'Respuesta eliminada',
+        undefined,
+        'success'
+      );
+      cancelResponder();
+    } catch {
+      onShowToast('No se pudo guardar la respuesta', undefined, 'error');
+    } finally {
+      setSavingRespuesta(false);
     }
   };
 
@@ -657,16 +701,74 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
                       <span className="font-semibold text-neutral-900">
                         {r.author.name}{' '}
                         <span className="text-amber-500 font-bold">★ {r.rating}</span>
+                        {r.isVerifiedPurchase && (
+                          <span className="ml-1.5 inline-block text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 font-semibold px-1.5 py-0.5 rounded-md">
+                            Compra verificada
+                          </span>
+                        )}
                       </span>
-                      <span className="text-[11px] text-neutral-400">
+                      <span className="text-xs text-neutral-400">
                         {formatReviewDate(r.createdAt)}
                       </span>
                     </div>
                     <p className="text-neutral-700 italic mb-1">&quot;{r.comment}&quot;</p>
-                    <p className="text-[11px] text-neutral-400 font-mono mb-2.5">
-                      {r.productId}
-                    </p>
-                    <div className="flex items-center gap-2">
+                    {r.fotos && r.fotos.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 mb-2">
+                        {r.fotos.map((url) => (
+                          <img
+                            key={url}
+                            src={url}
+                            alt="Foto"
+                            className="w-14 h-14 object-cover rounded-lg border border-neutral-200"
+                          />
+                        ))}
+                      </div>
+                    )}
+                    <p className="text-xs text-neutral-400 font-mono mb-2.5">{r.productId}</p>
+
+                    {/* Respuesta admin ya existente */}
+                    {r.respuestaAdmin && respondingId !== r.id && (
+                      <div className="bg-[#102A43]/5 border-l-2 border-[#102A43] rounded-r-lg px-3 py-2 mb-2.5">
+                        <div className="text-xs font-bold text-[#102A43] mb-0.5">Ya respondiste:</div>
+                        <p className="text-xs text-neutral-700">{r.respuestaAdmin}</p>
+                      </div>
+                    )}
+
+                    {/* Form para responder */}
+                    {respondingId === r.id ? (
+                      <div className="mb-2.5">
+                        <textarea
+                          rows={3}
+                          maxLength={1000}
+                          placeholder="Tu respuesta pública como Skin Health…"
+                          value={respuestaText}
+                          onChange={(e) => setRespuestaText(e.target.value)}
+                          className="w-full p-2 rounded-lg border border-neutral-300 text-xs focus:outline-none focus:border-[#102A43]"
+                        />
+                        <div className="flex items-center gap-2 mt-1.5">
+                          <button
+                            type="button"
+                            disabled={savingRespuesta}
+                            onClick={() => void saveResponder()}
+                            className="px-3 py-1.5 rounded-lg bg-[#102A43] text-white text-xs font-semibold hover:bg-[#102A43]/90 disabled:opacity-50 cursor-pointer"
+                          >
+                            {savingRespuesta ? 'Guardando…' : 'Publicar respuesta'}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={cancelResponder}
+                            className="px-3 py-1.5 rounded-lg bg-neutral-100 text-neutral-700 text-xs font-semibold hover:bg-neutral-200 cursor-pointer"
+                          >
+                            Cancelar
+                          </button>
+                          <span className="text-xs text-neutral-400 ml-auto">
+                            {respuestaText.length}/1000
+                          </span>
+                        </div>
+                      </div>
+                    ) : null}
+
+                    <div className="flex items-center gap-2 flex-wrap">
                       <button
                         onClick={() => void handleApproveReview(r.id)}
                         className="px-3 py-1.5 rounded-xl bg-emerald-600 text-white text-xs font-semibold flex items-center gap-1.5 hover:bg-emerald-700 cursor-pointer"
@@ -680,6 +782,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
                       >
                         Ocultar
                       </button>
+                      {respondingId !== r.id && (
+                        <button
+                          onClick={() => startResponder(r)}
+                          className="px-3 py-1.5 rounded-xl bg-white border border-[#102A43]/30 text-[#102A43] text-xs font-semibold hover:bg-[#102A43]/5 cursor-pointer"
+                        >
+                          {r.respuestaAdmin ? 'Editar respuesta' : 'Responder'}
+                        </button>
+                      )}
                     </div>
                   </div>
                 ))

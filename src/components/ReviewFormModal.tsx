@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Star, CheckCircle2, AlertCircle, Sparkles, Send, ShieldCheck, X } from 'lucide-react';
-import { Product, ProductReview, ReviewUser } from '../types';
+import { CheckCircle2, AlertCircle, Send, X, ImagePlus, Loader2 } from 'lucide-react';
+import { Product, ReviewUser, TipoPiel } from '../types';
 import { StarRatingInput } from './StarRatingInput';
 import { GoogleAuthButton } from './GoogleAuthButton';
 import { validateReviewContent } from '../utils/reviewsStorage';
+import { uploadReviewPhoto } from '../data/reviews';
 
 interface ReviewFormModalProps {
   isOpen: boolean;
@@ -18,8 +19,18 @@ interface ReviewFormModalProps {
     comment: string;
     author: ReviewUser;
     city?: string;
+    tipoPiel?: TipoPiel;
+    fotos?: string[];
   }) => Promise<{ ok: boolean; message?: string }>;
 }
+
+const TIPOS_PIEL: { value: TipoPiel; label: string }[] = [
+  { value: 'grasa', label: 'Grasa' },
+  { value: 'seca', label: 'Seca' },
+  { value: 'mixta', label: 'Mixta' },
+  { value: 'sensible', label: 'Sensible' },
+  { value: 'normal', label: 'Normal' },
+];
 
 export const ReviewFormModal: React.FC<ReviewFormModalProps> = ({
   isOpen,
@@ -31,9 +42,41 @@ export const ReviewFormModal: React.FC<ReviewFormModalProps> = ({
 }) => {
   const [rating, setRating] = useState<number>(5);
   const [comment, setComment] = useState('');
+  const [tipoPiel, setTipoPiel] = useState<TipoPiel | ''>('');
+  const [fotos, setFotos] = useState<string[]>([]);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (fotos.length >= 3) {
+      setErrorMsg('Máximo 3 fotos por reseña.');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setErrorMsg('La foto debe pesar menos de 5MB.');
+      return;
+    }
+    setErrorMsg(null);
+    setUploadingPhoto(true);
+    try {
+      const url = await uploadReviewPhoto(file);
+      setFotos((prev) => [...prev, url]);
+    } catch (err: any) {
+      setErrorMsg('No pudimos subir la foto. Probá de nuevo.');
+      console.error(err);
+    } finally {
+      setUploadingPhoto(false);
+      e.target.value = '';
+    }
+  };
+
+  const removePhoto = (url: string) => {
+    setFotos((prev) => prev.filter((u) => u !== url));
+  };
 
   if (!isOpen) return null;
 
@@ -67,6 +110,8 @@ export const ReviewFormModal: React.FC<ReviewFormModalProps> = ({
       rating,
       comment: comment.trim(),
       author: currentUser,
+      tipoPiel: tipoPiel || undefined,
+      fotos: fotos.length > 0 ? fotos : undefined,
     });
 
     setIsSubmitting(false);
@@ -82,6 +127,8 @@ export const ReviewFormModal: React.FC<ReviewFormModalProps> = ({
     setTimeout(() => {
       setIsSuccess(false);
       setComment('');
+      setTipoPiel('');
+      setFotos([]);
       onClose();
     }, 1600);
   };
@@ -141,13 +188,13 @@ export const ReviewFormModal: React.FC<ReviewFormModalProps> = ({
                 />
               </div>
               <div className="min-w-0 flex-1">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-[#102A43]/70">
+                <span className="text-xs font-bold uppercase tracking-widest text-[#102A43]/70">
                   {product.brand}
                 </span>
                 <h3 className="font-semibold text-sm sm:text-base text-neutral-900 truncate">
                   {product.name}
                 </h3>
-                <p className="text-[11px] text-neutral-500 truncate">
+                <p className="text-xs text-neutral-500 truncate">
                   Dejá tu valoración sincera
                 </p>
               </div>
@@ -168,7 +215,7 @@ export const ReviewFormModal: React.FC<ReviewFormModalProps> = ({
                   <label className="block text-xs font-semibold text-neutral-800">
                     2. Tu comentario u opinión <span className="text-neutral-400 font-normal">(Opcional)</span>
                   </label>
-                  <span className="text-[11px] text-neutral-400">
+                  <span className="text-xs text-neutral-400">
                     {comment.length}/600
                   </span>
                 </div>
@@ -182,10 +229,80 @@ export const ReviewFormModal: React.FC<ReviewFormModalProps> = ({
                 />
               </div>
 
-              {/* Step 3: Google Identification */}
+              {/* Step 3: Tipo de piel */}
               <div>
                 <label className="block text-xs font-semibold text-neutral-800 mb-2">
-                  3. Identificación antes de publicar <span className="text-rose-500">*</span>
+                  3. Tu tipo de piel <span className="text-neutral-400 font-normal">(Opcional, ayuda a otros clientes)</span>
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {TIPOS_PIEL.map((tp) => {
+                    const active = tipoPiel === tp.value;
+                    return (
+                      <button
+                        key={tp.value}
+                        type="button"
+                        onClick={() => setTipoPiel(active ? '' : tp.value)}
+                        className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
+                          active
+                            ? 'bg-[#102A43] text-white border-[#102A43]'
+                            : 'bg-white text-neutral-700 border-neutral-200 hover:border-[#102A43]/40'
+                        }`}
+                      >
+                        {tp.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Step 4: Fotos */}
+              <div>
+                <label className="block text-xs font-semibold text-neutral-800 mb-2">
+                  4. Fotos del producto <span className="text-neutral-400 font-normal">(Opcional, hasta 3)</span>
+                </label>
+                <div className="flex flex-wrap gap-2 items-center">
+                  {fotos.map((url) => (
+                    <div
+                      key={url}
+                      className="relative w-16 h-16 rounded-xl overflow-hidden border border-neutral-200"
+                    >
+                      <img src={url} alt="Foto de reseña" className="w-full h-full object-cover" />
+                      <button
+                        type="button"
+                        onClick={() => removePhoto(url)}
+                        className="absolute top-0.5 right-0.5 w-5 h-5 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/80"
+                        aria-label="Eliminar foto"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                  ))}
+                  {fotos.length < 3 && (
+                    <label className="w-16 h-16 rounded-xl border-2 border-dashed border-neutral-300 flex items-center justify-center cursor-pointer hover:border-[#102A43]/40 hover:bg-neutral-50 transition-all text-neutral-400">
+                      {uploadingPhoto ? (
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                      ) : (
+                        <ImagePlus className="w-5 h-5" />
+                      )}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFileUpload}
+                        disabled={uploadingPhoto || !currentUser}
+                        className="hidden"
+                      />
+                    </label>
+                  )}
+                </div>
+                {!currentUser && (
+                  <p className="text-xs text-neutral-400 mt-1">Identificate primero para subir fotos.</p>
+                )}
+              </div>
+
+              {/* Step 5: Google Identification */}
+              <div>
+                <label className="block text-xs font-semibold text-neutral-800 mb-2">
+                  5. Identificación antes de publicar <span className="text-rose-500">*</span>
                 </label>
                 <GoogleAuthButton
                   currentUser={currentUser}

@@ -18,6 +18,7 @@ interface ProductQuickViewProps {
   allProducts?: Product[];
   currentIndex?: number;
   onNavigate?: (direction: 'prev' | 'next') => void;
+  onToggleUtil?: (reviewId: string) => void;
 }
 
 export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
@@ -31,6 +32,7 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
   allProducts = [],
   currentIndex = 0,
   onNavigate,
+  onToggleUtil,
 }) => {
   const [justAdded, setJustAdded] = useState(false);
   const reviewsSectionRef = useRef<HTMLDivElement>(null);
@@ -302,6 +304,7 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
               reviews={reviews}
               onOpenReviewModal={() => onOpenReviewModal(product)}
               currentUser={currentUser}
+              onToggleUtil={onToggleUtil}
             />
           </div>
         </div>

@@ -122,6 +122,8 @@ export default function App() {
     submit: submitReviewHook,
     loadForModeration,
     moderate,
+    toggleUtil,
+    responder,
   } = useReviews();
 
   // Current authenticated Google user state
@@ -181,6 +183,8 @@ export default function App() {
     comment: string;
     author: ReviewUser;
     city?: string;
+    tipoPiel?: import('./types').TipoPiel;
+    fotos?: string[];
   }): Promise<{ ok: boolean; message?: string }> => {
     // Identidad unificada: el nombre sale del módulo identity, el user_id de la sesión
     const reviewer = await currentReviewer();
@@ -200,6 +204,8 @@ export default function App() {
       rating: reviewData.rating,
       comment: reviewData.comment,
       city: reviewData.city,
+      tipoPiel: reviewData.tipoPiel,
+      fotos: reviewData.fotos,
     });
     if (result.ok) {
       showToast(
@@ -774,6 +780,7 @@ export default function App() {
               currentUser={googleUser}
               allProducts={filteredProducts}
               currentIndex={filteredProducts.findIndex(p => p.id === quickViewProduct.id)}
+              onToggleUtil={toggleUtil}
               onNavigate={(direction) => {
                 const idx = filteredProducts.findIndex(p => p.id === quickViewProduct.id);
                 const newIdx = direction === 'next' ? idx + 1 : idx - 1;

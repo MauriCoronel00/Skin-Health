@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { ProductReview } from '../types';
+import { ProductReview, TipoPiel } from '../types';
 import { INITIAL_DEMO_REVIEWS } from '../data/demoReviews';
 import {
   fetchApprovedReviews,
@@ -8,6 +8,8 @@ import {
   setReviewStatus,
   deleteReview,
   setReviewFeatured,
+  toggleReviewUtil,
+  responderReview,
 } from '../data/reviews';
 import { Reviewer } from '../data/identity';
 
@@ -65,7 +67,14 @@ export function useReviews() {
   const submit = useCallback(
     async (
       reviewer: Reviewer,
-      data: { productId: string; rating: number; comment: string; city?: string }
+      data: {
+        productId: string;
+        rating: number;
+        comment: string;
+        city?: string;
+        tipoPiel?: TipoPiel;
+        fotos?: string[];
+      }
     ): Promise<{ ok: boolean; message?: string }> => {
       if (!reviewer.userId) {
         return { ok: false, message: 'NOT_AUTHENTICATED' };
@@ -77,6 +86,8 @@ export function useReviews() {
           comment: data.comment,
           authorName: reviewer.displayName,
           city: data.city,
+          tipoPiel: data.tipoPiel,
+          fotos: data.fotos,
         });
         return { ok: true };
       } catch (err) {
@@ -85,6 +96,70 @@ export function useReviews() {
         }
         return { ok: false, message: 'No pudimos guardar tu reseña. Probá de nuevo.' };
       }
+    },
+    []
+  );
+
+  /** R13: toggle útil (optimistic UI). */
+  const toggleUtil = useCallback(async (reviewId: string): Promise<void> => {
+    // Optimistic update
+    setReviews((prev) =>
+      prev.map((r) =>
+        r.id === reviewId
+          ? {
+              ...r,
+              usuarioMarcoUtil: !r.usuarioMarcoUtil,
+              utilesCount: (r.utilesCount ?? 0) + (r.usuarioMarcoUtil ? -1 : 1),
+            }
+          : r
+      )
+    );
+    try {
+      await toggleReviewUtil(reviewId);
+    } catch {
+      // Rollback si falla
+      setReviews((prev) =>
+        prev.map((r) =>
+          r.id === reviewId
+            ? {
+                ...r,
+                usuarioMarcoUtil: !r.usuarioMarcoUtil,
+                utilesCount: (r.utilesCount ?? 0) + (r.usuarioMarcoUtil ? -1 : 1),
+              }
+            : r
+        )
+      );
+    }
+  }, []);
+
+  /** R14: admin responde a una reseña. Vacío = borra la respuesta. */
+  const responder = useCallback(
+    async (reviewId: string, respuesta: string): Promise<void> => {
+      await responderReview(reviewId, respuesta);
+      const now = new Date().toISOString();
+      const trimmed = respuesta.trim();
+      setAdminReviews((prev) =>
+        prev.map((r) =>
+          r.id === reviewId
+            ? {
+                ...r,
+                respuestaAdmin: trimmed || undefined,
+                respuestaAdminCreadaEn: trimmed ? now : undefined,
+              }
+            : r
+        )
+      );
+      setReviews((prev) =>
+        prev.map((r) =>
+          r.id === reviewId
+            ? {
+                ...r,
+                respuestaAdmin: trimmed || undefined,
+                respuestaAdminCreadaEn: trimmed ? now : undefined,
+              }
+            : r
+        )
+      );
     },
     []
   );
@@ -121,5 +196,15 @@ export function useReviews() {
     [adminReviews, refresh]
   );
 
-  return { reviews, adminReviews, loading, refresh, submit, loadForModeration, moderate };
+  return {
+    reviews,
+    adminReviews,
+    loading,
+    refresh,
+    submit,
+    loadForModeration,
+    moderate,
+    toggleUtil,
+    responder,
+  };
 }
