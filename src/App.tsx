@@ -21,6 +21,7 @@ import { useReviews } from './hooks/useReviews';
 import { currentReviewer } from './data/identity';
 import { isCurrentUserAdmin } from './data/admin';
 import { productIdFromUrl, syncProductUrl } from './utils/productLink';
+import { setHomeSEO, injectOrganizationSchema } from './utils/seo';
 import { MobileBottomNav, TabId } from './components/MobileBottomNav';
 import { HeroRitualCTA } from './components/HeroRitualCTA';
 import { ProductGridSkeleton, CategoryPillsSkeleton, TestimoniosSectionSkeleton } from './components/Skeleton';
@@ -65,6 +66,12 @@ export default function App() {
     };
     window.addEventListener('auth-required', handler);
     return () => window.removeEventListener('auth-required', handler);
+  }, []);
+
+  // SEO: schema de Organizacion + meta tags de homepage (una sola vez al montar)
+  useEffect(() => {
+    injectOrganizationSchema();
+    setHomeSEO();
   }, []);
 
   const loadCatalog = async () => {

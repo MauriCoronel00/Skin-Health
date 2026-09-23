@@ -5,6 +5,7 @@ import { Product, ProductReview, ReviewUser } from '../types';
 import { formatGuarani } from '../data/products';
 import { trackAddToCart } from '../utils/analytics';
 import { ProductReviewsSection } from './ProductReviewsSection';
+import { setProductSEO, clearProductSEO } from '../utils/seo';
 
 interface ProductQuickViewProps {
   product: Product | null;
@@ -38,6 +39,15 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
   const dragStartRef = useRef<number>(0);
   const canNavigatePrev = currentIndex > 0;
   const canNavigateNext = allProducts.length > 0 && currentIndex < allProducts.length - 1;
+
+  // SEO: actualizar meta tags + Schema.org Product mientras este producto este abierto
+  useEffect(() => {
+    if (!product) return;
+    setProductSEO(product);
+    return () => {
+      clearProductSEO();
+    };
+  }, [product?.id]);
 
   // Haptic feedback
   const triggerHaptic = (type: 'light' | 'medium' = 'light') => {
