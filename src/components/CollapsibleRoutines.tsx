@@ -3,53 +3,61 @@ import { motion } from 'motion/react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useSupabase } from '../hooks/useSupabase';
 
+type ProductLookup = Record<string, { nombre: string; marca: string; imagen_url: string | null }>;
+
 export const CollapsibleRoutines: React.FC = () => {
   const { supabase } = useSupabase();
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [routines, setRoutines] = useState<any[]>([]);
+  const [products, setProducts] = useState<ProductLookup>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchRoutines();
+    fetchData();
   }, [supabase]);
 
-  const fetchRoutines = async () => {
+  const fetchData = async () => {
     setLoading(true);
     setError(null);
     try {
-      console.log('🔄 Iniciando fetch de rutinas desde Supabase...');
-      console.log('📡 Cliente Supabase disponible:', !!supabase);
+      // Fetch en paralelo: rutinas + productos
+      const [routinesRes, productsRes] = await Promise.all([
+        supabase
+          .from('skincare_routines')
+          .select('*')
+          .order('number', { ascending: true }),
+        supabase
+          .from('productos')
+          .select('id, nombre, marca, imagen_url')
+          .eq('activo', true),
+      ]);
 
-      const { data, error: supaError } = await supabase
-        .from('skincare_routines')
-        .select('*')
-        .order('number', { ascending: true });
-
-      if (supaError) {
-        console.error('❌ Error de Supabase:', supaError);
-        setError(supaError.message || 'Error desconocido');
-        throw supaError;
+      if (routinesRes.error) {
+        setError(routinesRes.error.message || 'Error cargando rutinas');
+        throw routinesRes.error;
+      }
+      if (productsRes.error) {
+        console.error('⚠️ Error cargando productos:', productsRes.error);
+        // No bloqueamos si productos fallan, solo se pierden nombres
       }
 
-      console.log('✅ Datos recibidos de Supabase:', data);
-      console.log('📊 Cantidad de rutinas:', data?.length || 0);
-      console.log('🔍 Primera rutina:', data?.[0]);
+      // Mapa productId → producto para lookup O(1)
+      const lookup: ProductLookup = {};
+      (productsRes.data || []).forEach((p: any) => {
+        lookup[p.id] = {
+          nombre: p.nombre || '',
+          marca: p.marca || '',
+          imagen_url: p.imagen_url || null,
+        };
+      });
 
-      setRoutines(data || []);
+      setProducts(lookup);
+      setRoutines(routinesRes.data || []);
       setLoading(false);
-
-      if (!data || data.length === 0) {
-        console.warn('⚠️ No hay rutinas en la base de datos. Verificar:');
-        console.warn('   1. Tabla skincare_routines existe en Supabase');
-        console.warn('   2. RLS (Row Level Security) está configurado para role anon/public');
-        console.warn('   3. Hay datos INSERTados en la tabla');
-        console.warn('   4. Estructura de columnas: id, title, number, steps, instructionText, instructionType');
-      }
     } catch (err: any) {
-      console.error('❌ Excepción al fetch rutinas:', err.message || err);
+      console.error('❌ Excepción al fetch:', err.message || err);
       setError(err.message || 'Error inesperado');
-      // Still set loading to false so UI doesn't get stuck
       setLoading(false);
     }
   };
@@ -172,9 +180,11 @@ export const CollapsibleRoutines: React.FC = () => {
                   >
                     {/* Steps Grid */}
                     <div className={`grid ${routine.steps.length === 3 ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'} gap-4 relative`}>
-                      {routine.steps.map((step) => {
-                        const productId = step.productId || step.stepNumber.toString();
-                        const shortLabel = step.label.length > 12 ? `${step.label.substring(0, 10)}...` : step.label;
+                      {routine.steps.map((step: any) => {
+                        const product = step.productId ? products[step.productId] : null;
+                        const productName = product?.nombre || step.label;
+                        const productBrand = product?.marca || '';
+                        const productImage = product?.imagen_url;
 
                         return (
                           <motion.div
@@ -182,11 +192,34 @@ export const CollapsibleRoutines: React.FC = () => {
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.1 + step.stepNumber * 0.05, duration: 0.2 }}
-                            className="bg-[#FAF8F5] rounded-full p-2.5 border border-neutral-200/80 hover:border-[#102A43]/30 transition-all flex items-center justify-center min-w-max"
+                            className="bg-white rounded-2xl p-3 border border-neutral-200/80 hover:border-[#102A43]/30 hover:shadow-sm transition-all flex flex-col items-center text-center gap-2"
                           >
-                            <span className="text-xs font-semibold text-neutral-800">
-                              {shortLabel}
+                            {/* Paso */}
+                            <span className="text-[10px] font-bold text-[#102A43]/60 uppercase tracking-wider">
+                              Paso {step.stepNumber} · {step.label}
                             </span>
+
+                            {/* Imagen del producto (si existe) */}
+                            {productImage && (
+                              <img
+                                src={productImage}
+                                alt={productName}
+                                className="w-14 h-14 object-contain rounded-full bg-[#FAF8F5] p-1"
+                                loading="lazy"
+                              />
+                            )}
+
+                            {/* Marca + Nombre del producto */}
+                            <div className="flex flex-col items-center gap-0.5">
+                              {productBrand && (
+                                <span className="text-[10px] font-semibold text-[#102A43]/70 uppercase">
+                                  {productBrand}
+                                </span>
+                              )}
+                              <span className="text-xs font-semibold text-neutral-800 leading-tight">
+                                {productName}
+                              </span>
+                            </div>
                           </motion.div>
                         );
                       })}
