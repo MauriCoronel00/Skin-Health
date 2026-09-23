@@ -482,7 +482,7 @@ export default function App() {
         />
 
         {/* Collapsible Routines List - 5 routines with expand/collapse */}
-        <CollapsibleRoutines />
+        <CollapsibleRoutines onAddRoutineToCart={handleAddMultipleToCart} />
 
         {/* Catalog Section Header & Brand Filter */}
         <div

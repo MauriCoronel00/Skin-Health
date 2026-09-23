@@ -1,17 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp, ShoppingBag } from 'lucide-react';
 import { useSupabase } from '../hooks/useSupabase';
+import { fetchProducts, formatGuarani } from '../data/products';
+import type { Product } from '../types';
 
-type ProductLookup = Record<string, { nombre: string; marca: string; imagen_url: string | null }>;
+type ProductLookup = Record<string, Product>;
 
-export const CollapsibleRoutines: React.FC = () => {
+interface CollapsibleRoutinesProps {
+  onAddRoutineToCart?: (products: Product[]) => void;
+}
+
+export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddRoutineToCart }) => {
   const { supabase } = useSupabase();
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [routines, setRoutines] = useState<any[]>([]);
   const [products, setProducts] = useState<ProductLookup>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [addedRoutineId, setAddedRoutineId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchData();
@@ -21,35 +28,27 @@ export const CollapsibleRoutines: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      // Fetch en paralelo: rutinas + productos
-      const [routinesRes, productsRes] = await Promise.all([
+      // Fetch en paralelo: rutinas (Supabase directo) + productos (helper)
+      const [routinesRes, productsList] = await Promise.all([
         supabase
           .from('skincare_routines')
           .select('*')
           .order('number', { ascending: true }),
-        supabase
-          .from('productos')
-          .select('id, nombre, marca, imagen_url')
-          .eq('activo', true),
+        fetchProducts().catch((e) => {
+          console.error('⚠️ Error cargando productos:', e);
+          return [] as Product[];
+        }),
       ]);
 
       if (routinesRes.error) {
         setError(routinesRes.error.message || 'Error cargando rutinas');
         throw routinesRes.error;
       }
-      if (productsRes.error) {
-        console.error('⚠️ Error cargando productos:', productsRes.error);
-        // No bloqueamos si productos fallan, solo se pierden nombres
-      }
 
-      // Mapa productId → producto para lookup O(1)
+      // Mapa productId → Product completo
       const lookup: ProductLookup = {};
-      (productsRes.data || []).forEach((p: any) => {
-        lookup[p.id] = {
-          nombre: p.nombre || '',
-          marca: p.marca || '',
-          imagen_url: p.imagen_url || null,
-        };
+      productsList.forEach((p) => {
+        lookup[p.id] = p;
       });
 
       setProducts(lookup);
@@ -60,6 +59,26 @@ export const CollapsibleRoutines: React.FC = () => {
       setError(err.message || 'Error inesperado');
       setLoading(false);
     }
+  };
+
+  const getRoutineProducts = (routine: any): Product[] => {
+    return (routine.steps || [])
+      .map((step: any) => (step.productId ? products[step.productId] : null))
+      .filter((p: Product | null): p is Product => p !== null);
+  };
+
+  const getRoutineTotal = (routine: any): number => {
+    return getRoutineProducts(routine).reduce((sum, p) => sum + (p.price || 0), 0);
+  };
+
+  const handleAddRoutine = (e: React.MouseEvent, routine: any) => {
+    e.stopPropagation();
+    const routineProducts = getRoutineProducts(routine);
+    if (routineProducts.length === 0 || !onAddRoutineToCart) return;
+
+    onAddRoutineToCart(routineProducts);
+    setAddedRoutineId(routine.id);
+    setTimeout(() => setAddedRoutineId(null), 2000);
   };
 
   const toggleRoutine = (id: string) => {
@@ -182,9 +201,9 @@ export const CollapsibleRoutines: React.FC = () => {
                     <div className={`grid ${routine.steps.length === 3 ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'} gap-4 relative`}>
                       {routine.steps.map((step: any) => {
                         const product = step.productId ? products[step.productId] : null;
-                        const productName = product?.nombre || step.label;
-                        const productBrand = product?.marca || '';
-                        const productImage = product?.imagen_url;
+                        const productName = product?.name || step.label;
+                        const productBrand = product?.brand || '';
+                        const productImage = product?.image;
 
                         return (
                           <motion.div
@@ -244,6 +263,42 @@ export const CollapsibleRoutines: React.FC = () => {
                         </span>
                       </div>
                     )}
+
+                    {/* Botón Agregar Rutina al Carrito */}
+                    {onAddRoutineToCart && (() => {
+                      const routineProducts = getRoutineProducts(routine);
+                      const total = getRoutineTotal(routine);
+                      const isAdded = addedRoutineId === routine.id;
+                      const disabled = routineProducts.length === 0;
+
+                      return (
+                        <div className="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl bg-gradient-to-r from-[#102A43]/5 to-[#102A43]/10 border border-[#102A43]/20">
+                          <div className="flex flex-col">
+                            <span className="text-[11px] font-semibold text-[#102A43]/70 uppercase tracking-wider">
+                              Total de la rutina ({routineProducts.length} productos)
+                            </span>
+                            <span className="text-lg font-bold text-[#102A43]">
+                              {formatGuarani(total)}
+                            </span>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={(e) => handleAddRoutine(e, routine)}
+                            disabled={disabled}
+                            className={`inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full font-semibold text-sm transition-all shadow-sm ${
+                              disabled
+                                ? 'bg-neutral-200 text-neutral-500 cursor-not-allowed'
+                                : isAdded
+                                ? 'bg-emerald-600 text-white'
+                                : 'bg-[#102A43] text-white hover:bg-[#102A43]/90 hover:shadow-md active:scale-95'
+                            }`}
+                          >
+                            <ShoppingBag className="w-4 h-4" />
+                            {isAdded ? '✓ Agregado al carrito' : 'Agregar rutina completa'}
+                          </button>
+                        </div>
+                      );
+                    })()}
                   </motion.div>
                 </div>
               </motion.div>
