@@ -33,8 +33,7 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
       const [routinesRes, productsList] = await Promise.all([
         supabase
           .from('skincare_routines')
-          .select('*')
-          .order('number', { ascending: true }),
+          .select('*'),
         fetchProducts().catch((e) => {
           console.error('⚠️ Error cargando productos:', e);
           return [] as Product[];
@@ -52,8 +51,15 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
         lookup[p.id] = p;
       });
 
+      // Sort client-side por number numérico (tolerante a espacios/formato)
+      const sortedRoutines = [...(routinesRes.data || [])].sort((a, b) => {
+        const na = parseInt(String(a.number || '').trim(), 10) || 0;
+        const nb = parseInt(String(b.number || '').trim(), 10) || 0;
+        return na - nb;
+      });
+
       setProducts(lookup);
-      setRoutines(routinesRes.data || []);
+      setRoutines(sortedRoutines);
       setLoading(false);
     } catch (err: any) {
       console.error('❌ Excepción al fetch:', err.message || err);
