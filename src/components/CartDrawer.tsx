@@ -424,7 +424,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   <div className="space-y-3">
                     {/* 1. Nombre del cliente */}
                     <div>
-                      <label className="block text-[11px] font-semibold text-neutral-700 mb-1">
+                      <label className="block text-xs font-semibold text-neutral-700 mb-1">
                         Nombre del cliente <span className="text-rose-500">*</span>
                       </label>
                       <div className="relative">
@@ -447,7 +447,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                         <User className="w-3.5 h-3.5 text-neutral-400 absolute left-2 top-1/2 -translate-y-1/2" />
                       </div>
                       {nameError && (
-                        <p className="text-[10px] text-rose-500 flex items-center gap-1 mt-1 font-medium">
+                        <p className="text-xs text-rose-500 flex items-center gap-1 mt-1 font-medium">
                           <AlertCircle className="w-3 h-3 shrink-0" />
                           <span>{nameError}</span>
                         </p>
@@ -456,7 +456,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
                     {/* 2. Teléfono de contacto */}
                     <div>
-                      <label className="block text-[11px] font-semibold text-neutral-700 mb-1">
+                      <label className="block text-xs font-semibold text-neutral-700 mb-1">
                         Teléfono de contacto (WhatsApp):
                       </label>
                       <div className="relative">
@@ -478,7 +478,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
                     {/* 3. Lugar de ubicación para envío */}
                     <div>
-                      <label className="block text-[11px] font-semibold text-neutral-700 mb-1">
+                      <label className="block text-xs font-semibold text-neutral-700 mb-1">
                         Lugar de ubicación para el envío <span className="text-rose-500">*</span>
                       </label>
                       <div className="relative">
@@ -501,7 +501,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                         <MapPin className="w-3.5 h-3.5 text-neutral-400 absolute left-2 top-1/2 -translate-y-1/2" />
                       </div>
                       {addressError && (
-                        <p className="text-[10px] text-rose-500 flex items-center gap-1 mt-1 font-medium">
+                        <p className="text-xs text-rose-500 flex items-center gap-1 mt-1 font-medium">
                           <AlertCircle className="w-3 h-3 shrink-0" />
                           <span>{addressError}</span>
                         </p>
@@ -510,7 +510,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
                     {/* 4. Link de Google Maps */}
                     <div>
-                      <label className="block text-[11px] font-semibold text-neutral-700 mb-1">
+                      <label className="block text-xs font-semibold text-neutral-700 mb-1">
                         Link de Google Maps:
                       </label>
                       <div className="relative">
@@ -526,7 +526,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                         />
                         <Link2 className="w-3.5 h-3.5 text-neutral-400 absolute left-2 top-1/2 -translate-y-1/2" />
                       </div>
-                      <p className="text-[10px] text-neutral-500 mt-1">
+                      <p className="text-xs text-neutral-500 mt-1">
                         💡 Si no tenés el link ahora, también podés adjuntar tu ubicación en tiempo real directamente en WhatsApp.
                       </p>
                     </div>
@@ -567,7 +567,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between gap-1">
                             <div>
-                              <span className="text-[10px] font-semibold uppercase tracking-wider text-[#102A43]/60">
+                              <span className="text-xs font-semibold uppercase tracking-wider text-[#102A43]/60">
                                 {item.product.brand}
                               </span>
                               <h4 className="text-sm font-medium text-neutral-900 leading-tight line-clamp-2">
@@ -663,7 +663,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     <span className="font-semibold text-neutral-800">{formatGuarani(envioGs)}</span>
                   )}
                 </div>
-                <p className="text-[10px] text-neutral-400">
+                <p className="text-xs text-neutral-400">
                   Salimos de {ENVIO_ORIGEN} ({formatGuarani(ENVIO_BASE_GS)} hasta 3 km + ₲ 2.000/km).{' '}
                   <a
                     href={ENVIO_ORIGEN_MAPS_URL}
@@ -717,7 +717,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               </motion.button>
 
               {/* Micro-copys de confianza */}
-              <div className="grid grid-cols-3 gap-1 pt-1 text-[10px] text-neutral-500 text-center border-t border-neutral-100/80">
+              <div className="grid grid-cols-3 gap-1 pt-1 text-xs text-neutral-500 text-center border-t border-neutral-100/80">
                 <div className="flex items-center justify-center gap-1">
                   <ShieldCheck className="w-3 h-3 text-emerald-600 shrink-0" />
                   <span>Pago 100% seguro</span>
@@ -733,7 +733,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               </div>
 
               {/* Atención oficial */}
-              <div className="flex items-center text-[11px] pt-0.5">
+              <div className="flex items-center text-xs pt-0.5">
                 <span className="text-neutral-400">Atención oficial Skin Health</span>
               </div>
             </div>

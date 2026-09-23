@@ -122,7 +122,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
                   </motion.span>
                 )}
               </div>
-              <span className={`text-[10px] font-medium tracking-wide transition-colors ${
+              <span className={`text-xs font-medium tracking-wide transition-colors ${
                 isActive ? 'text-[#102A43]' : 'text-neutral-400'
               }`}>
                 {tab.label}

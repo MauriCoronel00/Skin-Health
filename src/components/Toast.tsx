@@ -18,11 +18,19 @@ interface ToastProps {
 
 export const ToastContainer: React.FC<ToastProps> = ({ toasts, onDismiss }) => {
   return (
-    <div className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-4 z-50 flex flex-col gap-2 max-w-sm pointer-events-none">
+    <div
+      className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-4 z-50 flex flex-col gap-2 max-w-sm pointer-events-none"
+      role="region"
+      aria-label="Notificaciones"
+      aria-live="polite"
+    >
       <AnimatePresence>
         {toasts.map((toast) => (
           <motion.div
             key={toast.id}
+            role={toast.type === 'error' ? 'alert' : 'status'}
+            aria-live={toast.type === 'error' ? 'assertive' : 'polite'}
+            aria-atomic="true"
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
@@ -59,7 +67,7 @@ export const ToastContainer: React.FC<ToastProps> = ({ toasts, onDismiss }) => {
                   href={`https://wa.me/${STORE_PHONE_NUMBER}?text=Hola%20Skin%20Health%2C%20necesito%20asistencia%20con%20mi%20pedido`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#25D366] text-white text-[11px] font-bold hover:bg-[#20bd5a] transition-colors"
+                  className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#25D366] text-white text-xs font-bold hover:bg-[#20bd5a] transition-colors"
                 >
                   <MessageCircle className="w-3.5 h-3.5 fill-white text-[#25D366]" />
                   <span>Pedir directamente por WhatsApp</span>
