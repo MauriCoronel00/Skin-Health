@@ -23,7 +23,6 @@ import { isCurrentUserAdmin } from './data/admin';
 import { productIdFromUrl, syncProductUrl } from './utils/productLink';
 import { setHomeSEO, injectOrganizationSchema } from './utils/seo';
 import { MobileBottomNav, TabId } from './components/MobileBottomNav';
-import { HeroRitualCTA } from './components/HeroRitualCTA';
 import { ProductGridSkeleton, CategoryPillsSkeleton, TestimoniosSectionSkeleton } from './components/Skeleton';
 import { CollapsibleRoutines } from './components/CollapsibleRoutines';
 import { SKINCARE_ROUTINES } from './data/routines';
@@ -461,11 +460,8 @@ export default function App() {
           </Suspense>
         ) : (
         <>
-        {/* Editorial Luxury Hero Banner */}
-        <HeroBanner onScrollToCatalog={scrollToCatalog} />
-
-        {/* Hero Ritual CTA - Premium diagnostic flow */}
-        <HeroRitualCTA onScrollToCatalog={scrollToCatalog} onOpenQuiz={() => setQuizOpen(true)} />
+        {/* Hero unificado: CTA quiz + marcas oficiales + social proof */}
+        <HeroBanner onScrollToCatalog={scrollToCatalog} onOpenQuiz={() => setQuizOpen(true)} />
 
         {/* Diagnostic Quiz - 4 steps (lazy: solo carga al abrir) */}
         {quizOpen && (
