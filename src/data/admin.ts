@@ -41,13 +41,9 @@ export async function isCurrentUserAdmin(): Promise<boolean> {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return false;
-  const { data, error } = await supabase
-    .from('perfiles')
-    .select('rol')
-    .eq('id', user.id)
-    .single();
+  const { data, error } = await supabase.rpc('es_admin');
   if (error) return false;
-  return (data as { rol: string } | null)?.rol === 'admin';
+  return data === true;
 }
 
 export async function fetchPedidos(): Promise<AdminPedido[]> {

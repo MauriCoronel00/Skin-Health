@@ -17,7 +17,7 @@ const REVIEWS_STORAGE_KEY = 'skinhealth_reviews_v1';
 
 function loadCache(): ProductReview[] {
   try {
-    const saved = localStorage.getItem(REVIEWS_STORAGE_KEY);
+    const saved = sessionStorage.getItem(REVIEWS_STORAGE_KEY);
     if (saved) {
       const parsed = JSON.parse(saved);
       if (Array.isArray(parsed) && parsed.length > 0) return parsed;
@@ -30,7 +30,7 @@ function loadCache(): ProductReview[] {
 
 function saveCache(reviews: ProductReview[]) {
   try {
-    localStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(reviews));
+    sessionStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(reviews));
   } catch {
     // fallback
   }

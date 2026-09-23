@@ -9,10 +9,10 @@ export interface GoogleAuthState {
   error?: string;
 }
 
-// Read cached Google profile from localStorage
+// Read cached Google profile from sessionStorage
 export function getSavedGoogleUser(): ReviewUser | null {
   try {
-    const raw = localStorage.getItem(GOOGLE_AUTH_STORAGE_KEY);
+    const raw = sessionStorage.getItem(GOOGLE_AUTH_STORAGE_KEY);
     if (raw) {
       return JSON.parse(raw);
     }
@@ -22,10 +22,10 @@ export function getSavedGoogleUser(): ReviewUser | null {
   return null;
 }
 
-// Save Google user to localStorage
+// Save Google user to sessionStorage
 export function saveGoogleUser(user: ReviewUser): void {
   try {
-    localStorage.setItem(GOOGLE_AUTH_STORAGE_KEY, JSON.stringify(user));
+    sessionStorage.setItem(GOOGLE_AUTH_STORAGE_KEY, JSON.stringify(user));
   } catch {
     // fallback
   }
@@ -34,7 +34,7 @@ export function saveGoogleUser(user: ReviewUser): void {
 // Remove Google user session
 export function clearGoogleUser(): void {
   try {
-    localStorage.removeItem(GOOGLE_AUTH_STORAGE_KEY);
+    sessionStorage.removeItem(GOOGLE_AUTH_STORAGE_KEY);
   } catch {
     // fallback
   }

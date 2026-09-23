@@ -1,6 +1,11 @@
 import { ProductReview, TipoPiel } from '../types';
 import { supabase } from '../lib/supabaseClient';
 
+async function requireAdmin(): Promise<void> {
+  const { data, error } = await supabase.rpc('es_admin');
+  if (error || data !== true) throw new Error('NOT_ADMIN');
+}
+
 interface ReviewRow {
   id: string;
   producto_id: string;
@@ -80,6 +85,7 @@ export async function fetchApprovedReviews(): Promise<ProductReview[]> {
 
 /** Todas las visibles para la sesión (admin ve todo, autor ve las suyas). */
 export async function fetchAllReviews(): Promise<ProductReview[]> {
+  await requireAdmin();
   const { data, error } = await supabase
     .from('reviews')
     .select(SELECT)
@@ -126,6 +132,7 @@ export async function setReviewStatus(
   id: string,
   status: 'approved' | 'hidden' | 'pending'
 ): Promise<ProductReview> {
+  await requireAdmin();
   const { data, error } = await supabase
     .from('reviews')
     .update({ status })
@@ -137,6 +144,7 @@ export async function setReviewStatus(
 }
 
 export async function deleteReview(id: string): Promise<void> {
+  await requireAdmin();
   const { error } = await supabase.from('reviews').delete().eq('id', id);
   if (error) throw error;
 }
@@ -145,6 +153,7 @@ export async function setReviewFeatured(
   id: string,
   featured: boolean
 ): Promise<void> {
+  await requireAdmin();
   const { error } = await supabase
     .from('reviews')
     .update({ is_featured: featured })
@@ -164,6 +173,7 @@ export async function responderReview(
   reviewId: string,
   respuesta: string
 ): Promise<void> {
+  await requireAdmin();
   const { error } = await supabase.rpc('responder_review', {
     p_review_id: reviewId,
     p_respuesta: respuesta,
@@ -177,6 +187,14 @@ export async function uploadReviewPhoto(file: File): Promise<string> {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) throw new Error('NOT_AUTHENTICATED');
+
+  const allowedMime = ['image/jpeg', 'image/png', 'image/webp'];
+  if (!allowedMime.includes(file.type)) {
+    throw new Error('INVALID_FILE_TYPE');
+  }
+  if (file.size > 5 * 1024 * 1024) {
+    throw new Error('FILE_TOO_LARGE');
+  }
 
   const ext = file.name.split('.').pop() || 'jpg';
   const path = `${user.id}/${crypto.randomUUID()}.${ext}`;
