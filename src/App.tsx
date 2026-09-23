@@ -32,6 +32,7 @@ import { HeroRitualCTA } from './components/HeroRitualCTA';
 import { ProductGridSkeleton, CategoryPillsSkeleton, TestimoniosSectionSkeleton } from './components/Skeleton';
 import { DiagnosticQuiz } from './components/DiagnosticQuiz';
 import { CollapsibleRoutines } from './components/CollapsibleRoutines';
+import { SKINCARE_ROUTINES } from './data/routines';
 
 const CART_STORAGE_KEY = 'skinhealth_cart_v1';
 
@@ -462,22 +463,33 @@ export default function App() {
           onComplete={(routineId) => {
             setQuizOpen(false);
             console.log('Rutina recomendada:', routineId);
-            
-            // Generar enlace de WhatsApp con los resultados
-            const routineNames: Record<string, string> = {
-              'piel-grasa': 'Rutina para Piel Grasa y Tendencia al Acné',
-              'hidratacion-sensible': 'Rutina para Piel Sensible y Barrera Cutánea',
-              'manchas-luminosidad': 'Rutina para Manchas, Hiperpigmentación y Luminosidad',
-              'anti-edad-renovacion': 'Rutina Anti-Edad y Textura (Renovación)',
-              'hidratacion-universal': 'Rutina Básica de Hidratación Universal',
-            };
-            
-            const routineName = routineNames[routineId] || 'Rutina recomendada';
-            const mensaje = `¡Hola! Completé el diagnóstico de piel y me recomendaron ${routineName}. Quiero conocer los 4 pasos personalizados para mi tipo de piel.`;
-            const whatsappUrl = `https://wa.me/595976659748?text=${encodeURIComponent(mensaje)}`;
-            
-            // Redireccionar a WhatsApp
-            window.location.href = whatsappUrl;
+
+            // Buscar la rutina completa desde SKINCARE_ROUTINES
+            const routine = SKINCARE_ROUTINES.find((r) => r.id === routineId);
+            if (!routine) {
+              console.error('Rutina no encontrada:', routineId);
+              return;
+            }
+
+            // Mapear cada step.productId al Product real cargado desde Supabase
+            const routineProducts: Product[] = [];
+            for (const step of routine.steps) {
+              const prod = products.find((p) => p.id === step.productId);
+              if (prod) routineProducts.push(prod);
+              else console.warn(`Producto no encontrado: ${step.productId}`);
+            }
+
+            if (routineProducts.length === 0) {
+              console.error('Ningún producto de la rutina existe en el catálogo');
+              return;
+            }
+
+            // Agregar los productos de la rutina al carrito
+            handleAddMultipleToCart(routineProducts);
+
+            // Abrir el CartDrawer para que el cliente complete sus datos y confirme
+            // Ahí se genera el pedido real con código SH-XXXX vía createPedido() RPC
+            setTimeout(() => setIsCartOpen(true), 300);
           }}
         />
 
