@@ -72,7 +72,7 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
   const getRoutineProducts = (routine: any): Product[] => {
     return (routine.steps || [])
       .map((step: any) => (step.productId ? products[step.productId] : null))
-      .filter((p: Product | null): p is Product => p !== null);
+      .filter((p: Product | null | undefined): p is Product => p != null);
   };
 
   const getRoutineTotal = (routine: any): number => {
@@ -206,8 +206,8 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
                     className="p-5 sm:p-6 border-t border-neutral-100"
                   >
                     {/* Steps Grid */}
-                    <div className={`grid ${routine.steps.length === 3 ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'} gap-4 relative`}>
-                      {routine.steps.map((step: any) => {
+                    <div className={`grid ${(routine.steps ?? []).length === 3 ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'} gap-4 relative`}>
+                      {(routine.steps ?? []).map((step: any) => {
                         const product = step.productId ? products[step.productId] : null;
                         const productName = product?.name || step.label;
                         const productBrand = product?.brand || '';
