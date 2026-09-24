@@ -169,57 +169,57 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         )}
       </div>
 
-      {/* Price & Add Button */}
-      <div className="pt-2 border-t border-neutral-100 flex items-center justify-between gap-2 mt-auto">
-        <div className="flex flex-col">
-          <span className="text-xs uppercase tracking-wider text-neutral-400 font-medium">
-            Precio
-          </span>
-          <span className="font-semibold text-sm sm:text-base text-[#102A43] tracking-tight">
-            {formatGuarani(product.price)}
-          </span>
-        </div>
+      {/* Price & Add Button (solo visible en vista de producto individual, no en grilla) */}
+        <div className="pt-2 border-t border-neutral-100 invisible flex items-center justify-between gap-2 mt-auto">
+          <div className="flex flex-col">
+            <span className="text-xs uppercase tracking-wider text-neutral-400 font-medium">
+              Precio
+            </span>
+            <span className="font-semibold text-sm sm:text-base text-[#102A43] tracking-tight">
+              {formatGuarani(product.price)}
+            </span>
+          </div>
 
-        {/* Add Button (P4: pill con label para mejor discoverability) */}
-        <div className="relative">
-          <motion.button
-            whileTap={!showAddedAnim ? { scale: 0.95 } : {}}
-            onClick={handleAddClick}
-            disabled={showAddedAnim}
-            className={`inline-flex items-center gap-1.5 px-3 h-10 rounded-full font-semibold text-xs sm:text-sm transition-all duration-200 cursor-pointer shadow-sm relative overflow-hidden ${
-              showAddedAnim
-                ? 'bg-emerald-600 text-white shadow-emerald-200'
-                : 'bg-[#102A43] hover:bg-[#102A43]/90 text-white hover:shadow-md'
-            }`}
-            aria-label={`Agregar ${product.name} al pedido`}
-          >
-            <AnimatePresence mode="wait">
-              {showAddedAnim ? (
-                <motion.span
-                  key="check"
-                  initial={{ scale: 0, rotate: -45 }}
-                  animate={{ scale: 1, rotate: 0 }}
-                  exit={{ scale: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="inline-flex items-center gap-1.5"
-                >
-                  <Check className="w-4 h-4 stroke-[2.5]" />
-                  <span>Agregado</span>
-                </motion.span>
-              ) : (
-                <motion.span
-                  key="plus"
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  exit={{ scale: 0 }}
-                  className="inline-flex items-center gap-1.5"
-                >
-                  <Plus className="w-4 h-4 stroke-[2.5]" />
-                  <span>Agregar</span>
-                </motion.span>
-              )}
-            </AnimatePresence>
-          </motion.button>
+          {/* Add Button (P4: pill con label para mejor discoverability) */}
+          <div className="relative">
+            <motion.button
+              whileTap={!showAddedAnim ? { scale: 0.95 } : {}}
+              onClick={handleAddClick}
+              disabled={showAddedAnim}
+              className={`inline-flex items-center gap-1.5 px-3 h-10 rounded-full font-semibold text-xs sm:text-sm transition-all duration-200 cursor-pointer shadow-sm relative overflow-hidden ${
+                showAddedAnim
+                  ? 'bg-emerald-600 text-white shadow-emerald-200'
+                  : 'bg-[#102A43] hover:bg-[#102A43]/90 text-white hover:shadow-md'
+              }`}
+              aria-label={`Agregar ${product.name} al pedido`}
+            >
+              <AnimatePresence mode="wait">
+                {showAddedAnim ? (
+                  <motion.span
+                    key="check"
+                    initial={{ scale: 0, rotate: -45 }}
+                    animate={{ scale: 1, rotate: 0 }}
+                    exit={{ scale: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="inline-flex items-center gap-1.5"
+                  >
+                    <Check className="w-4 h-4 stroke-[2.5]" />
+                    <span>Agregado</span>
+                  </motion.span>
+                ) : (
+                  <motion.span
+                    key="plus"
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    exit={{ scale: 0 }}
+                    className="inline-flex items-center gap-1.5"
+                  >
+                    <Plus className="w-4 h-4 stroke-[2.5]" />
+                    <span>Agregar</span>
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </motion.button>
 
           {/* Floating "+1" micro-feedback bubble */}
           <AnimatePresence>
