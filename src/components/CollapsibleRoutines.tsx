@@ -214,7 +214,7 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
                         const productImage = product?.image;
 
                         // Enriquecer con alternativas + nota desde datos hardcodeados
-                        const hardcodedRoutine = SKINCARE_ROUTINES.find((r) => r.id === routine.id);
+                        const hardcodedRoutine = SKINCARE_ROUTINES.find((r) => r.number === routine.number);
                         const hardcodedStep = hardcodedRoutine?.steps.find((s) => s.stepNumber === step.stepNumber);
                         const alternativeIds = hardcodedStep?.alternativeProductIds || [];
                         const alternatives = alternativeIds
