@@ -35,6 +35,16 @@ export interface StockRow {
   activo: boolean;
 }
 
+export interface AuditLogEntry {
+  id: string;
+  admin_user_id: string | null;
+  accion: string;
+  tabla_objetivo: string;
+  registro_objetivo: string | null;
+  detalle: string | null;
+  realizado_en: string;
+}
+
 /** true si la sesión actual tiene rol admin en perfiles. */
 export async function isCurrentUserAdmin(): Promise<boolean> {
   const {
@@ -143,4 +153,14 @@ export async function actualizarPrecio(productoId: string, precioGs: number): Pr
     p_precio_gs: precioGs,
   });
   if (error) throw error;
+}
+
+/** Trae el log de acciones admin del audit_log. */
+export async function fetchAuditLog(): Promise<AuditLogEntry[]> {
+  const { data, error } = await supabase
+    .from('audit_log')
+    .select('*')
+    .order('realizado_en', { ascending: false });
+  if (error) throw error;
+  return (data ?? []) as AuditLogEntry[];
 }

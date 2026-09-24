@@ -27,8 +27,9 @@ import {
   fetchStock,
   ajustarStock,
   actualizarPrecio,
+  fetchAuditLog,
 } from '../data/admin';
-import { ProductReview } from '../types';
+import { ProductReview, AuditLogEntry } from '../types';
 import { fetchAllReviews, setReviewStatus, responderReview } from '../data/reviews';
 import { formatGuarani } from '../data/products';
 import { formatReviewDate } from '../utils/reviewsStorage';
@@ -45,7 +46,7 @@ interface AdminPanelProps {
   onShowToast: (title: string, description?: string, type?: 'success' | 'error' | 'info') => void;
 }
 
-type Tab = 'pedidos' | 'stock' | 'reviews';
+type Tab = 'pedidos' | 'stock' | 'reviews' | 'audit_log';
 
 const ESTADO_LABEL: Record<PedidoEstado, string> = {
   pendiente: 'Pendiente',
@@ -181,6 +182,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
   const [itemsCache, setItemsCache] = useState<Record<string, AdminPedidoItem[]>>({});
   const [stock, setStock] = useState<StockRow[]>([]);
   const [pendingReviews, setPendingReviews] = useState<ProductReview[]>([]);
+  const [auditLog, setAuditLog] = useState<AuditLogEntry[]>([]);
   const [savingStock, setSavingStock] = useState<Record<string, boolean>>({});
   const [payingId, setPayingId] = useState<string | null>(null);
   const [payRef, setPayRef] = useState('');
@@ -191,14 +193,16 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
     setLoading(true);
     setError(null);
     try {
-      const [peds, stk, revs] = await Promise.all([
+      const [peds, stk, revs, logs] = await Promise.all([
         fetchPedidos(),
         fetchStock(),
         fetchAllReviews(),
+        fetchAuditLog(),
       ]);
       setPedidos(peds);
       setStock(stk);
       setPendingReviews(revs.filter((r) => r.status === 'pending'));
+      setAuditLog(logs);
     } catch {
       setError('No se pudieron cargar los datos. Verificá tu sesión de administrador.');
     } finally {
@@ -412,6 +416,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
               { id: 'pedidos', label: `Pedidos (${pedidos.length})`, icon: <Package className="w-4 h-4" /> },
               { id: 'stock', label: 'Stock', icon: <Boxes className="w-4 h-4" /> },
               { id: 'reviews', label: `Reseñas (${pendingReviews.length})`, icon: <MessageSquareText className="w-4 h-4" /> },
+              { id: 'audit_log', label: `Auditoría (${auditLog.length})`, icon: <CheckCircle2 className="w-4 h-4" /> },
             ] as { id: Tab; label: string; icon: React.ReactNode }[]
           ).map((t) => (
             <button
@@ -688,8 +693,44 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
                 </tbody>
               </table>
             </div>
-          ) : (
-            <div className="space-y-3">
+) : tab === 'audit_log' ? (
+              <div className="space-y-3">
+                {auditLog.length === 0 ? (
+                  <p className="text-center text-xs text-neutral-400 py-10">
+                    Sin acciones en el auditorío. ¡Todo limpio! 🎉
+                  </p>
+                ) : (
+                  auditLog.map((entry) => (
+                    <div key={entry.id} className="bg-white rounded-2xl border border-neutral-200 p-4 text-xs">
+                      <div className="flex items-center justify-between gap-3 mb-1.5">
+                        <span className="font-semibold text-neutral-900">
+                          {entry.accion}
+                        </span>
+                        <span className="text-xs text-neutral-400">
+                          {formatReviewDate(entry.realizado_en)}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 flex-wrap mb-1">
+                        <span className="text-xs bg-[#102A43]/5 text-[#102A43] font-semibold px-2 py-0.5 rounded-md">
+                          {entry.tabla_objetivo}
+                        </span>
+                        {entry.registro_objetivo && (
+                          <span className="text-xs text-neutral-400 font-mono">
+                            #{entry.registro_objetivo.slice(0, 8)}
+                          </span>
+                        )}
+                      </div>
+                      {entry.detalle && (
+                        <p className="text-xs text-neutral-600 italic">
+                          {entry.detalle}
+                        </p>
+                      )}
+                    </div>
+                  ))
+                )}
+              </div>
+            ) : (
+              <div className="space-y-3">
               {pendingReviews.length === 0 ? (
                 <p className="text-center text-xs text-neutral-400 py-10">
                   No hay reseñas pendientes. ¡Todo moderado! 🎉

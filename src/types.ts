@@ -85,6 +85,16 @@ export interface ProductReview {
   respuestaAdminCreadaEn?: string;
 }
 
+export interface AuditLogEntry {
+  id: string;
+  admin_user_id: string | null;
+  accion: string;
+  tabla_objetivo: string;
+  registro_objetivo: string | null;
+  detalle: string | null;
+  realizado_en: string;
+}
+
 export interface ProductRatingStats {
   averageRating: number;
   totalReviews: number;
