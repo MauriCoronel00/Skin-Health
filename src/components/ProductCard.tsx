@@ -170,7 +170,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       </div>
 
       {/* Price & Add Button (solo visible en vista de producto individual, no en grilla) */}
-        <div className="pt-2 border-t border-neutral-100 invisible flex items-center justify-between gap-2 mt-auto">
+        <div className="pt-2 border-t border-neutral-100 hidden flex items-center justify-between gap-2 mt-auto">
           <div className="flex flex-col">
             <span className="text-xs uppercase tracking-wider text-neutral-400 font-medium">
               Precio
