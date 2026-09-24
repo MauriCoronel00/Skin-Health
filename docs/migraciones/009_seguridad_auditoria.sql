@@ -72,7 +72,7 @@ grant execute on function public.responder_review(uuid, text) to authenticated;
 alter table public.reviews add column if not exists tipo_piel text check (tipo_piel is null or tipo_piel in ('grasa', 'seca', 'mixta', 'sensible', 'normal'));
 
 -- R12
-alter table public.reviews add column if not exists fotos text[] not null default '[]'::text[];
+alter table public.reviews add column if not exists fotos text[] not null default '{}';
 
 -- S-01 RLS perfiles
 alter table public.perfiles enable row level security;
