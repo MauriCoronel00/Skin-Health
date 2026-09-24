@@ -101,14 +101,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         {/* Product Image */}
         <div
           onClick={() => onQuickView(product)}
-          className="w-full h-full object-contain rounded-xl bg-white mb-3 cursor-pointer flex items-center justify-center p-2"
+          className="w-full h-full rounded-xl overflow-hidden cursor-pointer flex items-center justify-center p-2"
         >
+          <span
+            className="absolute inset-0 bg-white"
+          />
           <img
               src={product.image}
               alt={product.name}
-              className="w-full h-full object-contain bg-white"
+              className="w-full h-full object-cover"
               loading="lazy"
-              style={{ backgroundColor: '#fff' }}
             />
 
           {/* If already in cart, subtle tag indicator */}
@@ -134,7 +136,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         {/* Product Title */}
         <h3
           onClick={() => onQuickView(product)}
-          className="font-medium text-sm sm:text-base text-neutral-900 leading-snug line-clamp-2 hover:text-[#102A43] cursor-pointer mb-1 min-h-[2.4em]"
+          className="font-medium text-sm sm:text-base text-neutral-900 hover:text-[#102A43] cursor-pointer mb-1"
         >
           {product.name}
         </h3>
