@@ -1,0 +1,10 @@
+﻿--    create policy "Trigger crear perfil" on public.perfiles for insert
+
+--      to authenticated with check (auth.uid() = id);
+
+--
+
+-- 3. Bucket 'review-photos' debe existir en Storage con policies de
+
+--    INSERT/SELECT/DELETE (creado desde el Dashboard, no con este SQL).
+
