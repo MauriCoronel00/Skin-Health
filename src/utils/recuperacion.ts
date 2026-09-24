@@ -1,7 +1,7 @@
 import { formatGuarani } from '../data/products';
 
 export interface RecuperacionItem {
-  producto_nombre: string | null;
+  producto_nombre?: string | null;
   producto_id: string | null;
   cantidad: number;
   precio_unitario_gs: number;

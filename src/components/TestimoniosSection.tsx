@@ -76,7 +76,7 @@ export const TestimoniosSection: React.FC = () => {
           >
             <div className="flex items-center justify-between mb-3">
               <Quote className="w-5 h-5 text-[#102A43]/15" />
-              <Chrome className="w-4 h-4 text-[#102A43]/40" title="Reseña de Google" />
+              <Chrome className="w-4 h-4 text-[#102A43]/40" />
             </div>
             <div className="flex items-center gap-0.5 mb-2" aria-label={`${t.rating} de 5 estrellas`}>
               {Array.from({ length: 5 }).map((_, i) => (
