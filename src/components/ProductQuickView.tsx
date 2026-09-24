@@ -114,7 +114,7 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
-        className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
+        className="fixed inset-0 bg-white/90 backdrop-blur-xs transition-opacity"
       />
 
       {/* Modal Dialog */}
@@ -175,7 +175,7 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
               <img
                 src={product.image}
                 alt={product.name}
-                className="w-full h-full object-contain mix-blend-multiply"
+                className="w-full h-full object-contain"
               />
             </div>
 

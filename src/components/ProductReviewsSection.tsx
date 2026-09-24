@@ -453,7 +453,7 @@ export const ProductReviewsSection: React.FC<ProductReviewsSectionProps> = ({
       {/* Lightbox de fotos (R12) */}
       {lightboxUrl && (
         <div
-          className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-4 cursor-zoom-out"
+          className="fixed inset-0 z-50 bg-white/95 flex items-center justify-center p-4 cursor-zoom-out"
           onClick={() => setLightboxUrl(null)}
           role="dialog"
           aria-label="Foto de reseña ampliada"

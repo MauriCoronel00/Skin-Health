@@ -93,7 +93,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               title="Ver detalles del producto"
               aria-label="Ver detalles"
             >
-              <Eye className="w-3.5 h-3.5" />
+              <span className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
@@ -101,14 +101,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         {/* Product Image */}
         <div
           onClick={() => onQuickView(product)}
-          className="relative aspect-square w-full rounded-xl overflow-hidden bg-[#FAF8F5] mb-3 cursor-pointer flex items-center justify-center p-2"
+          className="w-full h-full object-contain rounded-xl bg-white mb-3 cursor-pointer flex items-center justify-center p-2"
         >
           <img
-            src={product.image}
-            alt={product.name}
-            className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-500"
-            loading="lazy"
-          />
+              src={product.image}
+              alt={product.name}
+              className="w-full h-full object-contain"
+              loading="lazy"
+            />
 
           {/* If already in cart, subtle tag indicator */}
           {quantityInCart > 0 && (
