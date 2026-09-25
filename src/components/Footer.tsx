@@ -1,5 +1,4 @@
 import React from 'react';
-import { BrandLogo } from './BrandLogo';
 import { MessageCircle, ShieldCheck, Truck, RefreshCw, Heart, Instagram } from 'lucide-react';
 import { STORE_PHONE_NUMBER, STORE_PHONE_DISPLAY } from '../data/products';
 
@@ -53,8 +52,6 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdminPanel, isAdmin }) => 
 
         {/* Main footer content */}
         <div className="py-8 flex flex-col sm:flex-row items-center justify-between gap-6">
-          <BrandLogo size="sm" variant="full" />
-
           <div className="text-center sm:text-right">
             <p className="text-xs text-white/60">
               ¿Ya pediste?
