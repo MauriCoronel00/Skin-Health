@@ -171,7 +171,7 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
           {/* Header & Brand */}
           <div className="flex flex-col sm:flex-row gap-6 items-center sm:items-start">
             {/* Packshot */}
-            <div className="w-48 h-48 sm:w-52 sm:h-52 bg-[#FAF8F5] rounded-2xl p-4 flex items-center justify-center shrink-0 border border-neutral-100">
+            <div className="w-48 h-48 sm:w-52 sm:h-52 bg-white rounded-2xl p-4 flex items-center justify-center shrink-0 border border-neutral-100">
               <img
                 src={product.image}
                 alt={product.name}

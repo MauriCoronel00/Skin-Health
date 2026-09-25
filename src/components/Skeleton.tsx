@@ -1,23 +1,20 @@
 import React from 'react';
 
 export const ProductCardSkeleton: React.FC = () => (
-  <div className="card-entrance bg-white rounded-2xl border border-neutral-100 overflow-hidden flex flex-col h-full">
-    <div className="skeleton-image aspect-square w-full" />
-    <div className="p-4 space-y-3 flex-1 flex flex-col">
-      <div className="flex items-center gap-2">
-        <div className="skeleton-text h-3 w-20 rounded" />
-        <div className="skeleton-text h-3 w-12 rounded ml-auto" />
+  <div className="card-entrance bg-white rounded-2xl p-2 sm:p-3 border border-neutral-100">
+    <div className="flex items-center justify-between gap-1 mb-2 h-6">
+      <div className="skeleton-text h-4 w-16 rounded-full" />
+      <div className="flex items-center gap-0.5">
+        <div className="skeleton-avatar w-5 h-5" />
+        <div className="skeleton-avatar w-5 h-5" />
       </div>
-      <div className="skeleton-text h-5 w-3/4 rounded" />
-      <div className="skeleton-text h-4 w-1/2 rounded mt-auto" />
-      <div className="skeleton-text h-6 w-24 rounded mt-2" />
-      <div className="skeleton-btn h-10 w-full mt-auto" />
     </div>
+    <div className="skeleton-image aspect-square w-full" />
   </div>
 );
 
 export const ProductGridSkeleton: React.FC<{ count?: number }> = ({ count = 8 }) => (
-  <div className="stagger-grid grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
+  <div className="stagger-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
     {Array.from({ length: count }).map((_, i) => (
       <ProductCardSkeleton key={i} />
     ))}
