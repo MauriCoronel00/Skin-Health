@@ -651,7 +651,7 @@ export default function App() {
           ) : (
             <motion.div
               layout
-              className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5"
+              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5"
             >
               {filteredProducts.map((product) => {
                 return (
@@ -659,10 +659,7 @@ export default function App() {
                     key={product.id}
                     product={product}
                     quantityInCart={cartQuantities[product.id] || 0}
-                    onAddToCart={handleAddToCart}
                     onQuickView={setQuickViewProduct}
-                    ratingAverage={product.rating}
-                    reviewsCount={product.reviewsCount}
                   />
                 );
               })}
