@@ -101,16 +101,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         {/* Product Image */}
         <div
           onClick={() => onQuickView(product)}
-          className="w-full h-full rounded-xl overflow-hidden cursor-pointer flex items-center justify-center p-2"
+          className="w-full h-full object-contain rounded-xl bg-white mb-3 cursor-pointer flex items-center justify-center p-2"
         >
-          <span
-            className="absolute inset-0 bg-white"
-          />
           <img
               src={product.image}
               alt={product.name}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain bg-white"
               loading="lazy"
+              style={{ backgroundColor: '#fff' }}
             />
 
           {/* If already in cart, subtle tag indicator */}
