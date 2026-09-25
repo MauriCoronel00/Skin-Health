@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Plus, Check, Star, Eye, Share2, Link2 } from 'lucide-react';
+import { Plus, Check, Eye, Share2, Link2 } from 'lucide-react';
 import { Product } from '../types';
 import { formatGuarani } from '../data/products';
 import { productLink } from '../utils/productLink';
@@ -27,8 +27,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const [linkCopied, setLinkCopied] = useState(false);
   const [clickCoordinates, setClickCoordinates] = useState<{ id: number; x: number; y: number }[]>([]);
 
-  const displayRating = ratingAverage !== undefined ? ratingAverage : product.rating;
-  const displayCount = reviewsCount !== undefined ? reviewsCount : product.reviewsCount;
+
 
   const handleAddClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -123,51 +122,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           )}
         </div>
 
-        {/* Brand & Category */}
-        <div className="flex items-center justify-between text-[11px] text-neutral-400 font-medium mb-1">
-          <span className="uppercase tracking-wider text-[#102A43]/70 font-semibold">
-            {product.brand}
-          </span>
-          <span>{product.volume}</span>
-        </div>
-
-        {/* Product Title */}
-        <h3
-          onClick={() => onQuickView(product)}
-          className="font-medium text-sm sm:text-base text-neutral-900 hover:text-[#102A43] cursor-pointer mb-1"
-        >
-          {product.name}
-        </h3>
-
-        {/* Subtitle / Key Benefit */}
-        {product.subtitle && (
-          <p className="text-xs text-neutral-500 line-clamp-1 mb-2 font-normal">
-            {product.subtitle}
-          </p>
-        )}
-
-        {/* Rating: solo si hay >= 3 reseñas (evita señal negativa de 0.0 stars) */}
-        {displayCount >= 3 ? (
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onQuickView(product);
-            }}
-            className="flex items-center gap-1.5 text-xs text-neutral-600 mb-2.5 hover:opacity-80 transition-opacity cursor-pointer group/rating"
-            title="Ver opiniones del producto"
-          >
-            <div className="flex items-center text-amber-500">
-              <Star className="w-3.5 h-3.5 fill-amber-400 stroke-amber-400" />
-              <span className="ml-1 font-semibold text-neutral-800">{displayRating.toFixed(1)}</span>
-            </div>
-            <span className="text-neutral-400 group-hover/rating:text-[#102A43] transition-colors">
-              ({displayCount})
-            </span>
-          </button>
-        ) : (
-          <div className="mb-2.5" />
-        )}
       </div>
 
       {/* Price & Add Button (solo visible en vista de producto individual, no en grilla) */}
