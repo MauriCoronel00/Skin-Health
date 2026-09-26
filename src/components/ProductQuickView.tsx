@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { X, Star, Plus, Check, ShieldCheck, Sparkles, Droplets, MessageSquarePlus, ChevronLeft, ChevronRight } from 'lucide-react';
+import { X, Star, Plus, Check, ShieldCheck, Sparkles, Droplets, MessageSquarePlus, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
 import { Product, ProductReview, ReviewUser } from '../types';
 import { formatGuarani } from '../data/products';
 import { productImageUrl } from '../data/productImage';
@@ -36,6 +36,16 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
   onToggleUtil,
 }) => {
   const [justAdded, setJustAdded] = useState(false);
+  const [zoomOpen, setZoomOpen] = useState(false);
+
+  useEffect(() => {
+    if (!zoomOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setZoomOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [zoomOpen]);
   const reviewsSectionRef = useRef<HTMLDivElement>(null);
   const [dragX, setDragX] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -171,13 +181,20 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
         <div className="overflow-y-auto flex-1 p-6 sm:p-8 space-y-6">
           {/* Header & Brand */}
           <div className="flex flex-col sm:flex-row gap-6 items-center sm:items-start">
-            {/* Packshot */}
-            <div className="w-48 h-48 sm:w-52 sm:h-52 bg-white rounded-2xl p-4 flex items-center justify-center shrink-0 border border-neutral-100">
+            {/* Packshot (tocar para ampliar) */}
+            <div
+              onClick={() => setZoomOpen(true)}
+              title="Ampliar imagen"
+              className="relative w-48 h-48 sm:w-52 sm:h-52 bg-white rounded-2xl p-4 flex items-center justify-center shrink-0 border border-neutral-100 cursor-zoom-in"
+            >
               <img
                 src={productImageUrl(product.image, 900)}
                 alt={product.name}
                 className="w-full h-full object-contain"
               />
+              <span className="absolute bottom-2 right-2 w-7 h-7 rounded-full bg-[#102A43]/80 flex items-center justify-center pointer-events-none">
+                <ZoomIn className="w-3.5 h-3.5 text-white" />
+              </span>
             </div>
 
             {/* Title & Info */}
@@ -349,6 +366,29 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
             )}
           </motion.button>
         </div>
+
+        {/* Zoom de imagen: lectura de etiqueta e ingredientes */}
+        {zoomOpen && (
+          <div
+            className="fixed inset-0 z-30 bg-white/95 flex items-center justify-center p-4 cursor-zoom-out"
+            onClick={() => setZoomOpen(false)}
+            role="dialog"
+            aria-label="Imagen del producto ampliada"
+          >
+            <button
+              onClick={() => setZoomOpen(false)}
+              aria-label="Cerrar imagen ampliada"
+              className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white hover:bg-neutral-100 flex items-center justify-center text-neutral-500 shadow-md cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <img
+              src={productImageUrl(product.image, 1200)}
+              alt={product.name}
+              className="max-w-full max-h-full object-contain rounded-2xl shadow-2xl"
+            />
+          </div>
+        )}
       </motion.div>
     </div>
   );
