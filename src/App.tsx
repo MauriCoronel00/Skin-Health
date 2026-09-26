@@ -65,6 +65,7 @@ import { ProductCard } from './components/ProductCard';
 import { TestimoniosSection } from './components/TestimoniosSection';
 import { FloatingCart } from './components/FloatingCart';
 import { Footer } from './components/Footer';
+import { WelcomePopup } from './components/WelcomePopup';
 import { OrderDetails } from './components/OrderConfirmationModal';
 import { ToastContainer, ToastMessage } from './components/Toast';
 import { ReviewUser } from './types';
@@ -106,6 +107,28 @@ export default function App() {
 
   // State for diagnostic quiz
   const [quizOpen, setQuizOpen] = useState(false);
+
+  // Popup bienvenida: diagnóstico gratis, una sola vez, a los 5s
+  const [showWelcome, setShowWelcome] = useState(false);
+  const dismissWelcome = () => {
+    setShowWelcome(false);
+    try {
+      localStorage.setItem('sh_welcome_seen_v1', '1');
+    } catch {
+      // storage no disponible: no hace nada.
+    }
+  };
+  useEffect(() => {
+    let seen = false;
+    try {
+      seen = localStorage.getItem('sh_welcome_seen_v1') === '1';
+    } catch {
+      // storage no disponible: mostrar igual.
+    }
+    if (seen || quizOpen) return;
+    const t = setTimeout(() => setShowWelcome(true), 5000);
+    return () => clearTimeout(t);
+  }, [quizOpen]);
 
   const { user } = useAuth();
 
@@ -555,6 +578,16 @@ export default function App() {
         <>
         {/* Hero unificado: CTA quiz + marcas oficiales + social proof */}
         <HeroBanner onScrollToCatalog={scrollToCatalog} onOpenQuiz={() => setQuizOpen(true)} />
+
+        {/* Popup bienvenida: diagnóstico gratis */}
+        <WelcomePopup
+          open={showWelcome}
+          onStartQuiz={() => {
+            dismissWelcome();
+            setQuizOpen(true);
+          }}
+          onClose={dismissWelcome}
+        />
 
         {/* Diagnostic Quiz - 4 steps (lazy: solo carga al abrir) */}
         {quizOpen && (
