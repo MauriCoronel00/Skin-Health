@@ -163,6 +163,8 @@ export default function App() {
   const [selectedCategory, setSelectedCategory] = useState<CategoryId>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedBrand, setSelectedBrand] = useState<string>('all');
+  const [selectedSkin, setSelectedSkin] = useState<string>('all');
+  const [selectedPrice, setSelectedPrice] = useState<string>('all');
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
   const [lastAddedTime, setLastAddedTime] = useState<number>(0);
   const [confirmedOrder, setConfirmedOrder] = useState<OrderDetails | null>(null);
@@ -454,6 +456,20 @@ export default function App() {
     setCartItems([]);
   };
 
+  // Filtros catálogo: tipo de piel (keywords sobre skin_type; "Todo tipo" coincide
+  // con todo) y rango de precio en Gs.
+  const SKIN_FILTERS: { id: string; label: string; test: RegExp }[] = [
+    { id: 'grasa', label: 'Grasa', test: /grasa|brillo/i },
+    { id: 'seca', label: 'Seca', test: /seca|deshidratada/i },
+    { id: 'mixta', label: 'Mixta', test: /mixta/i },
+    { id: 'sensible', label: 'Sensible', test: /sensible|irritada|agredida|recuperaci/i },
+  ];
+  const PRICE_FILTERS: { id: string; label: string; test: (price: number) => boolean }[] = [
+    { id: 'low', label: 'Hasta Gs. 150.000', test: (p) => p <= 150000 },
+    { id: 'mid', label: 'Gs. 150.000 – 250.000', test: (p) => p > 150000 && p <= 250000 },
+    { id: 'high', label: 'Más de Gs. 250.000', test: (p) => p > 250000 },
+  ];
+
   // Filtered products
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
@@ -465,6 +481,23 @@ export default function App() {
       // Brand filter
       if (selectedBrand !== 'all' && product.brand !== selectedBrand) {
         return false;
+      }
+
+      // Skin type filter
+      if (selectedSkin !== 'all') {
+        const skin = product.skinType ?? '';
+        const matcher = SKIN_FILTERS.find((f) => f.id === selectedSkin);
+        if (matcher && !/todo tipo/i.test(skin) && !matcher.test.test(skin)) {
+          return false;
+        }
+      }
+
+      // Price range filter
+      if (selectedPrice !== 'all') {
+        const range = PRICE_FILTERS.find((f) => f.id === selectedPrice);
+        if (range && !range.test(product.price ?? 0)) {
+          return false;
+        }
       }
 
       // Search query
@@ -483,7 +516,7 @@ export default function App() {
 
       return true;
     });
-  }, [products, selectedCategory, selectedBrand, searchQuery]);
+  }, [products, selectedCategory, selectedBrand, searchQuery, selectedSkin, selectedPrice]);
 
   // Product count by category (dynamic: works with any category id from Supabase)
   const productCounts = useMemo(() => {
@@ -607,6 +640,46 @@ export default function App() {
           </div>
         </div>
 
+        {/* Filtros: tipo de piel + rango de precio */}
+        <div className="flex flex-col gap-2 pb-4 border-b border-[#102A43]/10">
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+            <span className="text-[11px] text-neutral-400 font-medium mr-1 shrink-0">
+              Piel:
+            </span>
+            {[{ id: 'all', label: 'Todas' }, ...SKIN_FILTERS].map((f) => (
+              <button
+                key={f.id}
+                onClick={() => setSelectedSkin(f.id)}
+                className={`text-xs px-3 py-1 rounded-full font-medium transition-all whitespace-nowrap cursor-pointer ${
+                  selectedSkin === f.id
+                    ? 'bg-[#102A43] text-white shadow-xs'
+                    : 'bg-white text-neutral-600 border border-neutral-200 hover:border-neutral-400'
+                }`}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+            <span className="text-[11px] text-neutral-400 font-medium mr-1 shrink-0">
+              Precio:
+            </span>
+            {[{ id: 'all', label: 'Todos' }, ...PRICE_FILTERS].map((f) => (
+              <button
+                key={f.id}
+                onClick={() => setSelectedPrice(f.id)}
+                className={`text-xs px-3 py-1 rounded-full font-medium transition-all whitespace-nowrap cursor-pointer ${
+                  selectedPrice === f.id
+                    ? 'bg-[#102A43] text-white shadow-xs'
+                    : 'bg-white text-neutral-600 border border-neutral-200 hover:border-neutral-400'
+                }`}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Catalog Grid */}
         <div className="mt-6">
           {isLoadingProducts ? (
@@ -642,6 +715,8 @@ export default function App() {
                   setSelectedCategory('all');
                   setSelectedBrand('all');
                   setSearchQuery('');
+                  setSelectedSkin('all');
+                  setSelectedPrice('all');
                 }}
                 className="px-5 py-2.5 bg-[#102A43] text-white text-xs font-semibold rounded-full hover:bg-[#102A43]/90 transition-colors"
               >
