@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import { Share2, Link2, Eye } from 'lucide-react';
 import { Product } from '../types';
 import { productLink } from '../utils/productLink';
+import { productImageUrl } from '../data/productImage';
 
 interface ProductCardProps {
   product: Product;
@@ -71,7 +72,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         className="relative w-full aspect-square rounded-xl bg-white cursor-pointer overflow-hidden flex items-center justify-center p-3"
       >
         <img
-          src={product.image}
+          src={productImageUrl(product.image, 600)}
           alt={product.name}
           className="w-full h-full object-contain"
           loading="lazy"

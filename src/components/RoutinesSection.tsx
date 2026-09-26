@@ -4,6 +4,7 @@ import { Check, Plus, Sparkles, AlertCircle, Info, ShoppingBag } from 'lucide-re
 import { SkincareRoutine, Product } from '../types';
 import { SKINCARE_ROUTINES } from '../data/routines';
 import { formatGuarani } from '../data/products';
+import { productImageUrl } from '../data/productImage';
 
 interface RoutinesSectionProps {
   products: Product[];
@@ -223,9 +224,9 @@ const getProduct = (productId: string): Product | undefined => {
                           >
                             <div className="w-16 h-16 rounded-xl bg-white p-1.5 flex items-center justify-center shrink-0 border border-neutral-100 overflow-hidden">
                               <img
-                                src={product.image}
+                                src={productImageUrl(product.image, 200)}
                                 alt={product.name}
-                                className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform"
+                                className="w-full h-full object-contain group-hover:scale-105 transition-transform"
                               />
                             </div>
 

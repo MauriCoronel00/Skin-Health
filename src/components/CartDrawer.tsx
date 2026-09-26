@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { CartItem } from '../types';
 import { formatGuarani } from '../data/products';
+import { productImageUrl } from '../data/productImage';
 import { calcularEnvio, ENVIO_BASE_GS, ENVIO_ORIGEN, ENVIO_ORIGEN_MAPS_URL } from '../utils/envio';
 import { trackBeginCheckout } from '../utils/analytics';
 import { OrderDetails } from './OrderConfirmationModal';
@@ -556,9 +557,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                         {/* Item Image */}
                         <div className="w-16 h-16 shrink-0 rounded-xl bg-white p-1.5 flex items-center justify-center border border-neutral-100 overflow-hidden">
                           <img
-                            src={item.product.image}
+                            src={productImageUrl(item.product.image, 200)}
                             alt={item.product.name}
-                            className="w-full h-full object-contain mix-blend-multiply"
+                            className="w-full h-full object-contain"
                             loading="lazy"
                           />
                         </div>

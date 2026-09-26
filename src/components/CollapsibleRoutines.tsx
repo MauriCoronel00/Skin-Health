@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import { ChevronDown, ChevronUp, ShoppingBag, Repeat } from 'lucide-react';
 import { useSupabase } from '../hooks/useSupabase';
 import { fetchProducts, formatGuarani } from '../data/products';
+import { productImageUrl } from '../data/productImage';
 import { SKINCARE_ROUTINES } from '../data/routines';
 import type { Product } from '../types';
 
@@ -251,7 +252,7 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
                             {/* Imagen del producto (80px) */}
                             {productImage && (
                               <img
-                                src={productImage}
+                                src={productImage ? productImageUrl(productImage, 320) : productImage}
                                 alt={productName}
                                 className="w-20 h-20 object-contain rounded-full bg-[#FAF8F5] p-2 shadow-sm"
                                 loading="lazy"
