@@ -273,9 +273,10 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
               {product.keyIngredients.map((ingredient, i) => (
                 <span
                   key={i}
-                  className="text-xs bg-[#FAF8F5] text-[#102A43] border border-[#102A43]/10 px-2.5 py-1 rounded-lg font-medium"
+                  className="inline-flex items-center gap-1.5 text-xs bg-[#FAF8F5] text-[#102A43] border border-[#102A43]/10 px-2.5 py-1 rounded-lg font-medium"
                 >
-                  ✨ {ingredient}
+                  <Sparkles className="w-3 h-3 text-[#102A43]/50" />
+                  {ingredient}
                 </span>
               ))}
             </div>

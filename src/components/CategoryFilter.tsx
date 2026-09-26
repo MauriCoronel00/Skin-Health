@@ -36,31 +36,6 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
 
   return (
     <section className="my-6">
-      {/* Marcas - nuevo módulo superior Lumina */}
-      <div className="mb-6">
-        <h2 className="text-xs font-semibold uppercase tracking-widest text-[#102A43]/70 mb-3 px-1">Explorar por Marca</h2>
-        <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0">
-          {[
-            { id: 'CeraVe', label: 'CeraVe' },
-            { id: 'La Roche-Posay', label: 'La Roche' },
-            { id: 'The Ordinary', label: 'Ordinary' },
-            { id: 'SKIN1004', label: 'SKIN1004' },
-          ].map((brand) => (
-            <button
-              key={brand.id}
-              onClick={() => {
-                const el = document.getElementById('catalog');
-                el?.scrollIntoView({ behavior: 'smooth' });
-                // filtra por marca via evento
-                window.dispatchEvent(new CustomEvent('filterByBrand', { detail: brand.id }));
-              }}
-              className="shrink-0 w-16 h-16 rounded-full bg-white border border-[#102A43]/10 flex items-center justify-center hover:border-[#dbeafe] hover:bg-[#dbeafe]/30 shadow-xs transition-colors"
-            >
-              <span className="text-[10px] font-bold text-[#102A43] text-center leading-tight">{brand.label}</span>
-            </button>
-          ))}
-        </div>
-      </div>
       <div className="flex items-center justify-between mb-3 px-1">
         <h2 className="text-xs font-semibold uppercase tracking-widest text-[#102A43]/70">
           Explorar por Necesidad
