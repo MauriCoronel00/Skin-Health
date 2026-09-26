@@ -50,7 +50,7 @@ export const FloatingCart: React.FC<FloatingCartProps> = ({
       {totalItems > 0 && (
         <aside
           aria-label="Carrito flotante de compras"
-          className="fixed bottom-4 sm:bottom-6 left-0 right-0 z-40 px-4 pointer-events-none flex justify-center pb-safe"
+          className="fixed bottom-[72px] sm:bottom-6 left-0 right-0 z-40 px-4 pointer-events-none flex justify-center pb-safe"
         >
           <motion.div
             id="floating-cart-bar"

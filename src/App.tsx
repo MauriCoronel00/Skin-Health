@@ -135,9 +135,7 @@ export default function App() {
   // Handle auth-required event from MobileBottomNav
   useEffect(() => {
     const handler = () => {
-      // The LoginButton will handle the auth flow
-      // We just need to trigger a re-render or the user will be redirected
-      console.log('Auth required for account tab');
+      // The LoginButton will handle the auth flow.
     };
     window.addEventListener('auth-required', handler);
     return () => window.removeEventListener('auth-required', handler);
@@ -597,7 +595,6 @@ export default function App() {
           onClose={() => setQuizOpen(false)}
           onComplete={(routineId) => {
             setQuizOpen(false);
-            console.log('Rutina recomendada:', routineId);
 
             // Buscar la rutina completa desde SKINCARE_ROUTINES
             const routine = SKINCARE_ROUTINES.find((r) => r.id === routineId);
