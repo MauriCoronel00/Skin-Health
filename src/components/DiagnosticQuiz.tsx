@@ -149,11 +149,11 @@ export const DiagnosticQuiz: React.FC<DiagnosticQuizProps> = ({
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
         transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-        className="relative bg-white rounded-3xl max-w-lg w-full max-h-[90vh] overflow-hidden shadow-2xl"
+        className="relative bg-white rounded-3xl max-w-lg w-full max-h-[92dvh] overflow-hidden shadow-2xl flex flex-col"
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-4 sm:p-6 border-b border-neutral-100 flex items-center justify-between">
+        <div className="p-4 sm:p-6 border-b border-neutral-100 flex items-center justify-between shrink-0">
           <button
             onClick={handleClose}
             className="w-9 h-9 rounded-full bg-neutral-100 hover:bg-neutral-200 flex items-center justify-center text-neutral-600 transition-colors"
@@ -168,7 +168,7 @@ export const DiagnosticQuiz: React.FC<DiagnosticQuizProps> = ({
         </div>
 
         {/* Progress Bar */}
-        <div className="px-4 sm:px-6 pt-4 pb-2">
+        <div className="px-4 sm:px-6 pt-4 pb-2 shrink-0">
           <div className="h-1.5 bg-neutral-100 rounded-full overflow-hidden">
             <motion.div
               animate={{ width: `${progress}%` }}
@@ -184,6 +184,8 @@ export const DiagnosticQuiz: React.FC<DiagnosticQuizProps> = ({
           </div>
         </div>
 
+        {/* Cuerpo scrolleable: en pantallas chicas las 6 opciones exceden el alto */}
+        <div className="flex-1 overflow-y-auto min-h-0 overscroll-contain">
         <AnimatePresence mode="wait">
           {currentStep !== 'result' && (
             <motion.div
@@ -257,8 +259,8 @@ export const DiagnosticQuiz: React.FC<DiagnosticQuizProps> = ({
                 })}
               </div>
 
-              {/* Navigation */}
-              <div className="flex justify-between mt-6 pt-4 border-t border-neutral-100">
+              {/* Navigation: fija abajo para que Continuar nunca quede cortado */}
+              <div className="flex justify-between items-center mt-6 pt-4 pb-1 border-t border-neutral-100 sticky bottom-0 bg-white/95 backdrop-blur-sm">
                 <motion.button
                   whileTap={{ scale: 0.95 }}
                   onClick={handleBack}
@@ -353,6 +355,7 @@ export const DiagnosticQuiz: React.FC<DiagnosticQuizProps> = ({
             </motion.div>
           )}
         </AnimatePresence>
+        </div>
       </motion.div>
     </motion.div>
   );
