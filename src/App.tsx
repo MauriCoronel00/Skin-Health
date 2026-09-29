@@ -539,6 +539,15 @@ export default function App() {
     });
   }, [products, selectedCategory, selectedBrand, searchQuery, selectedSkin, selectedPrice]);
 
+  // Brand options (dynamic: works with any brand from Supabase)
+  const brandOptions = useMemo(() => {
+    const set = new Set<string>();
+    for (const p of products) {
+      if (p.brand) set.add(p.brand);
+    }
+    return ['all', ...Array.from(set).sort()];
+  }, [products]);
+
   // Product count by category (dynamic: works with any category id from Supabase)
   const productCounts = useMemo(() => {
     const counts: Record<string, number> = { all: products.length };
@@ -654,7 +663,7 @@ export default function App() {
             <span className="text-[11px] text-neutral-400 font-medium mr-1 hidden sm:inline">
               Marca:
             </span>
-            {['all', 'SKIN1004', 'The Ordinary', 'La Roche-Posay', 'CeraVe'].map((brand) => (
+            {brandOptions.map((brand) => (
               <button
                 key={brand}
                 onClick={() => setSelectedBrand(brand)}
