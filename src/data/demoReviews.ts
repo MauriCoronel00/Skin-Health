@@ -95,10 +95,10 @@ export const INITIAL_DEMO_REVIEWS: ProductReview[] = [
     city: 'Lambaré',
   },
 
-  // The Ordinary Niacinamide 10% + Zinc 1%
+  // Beauty of Joseon Glow Serum (Propolis + Niacinamide)
   {
     id: 'rev-demo-7',
-    productId: 'ordinary-niacinamide-zinc',
+    productId: 'boj-glow-serum-propolis',
     rating: 5,
     comment: 'Controla el brillo de la zona T súper bien. Lo uso todas las mañanas antes del protector solar.',
     author: {
@@ -113,7 +113,7 @@ export const INITIAL_DEMO_REVIEWS: ProductReview[] = [
   },
   {
     id: 'rev-demo-8',
-    productId: 'ordinary-niacinamide-zinc',
+    productId: 'boj-glow-serum-propolis',
     rating: 4,
     comment: 'Al principio pica un poquito apenas pero a los dos días ya te acostumbras. Se nota el cambio en los poros.',
     author: {
@@ -128,7 +128,7 @@ export const INITIAL_DEMO_REVIEWS: ProductReview[] = [
   },
   {
     id: 'rev-demo-9',
-    productId: 'ordinary-niacinamide-zinc',
+    productId: 'boj-glow-serum-propolis',
     rating: 5,
     comment: 'Me vino con el precinto original intacto. Muy buena predisposición por WhatsApp para coordinar el delivery.',
     author: {
@@ -143,7 +143,7 @@ export const INITIAL_DEMO_REVIEWS: ProductReview[] = [
   },
   {
     id: 'rev-demo-10',
-    productId: 'ordinary-niacinamide-zinc',
+    productId: 'boj-glow-serum-propolis',
     rating: 5,
     comment: 'Es la segunda vez que pido este sérum en Skin Health. El precio está muy accesible para ser importado original.',
     author: {
@@ -158,7 +158,7 @@ export const INITIAL_DEMO_REVIEWS: ProductReview[] = [
   },
   {
     id: 'rev-demo-11',
-    productId: 'ordinary-niacinamide-zinc',
+    productId: 'boj-glow-serum-propolis',
     rating: 4,
     comment: 'Cumple lo que promete, no es milagroso pero ayuda bastante a que la base de maquillaje no se cuartee.',
     author: {

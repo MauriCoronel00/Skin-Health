@@ -17,9 +17,9 @@ export const SKINCARE_ROUTINES: SkincareRoutine[] = [
       {
         stepNumber: 2,
         label: 'Tratamiento Sebo & Poros',
-        productId: 'ordinary-niacinamide-zinc',
-        alternativeProductIds: ['ordinary-salicylic-acid-solution'],
-        note: 'Niacinamide 10% + Zinc 1% o Salicylic Acid 2%',
+        productId: 'boj-glow-serum-propolis',
+        alternativeProductIds: ['centella-poremizing-ampoule'],
+        note: 'Glow Serum con Niacinamida o Ampolla Poremizing para poros',
       },
       {
         stepNumber: 3,
