@@ -51,7 +51,7 @@ function setCanonical(href: string): void {
 export function setHomeSEO(): void {
   const title = `${SITE_NAME} · Skincare importado en Paraguay`;
   const description =
-    'Rutinas y productos de dermocosmética importada de laboratorios oficiales (CeraVe, La Roche-Posay, The Ordinary, SKIN1004). Envío a todo Paraguay. Pagos por transferencia.';
+    'Rutinas y productos de cosmética coreana importada de marcas oficiales (Anua, Beauty of Joseon, COSRX, SKIN1004, Laneige, Medicube). Envío a todo Paraguay. Pagos por transferencia.';
 
   document.title = title;
   setMeta('meta[name="description"]', description);
@@ -155,7 +155,7 @@ export function injectOrganizationSchema(): void {
     url: SITE_URL,
     logo: `${SITE_URL}/icons/icon-512x512.png`,
     description:
-      'Tienda de skincare importado en Paraguay. Productos oficiales de CeraVe, La Roche-Posay, The Ordinary y SKIN1004. Envío a todo el país.',
+      'Tienda de skincare importado en Paraguay. Productos oficiales de Anua, Beauty of Joseon, COSRX, SKIN1004, Laneige y Medicube. Envío a todo el país.',
     address: {
       '@type': 'PostalAddress',
       addressCountry: 'PY',

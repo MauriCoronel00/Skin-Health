@@ -9,7 +9,7 @@ interface HeroBannerProps {
 }
 
 // Logos textuales de marcas oficiales (P6: refuerzo de legitimidad)
-const BRAND_MARKS = ['CeraVe', 'La Roche-Posay', 'The Ordinary', 'SKIN1004'];
+const BRAND_MARKS = ['Anua', 'Beauty of Joseon', 'COSRX', 'SKIN1004', 'Laneige', 'Medicube'];
 
 export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog, onOpenQuiz }) => {
   return (

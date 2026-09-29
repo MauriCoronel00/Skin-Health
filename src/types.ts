@@ -6,7 +6,7 @@ export interface ProductBenefit {
 export interface Product {
   id: string;
   name: string;
-  brand: 'SKIN1004' | 'The Ordinary' | 'La Roche-Posay' | 'CeraVe';
+  brand: string;
   subtitle: string;
   category: 'hydrate' | 'brighten' | 'calm' | 'protect' | 'cleanse';
   categoryLabel: string;

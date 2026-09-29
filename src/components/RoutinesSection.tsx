@@ -207,9 +207,7 @@ const getProduct = (productId: string): Product | undefined => {
                                       }`}
                                       title={optProduct.name}
                                     >
-                                      {optProduct.brand === 'La Roche-Posay'
-                                        ? 'Effaclar'
-                                        : optProduct.name.replace('Facial Cleanser', '').replace('Solution', '').trim()}
+                                      {`${optProduct.brand} · ${optProduct.volume}`}
                                     </button>
                                   );
                                 })}
