@@ -96,7 +96,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog, onOpe
               ))}
             </div>
             <span className="font-semibold">4.9</span>
-            <span className="text-white/60">· Pensado en y para vos</span>
+            <span className="text-white/60">· Skincare hecho a tu medida</span>
           </motion.div>
         </div>
       </div>
