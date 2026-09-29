@@ -654,7 +654,7 @@ export default function App() {
                 : categories.find((c) => c.id === selectedCategory)?.label || 'Catálogo Completo'}
             </h2>
             <p className="text-xs text-neutral-500 mt-0.5">
-              20 fórmulas esenciales seleccionadas para resultados visibles.
+              {products.length} fórmulas esenciales seleccionadas para resultados visibles.
             </p>
           </div>
 
