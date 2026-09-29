@@ -290,14 +290,14 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
                               )}
                             </div>
 
-                            {/* Alternativas como chips clickeables */}
+                            {/* Alternativas como mini-fichas con foto y precio */}
                             {alternatives.length > 0 && (
                               <div className="w-full mt-1 pt-2 border-t border-dashed border-neutral-200 flex flex-col items-center gap-1.5">
                                 <span className="inline-flex items-center gap-1 text-xs font-semibold text-amber-700 uppercase tracking-wider">
                                   <Repeat className="w-3 h-3" />
                                   O reemplazar por
                                 </span>
-                                <div className="flex flex-wrap justify-center gap-1">
+                                <div className="flex flex-col gap-1.5 w-full">
                                   {alternatives.map((alt) => {
                                     const chipClickable = !!onQuickView;
                                     return (
@@ -309,14 +309,30 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
                                           if (chipClickable) onQuickView?.(alt);
                                         }}
                                         disabled={!chipClickable}
-                                        className={`text-xs px-2 py-1 rounded-full border border-amber-200 bg-amber-50 text-amber-900 ${
+                                        className={`w-full flex items-center gap-2 p-1.5 rounded-xl border border-[#102A43]/10 bg-[#FAF8F5] text-left transition-all ${
                                           chipClickable
-                                            ? 'hover:bg-amber-100 hover:border-amber-300 cursor-pointer transition-colors'
+                                            ? 'hover:border-[#102A43]/30 hover:shadow-xs hover:bg-white cursor-pointer active:scale-[0.98]'
                                             : 'cursor-default'
                                         }`}
                                         aria-label={`Ver detalles de ${alt.brand} ${alt.name}`}
                                       >
-                                        <span className="font-semibold">{alt.brand}</span> · {alt.name}
+                                        <img
+                                          src={productImageUrl(alt.image, 200)}
+                                          alt={alt.name}
+                                          loading="lazy"
+                                          className="w-10 h-10 object-contain rounded-lg bg-white p-1 shrink-0 border border-neutral-100"
+                                        />
+                                        <span className="flex-1 min-w-0">
+                                          <span className="block text-[10px] font-bold uppercase tracking-wider text-[#102A43]/60 leading-tight">
+                                            {alt.brand}
+                                          </span>
+                                          <span className="block text-[11px] font-semibold text-neutral-800 leading-tight line-clamp-1">
+                                            {alt.name}
+                                          </span>
+                                        </span>
+                                        <span className="text-[11px] font-bold text-[#102A43] shrink-0">
+                                          {formatGuarani(alt.price)}
+                                        </span>
                                       </button>
                                     );
                                   })}
