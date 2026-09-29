@@ -17,6 +17,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   onQuickView,
 }) => {
   const [linkCopied, setLinkCopied] = useState(false);
+  const [imgError, setImgError] = useState(false);
 
   return (
     <motion.div
@@ -71,12 +72,21 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         onClick={() => onQuickView(product)}
         className="relative w-full aspect-square rounded-xl bg-white cursor-pointer overflow-hidden flex items-center justify-center p-3"
       >
-        <img
-          src={productImageUrl(product.image, 600)}
-          alt={product.name}
-          className="w-full h-full object-contain"
-          loading="lazy"
-        />
+        {product.image && !imgError ? (
+          <img
+            src={productImageUrl(product.image, 600)}
+            alt={product.name}
+            className="w-full h-full object-contain"
+            loading="lazy"
+            onError={() => setImgError(true)}
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center" aria-label={product.name}>
+            <span className="font-serif text-5xl font-semibold text-[#102A43]/15 select-none">
+              {(product.name || '?').charAt(0).toUpperCase()}
+            </span>
+          </div>
+        )}
 
         {/* If already in cart, subtle tag indicator */}
         {quantityInCart > 0 && (

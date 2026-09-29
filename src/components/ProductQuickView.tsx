@@ -250,14 +250,16 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
           </div>
 
           {/* Description */}
-          <div>
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-[#102A43] mb-1.5">
-              Descripción
-            </h4>
-            <p className="text-sm text-neutral-700 leading-relaxed">
-              {product.description}
-            </p>
-          </div>
+          {product.description && (
+            <div>
+              <h4 className="text-xs font-semibold uppercase tracking-wider text-[#102A43] mb-1.5">
+                Descripción
+              </h4>
+              <p className="text-sm text-neutral-700 leading-relaxed">
+                {product.description}
+              </p>
+            </div>
+          )}
 
           {/* Key Benefits */}
           {product.benefits && product.benefits.length > 0 && (
@@ -283,6 +285,7 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
           )}
 
           {/* Key Ingredients */}
+          {product.keyIngredients && product.keyIngredients.length > 0 && (
           <div>
             <h4 className="text-xs font-semibold uppercase tracking-wider text-[#102A43] mb-2">
               Ingredientes Activos Clave
@@ -299,22 +302,29 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
               ))}
             </div>
           </div>
+          )}
 
           {/* Skin Type & How to use */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-[#FAF8F5] p-4 rounded-2xl border border-[#102A43]/5 text-xs">
-            <div>
-              <span className="font-semibold text-[#102A43] block mb-1">
-                Tipo de Piel:
-              </span>
-              <p className="text-neutral-600">{product.skinType}</p>
+          {(product.skinType || product.howToUse) && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-[#FAF8F5] p-4 rounded-2xl border border-[#102A43]/5 text-xs">
+              {product.skinType && (
+                <div>
+                  <span className="font-semibold text-[#102A43] block mb-1">
+                    Tipo de Piel:
+                  </span>
+                  <p className="text-neutral-600">{product.skinType}</p>
+                </div>
+              )}
+              {product.howToUse && (
+                <div>
+                  <span className="font-semibold text-[#102A43] block mb-1">
+                    Modo de Uso:
+                  </span>
+                  <p className="text-neutral-600">{product.howToUse}</p>
+                </div>
+              )}
             </div>
-            <div>
-              <span className="font-semibold text-[#102A43] block mb-1">
-                Modo de Uso:
-              </span>
-              <p className="text-neutral-600">{product.howToUse}</p>
-            </div>
-          </div>
+          )}
 
           {/* Section: Opiniones de clientes */}
           <div ref={reviewsSectionRef} className="pt-2">
