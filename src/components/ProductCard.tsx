@@ -1,20 +1,23 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { Share2, Link2, Eye } from 'lucide-react';
+import { Share2, Link2, Eye, Plus } from 'lucide-react';
 import { Product } from '../types';
 import { productLink } from '../utils/productLink';
 import { productImageUrl } from '../data/productImage';
+import { formatGuarani } from '../data/products';
 
 interface ProductCardProps {
   product: Product;
   quantityInCart: number;
   onQuickView: (product: Product) => void;
+  onAdd?: (product: Product) => void;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({
   product,
   quantityInCart,
   onQuickView,
+  onAdd,
 }) => {
   const [linkCopied, setLinkCopied] = useState(false);
   const [imgError, setImgError] = useState(false);
@@ -97,6 +100,23 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           >
             {quantityInCart} en carrito
           </motion.span>
+        )}
+
+        {/* Price chip + quick add (comparar y comprar sin abrir la ficha) */}
+        <span className="absolute bottom-2 left-2 bg-white/90 backdrop-blur-xs text-[#102A43] text-[11px] font-bold px-2 py-1 rounded-full shadow-xs border border-[#102A43]/10">
+          {formatGuarani(product.price)}
+        </span>
+        {onAdd && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onAdd(product);
+            }}
+            aria-label={`Agregar ${product.name} al pedido`}
+            className="absolute bottom-2 right-2 w-8 h-8 rounded-full bg-[#102A43] text-white flex items-center justify-center shadow-md hover:bg-[#102A43]/90 active:scale-95 transition-all"
+          >
+            <Plus className="w-4 h-4" />
+          </button>
         )}
       </div>
     </motion.div>

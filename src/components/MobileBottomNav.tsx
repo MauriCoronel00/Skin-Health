@@ -69,7 +69,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
 
     // Check auth for account tab
     if (tabId === 'account' && !user) {
-      // Trigger auth flow
+      // Abrir el login con Google (LoginButton escucha este evento)
       window.dispatchEvent(new CustomEvent('auth-required'));
       return;
     }
@@ -92,11 +92,6 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
         {tabs.map((tab) => {
           const isActive = activeTab === tab.id;
           const showBadge = tab.id === 'cart' && cartCount > 0;
-
-          // Don't render account tab if not authenticated (show chat instead)
-          if (tab.id === 'account' && !user && activeTab !== 'account') {
-            return null;
-          }
 
           return (
             <motion.button

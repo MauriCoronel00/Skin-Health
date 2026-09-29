@@ -55,24 +55,17 @@ const QUESTIONS = {
   },
 };
 
-const ROUTINE_MATCH: Record<string, string> = {
-  'grasa-acne-poros-siempre': 'piel-grasa',
-  'grasa-acne-poros-salgo': 'piel-grasa',
-  'grasa-acne-poros-maquillaje': 'piel-grasa',
-  'grasa-acne-poros-nunca': 'piel-grasa',
-  'grasa-manchas-lineas-siempre': 'manchas-luminosidad',
-  'grasa-hidratacion-rojez-siempre': 'hidratacion-sensible',
-  'mixta-acne-poros-siempre': 'piel-grasa',
-  'mixta-manchas-lineas-siempre': 'manchas-luminosidad',
-  'mixta-hidratacion-rojez-siempre': 'hidratacion-universal',
-  'seca-manchas-lineas-siempre': 'manchas-luminosidad',
-  'seca-hidratacion-rojez-siempre': 'hidratacion-sensible',
-  'seca-hidratacion-rojez-salgo': 'hidratacion-universal',
-  'sensible-acne-poros-siempre': 'hidratacion-sensible',
-  'sensible-manchas-lineas-siempre': 'hidratacion-sensible',
-  'sensible-hidratacion-rojez-siempre': 'hidratacion-sensible',
-  'sensible-hidratacion-rojez-salgo': 'hidratacion-universal',
-};
+import { SKINCARE_ROUTINES } from '../data/routines';
+
+/** Scoring por prioridad: sensible/rojez > acné/poros > manchas > líneas > hidratación. */
+function matchRoutine(skin: string, concerns: string[]): string {
+  const c = new Set(concerns);
+  if (skin === 'sensible' || c.has('rojez')) return 'hidratacion-sensible';
+  if ((c.has('acne') || c.has('poros')) && skin !== 'seca') return 'piel-grasa';
+  if (c.has('manchas')) return 'manchas-luminosidad';
+  if (c.has('lineas')) return 'anti-edad-renovacion';
+  return skin === 'seca' ? 'hidratacion-sensible' : 'hidratacion-universal';
+}
 
 const ROUTINE_TITLES: Record<string, string> = {
   'piel-grasa': 'Rutina para Piel Grasa y Tendencia al Acné',
@@ -96,13 +89,16 @@ export const DiagnosticQuiz: React.FC<DiagnosticQuizProps> = ({
 
   const handleAnswer = (step: number, value: string | string[]) => {
     setAnswers(prev => ({ ...prev, [step]: value }));
-    if (step < 4) {
+    // Multiselect (paso 2): no auto-avanzar, el usuario confirma con Continuar.
+    if (step < 4 && !(QUESTIONS[step as 1 | 2 | 3] as { multiSelect?: boolean }).multiSelect) {
       setTimeout(() => setCurrentStep((step + 1) as Step), 150);
-    } else {
+    } else if (step >= 4) {
       setIsSubmitting(true);
       setTimeout(() => {
-        const key = `${answers[1]}-${(answers[2] as string[]).join('-')}-${answers[3]}-${answers[4]}`;
-        const routineId = ROUTINE_MATCH[key] || 'hidratacion-universal';
+        const routineId = matchRoutine(
+          (answers[1] as string) ?? 'mixta',
+          ((answers[2] as string[]) ?? []) as string[]
+        );
         setMatchedRoutine(routineId);
         setCurrentStep('result');
         setIsSubmitting(false);
@@ -272,6 +268,17 @@ export const DiagnosticQuiz: React.FC<DiagnosticQuizProps> = ({
                   <ArrowLeft className="w-4 h-4" />
                   Volver
                 </motion.button>
+                {question.multiSelect && (
+                  <motion.button
+                    whileTap={{ scale: 0.97 }}
+                    onClick={() => setCurrentStep((currentStep + 1) as Step)}
+                    disabled={!((answers[currentStep] as string[]) ?? []).length}
+                    className="flex items-center gap-1.5 px-6 py-2.5 bg-[#102A43] text-white text-sm font-semibold rounded-2xl hover:bg-[#102A43]/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg"
+                  >
+                    <span>Continuar</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </motion.button>
+                )}
                 {currentStep === 4 && (
                   <motion.button
                     whileTap={{ scale: 0.97 }}
@@ -324,7 +331,9 @@ export const DiagnosticQuiz: React.FC<DiagnosticQuizProps> = ({
                 className="bg-[#102A43]/5 border border-[#102A43]/20 rounded-2xl p-4 mb-6"
               >
                 <p className="font-bold text-[#102A43] text-lg">{ROUTINE_TITLES[matchedRoutine]}</p>
-                <p className="text-sm text-neutral-600 mt-1">4 pasos personalizados para tu piel</p>
+                <p className="text-sm text-neutral-600 mt-1">
+                  {SKINCARE_ROUTINES.find((r) => r.id === matchedRoutine)?.steps.length ?? 4} pasos personalizados para tu piel
+                </p>
               </motion.div>
               <motion.button
                 whileTap={{ scale: 0.97 }}

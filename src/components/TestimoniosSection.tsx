@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Star, Quote, Chrome } from 'lucide-react';
+import { Star, Quote, BadgeCheck } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 
 interface Testimonio {
@@ -60,8 +60,8 @@ export const TestimoniosSection: React.FC = () => {
     <section className="mt-14">
       <div className="text-center mb-6">
         <span className="text-[11px] font-bold uppercase tracking-widest text-[#102A43] bg-white px-3 py-1 rounded-full border border-[#102A43]/20 flex items-center justify-center gap-1.5 mx-auto">
-          <Chrome className="w-3.5 h-3.5 text-[#102A43]" />
-          <span>Reseñas de Google</span>
+          <BadgeCheck className="w-3.5 h-3.5 text-[#102A43]" />
+          <span>Opiniones de clientas verificadas</span>
         </span>
         <h3 className="font-serif text-xl sm:text-2xl font-semibold text-[#102A43] mt-2">
           Lo que dicen nuestros clientes
@@ -76,7 +76,7 @@ export const TestimoniosSection: React.FC = () => {
           >
             <div className="flex items-center justify-between mb-3">
               <Quote className="w-5 h-5 text-[#102A43]/15" />
-              <Chrome className="w-4 h-4 text-[#102A43]/40" />
+              <BadgeCheck className="w-4 h-4 text-[#102A43]/40" />
             </div>
             <div className="flex items-center gap-0.5 mb-2" aria-label={`${t.rating} de 5 estrellas`}>
               {Array.from({ length: 5 }).map((_, i) => (

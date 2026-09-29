@@ -107,6 +107,8 @@ export default function App() {
 
   // State for diagnostic quiz
   const [quizOpen, setQuizOpen] = useState(false);
+  // Rutina destacada por el quiz: se expande y se muestra con su total visible
+  const [focusRoutineNumber, setFocusRoutineNumber] = useState<string | null>(null);
 
   // Popup bienvenida: diagnóstico gratis, una sola vez, a los 5s
   const [showWelcome, setShowWelcome] = useState(false);
@@ -612,25 +614,12 @@ export default function App() {
               return;
             }
 
-            // Mapear cada step.productId al Product real cargado desde Supabase
-            const routineProducts: Product[] = [];
-            for (const step of routine.steps) {
-              const prod = products.find((p) => p.id === step.productId);
-              if (prod) routineProducts.push(prod);
-              else console.warn(`Producto no encontrado: ${step.productId}`);
-            }
-
-            if (routineProducts.length === 0) {
-              console.error('Ningún producto de la rutina existe en el catálogo');
-              return;
-            }
-
-            // Agregar los productos de la rutina al carrito
-            handleAddMultipleToCart(routineProducts);
-
-            // Abrir el CartDrawer para que el cliente complete sus datos y confirme
-            // Ahí se genera el pedido real con código SH-XXXX vía createPedido() RPC
-            setTimeout(() => setIsCartOpen(true), 300);
+            // Mostrar la rutina expandida con su total visible: el cliente decide
+            // con precios a la vista (sin agregar nada al carrito por sorpresa).
+            setFocusRoutineNumber(routine.number);
+            setTimeout(() => {
+              document.getElementById('rutinas')?.scrollIntoView({ behavior: 'smooth' });
+            }, 100);
           }}
         />
         </Suspense>
@@ -640,6 +629,7 @@ export default function App() {
         <CollapsibleRoutines
           onAddRoutineToCart={handleAddMultipleToCart}
           onQuickView={setQuickViewProduct}
+          focusNumber={focusRoutineNumber}
         />
 
         {/* Catalog Section Header & Brand Filter */}
@@ -774,6 +764,7 @@ export default function App() {
                     product={product}
                     quantityInCart={cartQuantities[product.id] || 0}
                     onQuickView={setQuickViewProduct}
+                    onAdd={handleAddToCart}
                   />
                 );
               })}
@@ -998,7 +989,10 @@ export default function App() {
       {/* Mobile Bottom Navigation */}
       <MobileBottomNav
         activeTab={activeTab}
-        onTabChange={setActiveTab}
+        onTabChange={(tab) => {
+          setActiveTab(tab);
+          if (tab === 'home') window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
         cartCount={totalItems}
         isCartOpen={isCartOpen}
         onOpenCart={() => setIsCartOpen(true)}

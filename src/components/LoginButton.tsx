@@ -1,9 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { LogIn, User as UserIcon, Mail } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 export const LoginButton: React.FC = () => {
   const { user, isLoading, signInWithGoogle, signOut } = useAuth();
+
+  // El bottom nav móvil dispara 'auth-required' para abrir el login
+  useEffect(() => {
+    const handler = () => {
+      if (!user) void signInWithGoogle();
+    };
+    window.addEventListener('auth-required', handler);
+    return () => window.removeEventListener('auth-required', handler);
+  }, [user, signInWithGoogle]);
 
   if (isLoading) return null;
 

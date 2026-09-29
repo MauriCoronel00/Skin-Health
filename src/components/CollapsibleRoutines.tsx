@@ -12,9 +12,11 @@ type ProductLookup = Record<string, Product>;
 interface CollapsibleRoutinesProps {
   onAddRoutineToCart?: (products: Product[]) => void;
   onQuickView?: (product: Product) => void;
+  /** Número ("01".."05") a expandir y mostrar (viene del quiz). */
+  focusNumber?: string | null;
 }
 
-export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddRoutineToCart, onQuickView }) => {
+export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddRoutineToCart, onQuickView, focusNumber }) => {
   const { supabase } = useSupabase();
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [routines, setRoutines] = useState<any[]>([]);
@@ -107,6 +109,17 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
 
   const isRoutineOpen = (id: string) => expanded.has(id);
 
+  // Foco desde el quiz: expandir la rutina y llevarla a pantalla
+  useEffect(() => {
+    if (!focusNumber || routines.length === 0) return;
+    const target = routines.find((r) => String(r.number).trim() === focusNumber.trim());
+    if (!target) return;
+    setExpanded(new Set([target.id]));
+    setTimeout(() => {
+      document.getElementById(`rutina-card-${target.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 350);
+  }, [focusNumber, routines]);
+
   if (loading) {
     return (
       <div className="text-center py-12 text-neutral-500">
@@ -167,6 +180,7 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
             return (
               <motion.div
                 key={id}
+                id={`rutina-card-${id}`}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-50px' }}

@@ -25,7 +25,6 @@ import { productImageUrl } from '../data/productImage';
 import { calcularEnvio, ENVIO_BASE_GS, ENVIO_ORIGEN, ENVIO_ORIGEN_MAPS_URL } from '../utils/envio';
 import { trackBeginCheckout } from '../utils/analytics';
 import { OrderDetails } from './OrderConfirmationModal';
-import { useAuth } from '../contexts/AuthContext';
 import {
   createPedido,
   buildPedidoMessage,
@@ -105,8 +104,6 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   const [isDragging, setIsDragging] = useState(false);
   const dragStartRef = useRef<number>(0);
   const lastHapticRef = useRef<number>(0);
-
-  const { user, signInWithGoogle } = useAuth();
 
   // Synchronize customer info with localStorage
   useEffect(() => {
@@ -210,6 +207,10 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   };
 
   const nameError = touched.name && !customerName.trim() ? 'Ingresá tu nombre para registrar tu pedido.' : null;
+  const phoneError =
+    touched.phone && customerPhone.replace(/\D/g, '').length < 8
+      ? 'Ingresá un teléfono válido (mínimo 8 dígitos) para coordinar por WhatsApp.'
+      : null;
   const addressError =
     touched.address && !customerAddress.trim()
       ? 'Indicá tu barrio y ciudad para coordinar el envío.'
@@ -221,26 +222,17 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       return;
     }
 
-    if (!customerName.trim() || !customerAddress.trim()) {
-      setTouched({ name: true, address: true });
+    if (!customerName.trim() || !customerAddress.trim() || customerPhone.replace(/\D/g, '').length < 8) {
+      setTouched({ name: true, phone: true, address: true });
       onShowToast(
         'Datos para el envío',
-        'Por favor completa tu nombre y ubicación para que podamos coordinar la entrega.',
+        'Completá tu nombre, teléfono y ubicación para coordinar la entrega.',
         'info'
       );
       return;
     }
 
-    if (!user) {
-      onShowToast(
-        'Iniciá sesión para continuar',
-        'Necesitás ingresar con tu cuenta de Google antes de confirmar el pedido.',
-        'info'
-      );
-      signInWithGoogle();
-      return;
-    }
-
+    // Checkout invitado: sin login obligatorio (la RPC acepta user_id NULL).
     setIsOrdering(true);
 
     // Pedido intake module: valida, registra en Supabase y arma el aviso (ADR-002/003).
@@ -268,7 +260,6 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
         }
         if (err.code === 'NOT_AUTHENTICATED') {
           onShowToast('Iniciá sesión para continuar', err.userMessage, 'info');
-          signInWithGoogle();
         } else if (err.code === 'NO_STOCK') {
           onShowToast('Sin stock suficiente', err.userMessage, 'error');
         } else if (err.code === 'UNAVAILABLE') {
@@ -458,7 +449,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     {/* 2. Teléfono de contacto */}
                     <div>
                       <label className="block text-xs font-semibold text-neutral-700 mb-1">
-                        Teléfono de contacto (WhatsApp):
+                        Teléfono de contacto (WhatsApp) <span className="text-rose-500">*</span>
                       </label>
                       <div className="relative">
                         <input
@@ -471,10 +462,20 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                           value={customerPhone}
                           onChange={(e) => setCustomerPhone(e.target.value)}
                           onBlur={() => handleBlur('phone')}
-                          className="w-full text-xs bg-white border border-neutral-200 rounded-lg py-2 pl-7 pr-2.5 text-neutral-800 placeholder:text-neutral-400 focus:outline-none focus:border-[#102A43] transition-colors"
+                          className={`w-full text-xs bg-white border rounded-lg py-2 pl-7 pr-2.5 text-neutral-800 placeholder:text-neutral-400 focus:outline-none transition-colors ${
+                            phoneError
+                              ? 'border-rose-400 focus:border-rose-500 bg-rose-50/20'
+                              : 'border-neutral-200 focus:border-[#102A43]'
+                          }`}
                         />
                         <Phone className="w-3.5 h-3.5 text-neutral-400 absolute left-2 top-1/2 -translate-y-1/2" />
                       </div>
+                      {phoneError && (
+                        <p className="text-xs text-rose-500 flex items-center gap-1 mt-1 font-medium">
+                          <AlertCircle className="w-3 h-3 shrink-0" />
+                          <span>{phoneError}</span>
+                        </p>
+                      )}
                     </div>
 
                     {/* 3. Lugar de ubicación para envío */}
@@ -642,7 +643,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 </div>
                 <div className="flex items-center justify-between gap-2 text-xs">
                   <label htmlFor="envio-km" className="text-neutral-500 shrink-0">
-                    Envío · distancia (km)
+                    Envío · distancia en km (opcional)
                   </label>
                   <input
                     id="envio-km"
@@ -652,14 +653,14 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     inputMode="decimal"
                     value={distanciaKm}
                     onChange={(e) => setDistanciaKm(e.target.value)}
-                    placeholder="Ej. 5"
+                    placeholder="Opcional"
                     className="w-20 text-right font-semibold text-neutral-800 border border-neutral-200 rounded-lg py-1 px-2 focus:outline-none focus:border-[#102A43]"
                   />
                 </div>
                 <div className="flex justify-between text-neutral-500 text-xs">
                   <span>Costo de envío</span>
                   {envioGs === null ? (
-                    <span className="text-neutral-400">Ingresá los km</span>
+                    <span className="text-neutral-400">Se coordina por WhatsApp</span>
                   ) : (
                     <span className="font-semibold text-neutral-800">{formatGuarani(envioGs)}</span>
                   )}
@@ -721,7 +722,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               <div className="grid grid-cols-3 gap-1 pt-1 text-xs text-neutral-500 text-center border-t border-neutral-100/80">
                 <div className="flex items-center justify-center gap-1">
                   <ShieldCheck className="w-3 h-3 text-emerald-600 shrink-0" />
-                  <span>Pago 100% seguro</span>
+                  <span>Pago por transferencia</span>
                 </div>
                 <div className="flex items-center justify-center gap-1">
                   <Truck className="w-3 h-3 text-sky-600 shrink-0" />

@@ -20,7 +20,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdminPanel, isAdmin }) => 
             <div>
               <h4 className="font-semibold text-sm text-white">100% Originales</h4>
               <p className="text-xs text-white/70 mt-0.5">
-                Productos importados directamente de laboratorios oficiales y Corea del Sur.
+                Productos importados de marcas oficiales de Corea del Sur.
               </p>
             </div>
           </div>
@@ -101,7 +101,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdminPanel, isAdmin }) => 
           <span>© {new Date().getFullYear()} Skin Health. Todos los derechos reservados.</span>
           <div className="flex items-center gap-4">
             <span className="inline-flex items-center gap-1 text-white/60">
-              Dermocosmética hecha con <Heart className="w-3.5 h-3.5 text-rose-400 fill-rose-400" /> para tu piel.
+                K-beauty hecha con <Heart className="w-3.5 h-3.5 text-rose-400 fill-rose-400" /> para tu piel.
             </span>
             {isAdmin && onOpenAdminPanel && (
               <button

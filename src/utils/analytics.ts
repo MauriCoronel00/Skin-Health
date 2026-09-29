@@ -101,6 +101,50 @@ const fbqSink: Sink = {
 
 const sinks: Sink[] = [gtagSink, dataLayerSink, fbqSink];
 
+/**
+ * Inyecta Meta Pixel y Google gtag solo si hay IDs configurados
+ * (VITE_META_PIXEL_ID / VITE_GA_MEASUREMENT_ID). Sin IDs = no-op.
+ * Llamar una vez al arranque (main.tsx).
+ */
+let analyticsReady = false;
+export function initAnalytics(): void {
+  if (typeof window === 'undefined' || analyticsReady) return;
+  analyticsReady = true;
+  const w = window as unknown as GlobalWithSinks & { dataLayer?: unknown[] };
+  const env = (import.meta as unknown as { env?: Record<string, string> }).env ?? {};
+  const pixelId = env.VITE_META_PIXEL_ID ?? '';
+  const gaId = env.VITE_GA_MEASUREMENT_ID ?? '';
+
+  if (pixelId) {
+    const s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://connect.facebook.net/en_US/fbevents.js';
+    document.head.appendChild(s);
+    type FbqStub = ((...args: unknown[]) => void) & { q: unknown[][] };
+    const fbqStub = ((...args: unknown[]) => {
+      fbqStub.q.push(args);
+    }) as FbqStub;
+    fbqStub.q = [];
+    (w as { fbq?: unknown }).fbq = fbqStub;
+    (w.fbq as (...a: unknown[]) => void)('init', pixelId);
+    (w.fbq as (...a: unknown[]) => void)('track', 'PageView');
+  }
+
+  if (gaId) {
+    const s = document.createElement('script');
+    s.async = true;
+    s.src = `https://www.googletagmanager.com/gtag/js?id=${gaId}`;
+    document.head.appendChild(s);
+    w.dataLayer = w.dataLayer ?? [];
+    const gtagFn = (...args: unknown[]) => {
+      (w.dataLayer as unknown[]).push(args);
+    };
+    (w as { gtag?: unknown }).gtag = gtagFn;
+    gtagFn('js', new Date());
+    gtagFn('config', gaId);
+  }
+}
+
 function dispatch(e: NormalizedEvent) {
   try {
     for (const sink of sinks) {
