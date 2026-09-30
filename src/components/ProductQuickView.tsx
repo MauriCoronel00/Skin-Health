@@ -217,22 +217,33 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
 
               {/* Rating & reviews shortcut */}
               <div className="flex items-center justify-center sm:justify-start gap-2.5 text-sm text-neutral-600 mb-4 flex-wrap">
-                <button
-                  type="button"
-                  onClick={scrollToReviews}
-                  className="flex items-center text-amber-500 hover:opacity-80 transition-opacity cursor-pointer"
-                >
-                  <Star className="w-4 h-4 fill-amber-400 stroke-amber-400" />
-                  <span className="ml-1 font-bold text-neutral-900">{product.rating.toFixed(1)}</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={scrollToReviews}
-                  className="text-neutral-500 hover:text-[#102A43] hover:underline cursor-pointer text-xs"
-                >
-                  ({product.reviewsCount} opiniones de clientes)
-                </button>
-                <span className="text-neutral-300">•</span>
+                {product.reviewsCount > 0 ? (
+                  <>
+                    <button
+                      type="button"
+                      onClick={scrollToReviews}
+                      className="flex items-center text-amber-500 hover:opacity-80 transition-opacity cursor-pointer"
+                    >
+                      <Star className="w-4 h-4 fill-amber-400 stroke-amber-400" />
+                      <span className="ml-1 font-bold text-neutral-900">{product.rating.toFixed(1)}</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={scrollToReviews}
+                      className="text-neutral-500 hover:text-[#102A43] hover:underline cursor-pointer text-xs"
+                    >
+                      ({product.reviewsCount} opiniones de clientes)
+                    </button>
+                    <span className="text-neutral-300">•</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-100">
+                      Nuevo ingreso
+                    </span>
+                    <span className="text-neutral-300">•</span>
+                  </>
+                )}
                 <button
                   type="button"
                   onClick={() => onOpenReviewModal(product)}

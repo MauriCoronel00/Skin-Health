@@ -196,7 +196,13 @@ export async function uploadReviewPhoto(file: File): Promise<string> {
     throw new Error('FILE_TOO_LARGE');
   }
 
-  const ext = file.name.split('.').pop() || 'jpg';
+  // Extensión derivada del MIME verificado, nunca del nombre del archivo
+  const extByMime: Record<string, string> = {
+    'image/jpeg': 'jpg',
+    'image/png': 'png',
+    'image/webp': 'webp',
+  };
+  const ext = extByMime[file.type] ?? 'jpg';
   const path = `${user.id}/${crypto.randomUUID()}.${ext}`;
 
   const { error: uploadError } = await supabase.storage

@@ -33,6 +33,9 @@ import {
 } from '../data/pedidos';
 
 const CUSTOMER_DATA_KEY = 'skinhealth_customer_data_v1';
+/** Anti-spam: segundos mínimos entre pedidos desde el mismo dispositivo. */
+const ORDER_THROTTLE_KEY = 'skinhealth_last_order_ts';
+const ORDER_MIN_GAP_SECONDS = 45;
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -98,6 +101,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   const [isOrdering, setIsOrdering] = useState(false);
   const [copied, setCopied] = useState(false);
   const [distanciaKm, setDistanciaKm] = useState('');
+  /** Honeypot anti-bots: los humanos nunca lo completan (campo oculto). */
+  const [website, setWebsite] = useState('');
 
   // Swipe to close state
   const [dragY, setDragY] = useState(0);
@@ -217,6 +222,24 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       : null;
 
   const handleOrderWhatsApp = async () => {
+    // Honeypot: bot detectado → salida silenciosa
+    if (website.trim()) return;
+
+    // Throttle por dispositivo: frena ráfagas de pedidos duplicados/spam
+    try {
+      const last = Number(localStorage.getItem(ORDER_THROTTLE_KEY) || 0);
+      if (Date.now() - last < ORDER_MIN_GAP_SECONDS * 1000) {
+        onShowToast(
+          'Esperá un momento',
+          'Tu pedido anterior se está procesando. Intentá de nuevo en unos segundos.',
+          'info'
+        );
+        return;
+      }
+    } catch {
+      // storage no disponible: seguir igual
+    }
+
     if (cartItems.length === 0) {
       onShowToast('El carrito está vacío', 'Agregá productos antes de confirmar.', 'error');
       return;
@@ -278,6 +301,12 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     }
 
     const { codigo: orderId, totalGs: serverTotal, costoEnvioGs: serverEnvio, whatsappUrl } = receipt;
+
+    try {
+      localStorage.setItem(ORDER_THROTTLE_KEY, String(Date.now()));
+    } catch {
+      // ignore
+    }
 
     setTimeout(() => {
       let opened = false;
@@ -413,6 +442,17 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               <>
                 {/* Datos para el envío (Casillas de completado) */}
                 <div className="p-4 bg-[#FAF8F5] rounded-2xl border border-neutral-200/80 space-y-3.5 shadow-2xs">
+                  {/* Honeypot anti-bots: invisible para humanos */}
+                  <input
+                    type="text"
+                    name="website"
+                    value={website}
+                    onChange={(e) => setWebsite(e.target.value)}
+                    autoComplete="off"
+                    tabIndex={-1}
+                    aria-hidden="true"
+                    className="hidden"
+                  />
                   <div className="space-y-3">
                     {/* 1. Nombre del cliente */}
                     <div>
