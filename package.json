@@ -5,11 +5,24 @@
   "type": "module",
   "scripts": {
     "dev": "vite --port=3000 --host=0.0.0.0",
-    "build": "vite build",
+    "build": "vite build && react-snap",
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
     "lint": "tsc --noEmit",
     "test": "vitest run"
+  },
+  "reactSnap": {
+    "source": "dist",
+    "destination": "dist",
+    "minifyHtml": {
+      "collapseWhitespace": true,
+      "removeComments": true
+    },
+    "puppeteerArgs": ["--no-sandbox", "--disable-setuid-sandbox"],
+    "concurrency": 4,
+    "skipThirdPartyRequests": true,
+    "cacheAjaxRequests": false,
+    "include": ["/", "/?shortcut=catalog", "/?shortcut=cart"]
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
@@ -30,6 +43,7 @@
     "@types/node": "^22.14.0",
     "autoprefixer": "^10.4.21",
     "esbuild": "^0.25.0",
+    "react-snap": "^1.23.0",
     "tailwindcss": "^4.1.14",
     "tsx": "^4.21.0",
     "typescript": "~5.8.2",

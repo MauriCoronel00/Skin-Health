@@ -784,8 +784,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
                           <img
                             key={url}
                             src={url}
-                            alt="Foto"
+                            alt="Foto de reseña"
                             className="w-14 h-14 object-cover rounded-lg border border-neutral-200"
+                            loading="lazy"
                           />
                         ))}
                       </div>

@@ -1,0 +1,36 @@
+# Skin Health
+
+> Tienda de skincare importado en Paraguay. Productos oficiales de Anua, Beauty of Joseon, COSRX, SKIN1004, Laneige y Medicube. Rutinas personalizadas por tipo de piel con diagnóstico en 60 segundos. Envío a todo el país, pago por transferencia bancaria.
+
+## Pages
+
+- / — Catálogo principal con rutinas personalizadas y diagnóstico de piel
+- /?shortcut=catalog — Catálogo completo de productos
+- /?shortcut=cart — Carrito de compras
+
+## Brands
+
+Anua, Beauty of Joseon, COSRX, SKIN1004, Laneige, Medicube
+
+## Services
+
+- Diagnóstico de piel en 60 segundos (quiz interactivo)
+- Rutinas personalizadas de 4 pasos
+- Plan mensual de suscripción premium
+- Atención por WhatsApp
+
+## Contact
+
+- WhatsApp: +595 976 659 748
+- Instagram: https://www.instagram.com/skinhealthpy
+- Location: Asunción, Paraguay
+
+## Payment
+
+- Transferencia bancaria (PYG)
+- Precios en guaraníes (₲)
+
+## Shipping
+
+- Envío a todo Paraguay
+- Envíos Priority disponibles para suscriptores premium

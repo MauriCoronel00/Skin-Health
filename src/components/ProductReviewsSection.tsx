@@ -305,6 +305,7 @@ export const ProductReviewsSection: React.FC<ProductReviewsSectionProps> = ({
                         alt={rev.author.name}
                         className="w-9 h-9 rounded-full object-cover border border-neutral-200 shrink-0"
                         referrerPolicy="no-referrer"
+                        loading="lazy"
                       />
                     ) : (
                       <div className="w-9 h-9 rounded-full bg-[#102A43]/10 text-[#102A43] font-bold text-xs flex items-center justify-center shrink-0">
@@ -386,7 +387,7 @@ export const ProductReviewsSection: React.FC<ProductReviewsSectionProps> = ({
                         className="w-20 h-20 rounded-xl overflow-hidden border border-neutral-200 hover:border-[#102A43]/40 transition-all cursor-zoom-in"
                         aria-label="Ver foto en grande"
                       >
-                        <img src={url} alt="Foto de reseña" className="w-full h-full object-cover" />
+                        <img src={url} alt="Foto de reseña" className="w-full h-full object-cover" loading="lazy" />
                       </button>
                     ))}
                   </div>

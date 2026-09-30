@@ -225,6 +225,7 @@ const getProduct = (productId: string): Product | undefined => {
                                 src={productImageUrl(product.image, 200)}
                                 alt={product.name}
                                 className="w-full h-full object-contain group-hover:scale-105 transition-transform"
+                                loading="lazy"
                               />
                             </div>
 

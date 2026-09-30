@@ -1,0 +1,87 @@
+{
+  "store": {
+    "name": "Skin Health",
+    "url": "https://skin-health-three.vercel.app/",
+    "description": "Tienda de skincare importado en Paraguay. Productos oficiales de Anua, Beauty of Joseon, COSRX, SKIN1004, Laneige y Medicube.",
+    "currency": "PYG",
+    "location": "Asunción, Paraguay",
+    "whatsapp": "+595976659748",
+    "instagram": "https://www.instagram.com/skinhealthpy"
+  },
+  "categories": [
+    {
+      "id": "tonicos",
+      "name": "Tónicos",
+      "description": "Tónicos faciales para equilibrar y preparar la piel"
+    },
+    {
+      "id": "serums",
+      "name": "Sérums",
+      "description": "Sérums concentrados para tratamientos específicos"
+    },
+    {
+      "id": "hidratantes",
+      "name": "Hidratantes",
+      "description": "Cremas y geles hidratantes para todo tipo de piel"
+    },
+    {
+      "id": "protectores",
+      "name": "Protectores Solares",
+      "description": "Protección solar diaria con filtros UV"
+    },
+    {
+      "id": "limpiadores",
+      "name": "Limpiadores",
+      "description": "Limpiadores faciales y desmaquillantes"
+    }
+  ],
+  "brands": [
+    { "name": "Anua", "origin": "Corea del Sur" },
+    { "name": "Beauty of Joseon", "origin": "Corea del Sur" },
+    { "name": "COSRX", "origin": "Corea del Sur" },
+    { "name": "SKIN1004", "origin": "Corea del Sur" },
+    { "name": "Laneige", "origin": "Corea del Sur" },
+    { "name": "Medicube", "origin": "Corea del Sur" }
+  ],
+  "services": [
+    {
+      "name": "Diagnóstico de piel",
+      "description": "Quiz interactivo de 60 segundos para determinar tu tipo de piel y rutina ideal",
+      "type": "interactive_quiz"
+    },
+    {
+      "name": "Rutina personalizada",
+      "description": "Rutina de 4 pasos basada en tu tipo de piel y objetivos",
+      "type": "personalized_routine"
+    },
+    {
+      "name": "Plan mensual premium",
+      "description": "Suscripción con rutina personalizada mensual, asesoría prioritaria y envíos priority",
+      "type": "subscription",
+      "price": "Consultar por WhatsApp"
+    }
+  ],
+  "skin_types": [
+    "normal",
+    "seca",
+    "grasa",
+    "mixta",
+    "sensible",
+    "con manchas",
+    "con acné"
+  ],
+  "payment_methods": [
+    {
+      "type": "bank_transfer",
+      "currency": "PYG",
+      "description": "Transferencia bancaria. Se confirma por WhatsApp."
+    }
+  ],
+  "shipping": {
+    "area": "Todo Paraguay",
+    "methods": [
+      { "name": "Estándar", "description": "Envío regular a todo el país" },
+      { "name": "Priority", "description": "Envío prioritario para suscriptores premium" }
+    ]
+  }
+}

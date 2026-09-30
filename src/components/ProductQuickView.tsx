@@ -191,6 +191,7 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
                 src={productImageUrl(product.image, 900)}
                 alt={product.name}
                 className="w-full h-full object-contain"
+                loading="lazy"
               />
               <span className="absolute bottom-2 right-2 w-7 h-7 rounded-full bg-[#102A43]/80 flex items-center justify-center pointer-events-none">
                 <ZoomIn className="w-3.5 h-3.5 text-white" />
