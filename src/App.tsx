@@ -77,6 +77,7 @@ import { isCurrentUserAdmin } from './data/admin';
 import { productIdFromUrl, syncProductUrl } from './utils/productLink';
 import { setHomeSEO, injectOrganizationSchema } from './utils/seo';
 import { MobileBottomNav, TabId } from './components/MobileBottomNav';
+import { InstallBanner } from './components/InstallBanner';
 import { ProductGridSkeleton, CategoryPillsSkeleton, TestimoniosSectionSkeleton } from './components/Skeleton';
 import { CollapsibleRoutines } from './components/CollapsibleRoutines';
 import { SKINCARE_ROUTINES } from './data/routines';
@@ -576,6 +577,9 @@ export default function App() {
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
       />
+
+      {/* Aviso instalar PWA (solo si no está instalada) */}
+      <InstallBanner />
 
       {/* Main Content Area - Note the extra bottom padding (pb-36 sm:pb-44) to ensure the floating cart NEVER obstructs content */}
       <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 pb-36 sm:pb-44">
