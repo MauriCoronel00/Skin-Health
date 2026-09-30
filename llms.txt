@@ -8,6 +8,14 @@
 - /?shortcut=catalog — Catálogo completo de productos
 - /?shortcut=cart — Carrito de compras
 
+## Blog
+
+- /blog/rutina-piel-grasa — Rutina completa para piel grasa
+- /blog/rutina-piel-seca — Rutina completa para piel seca
+- /blog/rutina-piel-sensible — Rutina completa para piel sensible
+- /blog/guia-ingredientes-coreanos — Guía de ingredientes coreanos
+- /blog/guia-protector-solar — Cómo elegir protector solar
+
 ## Brands
 
 Anua, Beauty of Joseon, COSRX, SKIN1004, Laneige, Medicube
