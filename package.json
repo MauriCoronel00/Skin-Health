@@ -18,11 +18,21 @@
       "collapseWhitespace": true,
       "removeComments": true
     },
-    "puppeteerArgs": ["--no-sandbox", "--disable-setuid-sandbox"],
-    "concurrency": 4,
+    "puppeteerArgs": [
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      "--disable-gpu",
+      "--disable-dev-shm-usage"
+    ],
+    "concurrency": 1,
     "skipThirdPartyRequests": true,
     "cacheAjaxRequests": false,
-    "include": ["/", "/?shortcut=catalog", "/?shortcut=cart"]
+    "include": [
+      "/",
+      "/?shortcut=catalog",
+      "/?shortcut=cart"
+    ],
+    "puppeteerExecutablePath": "/usr/bin/chromium-browser"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
@@ -43,6 +53,7 @@
     "@types/node": "^22.14.0",
     "autoprefixer": "^10.4.21",
     "esbuild": "^0.25.0",
+    "puppeteer-core": "^25.12.0",
     "react-snap": "^1.23.0",
     "tailwindcss": "^4.1.14",
     "tsx": "^4.21.0",
