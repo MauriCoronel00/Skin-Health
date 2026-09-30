@@ -1004,7 +1004,10 @@ export default function App() {
 
         {/* Footer */}
       <Footer
-        onOpenAdminPanel={() => setIsAdminPanelOpen(true)}
+        onOpenAdminPanel={() => {
+          if (isAdmin) setIsAdminPanelOpen(true);
+          else showToast('Zona de administradores', 'Iniciá sesión con una cuenta administradora.', 'info');
+        }}
         isAdmin={isAdmin}
       />
     </div>

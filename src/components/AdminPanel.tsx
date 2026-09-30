@@ -28,6 +28,7 @@ import {
   ajustarStock,
   actualizarPrecio,
   fetchAuditLog,
+  isCurrentUserAdmin,
 } from '../data/admin';
 import { ProductReview, AuditLogEntry } from '../types';
 import { fetchAllReviews, setReviewStatus, responderReview } from '../data/reviews';
@@ -188,11 +189,18 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
   const [payRef, setPayRef] = useState('');
   const [payUrl, setPayUrl] = useState('');
   const [payingBusy, setPayingBusy] = useState(false);
+  const [accessDenied, setAccessDenied] = useState(false);
 
   const load = async () => {
     setLoading(true);
     setError(null);
+    setAccessDenied(false);
     try {
+      // Defensa en profundidad: el panel nunca confía solo en el botón oculto
+      if (!(await isCurrentUserAdmin())) {
+        setAccessDenied(true);
+        return;
+      }
       const [peds, stk, revs, logs] = await Promise.all([
         fetchPedidos(),
         fetchStock(),
@@ -216,6 +224,23 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
   }, [isOpen ]);
 
   if (!isOpen) return null;
+
+  if (accessDenied && !loading) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" onClick={onClose}>
+        <div className="bg-white rounded-3xl p-8 max-w-sm w-full text-center" onClick={(e) => e.stopPropagation()}>
+          <h3 className="font-semibold text-neutral-900 mb-1">Zona de administradores</h3>
+          <p className="text-sm text-neutral-500 mb-5">Iniciá sesión con una cuenta administradora.</p>
+          <button
+            onClick={onClose}
+            className="px-6 py-2.5 bg-[#102A43] text-white text-sm font-semibold rounded-full cursor-pointer"
+          >
+            Entendido
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const handleExpand = async (pedido: AdminPedido) => {
     if (expandedId === pedido.id) {
