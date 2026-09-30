@@ -12,6 +12,8 @@
     { "src": "/assets/(.*)", "dest": "/assets/$1" },
     { "src": "/(.*)", "dest": "/index.html" }
   ],
+  "cleanUrls": false,
+  "trailingSlash": false,
   "headers": [
     {
       "source": "/(.*)",
