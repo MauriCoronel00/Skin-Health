@@ -1,6 +1,6 @@
 import React from 'react';
-import logoClean from '../assets/images/brand_logo_clean.png';
-import logoInverted from '../assets/images/brand_logo_inverted.png';
+import logoClean from '../assets/images/brand_logo_clean.webp';
+import logoInverted from '../assets/images/brand_logo_inverted.webp';
 
 interface BrandLogoProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
@@ -53,8 +53,8 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
       <img
         src={inverted ? logoInverted : logoClean}
         alt="Skin Health Isotipo Oficial"
-        width={152}
-        height={220}
+        width={66}
+        height={96}
         className={`${iconHeightClass} w-auto object-contain shrink-0 transition-transform duration-300 hover:scale-105`}
         loading="eager"
         fetchPriority="high"

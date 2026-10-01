@@ -1,6 +1,6 @@
 // Imágenes de producto: redimensionado server-side vía Supabase Image
-// Transformations. Recorta ~70% el peso en mobile. Las URLs que no son de
-// Storage vuelven intactas.
+// Transformations. WebP + quality 75 recorta ~60% extra frente al PNG.
+// Las URLs que no son de Storage vuelven intactas.
 export const productImageUrl = (url: string, width = 800): string => {
   if (!url) return url;
   const marker = '/storage/v1/object/public/';
@@ -11,6 +11,6 @@ export const productImageUrl = (url: string, width = 800): string => {
     url.slice(0, i) +
     '/storage/v1/render/image/public/' +
     url.slice(i + marker.length) +
-    `${sep}width=${width}&quality=80`
+    `${sep}width=${width}&quality=75&format=webp`
   );
 };
