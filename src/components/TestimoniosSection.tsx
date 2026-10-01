@@ -78,7 +78,7 @@ export const TestimoniosSection: React.FC = () => {
               <Quote className="w-5 h-5 text-[#102A43]/15" />
               <BadgeCheck className="w-4 h-4 text-[#102A43]/40" />
             </div>
-            <div className="flex items-center gap-0.5 mb-2" aria-label={`${t.rating} de 5 estrellas`}>
+            <div className="flex items-center gap-0.5 mb-2" role="img" aria-label={`${t.rating} de 5 estrellas`}>
               {Array.from({ length: 5 }).map((_, i) => (
                 <Star
                   key={i}

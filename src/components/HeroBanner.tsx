@@ -19,6 +19,8 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog, onOpe
         <img
           src={heroRadiantBg}
           alt="Skin Health · Rutinas de skincare importado en Paraguay"
+          width={1200}
+          height={670}
           className="w-full h-full object-cover object-[75%_center] sm:object-right opacity-40"
           fetchPriority="high"
           decoding="async"

@@ -77,7 +77,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       >
         {product.image && !imgError ? (
           <img
-            src={productImageUrl(product.image, 600)}
+            src={productImageUrl(product.image, 400)}
             alt={product.name}
             className="w-full h-full object-contain"
             loading="lazy"

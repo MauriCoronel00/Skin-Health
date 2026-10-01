@@ -63,6 +63,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <motion.button
             id="desktop-header-cart-btn"
             onClick={onOpenCart}
+            aria-label={totalItems > 0 ? `Abrir mi pedido, ${totalItems} productos` : 'Abrir mi pedido'}
             whileTap={{ scale: 0.95 }}
             className={`relative flex items-center gap-2 px-3.5 py-2 rounded-full font-medium text-sm transition-all shadow-sm ${
               totalItems > 0

@@ -53,8 +53,11 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
       <img
         src={inverted ? logoInverted : logoClean}
         alt="Skin Health Isotipo Oficial"
+        width={152}
+        height={220}
         className={`${iconHeightClass} w-auto object-contain shrink-0 transition-transform duration-300 hover:scale-105`}
         loading="eager"
+        fetchPriority="high"
       />
 
       {/* Typography: "SKIN HEALTH" - sin tagline para look más limpio */}
