@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { Session, User } from '@supabase/supabase-js';
-import { supabase } from '../lib/supabaseClient';
+import type { Session, User } from '@supabase/supabase-js';
+import { getSupabase } from '../lib/lazySupabase';
 
 interface AuthContextValue {
   user: User | null;
@@ -17,19 +17,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
-      setIsLoading(false);
-    });
+    let listener: { subscription: { unsubscribe: () => void } } | null = null;
+    let cancelled = false;
+    (async () => {
+      const supabase = await getSupabase();
+      if (cancelled) return;
+      supabase.auth.getSession().then(({ data }) => {
+        if (!cancelled) {
+          setSession(data.session);
+          setIsLoading(false);
+        }
+      });
 
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, newSession) => {
-      setSession(newSession);
-    });
+      const { data } = supabase.auth.onAuthStateChange((_event, newSession) => {
+        setSession(newSession);
+      });
+      listener = data;
+    })();
 
-    return () => listener.subscription.unsubscribe();
+    return () => {
+      cancelled = true;
+      listener?.subscription.unsubscribe();
+    };
   }, []);
 
   const signInWithGoogle = async () => {
+    const supabase = await getSupabase();
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo: window.location.origin },
@@ -37,6 +50,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signOut = async () => {
+    const supabase = await getSupabase();
     await supabase.auth.signOut();
   };
 

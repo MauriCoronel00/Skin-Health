@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Star, Quote, BadgeCheck } from 'lucide-react';
-import { supabase } from '../lib/supabaseClient';
+import { getSupabase } from '../lib/lazySupabase';
 
 interface Testimonio {
   id: string;
@@ -13,6 +13,7 @@ interface Testimonio {
 
 /** Reseñas destacadas (featured) o últimas aprobadas, con nombre del producto. Obtiene un pool mayor y selecciona 4 aleatorios para diversidad. */
 export async function fetchTestimonios(limit = 4): Promise<Testimonio[]> {
+  const supabase = await getSupabase();
   const poolLimit = 12; // pool mayor para diversidad de género
   const { data, error } = await supabase
     .from('reviews')

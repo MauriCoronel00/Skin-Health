@@ -3,7 +3,7 @@ import { motion } from 'motion/react';
 import { LogOut, Shield } from 'lucide-react';
 import { ReviewUser } from '../types';
 import { saveGoogleUser, clearGoogleUser } from '../utils/reviewsStorage';
-import { supabase } from '../lib/supabaseClient';
+import { getSupabase } from '../lib/lazySupabase';
 import { currentReviewer } from '../data/identity';
 
 interface GoogleAuthButtonProps {
@@ -44,6 +44,7 @@ export const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({
   }, [currentUser, onUserAuthenticated]);
 
   const handleGoogleSignIn = async () => {
+    const supabase = await getSupabase();
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo: window.location.origin },
@@ -51,6 +52,7 @@ export const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({
   };
 
   const handleLogout = async () => {
+    const supabase = await getSupabase();
     await supabase.auth.signOut();
     clearGoogleUser();
     syncedRef.current = null;

@@ -62,24 +62,18 @@ import { HeroBanner } from './components/HeroBanner';
 import { CategoryFilter } from './components/CategoryFilter';
 import { ProductCard } from './components/ProductCard';
 
-import { TestimoniosSection } from './components/TestimoniosSection';
-import { FloatingCart } from './components/FloatingCart';
-import { Footer } from './components/Footer';
-import { WelcomePopup } from './components/WelcomePopup';
-import { OrderDetails } from './components/OrderConfirmationModal';
 import { ToastContainer, ToastMessage } from './components/Toast';
+import type { OrderDetails } from './components/OrderConfirmationModal';
 import { ReviewUser } from './types';
 import { getSavedGoogleUser } from './utils/reviewsStorage';
-import { supabase } from './lib/supabaseClient';
+import { getSupabase } from './lib/lazySupabase';
 import { useReviews } from './hooks/useReviews';
 import { currentReviewer } from './data/identity';
 import { isCurrentUserAdmin } from './data/admin';
 import { productIdFromUrl, syncProductUrl } from './utils/productLink';
 import { setHomeSEO, injectOrganizationSchema } from './utils/seo';
 import { MobileBottomNav, TabId } from './components/MobileBottomNav';
-import { InstallBanner } from './components/InstallBanner';
-import { ProductGridSkeleton, CategoryPillsSkeleton, TestimoniosSectionSkeleton } from './components/Skeleton';
-import { CollapsibleRoutines } from './components/CollapsibleRoutines';
+import { ProductGridSkeleton, CategoryPillsSkeleton, TestimoniosSectionSkeleton, RoutinesSectionSkeleton } from './components/Skeleton';
 import { SKINCARE_ROUTINES } from './data/routines';
 
 // Lazy: solo se cargan cuando se abren (no bloquean primera carga)
@@ -90,6 +84,14 @@ const AdminPanel = lazy(() => import('./components/AdminPanel').then((m) => ({ d
 const TrackingView = lazy(() => import('./components/TrackingView').then((m) => ({ default: m.TrackingView })));
 const OrderConfirmationModal = lazy(() => import('./components/OrderConfirmationModal').then((m) => ({ default: m.OrderConfirmationModal })));
 const ReviewFormModal = lazy(() => import('./components/ReviewFormModal').then((m) => ({ default: m.ReviewFormModal })));
+
+// Lazy below-fold: no bloquean primera pintura
+const TestimoniosSection = lazy(() => import('./components/TestimoniosSection').then((m) => ({ default: m.TestimoniosSection })));
+const CollapsibleRoutines = lazy(() => import('./components/CollapsibleRoutines').then((m) => ({ default: m.CollapsibleRoutines })));
+const Footer = lazy(() => import('./components/Footer').then((m) => ({ default: m.Footer })));
+const WelcomePopup = lazy(() => import('./components/WelcomePopup').then((m) => ({ default: m.WelcomePopup })));
+const InstallBanner = lazy(() => import('./components/InstallBanner').then((m) => ({ default: m.InstallBanner })));
+const FloatingCart = lazy(() => import('./components/FloatingCart').then((m) => ({ default: m.FloatingCart })));
 
 const CART_STORAGE_KEY = 'skinhealth_cart_v1';
 
@@ -228,10 +230,15 @@ export default function App() {
       }
     };
     void check();
-    const { data: listener } = supabase.auth.onAuthStateChange(() => {
-      void check();
-    });
-    return () => listener.subscription.unsubscribe();
+    let listener: { subscription: { unsubscribe: () => void } } | null = null;
+    (async () => {
+      const supabase = await getSupabase();
+      const { data } = supabase.auth.onAuthStateChange(() => {
+        void check();
+      });
+      listener = data;
+    })();
+    return () => listener?.subscription.unsubscribe();
   }, []);
 
   // Deep link ?p=id: abre el QuickView del producto al cargar
@@ -268,6 +275,7 @@ export default function App() {
     // Identidad unificada: el nombre sale del módulo identity, el user_id de la sesión
     const reviewer = await currentReviewer();
     if (!reviewer?.userId) {
+      const supabase = await getSupabase();
       await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: { redirectTo: window.location.origin },
@@ -579,7 +587,9 @@ export default function App() {
       />
 
       {/* Aviso instalar PWA (solo si no está instalada) */}
-      <InstallBanner />
+      <Suspense fallback={null}>
+        <InstallBanner />
+      </Suspense>
 
       {/* Main Content Area - Note the extra bottom padding (pb-36 sm:pb-44) to ensure the floating cart NEVER obstructs content */}
       <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 pb-36 sm:pb-44">
@@ -593,14 +603,16 @@ export default function App() {
         <HeroBanner onScrollToCatalog={scrollToCatalog} onOpenQuiz={() => setQuizOpen(true)} />
 
         {/* Popup bienvenida: diagnóstico gratis */}
-        <WelcomePopup
-          open={showWelcome}
-          onStartQuiz={() => {
-            dismissWelcome();
-            setQuizOpen(true);
-          }}
-          onClose={dismissWelcome}
-        />
+        <Suspense fallback={null}>
+          <WelcomePopup
+            open={showWelcome}
+            onStartQuiz={() => {
+              dismissWelcome();
+              setQuizOpen(true);
+            }}
+            onClose={dismissWelcome}
+          />
+        </Suspense>
 
         {/* Diagnostic Quiz - 4 steps (lazy: solo carga al abrir) */}
         {quizOpen && (
@@ -630,11 +642,13 @@ export default function App() {
         )}
 
         {/* Collapsible Routines List - 5 routines with expand/collapse */}
-        <CollapsibleRoutines
-          onAddRoutineToCart={handleAddMultipleToCart}
-          onQuickView={setQuickViewProduct}
-          focusNumber={focusRoutineNumber}
-        />
+        <Suspense fallback={<RoutinesSectionSkeleton />}>
+          <CollapsibleRoutines
+            onAddRoutineToCart={handleAddMultipleToCart}
+            onQuickView={setQuickViewProduct}
+            focusNumber={focusRoutineNumber}
+          />
+        </Suspense>
 
         {/* Catalog Section Header & Brand Filter */}
         <div
@@ -783,7 +797,9 @@ export default function App() {
         {isLoadingProducts ? (
           <TestimoniosSectionSkeleton />
         ) : (
-          <TestimoniosSection />
+          <Suspense fallback={<TestimoniosSectionSkeleton />}>
+            <TestimoniosSection />
+          </Suspense>
         )}
 
         {/* Suscripción Premium */}
@@ -893,12 +909,14 @@ export default function App() {
       </main>
 
       {/* SECTION 10 & 17: CARRITO FLOTANTE (ELEMENTO CENTRAL) */}
-      <FloatingCart
-        totalItems={totalItems}
-        totalAmount={totalAmount}
-        onOpenCart={() => setIsCartOpen(true)}
-        lastAddedTime={lastAddedTime}
-      />
+      <Suspense fallback={null}>
+        <FloatingCart
+          totalItems={totalItems}
+          totalAmount={totalAmount}
+          onOpenCart={() => setIsCartOpen(true)}
+          lastAddedTime={lastAddedTime}
+        />
+      </Suspense>
 
       {/* SECTION 12, 13 & 14: CART BOTTOM SHEET (MOBILE) / SIDE CART (DESKTOP) */}
       <AnimatePresence>
@@ -1003,13 +1021,15 @@ export default function App() {
       />
 
         {/* Footer */}
-      <Footer
-        onOpenAdminPanel={() => {
-          if (isAdmin) setIsAdminPanelOpen(true);
-          else showToast('Zona de administradores', 'Iniciá sesión con una cuenta administradora.', 'info');
-        }}
-        isAdmin={isAdmin}
-      />
+      <Suspense fallback={null}>
+        <Footer
+          onOpenAdminPanel={() => {
+            if (isAdmin) setIsAdminPanelOpen(true);
+            else showToast('Zona de administradores', 'Iniciá sesión con una cuenta administradora.', 'info');
+          }}
+          isAdmin={isAdmin}
+        />
+      </Suspense>
     </div>
   </AuthProvider>
 </ErrorBoundary>

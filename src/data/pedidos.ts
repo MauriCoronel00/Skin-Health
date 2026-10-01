@@ -1,4 +1,4 @@
-import { supabase } from '../lib/supabaseClient';
+import { getSupabase } from '../lib/lazySupabase';
 import { formatGuarani, STORE_PHONE_NUMBER } from './products';
 import { trackOrderSubmitted } from '../utils/analytics';
 
@@ -136,6 +136,7 @@ export async function createPedido(input: CreatePedidoInput): Promise<PedidoRece
   }
 
   // Checkout guest permitido: la RPC acepta user_id NULL con teléfono válido.
+  const supabase = await getSupabase();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -217,6 +218,7 @@ async function buildReceiptMessage(
   telefono: string,
   direccion: string
 ): Promise<{ text: string; lines: PedidoMessageLine[] }> {
+  const supabase = await getSupabase();
   const { data: itemRows } = await supabase
     .from('pedido_items')
     .select('cantidad, precio_unitario_gs, producto_id, productos ( nombre )')
