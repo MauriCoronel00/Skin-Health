@@ -1,4 +1,4 @@
-import { getSupabase } from '../lib/lazySupabase';
+import { supabase } from '../lib/supabaseClient';
 import { formatGuarani } from './products';
 
 export type TrackingEstado = 'pendiente' | 'pagado' | 'enviado' | 'entregado' | 'cancelado';
@@ -29,7 +29,6 @@ export const TRACKING_STEPS: { id: Exclude<TrackingEstado, 'cancelado'>; label: 
 export async function fetchTracking(codigo: string): Promise<TrackingInfo | null> {
   const clean = codigo.trim().toUpperCase();
   if (!clean) return null;
-  const supabase = await getSupabase();
   const { data, error } = await supabase.rpc('get_pedido_tracking', {
     p_codigo: clean,
   });

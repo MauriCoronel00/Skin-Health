@@ -15,6 +15,7 @@ import { CartItem } from '../types';
 import { formatGuarani, STORE_PHONE_NUMBER, STORE_PHONE_DISPLAY } from '../data/products';
 import { buildPedidoMessage } from '../data/pedidos';
 import { trackingLink } from '../data/tracking';
+import { STORE_PHONE_NUMBER as WHATSAPP_NUMBER } from '../data/products';
 
 export interface OrderDetails {
   orderId: string;
@@ -68,6 +69,13 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
 
     const encoded = encodeURIComponent(message);
     window.open(`https://wa.me/${STORE_PHONE_NUMBER}?text=${encoded}`, '_blank', 'noopener,noreferrer');
+  };
+
+  const requestReview = () => {
+    const firstName = order.customerName.trim().split(' ')[0] || 'hola';
+    const message = `Hola ${firstName}! 💙 Gracias por tu pedido ${order.orderId} en Skin Health. ¿Cómo te fue con los productos? Si tenés un minuto, contanos tu experiencia y ayudá a otras personas a elegir su rutina. Podés dejar tu opinión directamente en la tienda: https://skin-health-three.vercel.app/`;
+    const encoded = encodeURIComponent(message);
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encoded}`, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -234,6 +242,13 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
           >
             <MessageCircle className="w-4 h-4 fill-white text-[#25D366]" />
             <span>Reabrir chat de WhatsApp</span>
+          </button>
+
+          <button
+            onClick={requestReview}
+            className="w-full sm:w-auto py-3 px-5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-semibold text-xs sm:text-sm transition-colors cursor-pointer border border-emerald-200"
+          >
+            Contar mi experiencia
           </button>
 
           <button

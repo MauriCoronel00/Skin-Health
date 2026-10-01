@@ -4,7 +4,6 @@ import { ChevronDown, ChevronUp, ShoppingBag, Repeat } from 'lucide-react';
 import { useSupabase } from '../hooks/useSupabase';
 import { fetchProducts, formatGuarani } from '../data/products';
 import { productImageUrl } from '../data/productImage';
-import { SKINCARE_ROUTINES } from '../data/routines';
 import type { Product } from '../types';
 
 type ProductLookup = Record<string, Product>;
@@ -228,14 +227,11 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
                         const productBrand = product?.brand || '';
                         const productImage = product?.image;
 
-                        // Enriquecer con alternativas + nota desde datos hardcodeados
-                        const hardcodedRoutine = SKINCARE_ROUTINES.find((r) => r.number === routine.number);
-                        const hardcodedStep = hardcodedRoutine?.steps.find((s) => s.stepNumber === step.stepNumber);
-                        const alternativeIds = hardcodedStep?.alternativeProductIds || [];
+                        const alternativeIds = step.alternativeProductIds || [];
                         const alternatives = alternativeIds
                           .map((id) => products[id])
                           .filter((p): p is Product => !!p);
-                        const stepNote = hardcodedStep?.note;
+                        const stepNote = step.note;
 
                         const canQuickView = !!(product && onQuickView);
                         const openQuickView = (e: React.MouseEvent, target: Product) => {

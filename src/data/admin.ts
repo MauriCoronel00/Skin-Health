@@ -1,4 +1,4 @@
-import { getSupabase } from '../lib/lazySupabase';
+import { supabase } from '../lib/supabaseClient';
 
 export type PedidoEstado = 'pendiente' | 'pagado' | 'enviado' | 'entregado' | 'cancelado';
 
@@ -47,7 +47,6 @@ export interface AuditLogEntry {
 
 /** true si la sesión actual tiene rol admin en perfiles. */
 export async function isCurrentUserAdmin(): Promise<boolean> {
-  const supabase = await getSupabase();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -58,7 +57,6 @@ export async function isCurrentUserAdmin(): Promise<boolean> {
 }
 
 export async function fetchPedidos(): Promise<AdminPedido[]> {
-  const supabase = await getSupabase();
   const { data, error } = await supabase
     .from('pedidos')
     .select(
@@ -70,7 +68,6 @@ export async function fetchPedidos(): Promise<AdminPedido[]> {
 }
 
 export async function fetchPedidoItems(pedidoId: string): Promise<AdminPedidoItem[]> {
-  const supabase = await getSupabase();
   const { data, error } = await supabase
     .from('pedido_items')
     .select('id, producto_id, cantidad, precio_unitario_gs, productos ( nombre )')
@@ -95,7 +92,6 @@ export async function fetchPedidoItems(pedidoId: string): Promise<AdminPedidoIte
 }
 
 export async function setPedidoEstado(id: string, estado: PedidoEstado): Promise<void> {
-  const supabase = await getSupabase();
   const { error } = await supabase.from('pedidos').update({ estado }).eq('id', id);
   if (error) throw error;
 }
@@ -108,7 +104,6 @@ export async function registrarPago(
   pedidoId: string,
   input: { referencia?: string; comprobanteUrl?: string }
 ): Promise<void> {
-  const supabase = await getSupabase();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -126,7 +121,6 @@ export async function registrarPago(
 }
 
 export async function fetchStock(): Promise<StockRow[]> {
-  const supabase = await getSupabase();
   const { data, error } = await supabase
     .from('productos')
     .select('id, nombre, marca, stock, precio_gs, activo')
@@ -137,7 +131,6 @@ export async function fetchStock(): Promise<StockRow[]> {
 
 /** Ajusta el stock vía RPC (valida admin, registra movimiento 'ajuste'). */
 export async function ajustarStock(productoId: string, nuevoStock: number): Promise<number> {
-  const supabase = await getSupabase();
   const { data, error } = await supabase.rpc('ajustar_stock', {
     p_producto_id: productoId,
     p_nuevo_stock: nuevoStock,
@@ -148,7 +141,6 @@ export async function ajustarStock(productoId: string, nuevoStock: number): Prom
 
 /** Actualiza el precio vía RPC (requiere admin). Mantiene el stock actual. */
 export async function actualizarPrecio(productoId: string, precioGs: number): Promise<void> {
-  const supabase = await getSupabase();
   const { data: row, error: readError } = await supabase
     .from('productos')
     .select('stock')
@@ -165,7 +157,6 @@ export async function actualizarPrecio(productoId: string, precioGs: number): Pr
 
 /** Trae el log de acciones admin del audit_log. */
 export async function fetchAuditLog(): Promise<AuditLogEntry[]> {
-  const supabase = await getSupabase();
   const { data, error } = await supabase
     .from('audit_log')
     .select('*')

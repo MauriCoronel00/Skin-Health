@@ -55,8 +55,6 @@ const QUESTIONS = {
   },
 };
 
-import { SKINCARE_ROUTINES } from '../data/routines';
-
 /** Scoring por prioridad: sensible/rojez > acné/poros > manchas > líneas > hidratación. */
 function matchRoutine(skin: string, concerns: string[]): string {
   const c = new Set(concerns);
@@ -334,7 +332,7 @@ export const DiagnosticQuiz: React.FC<DiagnosticQuizProps> = ({
               >
                 <p className="font-bold text-[#102A43] text-lg">{ROUTINE_TITLES[matchedRoutine]}</p>
                 <p className="text-sm text-neutral-600 mt-1">
-                  {SKINCARE_ROUTINES.find((r) => r.id === matchedRoutine)?.steps.length ?? 4} pasos personalizados para tu piel
+                  {matchedRoutine === 'manchas-luminosidad' ? 3 : 4} pasos personalizados para tu piel
                 </p>
               </motion.div>
               <motion.button

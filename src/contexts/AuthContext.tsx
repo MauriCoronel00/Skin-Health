@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import type { Session, User } from '@supabase/supabase-js';
-import { getSupabase } from '../lib/lazySupabase';
+import { supabase } from '../lib/supabaseClient';
 
 interface AuthContextValue {
   user: User | null;
@@ -20,7 +20,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     let listener: { subscription: { unsubscribe: () => void } } | null = null;
     let cancelled = false;
     (async () => {
-      const supabase = await getSupabase();
       if (cancelled) return;
       supabase.auth.getSession().then(({ data }) => {
         if (!cancelled) {
@@ -42,7 +41,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const signInWithGoogle = async () => {
-    const supabase = await getSupabase();
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo: window.location.origin },
@@ -50,7 +48,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signOut = async () => {
-    const supabase = await getSupabase();
     await supabase.auth.signOut();
   };
 

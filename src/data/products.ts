@@ -1,8 +1,7 @@
 import { Product, CategoryOption } from '../types';
-import { getSupabase } from '../lib/lazySupabase';
+import { supabase } from '../lib/supabaseClient';
 
 export async function fetchCategories(): Promise<CategoryOption[]> {
-  const supabase = await getSupabase();
   const { data, error } = await supabase
     .from('categorias')
     .select('id, label, icon, description');
@@ -18,7 +17,6 @@ export async function fetchCategories(): Promise<CategoryOption[]> {
 }
 
 export async function fetchProducts(): Promise<Product[]> {
-  const supabase = await getSupabase();
   const { data, error } = await supabase
     .from('productos')
     .select(`

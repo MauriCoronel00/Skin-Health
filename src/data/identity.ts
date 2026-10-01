@@ -1,4 +1,4 @@
-import { getSupabase } from '../lib/lazySupabase';
+import { supabase } from '../lib/supabaseClient';
 import { getSavedGoogleUser } from '../utils/reviewsStorage';
 
 export interface Reviewer {
@@ -15,7 +15,6 @@ export interface Reviewer {
  * Adapter de respaldo: identidad local guardada (solo display, offline).
  */
 export async function currentReviewer(): Promise<Reviewer | null> {
-  const supabase = await getSupabase();
   const {
     data: { user },
   } = await supabase.auth.getUser();

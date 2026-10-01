@@ -1,8 +1,7 @@
 import { ProductReview, TipoPiel } from '../types';
-import { getSupabase } from '../lib/lazySupabase';
+import { supabase } from '../lib/supabaseClient';
 
 async function requireAdmin(): Promise<void> {
-  const supabase = await getSupabase();
   const { data, error } = await supabase.rpc('es_admin');
   if (error || data !== true) throw new Error('NOT_ADMIN');
 }
@@ -56,7 +55,6 @@ export function mapRowToReview(
 
 /** Devuelve el set de review_ids que el usuario actual marcó como útiles. */
 async function fetchUsuarioUtiles(): Promise<Set<string>> {
-  const supabase = await getSupabase();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -72,7 +70,6 @@ async function fetchUsuarioUtiles(): Promise<Set<string>> {
 
 /** Reviews públicas (aprobadas). Ordenadas por útiles + recientes. */
 export async function fetchApprovedReviews(): Promise<ProductReview[]> {
-  const supabase = await getSupabase();
   const [{ data, error }, usuarioUtiles] = await Promise.all([
     supabase
       .from('reviews')
@@ -89,7 +86,6 @@ export async function fetchApprovedReviews(): Promise<ProductReview[]> {
 /** Todas las visibles para la sesión (admin ve todo, autor ve las suyas). */
 export async function fetchAllReviews(): Promise<ProductReview[]> {
   await requireAdmin();
-  const supabase = await getSupabase();
   const { data, error } = await supabase
     .from('reviews')
     .select(SELECT)
@@ -108,7 +104,6 @@ export async function submitReview(input: {
   tipoPiel?: TipoPiel;
   fotos?: string[];
 }): Promise<ProductReview> {
-  const supabase = await getSupabase();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -138,7 +133,6 @@ export async function setReviewStatus(
   status: 'approved' | 'hidden' | 'pending'
 ): Promise<ProductReview> {
   await requireAdmin();
-  const supabase = await getSupabase();
   const { data, error } = await supabase
     .from('reviews')
     .update({ status })
@@ -151,7 +145,6 @@ export async function setReviewStatus(
 
 export async function deleteReview(id: string): Promise<void> {
   await requireAdmin();
-  const supabase = await getSupabase();
   const { error } = await supabase.from('reviews').delete().eq('id', id);
   if (error) throw error;
 }
@@ -161,7 +154,6 @@ export async function setReviewFeatured(
   featured: boolean
 ): Promise<void> {
   await requireAdmin();
-  const supabase = await getSupabase();
   const { error } = await supabase
     .from('reviews')
     .update({ is_featured: featured })
@@ -171,7 +163,6 @@ export async function setReviewFeatured(
 
 /** R13: toggle útil vía RPC. Devuelve el nuevo estado (true = marcada). */
 export async function toggleReviewUtil(reviewId: string): Promise<boolean> {
-  const supabase = await getSupabase();
   const { data, error } = await supabase.rpc('toggle_util', { p_review_id: reviewId });
   if (error) throw error;
   return data as boolean;
@@ -183,7 +174,6 @@ export async function responderReview(
   respuesta: string
 ): Promise<void> {
   await requireAdmin();
-  const supabase = await getSupabase();
   const { error } = await supabase.rpc('responder_review', {
     p_review_id: reviewId,
     p_respuesta: respuesta,
@@ -193,7 +183,6 @@ export async function responderReview(
 
 /** R12: sube una foto al bucket 'review-photos' y devuelve URL pública. */
 export async function uploadReviewPhoto(file: File): Promise<string> {
-  const supabase = await getSupabase();
   const {
     data: { user },
   } = await supabase.auth.getUser();

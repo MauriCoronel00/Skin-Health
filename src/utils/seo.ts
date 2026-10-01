@@ -126,6 +126,38 @@ export function clearProductSEO(): void {
   setHomeSEO();
 }
 
+/** SEO para artículos del blog. */
+export function setBlogSEO(post: { title: string; metaDescription: string; date: string; slug: string }): void {
+  const title = `${post.title} · ${SITE_NAME}`;
+  const url = `${SITE_URL}/?blog=${post.slug}`;
+
+  document.title = title;
+  setMeta('meta[name="description"]', post.metaDescription);
+  setMeta('meta[property="og:title"]', title);
+  setMeta('meta[property="og:description"]', post.metaDescription);
+  setMeta('meta[property="og:url"]', url);
+  setMeta('meta[property="og:type"]', 'article');
+  setMeta('meta[name="twitter:title"]', title);
+  setMeta('meta[name="twitter:description"]', post.metaDescription);
+  setCanonical(url);
+
+  injectJsonLd('blog-schema', {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.title,
+    description: post.metaDescription,
+    datePublished: post.date,
+    author: { '@type': 'Organization', name: SITE_NAME },
+    publisher: { '@type': 'Organization', name: SITE_NAME, logo: { '@type': 'ImageObject', url: `${SITE_URL}/icons/icon-512x512.png` } },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+  });
+}
+
+export function clearBlogSEO(): void {
+  removeJsonLd('blog-schema');
+  setHomeSEO();
+}
+
 /**
  * Inyecta o reemplaza un bloque <script type="application/ld+json"> con un id
  * dado. Permite gestionar múltiples schemas coexistiendo.

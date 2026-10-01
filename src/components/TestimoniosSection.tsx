@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Star, Quote, BadgeCheck } from 'lucide-react';
-import { getSupabase } from '../lib/lazySupabase';
+import { supabase } from '../lib/supabaseClient';
 
 interface Testimonio {
   id: string;
@@ -11,19 +11,17 @@ interface Testimonio {
   productName: string;
 }
 
-/** Reseñas destacadas (featured) o últimas aprobadas, con nombre del producto. Obtiene un pool mayor y selecciona 4 aleatorios para diversidad. */
+/** Reseñas destacadas (is_featured = true) aprobadas, con nombre del producto. */
 export async function fetchTestimonios(limit = 4): Promise<Testimonio[]> {
-  const supabase = await getSupabase();
-  const poolLimit = 12; // pool mayor para diversidad de género
   const { data, error } = await supabase
     .from('reviews')
     .select('id, author_name, city, rating, comment, productos ( nombre )')
     .eq('status', 'approved')
-    .order('is_featured', { ascending: false })
+    .eq('is_featured', true)
     .order('creado_en', { ascending: false })
-    .limit(poolLimit);
+    .limit(limit);
   if (error) throw error;
-  const all = ((data ?? []) as unknown as {
+  return ((data ?? []) as unknown as {
     id: string;
     author_name: string;
     city: string | null;
@@ -38,12 +36,6 @@ export async function fetchTestimonios(limit = 4): Promise<Testimonio[]> {
     comment: r.comment,
     productName: r.productos?.nombre ?? '',
   }));
-  // Fisher-Yates shuffle para mezcla aleatoria
-  for (let i = all.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [all[i], all[j]] = [all[j], all[i]];
-  }
-  return all.slice(0, limit);
 }
 
 export const TestimoniosSection: React.FC = () => {

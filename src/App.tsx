@@ -1,5 +1,9 @@
 import { AuthProvider, useAuth } from './contexts/AuthContext';
-import React, { useState, useEffect, useMemo, useRef, lazy, Suspense, Component, ErrorInfo, ReactNode } from 'react';
+import { CartProvider, useCart } from './contexts/CartContext';
+import { ProductProvider, useProducts, SKIN_FILTERS, PRICE_FILTERS } from './contexts/ProductContext';
+import { BLOG_POSTS, getBlogPost } from './data/blog';
+import { BlogPostView } from './components/BlogPostView';
+import React, { useState, useEffect, useRef, lazy, Suspense, Component, ErrorInfo, ReactNode } from 'react';
 
 interface ErrorBoundaryState {
   hasError: boolean;
@@ -24,7 +28,7 @@ class ErrorBoundary extends Component<{ children: ReactNode }, ErrorBoundaryStat
           <div className="max-w-md mx-auto text-center bg-white rounded-3xl border border-rose-200 p-8 shadow-lg">
             <div className="w-16 h-16 rounded-full bg-rose-50 flex items-center justify-center mx-auto mb-4">
               <svg className="w-8 h-8 text-rose-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
             </div>
             <h2 className="text-lg font-semibold text-neutral-900 mb-2">Algo salió mal</h2>
@@ -55,28 +59,21 @@ class ErrorBoundary extends Component<{ children: ReactNode }, ErrorBoundaryStat
 }
 import { AnimatePresence, motion } from 'motion/react';
 import { Sparkles, SlidersHorizontal, ArrowRight, MessageCircle, Gem, Check } from 'lucide-react';
-import { Product, CartItem, CategoryId, CategoryOption } from './types';
-import { fetchProducts, fetchCategories } from './data/products';
+import { Product, CategoryId } from './types';
 import { Navbar } from './components/Navbar';
-import { HeroBanner } from './components/HeroBanner';
-import { CategoryFilter } from './components/CategoryFilter';
 import { ProductCard } from './components/ProductCard';
-
+import { ProductGridSkeleton, CategoryPillsSkeleton, TestimoniosSectionSkeleton, RoutinesSectionSkeleton } from './components/Skeleton';
 import { ToastContainer, ToastMessage } from './components/Toast';
 import type { OrderDetails } from './components/OrderConfirmationModal';
 import { ReviewUser } from './types';
 import { getSavedGoogleUser } from './utils/reviewsStorage';
-import { getSupabase } from './lib/lazySupabase';
 import { useReviews } from './hooks/useReviews';
 import { currentReviewer } from './data/identity';
 import { isCurrentUserAdmin } from './data/admin';
 import { productIdFromUrl, syncProductUrl } from './utils/productLink';
 import { setHomeSEO, injectOrganizationSchema } from './utils/seo';
 import { MobileBottomNav, TabId } from './components/MobileBottomNav';
-import { ProductGridSkeleton, CategoryPillsSkeleton, TestimoniosSectionSkeleton, RoutinesSectionSkeleton } from './components/Skeleton';
-import { SKINCARE_ROUTINES } from './data/routines';
 
-// Lazy: solo se cargan cuando se abren (no bloquean primera carga)
 const CartDrawer = lazy(() => import('./components/CartDrawer').then((m) => ({ default: m.CartDrawer })));
 const ProductQuickView = lazy(() => import('./components/ProductQuickView').then((m) => ({ default: m.ProductQuickView })));
 const DiagnosticQuiz = lazy(() => import('./components/DiagnosticQuiz').then((m) => ({ default: m.DiagnosticQuiz })));
@@ -85,7 +82,6 @@ const TrackingView = lazy(() => import('./components/TrackingView').then((m) => 
 const OrderConfirmationModal = lazy(() => import('./components/OrderConfirmationModal').then((m) => ({ default: m.OrderConfirmationModal })));
 const ReviewFormModal = lazy(() => import('./components/ReviewFormModal').then((m) => ({ default: m.ReviewFormModal })));
 
-// Lazy below-fold: no bloquean primera pintura
 const TestimoniosSection = lazy(() => import('./components/TestimoniosSection').then((m) => ({ default: m.TestimoniosSection })));
 const CollapsibleRoutines = lazy(() => import('./components/CollapsibleRoutines').then((m) => ({ default: m.CollapsibleRoutines })));
 const Footer = lazy(() => import('./components/Footer').then((m) => ({ default: m.Footer })));
@@ -93,110 +89,73 @@ const WelcomePopup = lazy(() => import('./components/WelcomePopup').then((m) => 
 const InstallBanner = lazy(() => import('./components/InstallBanner').then((m) => ({ default: m.InstallBanner })));
 const FloatingCart = lazy(() => import('./components/FloatingCart').then((m) => ({ default: m.FloatingCart })));
 
-const CART_STORAGE_KEY = 'skinhealth_cart_v1';
+// Section components with granular Error Boundaries
+import { HeroSection } from './components/sections/HeroSection';
+import { WelcomeSection } from './components/sections/WelcomeSection';
+import { QuizSection } from './components/sections/QuizSection';
+import { RoutinesSectionWrapper } from './components/sections/RoutinesSection';
+import { CatalogFiltersSection } from './components/sections/CatalogFiltersSection';
+import { CatalogSection } from './components/sections/CatalogSection';
+import { TestimoniosSectionWrapper } from './components/sections/TestimoniosSectionWrapper';
+import { PremiumSection } from './components/sections/PremiumSection';
+import { HowItWorksSection } from './components/sections/HowItWorksSection';
+import { FloatingCartSection } from './components/sections/FloatingCartSection';
+import { CartDrawerSection } from './components/sections/CartDrawerSection';
+import { OrderConfirmationSection } from './components/sections/OrderConfirmationSection';
+import { ToastSection } from './components/sections/ToastSection';
+import { ProductQuickViewSection } from './components/sections/ProductQuickViewSection';
+import { ReviewFormSection } from './components/sections/ReviewFormSection';
+import { AdminPanelSection } from './components/sections/AdminPanelSection';
+import { MobileBottomNavSection } from './components/sections/MobileBottomNavSection';
+import { FooterSection } from './components/sections/FooterSection';
 
 export default function App() {
-  // Productos y categorías ahora vienen de Supabase (antes eran PRODUCTS/CATEGORIES fijos)
-  const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<CategoryOption[]>([]);
-  const [isLoadingProducts, setIsLoadingProducts] = useState(true);
-  const [catalogError, setCatalogError] = useState(false);
-
-  // Mobile bottom navigation tabs state
   const [activeTab, setActiveTab] = useState<TabId>('home');
-
-  // State for collapsible routines
-  const [openRoutines, setOpenRoutines] = useState<Set<string>>(new Set());
-
-  // State for diagnostic quiz
   const [quizOpen, setQuizOpen] = useState(false);
-  // Rutina destacada por el quiz: se expande y se muestra con su total visible
   const [focusRoutineNumber, setFocusRoutineNumber] = useState<string | null>(null);
-
-  // Popup bienvenida: diagnóstico gratis, una sola vez, a los 5s
   const [showWelcome, setShowWelcome] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
+  const [confirmedOrder, setConfirmedOrder] = useState<OrderDetails | null>(null);
+  const [toasts, setToasts] = useState<ToastMessage[]>([]);
+  const [googleUser, setGoogleUser] = useState<ReviewUser | null>(() => getSavedGoogleUser());
+  const [reviewingProduct, setReviewingProduct] = useState<Product | null>(null);
+  const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
+  const [isAdminPanelOpen, setIsAdminPanelOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  const { user } = useAuth();
+  const { cartItems, addToCart, addMultipleToCart, updateQuantity, removeItem, clearCart, totalItems, totalAmount, cartQuantities, lastAddedTime } = useCart();
+  const { products, categories, isLoadingProducts, catalogError, loadCatalog, selectedCategory, setSelectedCategory, searchQuery, setSearchQuery, selectedBrand, setSelectedBrand, selectedSkin, setSelectedSkin, selectedPrice, setSelectedPrice, filteredProducts, brandOptions, productCounts, resetFilters } = useProducts();
+
   const dismissWelcome = () => {
     setShowWelcome(false);
     try {
       localStorage.setItem('sh_welcome_seen_v1', '1');
-    } catch {
-      // storage no disponible: no hace nada.
-    }
+    } catch {}
   };
+
   useEffect(() => {
     let seen = false;
     try {
       seen = localStorage.getItem('sh_welcome_seen_v1') === '1';
-    } catch {
-      // storage no disponible: mostrar igual.
-    }
+    } catch {}
     if (seen || quizOpen) return;
     const t = setTimeout(() => setShowWelcome(true), 5000);
     return () => clearTimeout(t);
   }, [quizOpen]);
 
-  const { user } = useAuth();
-
-  // Handle auth-required event from MobileBottomNav
   useEffect(() => {
-    const handler = () => {
-      // The LoginButton will handle the auth flow.
-    };
+    const handler = () => {};
     window.addEventListener('auth-required', handler);
     return () => window.removeEventListener('auth-required', handler);
   }, []);
 
-  // SEO: schema de Organizacion + meta tags de homepage (una sola vez al montar)
   useEffect(() => {
     injectOrganizationSchema();
     setHomeSEO();
   }, []);
 
-  const loadCatalog = async () => {
-    setIsLoadingProducts(true);
-    setCatalogError(false);
-    try {
-      const [prods, cats] = await Promise.all([fetchProducts(), fetchCategories()]);
-      setProducts(prods);
-      setCategories(cats);
-    } catch (err) {
-      console.error('Error cargando el catálogo desde Supabase:', err);
-      setCatalogError(true);
-    } finally {
-      setIsLoadingProducts(false);
-    }
-  };
-
-  useEffect(() => {
-    void loadCatalog();
-  }, []);
-
-  // Cart state initialized from localStorage for persistence (Section 15)
-  const [cartItems, setCartItems] = useState<CartItem[]>(() => {
-    try {
-      const saved = localStorage.getItem(CART_STORAGE_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) return parsed;
-      }
-    } catch {
-      // ignore localStorage errors
-    }
-    return [];
-  });
-
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<CategoryId>('all');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedBrand, setSelectedBrand] = useState<string>('all');
-  const [selectedSkin, setSelectedSkin] = useState<string>('all');
-  const [selectedPrice, setSelectedPrice] = useState<string>('all');
-  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
-  const [lastAddedTime, setLastAddedTime] = useState<number>(0);
-  const [confirmedOrder, setConfirmedOrder] = useState<OrderDetails | null>(null);
-  const [toasts, setToasts] = useState<ToastMessage[]>([]);
-
-  // Reviews module: lectura, envío y moderación tras una sola interfaz
   const {
     reviews,
     adminReviews,
@@ -207,20 +166,6 @@ export default function App() {
     responder,
   } = useReviews();
 
-  // Current authenticated Google user state
-  const [googleUser, setGoogleUser] = useState<ReviewUser | null>(() => getSavedGoogleUser());
-
-  // Review Form Modal target product
-  const [reviewingProduct, setReviewingProduct] = useState<Product | null>(null);
-
-  // Admin moderation modal
-  const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
-  // Panel admin (pedidos + stock). Solo visible con rol admin.
-  const [isAdminPanelOpen, setIsAdminPanelOpen] = useState(false);
-  // Reviews visibles para moderación (incluye pending/hidden) + rol admin
-  const [isAdmin, setIsAdmin] = useState(false);
-
-  // Detectar rol admin de la sesión (para moderación y panel)
   useEffect(() => {
     const check = async () => {
       try {
@@ -232,7 +177,7 @@ export default function App() {
     void check();
     let listener: { subscription: { unsubscribe: () => void } } | null = null;
     (async () => {
-      const supabase = await getSupabase();
+      const { supabase } = await import('./lib/supabaseClient');
       const { data } = supabase.auth.onAuthStateChange(() => {
         void check();
       });
@@ -241,7 +186,6 @@ export default function App() {
     return () => listener?.subscription.unsubscribe();
   }, []);
 
-  // Deep link ?p=id: abre el QuickView del producto al cargar
   useEffect(() => {
     if (isLoadingProducts || products.length === 0) return;
     const id = productIdFromUrl();
@@ -250,7 +194,6 @@ export default function App() {
     if (found) setQuickViewProduct(found);
   }, [isLoadingProducts, products]);
 
-  // Refleja el QuickView en la URL para compartir
   useEffect(() => {
     syncProductUrl(quickViewProduct?.id ?? null);
   }, [quickViewProduct]);
@@ -272,10 +215,9 @@ export default function App() {
     tipoPiel?: import('./types').TipoPiel;
     fotos?: string[];
   }): Promise<{ ok: boolean; message?: string }> => {
-    // Identidad unificada: el nombre sale del módulo identity, el user_id de la sesión
     const reviewer = await currentReviewer();
     if (!reviewer?.userId) {
-      const supabase = await getSupabase();
+      const { supabase } = await import('./lib/supabaseClient');
       await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: { redirectTo: window.location.origin },
@@ -315,9 +257,7 @@ export default function App() {
     }
     try {
       await loadForModeration();
-    } catch {
-      // el hook ya aplica fallback
-    }
+    } catch {}
     setIsAdminModalOpen(true);
   };
 
@@ -378,7 +318,6 @@ export default function App() {
 
   const catalogRef = useRef<HTMLDivElement>(null);
 
-  // Vista de seguimiento ?track=CODIGO (se evalúa una vez al cargar)
   const [trackCode] = useState<string | null>(() => {
     try {
       return new URLSearchParams(window.location.search).get('track');
@@ -387,651 +326,249 @@ export default function App() {
     }
   });
 
+  const [blogSlug, setBlogSlug] = useState<string | null>(() => {
+    try {
+      return new URLSearchParams(window.location.search).get('blog');
+    } catch {
+      return null;
+    }
+  });
+
+  const blogPost = blogSlug ? getBlogPost(blogSlug) : undefined;
+
   const exitTracking = () => {
     try {
       const url = new URL(window.location.href);
       url.searchParams.delete('track');
       window.history.replaceState(null, '', url.toString());
-    } catch {
-      // Sin historial: no hace nada.
-    }
+    } catch {}
     window.scrollTo({ top: 0 });
     window.location.reload();
   };
 
-  // Persist cart changes to localStorage (Section 15)
-  useEffect(() => {
+  const exitBlog = () => {
     try {
-      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartItems));
-    } catch {
-      // LocalStorage fallback
-    }
-  }, [cartItems]);
-
-  // Cart calculation totals
-  const totalItems = useMemo(() => {
-    return cartItems.reduce((acc, item) => acc + item.quantity, 0);
-  }, [cartItems]);
-
-  const totalAmount = useMemo(() => {
-    return cartItems.reduce(
-      (acc, item) => acc + item.product.price * item.quantity,
-      0
-    );
-  }, [cartItems]);
-
-  // Map of product ID -> quantity currently in cart
-  const cartQuantities = useMemo(() => {
-    const map: Record<string, number> = {};
-    for (const item of cartItems) {
-      map[item.product.id] = item.quantity;
-    }
-    return map;
-  }, [cartItems]);
-
-  // Handle Add to Cart with Section 11 specifications
-  const handleAddToCart = (product: Product) => {
-    setCartItems((prev) => {
-      const existing = prev.find((item) => item.product.id === product.id);
-      if (existing) {
-        return prev.map((item) =>
-          item.product.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-      }
-      return [...prev, { product, quantity: 1 }];
-    });
-
-    // Record timestamp to trigger microanimation in FloatingCart
-    setLastAddedTime(Date.now());
+      const url = new URL(window.location.href);
+      url.searchParams.delete('blog');
+      window.history.replaceState(null, '', url.toString());
+    } catch {}
+    setBlogSlug(null);
   };
-
-  const handleAddMultipleToCart = (products: Product[]) => {
-    setCartItems((prev) => {
-      let updated = [...prev];
-      for (const prod of products) {
-        const existingIdx = updated.findIndex((item) => item.product.id === prod.id);
-        if (existingIdx >= 0) {
-          updated[existingIdx] = {
-            ...updated[existingIdx],
-            quantity: updated[existingIdx].quantity + 1,
-          };
-        } else {
-          updated.push({ product: prod, quantity: 1 });
-        }
-      }
-      return updated;
-    });
-    setLastAddedTime(Date.now());
-  };
-
-  const handleUpdateQuantity = (productId: string, delta: number) => {
-    setCartItems((prev) => {
-      return prev
-        .map((item) => {
-          if (item.product.id === productId) {
-            const newQty = item.quantity + delta;
-            return newQty > 0 ? { ...item, quantity: newQty } : null;
-          }
-          return item;
-        })
-        .filter(Boolean) as CartItem[];
-    });
-  };
-
-  const handleRemoveItem = (productId: string) => {
-    setCartItems((prev) => prev.filter((item) => item.product.id !== productId));
-  };
-
-  const handleClearCart = () => {
-    setCartItems([]);
-  };
-
-  // Filtros catálogo: tipo de piel (keywords sobre skin_type; "Todo tipo" coincide
-  // con todo) y rango de precio en Gs.
-  const SKIN_FILTERS: { id: string; label: string; test: RegExp }[] = [
-    { id: 'grasa', label: 'Grasa', test: /grasa|brillo/i },
-    { id: 'seca', label: 'Seca', test: /seca|deshidratada/i },
-    { id: 'mixta', label: 'Mixta', test: /mixta/i },
-    { id: 'sensible', label: 'Sensible', test: /sensible|irritada|agredida|recuperaci/i },
-  ];
-  const PRICE_FILTERS: { id: string; label: string; test: (price: number) => boolean }[] = [
-    { id: 'low', label: 'Hasta Gs. 150.000', test: (p) => p <= 150000 },
-    { id: 'mid', label: 'Gs. 150.000 – 250.000', test: (p) => p > 150000 && p <= 250000 },
-    { id: 'high', label: 'Más de Gs. 250.000', test: (p) => p > 250000 },
-  ];
-
-  // Filtered products
-  const filteredProducts = useMemo(() => {
-    return products.filter((product) => {
-      // Category filter
-      if (selectedCategory !== 'all' && product.category !== selectedCategory) {
-        return false;
-      }
-
-      // Brand filter
-      if (selectedBrand !== 'all' && product.brand !== selectedBrand) {
-        return false;
-      }
-
-      // Skin type filter
-      if (selectedSkin !== 'all') {
-        const skin = product.skinType ?? '';
-        const matcher = SKIN_FILTERS.find((f) => f.id === selectedSkin);
-        if (matcher && !/todo tipo/i.test(skin) && !matcher.test.test(skin)) {
-          return false;
-        }
-      }
-
-      // Price range filter
-      if (selectedPrice !== 'all') {
-        const range = PRICE_FILTERS.find((f) => f.id === selectedPrice);
-        if (range && !range.test(product.price ?? 0)) {
-          return false;
-        }
-      }
-
-      // Search query
-      if (searchQuery.trim()) {
-        const query = searchQuery.toLowerCase().trim();
-        const matchesName = (product.name ?? '').toLowerCase().includes(query);
-        const matchesBrand = (product.brand ?? '').toLowerCase().includes(query);
-        const matchesSubtitle = (product.subtitle ?? '').toLowerCase().includes(query);
-        const matchesIngredients = (product.keyIngredients ?? []).some((ing) =>
-          (ing ?? '').toLowerCase().includes(query)
-        );
-        return (
-          matchesName || matchesBrand || matchesSubtitle || matchesIngredients
-        );
-      }
-
-      return true;
-    });
-  }, [products, selectedCategory, selectedBrand, searchQuery, selectedSkin, selectedPrice]);
-
-  // Brand options (dynamic: works with any brand from Supabase)
-  const brandOptions = useMemo(() => {
-    const set = new Set<string>();
-    for (const p of products) {
-      if (p.brand) set.add(p.brand);
-    }
-    return ['all', ...Array.from(set).sort()];
-  }, [products]);
-
-  // Product count by category (dynamic: works with any category id from Supabase)
-  const productCounts = useMemo(() => {
-    const counts: Record<string, number> = { all: products.length };
-    for (const product of products) {
-      const key = product.category ?? 'all';
-      counts[key] = (counts[key] ?? 0) + 1;
-    }
-    return counts;
-  }, [products]);
 
   const scrollToCatalog = () => {
     catalogRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const handleBlogProductClick = (productId: string) => {
+    exitBlog();
+    setTimeout(() => {
+      const url = new URL(window.location.href);
+      url.searchParams.set('p', productId);
+      window.history.replaceState(null, '', url.toString());
+      window.location.reload();
+    }, 100);
+  };
+
   return (
     <ErrorBoundary>
       <AuthProvider>
-      <div className="min-h-screen bg-[#FAF8F5] text-neutral-900 flex flex-col selection:bg-[#102A43] selection:text-white">
-      {/* Top Navbar with logo and desktop cart shortcut */}
-      <Navbar
-        totalItems={totalItems}
-        totalAmount={totalAmount}
-        onOpenCart={() => setIsCartOpen(true)}
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-      />
+        <ProductProvider>
+          <CartProvider>
+            <div className="min-h-screen bg-[#FAF8F5] text-neutral-900 flex flex-col selection:bg-[#102A43] selection:text-white">
+              <Navbar
+                totalItems={totalItems}
+                totalAmount={totalAmount}
+                onOpenCart={() => setIsCartOpen(true)}
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+              />
 
-      {/* Aviso instalar PWA (solo si no está instalada) */}
-      <Suspense fallback={null}>
-        <InstallBanner />
-      </Suspense>
+              <Suspense fallback={null}>
+                <InstallBanner />
+              </Suspense>
 
-      {/* Main Content Area - Note the extra bottom padding (pb-36 sm:pb-44) to ensure the floating cart NEVER obstructs content */}
-      <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 pb-36 sm:pb-44">
-        {trackCode !== null ? (
-          <Suspense fallback={<div className="py-20 text-center text-neutral-500 text-sm">Cargando seguimiento…</div>}>
-            <TrackingView codigoInicial={trackCode} onVolver={exitTracking} />
-          </Suspense>
-        ) : (
-        <>
-        {/* Hero unificado: CTA quiz + marcas oficiales + social proof */}
-        <HeroBanner onScrollToCatalog={scrollToCatalog} onOpenQuiz={() => setQuizOpen(true)} />
+              <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 pb-36 sm:pb-44">
+                {blogPost ? (
+                  <BlogPostView post={blogPost} onBack={exitBlog} onProductClick={handleBlogProductClick} />
+                ) : trackCode !== null ? (
+                  <Suspense fallback={<div className="py-20 text-center text-neutral-500 text-sm">Cargando seguimiento…</div>}>
+                    <TrackingView codigoInicial={trackCode} onVolver={exitTracking} />
+                  </Suspense>
+                ) : (
+                <>
+                <HeroSection onScrollToCatalog={scrollToCatalog} onOpenQuiz={() => setQuizOpen(true)} />
 
-        {/* Popup bienvenida: diagnóstico gratis */}
-        <Suspense fallback={null}>
-          <WelcomePopup
-            open={showWelcome}
-            onStartQuiz={() => {
-              dismissWelcome();
-              setQuizOpen(true);
-            }}
-            onClose={dismissWelcome}
-          />
-        </Suspense>
+                <WelcomeSection
+                  open={showWelcome}
+                  onStartQuiz={() => {
+                    dismissWelcome();
+                    setQuizOpen(true);
+                  }}
+                  onClose={dismissWelcome}
+                />
 
-        {/* Diagnostic Quiz - 4 steps (lazy: solo carga al abrir) */}
-        {quizOpen && (
-        <Suspense fallback={null}>
-        <DiagnosticQuiz
-          isOpen={quizOpen}
-          onClose={() => setQuizOpen(false)}
-          onComplete={(routineId) => {
-            setQuizOpen(false);
+                <QuizSection
+                  isOpen={quizOpen}
+                  onClose={() => setQuizOpen(false)}
+                  onComplete={(routineId) => {
+                    setQuizOpen(false);
+                    setFocusRoutineNumber(routineId);
+                    setTimeout(() => {
+                      document.getElementById('rutinas')?.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
+                  }}
+                />
 
-            // Buscar la rutina completa desde SKINCARE_ROUTINES
-            const routine = SKINCARE_ROUTINES.find((r) => r.id === routineId);
-            if (!routine) {
-              console.error('Rutina no encontrada:', routineId);
-              return;
-            }
+                <div
+                  ref={catalogRef}
+                  className="pt-4 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#102A43]/10"
+                >
+                  <div>
+                    <h2 className="font-serif text-2xl sm:text-3xl font-semibold text-[#102A43]">
+                      {selectedCategory === 'all'
+                        ? 'Catálogo Completo'
+                        : categories.find((c) => c.id === selectedCategory)?.label || 'Catálogo Completo'}
+                    </h2>
+                    <p className="text-xs text-neutral-500 mt-0.5">
+                      {products.length} fórmulas esenciales seleccionadas para resultados visibles.
+                    </p>
+                  </div>
 
-            // Mostrar la rutina expandida con su total visible: el cliente decide
-            // con precios a la vista (sin agregar nada al carrito por sorpresa).
-            setFocusRoutineNumber(routine.number);
-            setTimeout(() => {
-              document.getElementById('rutinas')?.scrollIntoView({ behavior: 'smooth' });
-            }, 100);
-          }}
-        />
-        </Suspense>
-        )}
+                  <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
+                    <span className="text-[11px] text-neutral-400 font-medium mr-1 hidden sm:inline">
+                      Marca:
+                    </span>
+                    {brandOptions.map((brand) => (
+                      <button
+                        key={brand}
+                        onClick={() => setSelectedBrand(brand)}
+                        className={`text-xs px-3 py-1 rounded-full font-medium transition-all whitespace-nowrap cursor-pointer ${
+                          selectedBrand === brand
+                            ? 'bg-[#102A43] text-white shadow-xs'
+                            : 'bg-white text-neutral-600 border border-neutral-200 hover:border-neutral-400'
+                        }`}
+                      >
+                        {brand === 'all' ? 'Todas' : brand}
+                      </button>
+                    ))}
+                  </div>
+                </div>
 
-        {/* Collapsible Routines List - 5 routines with expand/collapse */}
-        <Suspense fallback={<RoutinesSectionSkeleton />}>
-          <CollapsibleRoutines
-            onAddRoutineToCart={handleAddMultipleToCart}
-            onQuickView={setQuickViewProduct}
-            focusNumber={focusRoutineNumber}
-          />
-        </Suspense>
+                <CatalogFiltersSection
+                  selectedSkin={selectedSkin}
+                  setSelectedSkin={setSelectedSkin}
+                  selectedPrice={selectedPrice}
+                  setSelectedPrice={setSelectedPrice}
+                />
 
-        {/* Catalog Section Header & Brand Filter */}
-        <div
-          ref={catalogRef}
-          className="pt-4 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#102A43]/10"
-        >
-          <div>
-            <h2 className="font-serif text-2xl sm:text-3xl font-semibold text-[#102A43]">
-                {selectedCategory === 'all'
-                ? 'Catálogo Completo'
-                : categories.find((c) => c.id === selectedCategory)?.label || 'Catálogo Completo'}
-            </h2>
-            <p className="text-xs text-neutral-500 mt-0.5">
-              {products.length} fórmulas esenciales seleccionadas para resultados visibles.
-            </p>
-          </div>
+                <CatalogSection
+                  isLoadingProducts={isLoadingProducts}
+                  catalogError={catalogError}
+                  filteredProducts={filteredProducts}
+                  cartQuantities={cartQuantities}
+                  onQuickView={setQuickViewProduct}
+                  onAdd={addToCart}
+                  loadCatalog={loadCatalog}
+                  resetFilters={resetFilters}
+                />
 
-          {/* Quick brand filter chips */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
-            <span className="text-[11px] text-neutral-400 font-medium mr-1 hidden sm:inline">
-              Marca:
-            </span>
-            {brandOptions.map((brand) => (
-              <button
-                key={brand}
-                onClick={() => setSelectedBrand(brand)}
-                className={`text-xs px-3 py-1 rounded-full font-medium transition-all whitespace-nowrap cursor-pointer ${
-                  selectedBrand === brand
-                    ? 'bg-[#102A43] text-white shadow-xs'
-                    : 'bg-white text-neutral-600 border border-neutral-200 hover:border-neutral-400'
-                }`}
-              >
-                {brand === 'all' ? 'Todas' : brand}
-              </button>
-            ))}
-          </div>
-        </div>
+                <TestimoniosSectionWrapper isLoadingProducts={isLoadingProducts} />
 
-        {/* Filtros: tipo de piel + rango de precio */}
-        <div className="flex flex-col gap-2 pb-4 border-b border-[#102A43]/10">
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-            <span className="text-[11px] text-neutral-400 font-medium mr-1 shrink-0">
-              Piel:
-            </span>
-            {[{ id: 'all', label: 'Todas' }, ...SKIN_FILTERS].map((f) => (
-              <button
-                key={f.id}
-                onClick={() => setSelectedSkin(f.id)}
-                className={`text-xs px-3 py-1 rounded-full font-medium transition-all whitespace-nowrap cursor-pointer ${
-                  selectedSkin === f.id
-                    ? 'bg-[#102A43] text-white shadow-xs'
-                    : 'bg-white text-neutral-600 border border-neutral-200 hover:border-neutral-400'
-                }`}
-              >
-                {f.label}
-              </button>
-            ))}
-          </div>
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-            <span className="text-[11px] text-neutral-400 font-medium mr-1 shrink-0">
-              Precio:
-            </span>
-            {[{ id: 'all', label: 'Todos' }, ...PRICE_FILTERS].map((f) => (
-              <button
-                key={f.id}
-                onClick={() => setSelectedPrice(f.id)}
-                className={`text-xs px-3 py-1 rounded-full font-medium transition-all whitespace-nowrap cursor-pointer ${
-                  selectedPrice === f.id
-                    ? 'bg-[#102A43] text-white shadow-xs'
-                    : 'bg-white text-neutral-600 border border-neutral-200 hover:border-neutral-400'
-                }`}
-              >
-                {f.label}
-              </button>
-            ))}
-          </div>
-        </div>
+                <PremiumSection />
 
-        {/* Catalog Grid */}
-        <div className="mt-6">
-          {isLoadingProducts ? (
-            <ProductGridSkeleton count={8} />
-          ) : catalogError ? (
-            <div className="text-center py-16 bg-white rounded-3xl border border-red-100 p-8">
-              <h3 className="font-semibold text-neutral-800 text-lg mb-1">
-                No pudimos cargar el catálogo
-              </h3>
-              <p className="text-sm text-neutral-500 max-w-sm mx-auto mb-5">
-                Revisá tu conexión e intentá de nuevo. Si sigue fallando, escribinos por WhatsApp.
-              </p>
-              <button
-                onClick={() => void loadCatalog()}
-                className="px-5 py-2.5 bg-[#102A43] text-white text-xs font-semibold rounded-full hover:bg-[#102A43]/90 transition-colors"
-              >
-                Reintentar
-              </button>
-            </div>
-          ) : filteredProducts.length === 0 ? (
-            <div className="text-center py-16 bg-white rounded-3xl border border-neutral-100 p-8">
-              <div className="w-12 h-12 rounded-full bg-[#FAF8F5] flex items-center justify-center mx-auto text-neutral-400 mb-3">
-                <SlidersHorizontal className="w-5 h-5" />
-              </div>
-              <h3 className="font-semibold text-neutral-800 text-lg mb-1">
-                No encontramos productos con esos filtros
-              </h3>
-              <p className="text-sm text-neutral-500 max-w-sm mx-auto mb-5">
-                Intenta buscar con otro término o limpia los filtros para ver los productos disponibles.
-              </p>
-              <button
-                onClick={() => {
-                  setSelectedCategory('all');
-                  setSelectedBrand('all');
-                  setSearchQuery('');
-                  setSelectedSkin('all');
-                  setSelectedPrice('all');
+                <HowItWorksSection />
+
+                {/* Rutinas como sugerencia debajo del catálogo */}
+                <RoutinesSectionWrapper
+                  onAddRoutineToCart={addMultipleToCart}
+                  onQuickView={setQuickViewProduct}
+                  focusNumber={focusRoutineNumber}
+                />
+                </>
+                )}
+              </main>
+
+              <FloatingCartSection
+                totalItems={totalItems}
+                totalAmount={totalAmount}
+                onOpenCart={() => setIsCartOpen(true)}
+                lastAddedTime={lastAddedTime}
+              />
+
+              <CartDrawerSection
+                isOpen={isCartOpen}
+                onClose={() => setIsCartOpen(false)}
+                cartItems={cartItems}
+                onUpdateQuantity={updateQuantity}
+                onRemoveItem={removeItem}
+                onClearCart={clearCart}
+                onOrderSuccess={handleOrderSuccess}
+                onShowToast={showToast}
+              />
+
+              <OrderConfirmationSection
+                confirmedOrder={confirmedOrder}
+                onClose={() => setConfirmedOrder(null)}
+              />
+
+              <ToastSection toasts={toasts} onDismiss={dismissToast} />
+
+              <ProductQuickViewSection
+                quickViewProduct={quickViewProduct}
+                onClose={() => setQuickViewProduct(null)}
+                onAddToCart={addToCart}
+                quantityInCart={cartQuantities[quickViewProduct?.id] || 0}
+                reviews={reviews}
+                onOpenReviewModal={handleOpenReviewModal}
+                currentUser={googleUser}
+                allProducts={filteredProducts}
+                currentIndex={filteredProducts.findIndex(p => p.id === quickViewProduct?.id)}
+                onToggleUtil={toggleUtil}
+                onNavigate={(direction) => {
+                  const idx = filteredProducts.findIndex(p => p.id === quickViewProduct?.id);
+                  const newIdx = direction === 'next' ? idx + 1 : idx - 1;
+                  if (newIdx >= 0 && newIdx < filteredProducts.length) {
+                    setQuickViewProduct(filteredProducts[newIdx]);
+                  }
                 }}
-                className="px-5 py-2.5 bg-[#102A43] text-white text-xs font-semibold rounded-full hover:bg-[#102A43]/90 transition-colors"
-              >
-                Restablecer Filtros
-              </button>
+              />
+
+              <ReviewFormSection
+                reviewingProduct={reviewingProduct}
+                onClose={handleCloseReviewModal}
+                currentUser={googleUser}
+                onUserAuthenticated={setGoogleUser}
+                onSubmitReview={handleSubmitReview}
+              />
+
+              <AdminPanelSection
+                isOpen={isAdminPanelOpen}
+                onClose={() => setIsAdminPanelOpen(false)}
+                onShowToast={showToast}
+              />
+
+              <MobileBottomNavSection
+                activeTab={activeTab}
+                onTabChange={(tab) => {
+                  setActiveTab(tab);
+                  if (tab === 'home') window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                cartCount={totalItems}
+                isCartOpen={isCartOpen}
+                onOpenCart={() => setIsCartOpen(true)}
+              />
+
+              <FooterSection
+                onOpenAdminPanel={() => {
+                  if (isAdmin) setIsAdminPanelOpen(true);
+                  else showToast('Zona de administradores', 'Iniciá sesión con una cuenta administradora.', 'info');
+                }}
+                isAdmin={isAdmin}
+              />
             </div>
-          ) : (
-            <motion.div
-              layout
-              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5"
-            >
-              {filteredProducts.map((product) => {
-                return (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    quantityInCart={cartQuantities[product.id] || 0}
-                    onQuickView={setQuickViewProduct}
-                    onAdd={handleAddToCart}
-                  />
-                );
-              })}
-            </motion.div>
-          )}
-        </div>
-
-        {/* Section based strictly on PDF: Rutinas de Skincare */}
-
-
-        {/* Testimonios: reseñas aprobadas visibles */}
-        {isLoadingProducts ? (
-          <TestimoniosSectionSkeleton />
-        ) : (
-          <Suspense fallback={<TestimoniosSectionSkeleton />}>
-            <TestimoniosSection />
-          </Suspense>
-        )}
-
-        {/* Suscripción Premium */}
-        <section className="mt-10 bg-[#102A43] rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden">
-          <div className="absolute -top-16 -right-16 w-56 h-56 rounded-full bg-white/5 blur-3xl pointer-events-none" />
-          <div className="max-w-3xl mx-auto text-center relative">
-            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/15 text-xs font-semibold uppercase tracking-wider text-white/90">
-              <Gem className="w-3.5 h-3.5 text-emerald-300" />
-              Plan mensual
-            </span>
-            <h3 className="font-serif text-xl sm:text-2xl font-semibold text-white mt-3">Suscripción Premium</h3>
-            <p className="text-sm text-white/70 mt-2">Acceso exclusivo para cuidar tu piel sin equivocarte. Asesoría 100% enfocada a tu necesidad.</p>
-            <ul className="mt-5 text-sm text-white/85 text-left max-w-md mx-auto space-y-2.5">
-              <li className="flex items-center gap-2.5"><span className="w-5 h-5 rounded-full bg-emerald-400/15 flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-emerald-300" /></span> Rutina 100% personalizada + seguimiento mensual</li>
-              <li className="flex items-center gap-2.5"><span className="w-5 h-5 rounded-full bg-emerald-400/15 flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-emerald-300" /></span> Atención prioritaria por WhatsApp</li>
-              <li className="flex items-center gap-2.5"><span className="w-5 h-5 rounded-full bg-emerald-400/15 flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-emerald-300" /></span> Acceso anticipado a nuevos ingresos</li>
-              <li className="flex items-center gap-2.5"><span className="w-5 h-5 rounded-full bg-emerald-400/15 flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-emerald-300" /></span> Envíos Priority a todo el país</li>
-            </ul>
-            <a href="https://wa.me/595976659748?text=Hola%20Skin%20Health%20quiero%20la%20suscripcion%20Premium%2055.000Gs" target="_blank" className="mt-6 inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-[#102A43] text-sm font-bold hover:bg-white/90 transition-all shadow-md">
-              <MessageCircle className="w-4 h-4" />
-              <span>Suscribirme — 55.000 Gs./mes</span>
-            </a>
-            <p className="text-[11px] text-white/60 mt-2">Cancelás cuando quieras. Atención directa por WhatsApp.</p>
-          </div>
-        </section>
-
-        {/* Section 19: Principio Fundamental - How it works - hidden on mobile for app feel */}
-        <section className="mt-14 bg-white/80 border border-[#102A43]/10 rounded-3xl p-6 sm:p-8 shadow-xs hidden sm:block">
-          <div className="max-w-5xl mx-auto text-center">
-            <span className="text-[11px] font-bold uppercase tracking-widest text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-100">
-              Flujo de Compra Rápido
-            </span>
-            <h3 className="font-serif text-xl sm:text-2xl font-semibold text-[#102A43] mt-2 mb-2">
-              ¿Cómo realizo mi pedido?
-            </h3>
-            <p className="text-xs sm:text-sm text-neutral-500 mb-6">
-              Sin registros lentos ni pasarelas complejas. Cuatro simples pasos:
-            </p>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-left">
-              <div className="p-4 bg-[#FAF8F5] rounded-2xl border border-neutral-100 flex items-start gap-3">
-                <span className="w-7 h-7 rounded-full bg-[#102A43] text-white text-xs font-bold flex items-center justify-center shrink-0">
-                  1
-                </span>
-                <div>
-                  <h4 className="font-semibold text-xs text-neutral-900">Elegí tus productos</h4>
-                  <p className="text-[11px] text-neutral-500 mt-0.5 leading-relaxed">
-                    Presioná &quot;+&quot; en cualquier sérum o crema para sumarlo al carrito.
-                  </p>
-                </div>
-              </div>
-
-              <div className="p-4 bg-[#FAF8F5] rounded-2xl border border-neutral-100 flex items-start gap-3">
-                <span className="w-7 h-7 rounded-full bg-[#102A43] text-white text-xs font-bold flex items-center justify-center shrink-0">
-                  2
-                </span>
-                <div>
-                  <h4 className="font-semibold text-xs text-neutral-900">Revisá en tu pedido</h4>
-                  <p className="text-[11px] text-neutral-500 mt-0.5 leading-relaxed">
-                    Tocá el carrito flotante para verificar cantidades y el total estimado.
-                  </p>
-                </div>
-              </div>
-
-              <div className="p-4 bg-emerald-50/50 rounded-2xl border border-emerald-100/80 flex items-start gap-3">
-                <span className="w-7 h-7 rounded-full bg-[#102A43] text-white text-xs font-bold flex items-center justify-center shrink-0">
-                  3
-                </span>
-                <div>
-                  <h4 className="font-semibold text-xs text-neutral-900">Datos para el envío</h4>
-                  <p className="text-[11px] text-neutral-600 mt-0.5 leading-relaxed">
-                    Completá en el carrito tus datos para coordinar la entrega:
-                  </p>
-                  <ul className="mt-1.5 space-y-0.5 text-[10px] text-neutral-700 font-medium">
-                    <li className="flex items-center gap-1">
-                      <span className="w-1 h-1 rounded-full bg-emerald-600"></span>
-                      <span>Nombre del cliente</span>
-                    </li>
-                    <li className="flex items-center gap-1">
-                      <span className="w-1 h-1 rounded-full bg-emerald-600"></span>
-                      <span>Lugar de ubicación para envío</span>
-                    </li>
-                    <li className="flex items-center gap-1">
-                      <span className="w-1 h-1 rounded-full bg-emerald-600"></span>
-                      <span>Link de Google Maps</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-
-              <div className="p-4 bg-[#FAF8F5] rounded-2xl border border-neutral-100 flex items-start gap-3">
-                <span className="w-7 h-7 rounded-full bg-[#25D366] text-white text-xs font-bold flex items-center justify-center shrink-0">
-                  4
-                </span>
-                <div>
-                  <h4 className="font-semibold text-xs text-neutral-900">Pedir por WhatsApp</h4>
-                  <p className="text-[11px] text-neutral-500 mt-0.5 leading-relaxed">
-                    Se abrirá tu chat con la lista completa de productos y todos tus datos listos para confirmar.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-        </>
-        )}
-      </main>
-
-      {/* SECTION 10 & 17: CARRITO FLOTANTE (ELEMENTO CENTRAL) */}
-      <Suspense fallback={null}>
-        <FloatingCart
-          totalItems={totalItems}
-          totalAmount={totalAmount}
-          onOpenCart={() => setIsCartOpen(true)}
-          lastAddedTime={lastAddedTime}
-        />
-      </Suspense>
-
-      {/* SECTION 12, 13 & 14: CART BOTTOM SHEET (MOBILE) / SIDE CART (DESKTOP) */}
-      <AnimatePresence>
-        {isCartOpen && (
-          <Suspense fallback={null}>
-            <CartDrawer
-              isOpen={isCartOpen}
-              onClose={() => setIsCartOpen(false)}
-              cartItems={cartItems}
-              onUpdateQuantity={handleUpdateQuantity}
-              onRemoveItem={handleRemoveItem}
-              onClearCart={handleClearCart}
-              onOrderSuccess={handleOrderSuccess}
-              onShowToast={showToast}
-            />
-          </Suspense>
-        )}
-      </AnimatePresence>
-
-      {/* Post-Purchase Order Confirmation Modal */}
-      <AnimatePresence>
-        {confirmedOrder && (
-          <Suspense fallback={null}>
-            <OrderConfirmationModal
-              isOpen={!!confirmedOrder}
-              onClose={() => setConfirmedOrder(null)}
-              order={confirmedOrder}
-            />
-          </Suspense>
-        )}
-      </AnimatePresence>
-
-      {/* Global Toast Notification System */}
-      <ToastContainer toasts={toasts} onDismiss={dismissToast} />
-
-      {/* Product Quick View Modal with Reviews */}
-      <AnimatePresence>
-        {quickViewProduct && (
-          <Suspense fallback={null}>
-            <ProductQuickView
-              product={quickViewProduct}
-              onClose={() => setQuickViewProduct(null)}
-              onAddToCart={handleAddToCart}
-              quantityInCart={cartQuantities[quickViewProduct.id] || 0}
-              reviews={reviews}
-              onOpenReviewModal={handleOpenReviewModal}
-              currentUser={googleUser}
-              allProducts={filteredProducts}
-              currentIndex={filteredProducts.findIndex(p => p.id === quickViewProduct.id)}
-              onToggleUtil={toggleUtil}
-              onNavigate={(direction) => {
-                const idx = filteredProducts.findIndex(p => p.id === quickViewProduct.id);
-                const newIdx = direction === 'next' ? idx + 1 : idx - 1;
-                if (newIdx >= 0 && newIdx < filteredProducts.length) {
-                  setQuickViewProduct(filteredProducts[newIdx]);
-                }
-              }}
-            />
-          </Suspense>
-        )}
-      </AnimatePresence>
-
-      {/* Review Form Modal */}
-      <AnimatePresence>
-        {reviewingProduct && (
-          <Suspense fallback={null}>
-            <ReviewFormModal
-              isOpen={!!reviewingProduct}
-              onClose={handleCloseReviewModal}
-              product={reviewingProduct}
-              currentUser={googleUser}
-              onUserAuthenticated={setGoogleUser}
-              onSubmitReview={handleSubmitReview}
-            />
-          </Suspense>
-        )}
-      </AnimatePresence>
-
-      {/* Admin Panel (pedidos + stock + reseñas) */}
-      <AnimatePresence>
-        {isAdminPanelOpen && (
-          <Suspense fallback={null}>
-            <AdminPanel
-              isOpen={isAdminPanelOpen}
-              onClose={() => setIsAdminPanelOpen(false)}
-              onShowToast={showToast}
-            />
-          </Suspense>
-        )}
-      </AnimatePresence>
-
-      {/* Mobile Bottom Navigation */}
-      <MobileBottomNav
-        activeTab={activeTab}
-        onTabChange={(tab) => {
-          setActiveTab(tab);
-          if (tab === 'home') window.scrollTo({ top: 0, behavior: 'smooth' });
-        }}
-        cartCount={totalItems}
-        isCartOpen={isCartOpen}
-        onOpenCart={() => setIsCartOpen(true)}
-      />
-
-        {/* Footer */}
-      <Suspense fallback={null}>
-        <Footer
-          onOpenAdminPanel={() => {
-            if (isAdmin) setIsAdminPanelOpen(true);
-            else showToast('Zona de administradores', 'Iniciá sesión con una cuenta administradora.', 'info');
-          }}
-          isAdmin={isAdmin}
-        />
-      </Suspense>
-    </div>
-  </AuthProvider>
-</ErrorBoundary>
+          </CartProvider>
+        </ProductProvider>
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }
