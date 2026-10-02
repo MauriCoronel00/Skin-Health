@@ -60,7 +60,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const addMultipleToCart = useCallback((products: Product[]) => {
     setCartItems((prev) => {
-      let updated = [...prev];
+      const updated = [...prev];
       for (const prod of products) {
         const existingIdx = updated.findIndex((item) => item.product.id === prod.id);
         if (existingIdx >= 0) {

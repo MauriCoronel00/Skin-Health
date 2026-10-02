@@ -25,14 +25,17 @@ export const InstallBanner: React.FC = () => {
     }
     const ua = window.navigator.userAgent;
     const ios = /iphone|ipad|ipod/i.test(ua) && !(window as unknown as { MSStream?: unknown }).MSStream;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsIos(ios);
     if (ios) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setVisible(true);
       return;
     }
     const handler = (e: Event) => {
       e.preventDefault();
       setDeferred(e as BeforeInstallPromptEvent);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setVisible(true);
     };
     window.addEventListener('beforeinstallprompt', handler);

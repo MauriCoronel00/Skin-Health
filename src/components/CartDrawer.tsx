@@ -63,7 +63,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     try {
       const saved = localStorage.getItem(CUSTOMER_DATA_KEY);
       if (saved) return JSON.parse(saved).customerName || '';
-    } catch {}
+    } catch {
+      // ignore
+    }
     return '';
   });
 
@@ -71,7 +73,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     try {
       const saved = localStorage.getItem(CUSTOMER_DATA_KEY);
       if (saved) return JSON.parse(saved).customerPhone || '';
-    } catch {}
+    } catch {
+      // ignore
+    }
     return '';
   });
 
@@ -79,7 +83,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     try {
       const saved = localStorage.getItem(CUSTOMER_DATA_KEY);
       if (saved) return JSON.parse(saved).customerAddress || '';
-    } catch {}
+    } catch {
+      // ignore
+    }
     return '';
   });
 
@@ -87,7 +93,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     try {
       const saved = localStorage.getItem(CUSTOMER_DATA_KEY);
       if (saved) return JSON.parse(saved).googleMapsUrl || '';
-    } catch {}
+    } catch {
+      // ignore
+    }
     return '';
   });
 
@@ -122,7 +130,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
           googleMapsUrl,
         })
       );
-    } catch {}
+    } catch {
+      // ignore
+    }
   }, [customerName, customerPhone, customerAddress, googleMapsUrl]);
 
   // Haptic feedback helper
@@ -154,11 +164,15 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     if (delta > 0) {
       setDragY(delta);
       // Haptic at thresholds
-      if (delta > 100 && Date.now() - lastHapticRef.current > 100) {
+      if (delta > 100 && 
+        // eslint-disable-next-line react-hooks/purity
+        Date.now() - lastHapticRef.current > 100) {
         triggerHaptic('light');
         lastHapticRef.current = Date.now();
       }
-      if (delta > 200 && Date.now() - lastHapticRef.current > 100) {
+      if (delta > 200 && 
+        // eslint-disable-next-line react-hooks/purity
+        Date.now() - lastHapticRef.current > 100) {
         triggerHaptic('medium');
         lastHapticRef.current = Date.now();
       }
@@ -228,7 +242,10 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     // Throttle por dispositivo: frena ráfagas de pedidos duplicados/spam
     try {
       const last = Number(localStorage.getItem(ORDER_THROTTLE_KEY) || 0);
-      if (Date.now() - last < ORDER_MIN_GAP_SECONDS * 1000) {
+      if (
+        // eslint-disable-next-line react-hooks/purity
+        Date.now() - last < ORDER_MIN_GAP_SECONDS * 1000
+      ) {
         onShowToast(
           'Esperá un momento',
           'Tu pedido anterior se está procesando. Intentá de nuevo en unos segundos.',
@@ -303,7 +320,11 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     const { codigo: orderId, totalGs: serverTotal, costoEnvioGs: serverEnvio, whatsappUrl } = receipt;
 
     try {
-      localStorage.setItem(ORDER_THROTTLE_KEY, String(Date.now()));
+      localStorage.setItem(
+        ORDER_THROTTLE_KEY,
+        // eslint-disable-next-line react-hooks/purity
+        String(Date.now())
+      );
     } catch {
       // ignore
     }

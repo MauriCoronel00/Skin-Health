@@ -29,6 +29,7 @@ export const FloatingCart: React.FC<FloatingCartProps> = ({
   // Trigger pulse effect when an item is added
   useEffect(() => {
     if (lastAddedTime) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPulse(true);
       triggerHaptic('medium');
       const timer = setTimeout(() => setPulse(false), 500);

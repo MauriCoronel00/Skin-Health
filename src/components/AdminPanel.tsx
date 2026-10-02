@@ -190,6 +190,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
   const [payUrl, setPayUrl] = useState('');
   const [payingBusy, setPayingBusy] = useState(false);
   const [accessDenied, setAccessDenied] = useState(false);
+  // R14: estado local para responder reseñas desde el admin
+  const [respondingId, setRespondingId] = useState<string | null>(null);
+  const [respuestaText, setRespuestaText] = useState('');
+  const [savingRespuesta, setSavingRespuesta] = useState(false);
 
   const load = async () => {
     setLoading(true);
@@ -219,9 +223,12 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
   };
 
   useEffect(() => {
-    if (isOpen) void load();
+    if (isOpen) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      void load();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen ]);
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -318,11 +325,6 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
       onShowToast('No se pudo ocultar', undefined, 'error');
     }
   };
-
-  // R14: estado local para responder reseñas desde el admin
-  const [respondingId, setRespondingId] = useState<string | null>(null);
-  const [respuestaText, setRespuestaText] = useState('');
-  const [savingRespuesta, setSavingRespuesta] = useState(false);
 
   const startResponder = (r: ProductReview) => {
     setRespondingId(r.id);

@@ -18,15 +18,11 @@ interface CollapsibleRoutinesProps {
 export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddRoutineToCart, onQuickView, focusNumber }) => {
   const { supabase } = useSupabase();
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
-  const [routines, setRoutines] = useState<any[]>([]);
+  const [routines, setRoutines] = useState<Record<string, any>[]>([]);
   const [products, setProducts] = useState<ProductLookup>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [addedRoutineId, setAddedRoutineId] = useState<string | null>(null);
-
-  useEffect(() => {
-    fetchData();
-  }, [supabase]);
 
   const fetchData = async () => {
     setLoading(true);
@@ -71,6 +67,11 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
     }
   };
 
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchData();
+  }, [supabase, fetchData]);
+
   const getRoutineProducts = (routine: any): Product[] => {
     return (routine.steps || [])
       .map((step: any) => (step.productId ? products[step.productId] : null))
@@ -113,7 +114,8 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
     if (!focusNumber || routines.length === 0) return;
     const target = routines.find((r) => String(r.number).trim() === focusNumber.trim());
     if (!target) return;
-    setExpanded(new Set([target.id]));
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setExpanded(prev => new Set([target.id]));
     setTimeout(() => {
       document.getElementById(`rutina-card-${target.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }, 350);

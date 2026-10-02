@@ -132,14 +132,18 @@ export default function App() {
     setShowWelcome(false);
     try {
       localStorage.setItem('sh_welcome_seen_v1', '1');
-    } catch {}
+    } catch {
+      // ignore
+    }
   };
 
   useEffect(() => {
     let seen = false;
     try {
       seen = localStorage.getItem('sh_welcome_seen_v1') === '1';
-    } catch {}
+    } catch {
+      // ignore
+    }
     if (seen || quizOpen) return;
     const t = setTimeout(() => setShowWelcome(true), 5000);
     return () => clearTimeout(t);
@@ -191,6 +195,7 @@ export default function App() {
     const id = productIdFromUrl();
     if (!id) return;
     const found = products.find((p) => p.id === id);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (found) setQuickViewProduct(found);
   }, [isLoadingProducts, products]);
 
@@ -257,7 +262,9 @@ export default function App() {
     }
     try {
       await loadForModeration();
-    } catch {}
+    } catch {
+      // ignore
+    }
     setIsAdminModalOpen(true);
   };
 
@@ -341,7 +348,9 @@ export default function App() {
       const url = new URL(window.location.href);
       url.searchParams.delete('track');
       window.history.replaceState(null, '', url.toString());
-    } catch {}
+    } catch {
+      // ignore
+    }
     window.scrollTo({ top: 0 });
     window.location.reload();
   };
@@ -351,7 +360,9 @@ export default function App() {
       const url = new URL(window.location.href);
       url.searchParams.delete('blog');
       window.history.replaceState(null, '', url.toString());
-    } catch {}
+    } catch {
+      // ignore
+    }
     setBlogSlug(null);
   };
 

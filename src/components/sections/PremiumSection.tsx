@@ -1,8 +1,6 @@
 import { ErrorBoundary } from '../ErrorBoundary';
 import { Gem, Check, MessageCircle } from 'lucide-react';
 
-interface PremiumSectionProps {}
-
 export function PremiumSection() {
   return (
     <ErrorBoundary>

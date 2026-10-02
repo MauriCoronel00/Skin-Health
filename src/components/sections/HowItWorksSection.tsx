@@ -3,8 +3,6 @@ import { Check, MessageCircle, Truck, Home, Clock, MapPin, Sparkles, X } from 'l
 import { ENVIO_ORIGEN_MAPS_URL, ENVIO_ORIGEN, ENVIO_BASE_GS } from '../../utils/envio';
 import { formatGuarani } from '../../data/products';
 
-interface HowItWorksSectionProps {}
-
 export function HowItWorksSection() {
   return (
     <ErrorBoundary>
