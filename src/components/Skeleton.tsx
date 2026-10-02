@@ -48,7 +48,7 @@ export const CategoryPillsSkeleton: React.FC = () => (
 );
 
 export const RoutineCardSkeleton: React.FC = () => (
-  <div className="card-entrance bg-white rounded-2xl border border-neutral-100 p-5 sm:p-6 flex flex-col h-full">
+  <div className="card-entrance bg-white rounded-2xl border border-neutral-100 p-5 sm:p-6 flex flex-col h-full animate-pulse">
     <div className="flex items-center gap-3 mb-4">
       <div className="skeleton-avatar w-12 h-12" />
       <div className="flex-1 space-y-1">
@@ -73,11 +73,18 @@ export const RoutineCardSkeleton: React.FC = () => (
 );
 
 export const RoutinesSectionSkeleton: React.FC = () => (
-  <div className="stagger-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-    {Array.from({ length: 3 }).map((_, i) => (
-      <RoutineCardSkeleton key={i} />
-    ))}
-  </div>
+  <section className="my-12 sm:my-16 scroll-mt-20">
+    <div className="text-center max-w-2xl mx-auto mb-8 animate-pulse">
+      <div className="skeleton-text h-6 w-48 rounded-full mx-auto mb-2" />
+      <div className="skeleton-text h-8 w-3/4 mx-auto rounded mb-2" />
+      <div className="skeleton-text h-5 w-1/2 mx-auto rounded" />
+    </div>
+    <div className="stagger-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+      {Array.from({ length: 3 }).map((_, i) => (
+        <RoutineCardSkeleton key={i} />
+      ))}
+    </div>
+  </section>
 );
 
 export const TestimonialSkeleton: React.FC = () => (

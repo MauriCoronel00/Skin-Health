@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { X, Star, Plus, Check, ShieldCheck, Sparkles, Droplets, MessageSquarePlus, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
+import { X, Star, Plus, Check, ShieldCheck, Sparkles, Droplets, MessageSquarePlus, ChevronLeft, ChevronRight, ZoomIn, Shield, Sparkle } from 'lucide-react';
 import { Product, ProductReview, ReviewUser } from '../types';
 import { formatGuarani } from '../data/products';
 import { productImageUrl } from '../data/productImage';
@@ -263,11 +263,11 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
 
           {/* Description */}
           {product.description && (
-            <div>
-              <h4 className="text-xs font-semibold uppercase tracking-wider text-[#102A43] mb-1.5">
+            <div className="pt-2">
+              <h4 className="text-xs font-semibold uppercase tracking-wider text-[#102A43] mb-2">
                 Descripción
               </h4>
-              <p className="text-sm text-neutral-700 leading-relaxed">
+              <p className="text-sm text-neutral-700 leading-relaxed text-justify">
                 {product.description}
               </p>
             </div>
@@ -275,20 +275,22 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
 
           {/* Key Benefits */}
           {product.benefits && product.benefits.length > 0 && (
-            <div>
-              <h4 className="text-xs font-semibold uppercase tracking-wider text-[#102A43] mb-2">
+            <div className="pt-2">
+              <h4 className="text-xs font-semibold uppercase tracking-wider text-[#102A43] mb-3">
                 Beneficios Principales
               </h4>
-              <ul className="space-y-2">
+              <ul className="space-y-3" role="list">
                 {product.benefits.map((b, i) => (
                   <li
                     key={i}
-                    className="flex items-start gap-2.5 text-xs sm:text-sm text-neutral-700 bg-[#FAF8F5] p-2.5 rounded-xl border border-[#102A43]/10"
+                    className="flex items-start gap-3 text-sm text-neutral-700 bg-white p-4 rounded-2xl border border-neutral-100 shadow-sm hover:shadow-md transition-shadow"
                   >
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#102A43] mt-2 shrink-0" />
-                    <div>
-                      <strong className="font-semibold text-neutral-900">{b.title}:</strong>{' '}
-                      <span className="text-neutral-600">{b.desc}</span>
+                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#102A43]/10 flex items-center justify-center">
+                      <Check className="w-4 h-4 text-[#102A43]" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <strong className="font-semibold text-neutral-900 block mb-0.5">{b.title}</strong>
+                      <span className="text-neutral-600 leading-relaxed">{b.desc}</span>
                     </div>
                   </li>
                 ))}
@@ -298,41 +300,47 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
 
           {/* Key Ingredients */}
           {product.keyIngredients && product.keyIngredients.length > 0 && (
-          <div>
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-[#102A43] mb-2">
-              Ingredientes Activos Clave
-            </h4>
-            <div className="flex flex-wrap gap-1.5">
-              {product.keyIngredients.map((ingredient, i) => (
-                <span
-                  key={i}
-                  className="inline-flex items-center gap-1.5 text-xs bg-[#FAF8F5] text-[#102A43] border border-[#102A43]/10 px-2.5 py-1 rounded-lg font-medium"
-                >
-                  <Sparkles className="w-3 h-3 text-[#102A43]/50" />
-                  {ingredient}
-                </span>
-              ))}
+            <div className="pt-2">
+              <h4 className="text-xs font-semibold uppercase tracking-wider text-[#102A43] mb-3">
+                Ingredientes Activos Clave
+              </h4>
+              <div className="flex flex-wrap gap-2">
+                {product.keyIngredients.map((ingredient, i) => (
+                  <span
+                    key={i}
+                    className="inline-flex items-center gap-2 text-sm bg-white text-[#102A43] border border-neutral-200 px-3 py-1.5 rounded-xl font-medium hover:border-[#102A43]/30 hover:bg-[#FAF8F5] transition-all"
+                  >
+                    <Droplets className="w-4 h-4 text-[#102A43]/60" />
+                    {ingredient}
+                  </span>
+                ))}
+              </div>
             </div>
-          </div>
           )}
 
           {/* Skin Type & How to use */}
           {(product.skinType || product.howToUse) && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-[#FAF8F5] p-4 rounded-2xl border border-[#102A43]/5 text-xs">
+            <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-5">
               {product.skinType && (
-                <div>
-                  <span className="font-semibold text-[#102A43] block mb-1">
-                    Tipo de Piel:
-                  </span>
-                  <p className="text-neutral-600">{product.skinType}</p>
+                <div className="bg-white p-5 rounded-2xl border border-neutral-100">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center">
+                      <Droplets className="w-4 h-4 text-emerald-600" />
+                    </div>
+                    <span className="font-semibold text-[#102A43] text-sm">Tipo de Piel</span>
+                  </div>
+                  <p className="text-sm text-neutral-700 leading-relaxed">{product.skinType}</p>
                 </div>
               )}
               {product.howToUse && (
-                <div>
-                  <span className="font-semibold text-[#102A43] block mb-1">
-                    Modo de Uso:
-                  </span>
-                  <p className="text-neutral-600">{product.howToUse}</p>
+                <div className="bg-white p-5 rounded-2xl border border-neutral-100">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-8 h-8 rounded-lg bg-sky-50 flex items-center justify-center">
+                      <Sparkles className="w-4 h-4 text-sky-600" />
+                    </div>
+                    <span className="font-semibold text-[#102A43] text-sm">Modo de Uso</span>
+                  </div>
+                  <p className="text-sm text-neutral-700 leading-relaxed">{product.howToUse}</p>
                 </div>
               )}
             </div>

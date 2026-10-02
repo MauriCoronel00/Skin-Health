@@ -82,13 +82,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       {/* Product Image: cuadrado fijo sobre fondo tinteado, zoom sutil al hover */}
       <div
         onClick={() => onQuickView(product)}
-        className="relative w-full aspect-square rounded-xl bg-[#FAF8F5] cursor-pointer overflow-hidden flex items-center justify-center p-3 sm:p-4"
+        className="relative w-full aspect-square rounded-xl bg-[#FAF8F5] cursor-pointer overflow-hidden flex items-center justify-center p-2 sm:p-3"
       >
         {product.image && !imgError ? (
           <img
             src={productImageUrl(product.image, 400)}
             alt={product.name}
-            className="w-full h-full object-contain mix-blend-multiply transition-transform duration-500 ease-out group-hover:scale-[1.05]"
+            className="w-full h-full object-contain mix-blend-multiply brightness-[1.06] contrast-[1.08] transition-transform duration-500 ease-out group-hover:scale-[1.05]"
             loading="lazy"
             onError={() => setImgError(true)}
           />
