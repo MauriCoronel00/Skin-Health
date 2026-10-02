@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it, vi, waitFor } from 'vitest';
-import { render, act, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { render, act, screen, waitFor } from '@testing-library/react';
 import { CartProvider, useCart } from '../contexts/CartContext';
 import type { Product } from '../types';
 
@@ -61,17 +61,19 @@ describe('CartContext - localStorage persistence', () => {
   });
 
   it('persiste en localStorage al agregar', async () => {
-    const setItemSpy = vi.spyOn(localStorage, 'setItem');
     render(<TestComponent />, { wrapper: Wrapper });
     await act(async () => {
       screen.getByTestId('add-btn').click();
     });
-    // Wait for the useEffect to run - localStorage is sync in JSDOM
-    expect(setItemSpy).toHaveBeenCalled();
-    const saved = JSON.parse(setItemSpy.mock.calls[0][1]);
-    expect(saved).toHaveLength(1);
-    expect(saved[0].product.id).toBe('prod-1');
-    expect(saved[0].quantity).toBe(1);
+    // Check localStorage directly since jsdom's localStorage works synchronously
+    await waitFor(() => {
+      const saved = localStorage.getItem('skinhealth_cart_v1');
+      expect(saved).toBeTruthy();
+      const parsed = JSON.parse(saved!);
+      expect(parsed).toHaveLength(1);
+      expect(parsed[0].product.id).toBe('prod-1');
+      expect(parsed[0].quantity).toBe(1);
+    }, { timeout: 1000 });
   });
 
   it('carga carrito guardado en localStorage al montar', () => {

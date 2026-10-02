@@ -62,11 +62,16 @@ describe('reviews.ts - fetchApprovedReviews', () => {
   });
 
   it('mapea filas aprobadas a ProductReview', async () => {
+    // Mock that supports chained .order().order() calls
+    let orderCallCount = 0;
     const reviewsQuery = {
       select: vi.fn().mockReturnThis(),
       eq: vi.fn().mockReturnThis(),
-      order: vi.fn().mockReturnThis(),
-      // No limit in actual code!
+      order: vi.fn(() => {
+        orderCallCount++;
+        if (orderCallCount === 1) return reviewsQuery;
+        return { then: (resolve) => resolve({ data: [mockApprovedRow], error: null }) };
+      }),
     };
     
     const utilesQuery = {
@@ -75,10 +80,11 @@ describe('reviews.ts - fetchApprovedReviews', () => {
       order: vi.fn().mockResolvedValue({ data: [], error: null }),
     };
     
-    let fromCallCount = 0;
     (supabase.from as vi.Mock).mockImplementation((table: string) => {
-      fromCallCount++;
-      if (table === 'reviews') return reviewsQuery;
+      if (table === 'reviews') {
+        orderCallCount = 0;
+        return reviewsQuery;
+      }
       if (table === 'reviews_utiles') return utilesQuery;
       return { select: vi.fn().mockReturnThis(), eq: vi.fn().mockReturnThis(), order: vi.fn().mockResolvedValue({ data: [], error: null }) };
     });
@@ -102,10 +108,15 @@ describe('reviews.ts - fetchApprovedReviews', () => {
   });
 
   it('devuelve array vacío si no hay datos', async () => {
+    let orderCallCount = 0;
     const reviewsQuery = {
       select: vi.fn().mockReturnThis(),
       eq: vi.fn().mockReturnThis(),
-      order: vi.fn().mockReturnThis(),
+      order: vi.fn(() => {
+        orderCallCount++;
+        if (orderCallCount === 1) return reviewsQuery;
+        return { then: (resolve) => resolve({ data: [], error: null }) };
+      }),
     };
     
     const utilesQuery = {
@@ -114,10 +125,11 @@ describe('reviews.ts - fetchApprovedReviews', () => {
       order: vi.fn().mockResolvedValue({ data: [], error: null }),
     };
     
-    let fromCallCount = 0;
     (supabase.from as vi.Mock).mockImplementation((table: string) => {
-      fromCallCount++;
-      if (table === 'reviews') return reviewsQuery;
+      if (table === 'reviews') {
+        orderCallCount = 0;
+        return reviewsQuery;
+      }
       if (table === 'reviews_utiles') return utilesQuery;
       return { select: vi.fn().mockReturnThis(), eq: vi.fn().mockReturnThis(), order: vi.fn().mockResolvedValue({ data: [], error: null }) };
     });
@@ -127,10 +139,15 @@ describe('reviews.ts - fetchApprovedReviews', () => {
   });
 
   it('lanza error si Supabase falla', async () => {
+    let orderCallCount = 0;
     const errorQuery = {
       select: vi.fn().mockReturnThis(),
       eq: vi.fn().mockReturnThis(),
-      order: vi.fn().mockReturnThis(),
+      order: vi.fn(() => {
+        orderCallCount++;
+        if (orderCallCount === 1) return errorQuery;
+        return { then: (resolve) => resolve({ data: null, error: new Error('DB error') }) };
+      }),
     };
     
     const utilesQuery = {
@@ -139,10 +156,11 @@ describe('reviews.ts - fetchApprovedReviews', () => {
       order: vi.fn().mockResolvedValue({ data: [], error: null }),
     };
     
-    let fromCallCount = 0;
     (supabase.from as vi.Mock).mockImplementation((table: string) => {
-      fromCallCount++;
-      if (table === 'reviews') return errorQuery;
+      if (table === 'reviews') {
+        orderCallCount = 0;
+        return errorQuery;
+      }
       if (table === 'reviews_utiles') return utilesQuery;
       return { select: vi.fn().mockReturnThis(), eq: vi.fn().mockReturnThis(), order: vi.fn().mockResolvedValue({ data: [], error: null }) };
     });
