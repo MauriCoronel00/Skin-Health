@@ -22,7 +22,7 @@ export async function fetchProducts(): Promise<Product[]> {
     .select(`
       id, nombre, marca, subtitle, categoria_id, categoria_label,
       precio_gs, imagen_url, volumen, badge, rating, reviews_count,
-      descripcion, key_ingredients, skin_type, how_to_use,
+      descripcion, key_ingredients, skin_type, how_to_use, stock,
       producto_beneficios ( titulo, descripcion, orden )
     `)
     .eq('activo', true);
@@ -49,6 +49,7 @@ export async function fetchProducts(): Promise<Product[]> {
     keyIngredients: p.key_ingredients ?? [],
     skinType: p.skin_type ?? '',
     howToUse: p.how_to_use ?? '',
+    stock: p.stock ?? undefined,
   }));
 }
 

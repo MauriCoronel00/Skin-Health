@@ -358,6 +358,16 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
           </div>
         </div>
 
+        {/* Low stock alert */}
+        {product.stock !== undefined && product.stock > 0 && product.stock <= 5 && (
+          <div className="px-4 sm:px-6 py-2">
+            <div className="inline-flex items-center gap-1.5 px-3 py-2 bg-amber-50 text-amber-700 border border-amber-100 rounded-xl animate-pulse">
+              <span className="w-2 h-2 rounded-full bg-amber-500" aria-hidden="true"></span>
+              <span className="text-xs font-medium">¡Quedan solo {product.stock} unidades! Alta demanda</span>
+            </div>
+          </div>
+        )}
+
         {/* Modal Action footer */}
         <div className="p-4 sm:p-5 bg-[#FAF8F5] border-t border-neutral-200 flex items-center justify-between gap-4">
           <div>

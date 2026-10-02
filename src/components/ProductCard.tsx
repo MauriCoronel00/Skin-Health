@@ -42,13 +42,21 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     >
       {/* Top row: badge + actions (altura fija para alinear la grilla) */}
       <div className="flex items-center justify-between gap-1 mb-2 h-6">
-        {product.badge ? (
-          <span className="inline-block text-[10px] sm:text-xs font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full bg-[#102A43]/5 text-[#102A43] truncate max-w-[62%]">
-            {product.badge}
-          </span>
-        ) : (
-          <span className="inline-block text-xs text-transparent select-none">·</span>
-        )}
+        <div className="flex items-center gap-1 flex-1 min-w-0">
+          {product.badge ? (
+            <span className="inline-block text-[10px] sm:text-xs font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full bg-[#102A43]/5 text-[#102A43] truncate">
+              {product.badge}
+            </span>
+          ) : (
+            <span className="inline-block text-xs text-transparent select-none">·</span>
+          )}
+          {product.stock !== undefined && product.stock > 0 && product.stock <= 5 && (
+            <span className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-100 animate-pulse">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500" aria-hidden="true"></span>
+              ¡Pocas unidades!
+            </span>
+          )}
+        </div>
 
         <div className="flex items-center gap-0.5 shrink-0">
           <button

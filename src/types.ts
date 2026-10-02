@@ -21,6 +21,7 @@ export interface Product {
   keyIngredients: string[];
   skinType: string;
   howToUse: string;
+  stock?: number; // Stock units available (from Supabase productos.stock)
 }
 
 export interface CartItem {
