@@ -4,7 +4,6 @@ import logoInverted from '../assets/images/brand_logo_inverted.webp';
 
 interface BrandLogoProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
-  showTagline?: boolean;
   inverted?: boolean;
   className?: string;
   variant?: 'full' | 'icon-only';
@@ -12,7 +11,6 @@ interface BrandLogoProps {
 
 export const BrandLogo: React.FC<BrandLogoProps> = ({
   size = 'md',
-  showTagline = true,
   inverted = false,
   className = '',
   variant = 'full',
@@ -34,15 +32,6 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
       : size === 'lg'
       ? 'text-xl sm:text-2xl'
       : 'text-2xl sm:text-3xl';
-
-  const tagSize =
-    size === 'sm'
-      ? 'text-[10px]'
-      : size === 'md'
-      ? 'text-[11px] sm:text-xs'
-      : size === 'lg'
-      ? 'text-xs sm:text-sm'
-      : 'text-sm';
 
   return (
     <div

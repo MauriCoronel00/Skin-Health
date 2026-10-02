@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { LogIn, User as UserIcon, Mail } from 'lucide-react';
+import { User as UserIcon } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 export const LoginButton: React.FC = () => {

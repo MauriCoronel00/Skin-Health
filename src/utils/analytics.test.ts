@@ -18,10 +18,6 @@ function mockWindow(over: Partial<MockWindow> = {}): MockWindow {
   return w;
 }
 
-function getWindow(): MockWindow {
-  return (globalThis as unknown as { window: MockWindow }).window;
-}
-
 beforeEach(() => {
   delete (globalThis as unknown as { window?: unknown }).window;
 });

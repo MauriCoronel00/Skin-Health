@@ -1,15 +1,17 @@
 import { Suspense } from 'react';
 import { ErrorBoundary } from '../ErrorBoundary';
 import { CartDrawer } from '../CartDrawer';
+import { CartItem } from '../../types';
+import { OrderDetails } from '../OrderConfirmationModal';
 
 interface CartDrawerSectionProps {
   isOpen: boolean;
   onClose: () => void;
-  cartItems: any[];
+  cartItems: CartItem[];
   onUpdateQuantity: (productId: string, delta: number) => void;
   onRemoveItem: (productId: string) => void;
   onClearCart: () => void;
-  onOrderSuccess: (order: any) => void;
+  onOrderSuccess: (order: OrderDetails) => void;
   onShowToast: (title: string, description?: string, type?: 'success' | 'error' | 'info', showWhatsAppFallback?: boolean) => void;
 }
 

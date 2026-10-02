@@ -1,8 +1,8 @@
 import { ErrorBoundary } from '../ErrorBoundary';
-import { ToastContainer } from '../Toast';
+import { ToastContainer, ToastMessage } from '../Toast';
 
 interface ToastSectionProps {
-  toasts: any[];
+  toasts: ToastMessage[];
   onDismiss: (id: string) => void;
 }
 

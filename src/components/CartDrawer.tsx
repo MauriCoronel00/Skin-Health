@@ -8,7 +8,6 @@ import {
   MessageCircle,
   ShoppingBag,
   Check,
-  Copy,
   MapPin,
   User,
   Phone,
@@ -17,7 +16,6 @@ import {
   Truck,
   Loader2,
   AlertCircle,
-  ChevronDown,
 } from 'lucide-react';
 import { CartItem } from '../types';
 import { formatGuarani } from '../data/products';
@@ -27,7 +25,6 @@ import { trackBeginCheckout } from '../utils/analytics';
 import { OrderDetails } from './OrderConfirmationModal';
 import {
   createPedido,
-  buildPedidoMessage,
   PedidoError,
   PedidoReceipt,
 } from '../data/pedidos';
@@ -107,10 +104,10 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   }>({});
 
   const [isOrdering, setIsOrdering] = useState(false);
-  const [copied, setCopied] = useState(false);
   const [distanciaKm, setDistanciaKm] = useState('');
   /** Honeypot anti-bots: los humanos nunca lo completan (campo oculto). */
   const [website, setWebsite] = useState('');
+  const lastOrderTimeRef = useRef<number>(0);
 
   // Swipe to close state
   const [dragY, setDragY] = useState(0);
@@ -164,15 +161,11 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     if (delta > 0) {
       setDragY(delta);
       // Haptic at thresholds
-      if (delta > 100 && 
-        // eslint-disable-next-line react-hooks/purity
-        Date.now() - lastHapticRef.current > 100) {
+      if (delta > 100 && Date.now() - lastHapticRef.current > 100) {
         triggerHaptic('light');
         lastHapticRef.current = Date.now();
       }
-      if (delta > 200 && 
-        // eslint-disable-next-line react-hooks/purity
-        Date.now() - lastHapticRef.current > 100) {
+      if (delta > 200 && Date.now() - lastHapticRef.current > 100) {
         triggerHaptic('medium');
         lastHapticRef.current = Date.now();
       }
@@ -219,7 +212,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     if (isOpen && cartItems.length > 0) {
       trackBeginCheckout(cartItems, totalAmount);
     }
-  }, [isOpen, cartItems.length, totalAmount]);
+  }, [isOpen, cartItems, totalAmount]);
 
   const handleBlur = (field: 'name' | 'phone' | 'address') => {
     setTouched((prev) => ({ ...prev, [field]: true }));
@@ -242,10 +235,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     // Throttle por dispositivo: frena ráfagas de pedidos duplicados/spam
     try {
       const last = Number(localStorage.getItem(ORDER_THROTTLE_KEY) || 0);
-      if (
-        // eslint-disable-next-line react-hooks/purity
-        Date.now() - last < ORDER_MIN_GAP_SECONDS * 1000
-      ) {
+      // eslint-disable-next-line react-hooks/purity
+      const now = lastOrderTimeRef.current || Date.now();
+      if (now - last < ORDER_MIN_GAP_SECONDS * 1000) {
         onShowToast(
           'Esperá un momento',
           'Tu pedido anterior se está procesando. Intentá de nuevo en unos segundos.',
@@ -320,11 +312,10 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     const { codigo: orderId, totalGs: serverTotal, costoEnvioGs: serverEnvio, whatsappUrl } = receipt;
 
     try {
-      localStorage.setItem(
-        ORDER_THROTTLE_KEY,
-        // eslint-disable-next-line react-hooks/purity
-        String(Date.now())
-      );
+      // eslint-disable-next-line react-hooks/purity
+      const now = Date.now();
+      lastOrderTimeRef.current = now;
+      localStorage.setItem(ORDER_THROTTLE_KEY, String(now));
     } catch {
       // ignore
     }
@@ -336,7 +327,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
         if (win) {
           opened = true;
         }
-      } catch (err) {
+      } catch {
         opened = false;
       }
 

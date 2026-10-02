@@ -1,16 +1,17 @@
 import { Suspense } from 'react';
 import { ErrorBoundary } from '../ErrorBoundary';
 import { ProductQuickView } from '../ProductQuickView';
+import { Product, ProductReview, ReviewUser } from '../../types';
 
 interface ProductQuickViewSectionProps {
-  quickViewProduct: any;
+  quickViewProduct: Product | null;
   onClose: () => void;
-  onAddToCart: (product: any) => void;
+  onAddToCart: (product: Product) => void;
   quantityInCart: number;
-  reviews: any[];
-  onOpenReviewModal: (product: any) => void;
-  currentUser: any;
-  allProducts: any[];
+  reviews: ProductReview[];
+  onOpenReviewModal: (product: Product) => void;
+  currentUser: ReviewUser | null;
+  allProducts: Product[];
   currentIndex: number;
   onToggleUtil: (reviewId: string) => void;
   onNavigate: (direction: 'prev' | 'next') => void;

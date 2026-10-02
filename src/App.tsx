@@ -1,9 +1,11 @@
-import { AuthProvider, useAuth } from './contexts/AuthContext';
-import { CartProvider, useCart } from './contexts/CartContext';
-import { ProductProvider, useProducts, SKIN_FILTERS, PRICE_FILTERS } from './contexts/ProductContext';
-import { BLOG_POSTS, getBlogPost } from './data/blog';
+import { useCart } from './contexts/CartContext';
+import { useProducts } from './contexts/ProductContext';
+import { getBlogPost } from './data/blog';
 import { BlogPostView } from './components/BlogPostView';
-import React, { useState, useEffect, useRef, lazy, Suspense, Component, ErrorInfo, ReactNode } from 'react';
+import React, { useState, useEffect, useRef, Suspense, Component, ErrorInfo, ReactNode } from 'react';
+import { InstallBanner } from './components/InstallBanner';
+import { TrackingView } from './components/TrackingView';
+import { ToastMessage } from './components/Toast';
 
 interface ErrorBoundaryState {
   hasError: boolean;
@@ -57,13 +59,9 @@ class ErrorBoundary extends Component<{ children: ReactNode }, ErrorBoundaryStat
     return this.props.children;
   }
 }
-import { AnimatePresence, motion } from 'motion/react';
-import { Sparkles, SlidersHorizontal, ArrowRight, MessageCircle, Gem, Check } from 'lucide-react';
-import { Product, CategoryId } from './types';
+
+import { Product } from './types';
 import { Navbar } from './components/Navbar';
-import { ProductCard } from './components/ProductCard';
-import { ProductGridSkeleton, CategoryPillsSkeleton, TestimoniosSectionSkeleton, RoutinesSectionSkeleton } from './components/Skeleton';
-import { ToastContainer, ToastMessage } from './components/Toast';
 import type { OrderDetails } from './components/OrderConfirmationModal';
 import { ReviewUser } from './types';
 import { getSavedGoogleUser } from './utils/reviewsStorage';
@@ -72,24 +70,8 @@ import { currentReviewer } from './data/identity';
 import { isCurrentUserAdmin } from './data/admin';
 import { productIdFromUrl, syncProductUrl } from './utils/productLink';
 import { setHomeSEO, injectOrganizationSchema } from './utils/seo';
-import { MobileBottomNav, TabId } from './components/MobileBottomNav';
+import { TabId } from './components/MobileBottomNav';
 
-const CartDrawer = lazy(() => import('./components/CartDrawer').then((m) => ({ default: m.CartDrawer })));
-const ProductQuickView = lazy(() => import('./components/ProductQuickView').then((m) => ({ default: m.ProductQuickView })));
-const DiagnosticQuiz = lazy(() => import('./components/DiagnosticQuiz').then((m) => ({ default: m.DiagnosticQuiz })));
-const AdminPanel = lazy(() => import('./components/AdminPanel').then((m) => ({ default: m.AdminPanel })));
-const TrackingView = lazy(() => import('./components/TrackingView').then((m) => ({ default: m.TrackingView })));
-const OrderConfirmationModal = lazy(() => import('./components/OrderConfirmationModal').then((m) => ({ default: m.OrderConfirmationModal })));
-const ReviewFormModal = lazy(() => import('./components/ReviewFormModal').then((m) => ({ default: m.ReviewFormModal })));
-
-const TestimoniosSection = lazy(() => import('./components/TestimoniosSection').then((m) => ({ default: m.TestimoniosSection })));
-const CollapsibleRoutines = lazy(() => import('./components/CollapsibleRoutines').then((m) => ({ default: m.CollapsibleRoutines })));
-const Footer = lazy(() => import('./components/Footer').then((m) => ({ default: m.Footer })));
-const WelcomePopup = lazy(() => import('./components/WelcomePopup').then((m) => ({ default: m.WelcomePopup })));
-const InstallBanner = lazy(() => import('./components/InstallBanner').then((m) => ({ default: m.InstallBanner })));
-const FloatingCart = lazy(() => import('./components/FloatingCart').then((m) => ({ default: m.FloatingCart })));
-
-// Section components with granular Error Boundaries
 import { HeroSection } from './components/sections/HeroSection';
 import { WelcomeSection } from './components/sections/WelcomeSection';
 import { QuizSection } from './components/sections/QuizSection';
@@ -120,13 +102,11 @@ export default function App() {
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
   const [googleUser, setGoogleUser] = useState<ReviewUser | null>(() => getSavedGoogleUser());
   const [reviewingProduct, setReviewingProduct] = useState<Product | null>(null);
-  const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
   const [isAdminPanelOpen, setIsAdminPanelOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
 
-  const { user } = useAuth();
   const { cartItems, addToCart, addMultipleToCart, updateQuantity, removeItem, clearCart, totalItems, totalAmount, cartQuantities, lastAddedTime } = useCart();
-  const { products, categories, isLoadingProducts, catalogError, loadCatalog, selectedCategory, setSelectedCategory, searchQuery, setSearchQuery, selectedBrand, setSelectedBrand, selectedSkin, setSelectedSkin, selectedPrice, setSelectedPrice, filteredProducts, brandOptions, productCounts, resetFilters } = useProducts();
+  const { products, categories, isLoadingProducts, catalogError, loadCatalog, selectedCategory, searchQuery, setSearchQuery, selectedBrand, setSelectedBrand, selectedSkin, setSelectedSkin, selectedPrice, setSelectedPrice, filteredProducts, brandOptions, resetFilters } = useProducts();
 
   const dismissWelcome = () => {
     setShowWelcome(false);
@@ -162,12 +142,8 @@ export default function App() {
 
   const {
     reviews,
-    adminReviews,
     submit: submitReviewHook,
-    loadForModeration,
-    moderate,
     toggleUtil,
-    responder,
   } = useReviews();
 
   useEffect(() => {
@@ -249,56 +225,6 @@ export default function App() {
       );
     }
     return result;
-  };
-
-  const handleOpenAdminReviews = async () => {
-    if (!isAdmin) {
-      showToast(
-        'Zona de administradores',
-        'Iniciá sesión con una cuenta administradora para moderar.',
-        'info'
-      );
-      return;
-    }
-    try {
-      await loadForModeration();
-    } catch {
-      // ignore
-    }
-    setIsAdminModalOpen(true);
-  };
-
-  const handleToggleReviewStatus = async (
-    reviewId: string,
-    newStatus: 'approved' | 'hidden'
-  ) => {
-    try {
-      await moderate(reviewId, newStatus === 'approved' ? 'approve' : 'hide');
-      showToast(
-        newStatus === 'hidden' ? 'Reseña oculta' : 'Reseña aprobada',
-        undefined,
-        'info'
-      );
-    } catch {
-      showToast('No se pudo actualizar', 'Probá de nuevo en unos segundos.', 'error');
-    }
-  };
-
-  const handleDeleteReview = async (reviewId: string) => {
-    try {
-      await moderate(reviewId, 'delete');
-      showToast('Reseña eliminada', undefined, 'info');
-    } catch {
-      showToast('No se pudo eliminar', 'Probá de nuevo en unos segundos.', 'error');
-    }
-  };
-
-  const handleToggleFeatured = async (reviewId: string) => {
-    try {
-      await moderate(reviewId, 'feature');
-    } catch {
-      showToast('No se pudo actualizar', 'Probá de nuevo en unos segundos.', 'error');
-    }
   };
 
   const showToast = (

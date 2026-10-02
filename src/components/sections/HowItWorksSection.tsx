@@ -1,7 +1,4 @@
 import { ErrorBoundary } from '../ErrorBoundary';
-import { Check, MessageCircle, Truck, Home, Clock, MapPin, Sparkles, X } from 'lucide-react';
-import { ENVIO_ORIGEN_MAPS_URL, ENVIO_ORIGEN, ENVIO_BASE_GS } from '../../utils/envio';
-import { formatGuarani } from '../../data/products';
 
 export function HowItWorksSection() {
   return (

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import {
   CheckCircle2,
   Copy,
@@ -8,7 +8,6 @@ import {
   Package,
   MapPin,
   Clock,
-  Sparkles,
   X,
 } from 'lucide-react';
 import { CartItem } from '../types';

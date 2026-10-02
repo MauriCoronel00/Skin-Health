@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { X, Star, Plus, Check, ShieldCheck, Sparkles, Droplets, MessageSquarePlus, ChevronLeft, ChevronRight, ZoomIn, Shield, Sparkle } from 'lucide-react';
+import { X, Star, Plus, Check, Sparkles, Droplets, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
 import { Product, ProductReview, ReviewUser } from '../types';
 import { formatGuarani } from '../data/products';
 import { productImageUrl } from '../data/productImage';
@@ -60,7 +60,7 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
     return () => {
       clearProductSEO();
     };
-  }, [product?.id]);
+  }, [product]);
 
   // Haptic feedback
   const triggerHaptic = (type: 'light' | 'medium' = 'light') => {

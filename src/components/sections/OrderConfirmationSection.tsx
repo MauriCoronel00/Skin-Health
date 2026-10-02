@@ -1,9 +1,10 @@
 import { Suspense } from 'react';
 import { ErrorBoundary } from '../ErrorBoundary';
 import { OrderConfirmationModal } from '../OrderConfirmationModal';
+import { OrderDetails } from '../OrderConfirmationModal';
 
 interface OrderConfirmationSectionProps {
-  confirmedOrder: any | null;
+  confirmedOrder: OrderDetails | null;
   onClose: () => void;
 }
 

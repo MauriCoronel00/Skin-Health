@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShoppingBag, Search, X, LogIn, Chrome } from 'lucide-react';
+import { ShoppingBag, Search, X } from 'lucide-react';
 import { motion } from 'motion/react';
 import { BrandLogo } from './BrandLogo';
 import { LoginButton } from './LoginButton';

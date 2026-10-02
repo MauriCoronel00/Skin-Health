@@ -44,8 +44,8 @@ export async function fetchProducts(): Promise<Product[]> {
     reviewsCount: p.reviews_count ?? 0,
     description: p.descripcion ?? '',
     benefits: (p.producto_beneficios ?? [])
-      .sort((a: any, b: any) => a.orden - b.orden)
-      .map((b: any) => ({ title: b.titulo, desc: b.descripcion })),
+      .sort((a, b) => a.orden - b.orden)
+      .map((b) => ({ title: b.titulo, desc: b.descripcion })),
     keyIngredients: p.key_ingredients ?? [],
     skinType: p.skin_type ?? '',
     howToUse: p.how_to_use ?? '',

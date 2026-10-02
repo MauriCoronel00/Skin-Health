@@ -9,6 +9,28 @@ import type { Product } from '../types';
 
 type ProductLookup = Record<string, Product>;
 
+interface RoutineStep {
+  productId: string;
+  order: number;
+  note?: string;
+  label?: string;
+  alternativeProductIds?: string[];
+  stepNumber?: number;
+}
+
+interface SkincareRoutine {
+  id: string;
+  number: string | number;
+  name: string;
+  title: string;
+  description?: string;
+  steps: RoutineStep[];
+  instructionText?: string;
+  instructionType?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
 interface CollapsibleRoutinesProps {
   onAddRoutineToCart?: (products: Product[]) => void;
   onQuickView?: (product: Product) => void;
@@ -19,7 +41,7 @@ interface CollapsibleRoutinesProps {
 export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddRoutineToCart, onQuickView, focusNumber }) => {
   const { supabase } = useSupabase();
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
-  const [routines, setRoutines] = useState<Record<string, any>[]>([]);
+  const [routines, setRoutines] = useState<SkincareRoutine[]>([]);
   const [products, setProducts] = useState<ProductLookup>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -61,12 +83,12 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
       setProducts(lookup);
       setRoutines(sortedRoutines);
       setLoading(false);
-    } catch (err: any) {
-      console.error('❌ Excepción al fetch:', err.message || err);
-      setError(err.message || 'Error inesperado');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Error inesperado';
+      console.error('❌ Excepción al fetch:', message);
+      setError(message);
       setLoading(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [supabase]);
 
   useEffect(() => {
@@ -74,17 +96,17 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
     fetchData();
   }, [fetchData]);
 
-  const getRoutineProducts = (routine: any): Product[] => {
+  const getRoutineProducts = (routine: SkincareRoutine): Product[] => {
     return (routine.steps || [])
-      .map((step: any) => (step.productId ? products[step.productId] : null))
+      .map((step: RoutineStep) => (step.productId ? products[step.productId] : null))
       .filter((p: Product | null | undefined): p is Product => p != null);
   };
 
-  const getRoutineTotal = (routine: any): number => {
+  const getRoutineTotal = (routine: SkincareRoutine): number => {
     return getRoutineProducts(routine).reduce((sum, p) => sum + (p.price || 0), 0);
   };
 
-  const handleAddRoutine = (e: React.MouseEvent, routine: any) => {
+  const handleAddRoutine = (e: React.MouseEvent, routine: SkincareRoutine) => {
     e.stopPropagation();
     const routineProducts = getRoutineProducts(routine);
     if (routineProducts.length === 0 || !onAddRoutineToCart) return;
@@ -100,8 +122,8 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
       if (next.has(id)) {
         next.delete(id);
       } else {
-        next.forEach(currentId => {
-          if (currentId !== id) next.delete(currentId);
+        next.forEach(_currentId => {
+          if (_currentId !== id) next.delete(_currentId);
         });
         next.add(id);
       }
@@ -117,7 +139,7 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
     const target = routines.find((r) => String(r.number).trim() === focusNumber.trim());
     if (!target) return;
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setExpanded(prev => new Set([target.id]));
+    setExpanded(_prev => new Set([target.id]));
     setTimeout(() => {
       document.getElementById(`rutina-card-${target.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }, 350);
@@ -221,7 +243,7 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
                   >
                     {/* Steps Grid */}
                     <div className={`grid ${(routine.steps ?? []).length === 3 ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'} gap-4 relative`}>
-                      {(routine.steps ?? []).map((step: any) => {
+                      {(routine.steps ?? []).map((step: RoutineStep) => {
                         const product = step.productId ? products[step.productId] : null;
                         const productName = product?.name || step.label;
                         const productBrand = product?.brand || '';

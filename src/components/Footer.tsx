@@ -1,5 +1,5 @@
 import React from 'react';
-import { MessageCircle, ShieldCheck, Truck, RefreshCw, Heart, Instagram } from 'lucide-react';
+import { MessageCircle, ShieldCheck, Truck, Heart, Instagram } from 'lucide-react';
 import { STORE_PHONE_NUMBER, STORE_PHONE_DISPLAY } from '../data/products';
 
 interface FooterProps {

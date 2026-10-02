@@ -3,7 +3,19 @@ import crypto from 'crypto';
 // Vercel: disable auto JSON parsing to verify raw body
 export const config = { api: { bodyParser: false } };
 
-async function getRawBody(req: any): Promise<Buffer> {
+interface VercelRequest {
+  method?: string;
+  headers: Record<string, string | string[] | undefined>;
+  on(event: 'data' | 'end' | 'error', listener: (chunk: Buffer) => void): this;
+}
+
+interface VercelResponse {
+  status(code: number): VercelResponse;
+  send(body: string): VercelResponse;
+  json(body: object): VercelResponse;
+}
+
+async function getRawBody(req: VercelRequest): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     const chunks: Buffer[] = [];
     req.on('data', (c: Buffer) => chunks.push(c));
@@ -12,7 +24,7 @@ async function getRawBody(req: any): Promise<Buffer> {
   });
 }
 
-export default async function handler(req: any, res: any) {
+export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') return res.status(405).send('Method Not Allowed');
 
   const raw = await getRawBody(req);
@@ -30,7 +42,7 @@ export default async function handler(req: any, res: any) {
   }
 
   // Must return 200 within 10s (SKILL: webhooks-overview.md:27)
-  let payload: any;
+  let payload: unknown;
   try {
     payload = JSON.parse(raw.toString('utf8'));
   } catch {
@@ -47,8 +59,8 @@ export default async function handler(req: any, res: any) {
     const type = evt.type || evt.event || event;
     if (type === 'whatsapp.message.received' || event === 'whatsapp.message.received') {
       const msg = evt.data || evt.payload || evt;
-      const from = msg.from || msg.source || msg.contact?.wa_id || msg.from_number || msg.message?.from || msg.conversation?.phone_number || (evt as any).message?.from;
-      const text = msg.text?.body || msg.message?.text?.body || (evt as any).message?.text?.body || '';
+      const from = msg.from || msg.source || msg.contact?.wa_id || msg.from_number || msg.message?.from || msg.conversation?.phone_number || (evt as { message?: { from?: string } }).message?.from;
+      const text = msg.text?.body || msg.message?.text?.body || (evt as { message?: { text?: { body?: string } } }).message?.text?.body || '';
       console.log(`Inbound from ${from}: ${text}`);
 
       // Repo webhook ahora solo loguea — Flow Kapso whats-app-support-agent maneja saludo + lookupPedido + handoff

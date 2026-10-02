@@ -1,9 +1,9 @@
 import { ErrorBoundary } from '../ErrorBoundary';
-import { MobileBottomNav } from '../MobileBottomNav';
+import { MobileBottomNav, TabId } from '../MobileBottomNav';
 
 interface MobileBottomNavSectionProps {
-  activeTab: any;
-  onTabChange: (tab: any) => void;
+  activeTab: TabId;
+  onTabChange: (tab: TabId) => void;
   cartCount: number;
   isCartOpen: boolean;
   onOpenCart: () => void;

@@ -2,10 +2,11 @@ import { Suspense } from 'react';
 import { ErrorBoundary } from '../ErrorBoundary';
 import { CollapsibleRoutines } from '../CollapsibleRoutines';
 import { RoutinesSectionSkeleton } from '../Skeleton';
+import { Product } from '../../types';
 
 interface RoutinesSectionProps {
-  onAddRoutineToCart: (products: any[]) => void;
-  onQuickView: (product: any) => void;
+  onAddRoutineToCart: (products: Product[]) => void;
+  onQuickView: (product: Product) => void;
   focusNumber: string | null;
 }
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { ShieldCheck, Eye, EyeOff, Trash2, CheckCircle, Star, X, AlertTriangle } from 'lucide-react';
+import { ShieldCheck, Eye, EyeOff, Trash2, X } from 'lucide-react';
 import { ProductReview } from '../types';
 import { formatReviewDate } from '../utils/reviewsStorage';
 
@@ -10,7 +10,6 @@ interface AdminReviewsModalProps {
   reviews: ProductReview[];
   onToggleStatus: (reviewId: string, newStatus: 'approved' | 'hidden') => void;
   onDeleteReview: (reviewId: string) => void;
-  onToggleFeatured: (reviewId: string) => void;
 }
 
 export const AdminReviewsModal: React.FC<AdminReviewsModalProps> = ({
@@ -19,7 +18,6 @@ export const AdminReviewsModal: React.FC<AdminReviewsModalProps> = ({
   reviews,
   onToggleStatus,
   onDeleteReview,
-  onToggleFeatured,
 }) => {
   const [filter, setFilter] = useState<'all' | 'user' | 'example' | 'hidden' | 'pending'>('all');
 

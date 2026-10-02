@@ -41,7 +41,7 @@ const mockApprovedReview = {
 };
 
 function TestComponent() {
-  const { reviews, adminReviews, loading, refresh, submit, loadForModeration, moderate, toggleUtil, responder } = useReviews();
+  const { reviews, loading, refresh, submit, loadForModeration, moderate, toggleUtil, responder } = useReviews();
   return (
     <div>
       <span data-testid="loading">{loading ? 'true' : 'false'}</span>
@@ -98,7 +98,6 @@ describe('useReviews hook', () => {
   });
 
   it('submit llama a submitReview y devuelve ok', async () => {
-    const { result } = await import('@testing-library/react');
     let submitResult: { ok: boolean; message?: string } = { ok: false };
     
     const TestSubmit = () => {

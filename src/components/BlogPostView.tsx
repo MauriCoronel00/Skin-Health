@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { motion } from 'motion/react';
 import { ArrowLeft, Clock, Calendar, ChevronRight } from 'lucide-react';
 import { BlogPost } from '../data/blog';
 import { useProducts } from '../contexts/ProductContext';

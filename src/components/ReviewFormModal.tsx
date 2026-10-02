@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import { CheckCircle2, AlertCircle, Send, X, ImagePlus, Loader2 } from 'lucide-react';
 import { Product, ReviewUser, TipoPiel } from '../types';
 import { StarRatingInput } from './StarRatingInput';
@@ -65,7 +65,7 @@ export const ReviewFormModal: React.FC<ReviewFormModalProps> = ({
     try {
       const url = await uploadReviewPhoto(file);
       setFotos((prev) => [...prev, url]);
-    } catch (err: any) {
+    } catch (err: unknown) {
       setErrorMsg('No pudimos subir la foto. Probá de nuevo.');
       console.error(err);
     } finally {
