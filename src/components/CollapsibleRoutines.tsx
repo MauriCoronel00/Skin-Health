@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'motion/react';
 import { ChevronDown, ChevronUp, ShoppingBag, Repeat } from 'lucide-react';
 import { useSupabase } from '../hooks/useSupabase';
 import { fetchProducts, formatGuarani } from '../data/products';
 import { productImageUrl } from '../data/productImage';
+import { RoutinesSectionSkeleton } from './Skeleton';
 import type { Product } from '../types';
 
 type ProductLookup = Record<string, Product>;
@@ -24,7 +25,7 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
   const [error, setError] = useState<string | null>(null);
   const [addedRoutineId, setAddedRoutineId] = useState<string | null>(null);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -65,12 +66,13 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
       setError(err.message || 'Error inesperado');
       setLoading(false);
     }
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [supabase]);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchData();
-  }, [supabase, fetchData]);
+  }, [fetchData]);
 
   const getRoutineProducts = (routine: any): Product[] => {
     return (routine.steps || [])
@@ -122,11 +124,7 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
   }, [focusNumber, routines]);
 
   if (loading) {
-    return (
-      <div className="text-center py-12 text-neutral-500">
-        Cargando rutinas de skincare...
-      </div>
-    );
+    return <RoutinesSectionSkeleton />;
   }
 
   // Si hubo error, mostrar mensaje útil

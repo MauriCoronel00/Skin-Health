@@ -34,10 +34,17 @@
     --brand-navy-hover: #1e3a5f;
     --brand-light: #dbeafe;
 
-    /* Brand accent — verde salvia sobrio, complementa navy */
+    /* Brand accent — verde salvia sobrio, complementa navy.
+       Único acento decorativo de la marca:
+       - --brand-accent-light: sobre fondos navy (iconos, checks)
+       - --brand-accent-ink:   texto/acentos sobre fondos claros (contraste AA)
+       El esmeralda queda solo para estados semánticos de confirmación
+       (toasts, estados de pedido, check de copiado). */
     --brand-accent: #93A896;
     --brand-accent-hover: #7d9482;
     --brand-accent-soft: #E5EDE7;
+    --brand-accent-light: #B9CBBE;
+    --brand-accent-ink: #55705E;
 
     /* Semanticos */
     --color-success: #059669;
@@ -228,4 +235,16 @@ select:focus-visible,
 textarea:focus-visible {
   outline: 2px solid #102A43;
   outline-offset: 1px;
+}
+
+/* Respeta la preferencia del sistema: sin animaciones ni transiciones */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

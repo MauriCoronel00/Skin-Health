@@ -87,7 +87,7 @@ export const FloatingCart: React.FC<FloatingCartProps> = ({
                   transition={{ duration: 0.4 }}
                   className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white"
                 >
-                  <ShoppingBag className="w-4 h-4 text-emerald-400" />
+                  <ShoppingBag className="w-4 h-4 text-[#B9CBBE]" />
                 </motion.div>
                 <div className="flex items-baseline gap-1.5">
                   <motion.span
@@ -110,7 +110,7 @@ export const FloatingCart: React.FC<FloatingCartProps> = ({
                   key={totalAmount}
                   initial={{ opacity: 0.5, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="font-semibold text-base sm:text-lg text-emerald-300 tracking-tight"
+                  className="font-semibold text-base sm:text-lg text-[#B9CBBE] tracking-tight"
                 >
                   {formatGuarani(totalAmount)}
                 </motion.span>
@@ -125,7 +125,7 @@ export const FloatingCart: React.FC<FloatingCartProps> = ({
               className="w-full bg-white hover:bg-neutral-100 text-[#0E2338] font-semibold text-sm sm:text-base py-2.5 px-4 rounded-xl sm:rounded-2xl flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-md group"
             >
               <span>Ver pedido</span>
-              <ArrowRight className="w-4 h-4 text-emerald-600 transition-transform group-hover:translate-x-1" />
+              <ArrowRight className="w-4 h-4 text-[#102A43] transition-transform group-hover:translate-x-1" />
             </motion.button>
           </motion.div>
         </aside>

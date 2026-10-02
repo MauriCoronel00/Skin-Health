@@ -37,7 +37,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog, onOpe
             animate={{ opacity: 1, y: 0 }}
             className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 text-xs font-medium text-white mb-4 w-fit shadow-xs backdrop-blur-sm"
           >
-            <Sparkles className="w-3.5 h-3.5 text-emerald-300" />
+            <Sparkles className="w-3.5 h-3.5 text-[#B9CBBE]" />
             <span>Skincare importado · Asunción, Paraguay</span>
           </motion.div>
 

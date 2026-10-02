@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { motion } from 'motion/react';
-import { Share2, Link2, Eye, Plus } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Share2, Link2, Eye, Plus, Check } from 'lucide-react';
 import { Product } from '../types';
 import { productLink } from '../utils/productLink';
 import { productImageUrl } from '../data/productImage';
@@ -21,6 +21,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 }) => {
   const [linkCopied, setLinkCopied] = useState(false);
   const [imgError, setImgError] = useState(false);
+  const [justAdded, setJustAdded] = useState(false);
+
+  const handleAdd = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!onAdd) return;
+    onAdd(product);
+    setJustAdded(true);
+    setTimeout(() => setJustAdded(false), 1200);
+  };
 
   return (
     <motion.div
@@ -29,12 +38,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.3 }}
-      className="group relative bg-white rounded-2xl p-2 sm:p-3 border border-[#102A43]/10 hover:border-[#102A43]/20 hover:shadow-[0_4px_20px_rgba(16,42,67,0.1)] transition-all duration-300"
+      className="group relative bg-white rounded-2xl p-2 sm:p-3 border border-[#102A43]/10 hover:border-[#102A43]/25 hover:shadow-[0_6px_24px_rgba(16,42,67,0.12)] transition-[border-color,box-shadow] duration-300"
     >
       {/* Top row: badge + actions (altura fija para alinear la grilla) */}
       <div className="flex items-center justify-between gap-1 mb-2 h-6">
         {product.badge ? (
-          <span className="inline-block text-xs font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#102A43]/5 text-[#102A43] truncate">
+          <span className="inline-block text-[10px] sm:text-xs font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full bg-[#102A43]/5 text-[#102A43] truncate max-w-[62%]">
             {product.badge}
           </span>
         ) : (
@@ -70,16 +79,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </div>
       </div>
 
-      {/* Product Image: cuadrado fijo, todas las cards igual altura */}
+      {/* Product Image: cuadrado fijo sobre fondo tinteado, zoom sutil al hover */}
       <div
         onClick={() => onQuickView(product)}
-        className="relative w-full aspect-square rounded-xl bg-white cursor-pointer overflow-hidden flex items-center justify-center p-3"
+        className="relative w-full aspect-square rounded-xl bg-[#FAF8F5] cursor-pointer overflow-hidden flex items-center justify-center p-3 sm:p-4"
       >
         {product.image && !imgError ? (
           <img
             src={productImageUrl(product.image, 400)}
             alt={product.name}
-            className="w-full h-full object-contain"
+            className="w-full h-full object-contain mix-blend-multiply transition-transform duration-500 ease-out group-hover:scale-[1.05]"
             loading="lazy"
             onError={() => setImgError(true)}
           />
@@ -101,23 +110,64 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             {quantityInCart} en carrito
           </motion.span>
         )}
+      </div>
 
-        {/* Price chip + quick add (comparar y comprar sin abrir la ficha) */}
-        <span className="absolute bottom-2 left-2 bg-white/90 backdrop-blur-xs text-[#102A43] text-[11px] font-bold px-2 py-1 rounded-full shadow-xs border border-[#102A43]/10">
-          {formatGuarani(product.price)}
-        </span>
-        {onAdd && (
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onAdd(product);
-            }}
-            aria-label={`Agregar ${product.name} al pedido`}
-            className="absolute bottom-2 right-2 w-8 h-8 rounded-full bg-[#102A43] text-white flex items-center justify-center shadow-md hover:bg-[#102A43]/90 active:scale-95 transition-all"
-          >
-            <Plus className="w-4 h-4" />
-          </button>
-        )}
+      {/* Info: marca, nombre y fila de precio + agregar */}
+      <div className="px-0.5 pt-2.5 pb-0.5">
+        <p className="text-[10px] sm:text-[11px] font-medium text-neutral-400 truncate">
+          {product.brand}
+          {product.volume ? ` · ${product.volume}` : ''}
+        </p>
+        <h3
+          onClick={() => onQuickView(product)}
+          className="font-serif text-[13px] sm:text-sm font-semibold text-[#102A43] leading-snug line-clamp-2 min-h-[2.6em] mt-0.5 cursor-pointer hover:text-[#1e3a5f] transition-colors"
+        >
+          {product.name}
+        </h3>
+
+        <div className="flex items-center justify-between gap-2 mt-2">
+          <span className="text-sm sm:text-[15px] font-bold text-[#102A43] tabular-nums tracking-tight">
+            {formatGuarani(product.price)}
+          </span>
+          {onAdd && (
+            <button
+              onClick={handleAdd}
+              aria-label={`Agregar ${product.name} al pedido`}
+              aria-pressed={justAdded}
+              className={`w-8 h-8 rounded-full flex items-center justify-center shadow-md active:scale-90 transition-colors duration-300 ${
+                justAdded
+                  ? 'bg-[#93A896] text-[#102A43]'
+                  : 'bg-[#102A43] text-white hover:bg-[#1e3a5f]'
+              }`}
+            >
+              <AnimatePresence mode="wait" initial={false}>
+                {justAdded ? (
+                  <motion.span
+                    key="check"
+                    initial={{ scale: 0.4, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.4, opacity: 0 }}
+                    transition={{ type: 'spring', stiffness: 500, damping: 22 }}
+                    className="flex"
+                  >
+                    <Check className="w-4 h-4" strokeWidth={3} />
+                  </motion.span>
+                ) : (
+                  <motion.span
+                    key="plus"
+                    initial={{ scale: 0.4, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.4, opacity: 0 }}
+                    transition={{ type: 'spring', stiffness: 500, damping: 22 }}
+                    className="flex"
+                  >
+                    <Plus className="w-4 h-4" />
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </button>
+          )}
+        </div>
       </div>
     </motion.div>
   );

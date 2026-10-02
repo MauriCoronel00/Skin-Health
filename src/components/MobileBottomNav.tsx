@@ -111,7 +111,8 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
                     key={cartCount}
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="absolute -top-1 -right-1 bg-emerald-500 text-white text-[9px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-xs"
+                    transition={{ type: 'spring', stiffness: 500, damping: 20 }}
+                    className="absolute -top-1 -right-1 bg-[#102A43] text-white text-[9px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-xs ring-2 ring-white"
                   >
                     {cartCount > 9 ? '9+' : cartCount}
                   </motion.span>

@@ -78,7 +78,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                   key={totalItems}
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  className="absolute -top-1.5 -right-2 bg-emerald-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-xs"
+                  transition={{ type: 'spring', stiffness: 500, damping: 20 }}
+                  className="absolute -top-1.5 -right-2 bg-white text-[#102A43] text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-xs ring-1 ring-[#102A43]/15"
                 >
                   {totalItems}
                 </motion.span>

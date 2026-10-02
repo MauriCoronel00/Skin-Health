@@ -50,7 +50,7 @@ export const WelcomePopup: React.FC<WelcomePopupProps> = ({ open, onStartQuiz, o
             </button>
 
             <div className="w-11 h-11 rounded-2xl bg-[#102A43] flex items-center justify-center mb-4">
-              <Sparkles className="w-5 h-5 text-emerald-300" />
+              <Sparkles className="w-5 h-5 text-[#B9CBBE]" />
             </div>
             <h2 id="welcome-popup-title" className="font-serif text-2xl font-semibold text-[#102A43] leading-tight mb-2">
               Descubrí tu rutina ideal

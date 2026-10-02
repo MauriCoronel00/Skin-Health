@@ -15,7 +15,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdminPanel, isAdmin }) => 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pb-10 border-b border-white/10">
           <div className="flex items-start gap-3">
             <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center shrink-0">
-              <ShieldCheck className="w-5 h-5 text-emerald-400" />
+              <ShieldCheck className="w-5 h-5 text-[#B9CBBE]" />
             </div>
             <div>
               <h4 className="font-semibold text-sm text-white">100% Originales</h4>
@@ -39,7 +39,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdminPanel, isAdmin }) => 
 
           <div className="flex items-start gap-3">
             <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center shrink-0">
-              <MessageCircle className="w-5 h-5 text-emerald-400" />
+              <MessageCircle className="w-5 h-5 text-[#B9CBBE]" />
             </div>
             <div>
               <h4 className="font-semibold text-sm text-white">Pedidos por WhatsApp</h4>
@@ -58,7 +58,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdminPanel, isAdmin }) => 
             </p>
             <a
               href="?track="
-              className="text-sm font-semibold text-white hover:text-emerald-300 inline-flex items-center gap-1.5 mt-1"
+              className="text-sm font-semibold text-white hover:text-[#B9CBBE] inline-flex items-center gap-1.5 mt-1"
             >
               <Truck className="w-4 h-4" />
               <span>Seguir mi pedido</span>
@@ -88,7 +88,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdminPanel, isAdmin }) => 
               href={`https://wa.me/${STORE_PHONE_NUMBER}?text=Hola%20Skin%20Health`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm font-semibold text-emerald-400 hover:text-emerald-300 inline-flex items-center gap-1.5 mt-1"
+              className="text-sm font-semibold text-[#B9CBBE] hover:text-[#B9CBBE] inline-flex items-center gap-1.5 mt-1"
             >
               <MessageCircle className="w-4 h-4" />
               <span>{STORE_PHONE_DISPLAY} (WhatsApp)</span>
@@ -107,7 +107,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdminPanel, isAdmin }) => 
               <button
                 type="button"
                 onClick={onOpenAdminPanel}
-                className="text-emerald-300/80 hover:text-emerald-200 transition-colors text-[11px] underline cursor-pointer"
+                className="text-[#B9CBBE]/80 hover:text-[#B9CBBE] transition-colors text-[11px] underline cursor-pointer"
               >
                 Panel admin
               </button>
