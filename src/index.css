@@ -9,6 +9,7 @@
     -webkit-overflow-scrolling: touch;
     height: 100%;
     -webkit-text-size-adjust: 100%;
+    color-scheme: dark light;
   }
 
   body {
@@ -21,6 +22,19 @@
     min-height: 100vh;
     padding-bottom: env(safe-area-inset-bottom);
     touch-action: manipulation;
+  }
+
+  /* Native app feel - global */
+  html, body {
+    overscroll-behavior: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  /* Evita selección de texto molesta en elementos interactivos de la UI móvil */
+  button, nav, footer, .no-select {
+    -webkit-user-select: none;
+    user-select: none;
   }
 
   /* iOS safe area helpers */
@@ -163,6 +177,20 @@
 @keyframes skeleton-pulse {
   0%, 100% { background-position: 0% 50%; opacity: 0.6; }
   50% { background-position: 100% 50%; opacity: 1; }
+}
+
+/* Native Sheet Animation - iOS/Android native feel for modals/drawers */
+@keyframes slideUpSheet {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.animate-sheet-in {
+  animation: slideUpSheet 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* Hero Ritual CTA Premium */

@@ -98,7 +98,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
               key={tab.id}
               onClick={() => handleTabClick(tab.id)}
               whileTap={{ scale: 0.92 }}
-              className={`flex flex-col items-center justify-center gap-1 flex-1 min-w-0 cursor-pointer relative ${
+              className={`flex flex-col items-center justify-center gap-1 flex-1 min-w-0 cursor-pointer relative active:scale-90 transition-transform duration-100 ${
                 isActive ? 'text-[#102A43]' : 'text-neutral-400'
               }`}
               aria-current={isActive ? 'page' : undefined}

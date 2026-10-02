@@ -82,7 +82,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       {/* Product Image: cuadrado fijo sobre fondo tinteado, zoom sutil al hover */}
       <div
         onClick={() => onQuickView(product)}
-        className="relative w-full aspect-square rounded-xl bg-[#FAF8F5] cursor-pointer overflow-hidden flex items-center justify-center p-2 sm:p-3"
+        className="relative w-full aspect-square rounded-xl bg-[#FAF8F5] cursor-pointer overflow-hidden flex items-center justify-center p-2 sm:p-3 tap-feedback"
       >
         {product.image && !imgError ? (
           <img
@@ -134,7 +134,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               onClick={handleAdd}
               aria-label={`Agregar ${product.name} al pedido`}
               aria-pressed={justAdded}
-              className={`w-8 h-8 rounded-full flex items-center justify-center shadow-md active:scale-90 transition-colors duration-300 ${
+              className={`w-8 h-8 rounded-full flex items-center justify-center shadow-md active:scale-95 transition-transform duration-150 ease-out active:brightness-95 transition-colors duration-300 ${
                 justAdded
                   ? 'bg-[#93A896] text-[#102A43]'
                   : 'bg-[#102A43] text-white hover:bg-[#1e3a5f]'
