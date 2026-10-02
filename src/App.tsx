@@ -75,6 +75,7 @@ import { TabId } from './components/MobileBottomNav';
 import { HeroSection } from './components/sections/HeroSection';
 import { WelcomeSection } from './components/sections/WelcomeSection';
 import { QuizSection } from './components/sections/QuizSection';
+import { SavedQuizBannerSection } from './components/sections/SavedQuizBannerSection';
 import { RoutinesSectionWrapper } from './components/sections/RoutinesSection';
 import { CatalogFiltersSection } from './components/sections/CatalogFiltersSection';
 import { CatalogSection } from './components/sections/CatalogSection';
@@ -296,6 +297,17 @@ export default function App() {
     catalogRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const handleSavedQuizRetake = () => {
+    setQuizOpen(true);
+  };
+
+  const handleSavedQuizViewRoutine = (routineId: string) => {
+    setFocusRoutineNumber(routineId);
+    setTimeout(() => {
+      document.getElementById('rutinas')?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  };
+
   const handleBlogProductClick = (productId: string) => {
     exitBlog();
     setTimeout(() => {
@@ -331,6 +343,11 @@ export default function App() {
                 ) : (
                 <>
                 <HeroSection onScrollToCatalog={scrollToCatalog} onOpenQuiz={() => setQuizOpen(true)} />
+
+                <SavedQuizBannerSection
+                  onRetakeQuiz={handleSavedQuizRetake}
+                  onViewRoutine={handleSavedQuizViewRoutine}
+                />
 
                 <WelcomeSection
                   open={showWelcome}

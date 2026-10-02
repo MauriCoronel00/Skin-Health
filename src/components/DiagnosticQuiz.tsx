@@ -1,6 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowRight, ArrowLeft, Check, Sparkles, Leaf, Droplets, ShieldCheck, X } from 'lucide-react';
+
+const QUIZ_STORAGE_KEY = 'skinhealth_quiz_result_v1';
+
+interface SavedQuizResult {
+  routineId: string;
+  routineTitle: string;
+  skinType: string;
+  concerns: string[];
+  routineLevel: string;
+  spfHabit: string;
+  completedAt: string;
+}
 
 interface DiagnosticQuizProps {
   isOpen: boolean;
@@ -82,6 +94,26 @@ export const DiagnosticQuiz: React.FC<DiagnosticQuizProps> = ({
   const [answers, setAnswers] = useState<Record<number, string | string[]>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [matchedRoutine, setMatchedRoutine] = useState<string | null>(null);
+
+  // Save quiz result to localStorage when matched
+  useEffect(() => {
+    if (matchedRoutine) {
+      const savedResult: SavedQuizResult = {
+        routineId: matchedRoutine,
+        routineTitle: ROUTINE_TITLES[matchedRoutine] || matchedRoutine,
+        skinType: (answers[1] as string) ?? 'mixta',
+        concerns: ((answers[2] as string[]) ?? []) as string[],
+        routineLevel: (answers[3] as string) ?? 'completa',
+        spfHabit: (answers[4] as string) ?? 'nunca',
+        completedAt: new Date().toISOString(),
+      };
+      try {
+        localStorage.setItem(QUIZ_STORAGE_KEY, JSON.stringify(savedResult));
+      } catch {
+        // ignore storage errors
+      }
+    }
+  }, [matchedRoutine, answers]);
 
   if (!isOpen) return null;
 
