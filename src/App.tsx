@@ -382,10 +382,7 @@ export default function App() {
 
   return (
     <ErrorBoundary>
-      <AuthProvider>
-        <ProductProvider>
-          <CartProvider>
-            <div className="min-h-screen bg-[#FAF8F5] text-neutral-900 flex flex-col selection:bg-[#102A43] selection:text-white">
+      <div className="min-h-screen bg-[#FAF8F5] text-neutral-900 flex flex-col selection:bg-[#102A43] selection:text-white">
               <Navbar
                 totalItems={totalItems}
                 totalAmount={totalAmount}
@@ -577,9 +574,6 @@ export default function App() {
                 isAdmin={isAdmin}
               />
             </div>
-          </CartProvider>
-        </ProductProvider>
-      </AuthProvider>
     </ErrorBoundary>
   );
 }
