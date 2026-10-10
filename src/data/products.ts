@@ -1,4 +1,4 @@
-import { Product, CategoryOption, ProductVariant } from '../types';
+import { Product, CategoryOption, ProductVariant, Language } from '../types';
 import { supabase } from '../lib/supabaseClient';
 
 export async function fetchCategories(): Promise<CategoryOption[]> {
@@ -16,7 +16,7 @@ export async function fetchCategories(): Promise<CategoryOption[]> {
   }));
 }
 
-export async function fetchProducts(): Promise<Product[]> {
+export async function fetchProducts(language: Language = 'es'): Promise<Product[]> {
   const { data, error } = await supabase
     .from('productos')
     .select(`
@@ -46,11 +46,16 @@ export async function fetchProducts(): Promise<Product[]> {
         active: v.active,
       }));
 
+    // Helper para obtener valor por idioma con fallback
+    const getText = (suffix: string, fallback: string = '') => {
+      return p[`${suffix}_${language}`] || p[suffix] || fallback;
+    };
+
     return {
       id: p.id,
-      name: p.nombre ?? '',
+      name: getText('nombre') ?? p.nombre ?? '',
       brand: p.marca,
-      subtitle: p.subtitle ?? '',
+      subtitle: getText('subtitle'),
       category: p.categoria_id,
       categoryLabel: p.categoria_label ?? '',
       price: p.precio_gs ?? 0,
@@ -59,13 +64,13 @@ export async function fetchProducts(): Promise<Product[]> {
       badge: p.badge ?? undefined,
       rating: Number(p.rating ?? 0),
       reviewsCount: p.reviews_count ?? 0,
-      description: p.descripcion ?? '',
+      description: getText('descripcion'),
+      skinType: getText('skin_type'),
+      howToUse: getText('how_to_use'),
       benefits: (p.producto_beneficios ?? [])
-        .sort((a, b) => a.orden - b.orden)
-        .map((b) => ({ title: b.titulo, desc: b.descripcion })),
+        .sort((a: any, b: any) => a.orden - b.orden)
+        .map((b: any) => ({ title: b.titulo, desc: b.descripcion })),
       keyIngredients: p.key_ingredients ?? [],
-      skinType: p.skin_type ?? '',
-      howToUse: p.how_to_use ?? '',
       stock: p.stock ?? undefined,
       variants,
     };
