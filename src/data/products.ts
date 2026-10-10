@@ -1,6 +1,13 @@
 import { Product, CategoryOption, ProductVariant, Language } from '../types';
 import { supabase } from '../lib/supabaseClient';
+import { useDaiExchangeRate } from '../utils/exchangeRate';
 
+// Tasa base fija para desarrollo (aproximado: 1 USD = ~7.800 Gs)
+const BASE_RATE = 7800;
+
+/**
+ * Obtiene las categorías desde Supabase
+ */
 export async function fetchCategories(): Promise<CategoryOption[]> {
   const { data, error } = await supabase
     .from('categorias')
@@ -16,6 +23,54 @@ export async function fetchCategories(): Promise<CategoryOption[]> {
   }));
 }
 
+/**
+ * Formatea un precio mostrando tanto Gs como USD convertidos usando la tasa actual
+ */
+export const formatPriceWithRate = (
+  amountGs: number,
+  language: 'es' | 'pt' | 'en',
+  rate: number = BASE_RATE
+): string => {
+  if (!amountGs || amountGs <= 0) return '--';
+
+  const amountUsd = Math.round((amountGs / rate) * 100) / 100;
+
+  // Formato según idioma para Gs
+  const formattedGs = new Intl.NumberFormat(language === 'es' ? 'es-PY' : language === 'pt' ? 'pt-BR' : 'en-US', {
+    maximumFractionDigits: 0,
+    minimumFractionDigits: 0,
+  }).format(amountGs);
+
+  // Formato USD
+  const formattedUsd = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(amountUsd);
+
+  // Prefijo según idioma
+  const prefix = language === 'es'
+    ? '₲'
+    : language === 'pt'
+    ? 'R$'
+    : '$';
+
+  return `${prefix} ${formattedGs} (${formattedUsd})`;
+};
+
+/**
+ * Obtiene la cotización actual del dólar Dai y formatea el precio
+ * Este hook debe usarse dentro de un componente con useLanguage
+ */
+export const useFormattedPrice = (amountGs: number, language: Language): string => {
+  const rate = useDaiExchangeRate().rate;
+  return formatPriceWithRate(amountGs, language, rate);
+};
+
+/**
+ * Fetch products with the given language
+ */
 export async function fetchProducts(language: Language = 'es'): Promise<Product[]> {
   const { data, error } = await supabase
     .from('productos')
@@ -48,7 +103,7 @@ export async function fetchProducts(language: Language = 'es'): Promise<Product[
 
     // Helper para obtener valor por idioma con fallback
     const getText = (suffix: string, fallback: string = '') => {
-      return p[`${suffix}_${language}`] || p[suffix] || fallback;
+      return p[`${suffix}_${language}`] || p[suffix] || '';
     };
 
     return {
@@ -77,7 +132,9 @@ export async function fetchProducts(language: Language = 'es'): Promise<Product[
   });
 }
 
-// Estas dos quedan igual que antes, no vienen de la base de datos
+/**
+ * Formatea el guarani tradicional (solo Gs, sin conversión USD)
+ */
 export const formatGuarani = (amount: number): string => {
   return `₲ ${amount.toLocaleString('es-PY')}`;
 };
