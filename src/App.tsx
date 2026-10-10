@@ -320,8 +320,7 @@ export default function App() {
   };
 
 return (
-    <LanguageProvider>
-      <ErrorBoundary>
+    <ErrorBoundary>
         <div className="min-h-screen bg-[#FAF8F5] text-neutral-900 flex flex-col selection:bg-[#102A43] selection:text-white">
           <Navbar
             totalItems={totalItems}
@@ -520,6 +519,5 @@ return (
               />
             </div>
           </ErrorBoundary>
-        </LanguageProvider>
       );
 }

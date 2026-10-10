@@ -5,6 +5,7 @@ import App from './App.tsx';
 import { AuthProvider } from './contexts/AuthContext';
 import { CartProvider } from './contexts/CartContext';
 import { ProductProvider } from './contexts/ProductContext';
+import { LanguageProvider } from './contexts/LanguageContext';
 import { initAnalytics } from './utils/analytics';
 import './index.css';
 
@@ -13,13 +14,15 @@ initAnalytics();
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <MotionConfig reducedMotion="user">
-      <AuthProvider>
-        <ProductProvider>
-          <CartProvider>
-            <App />
-          </CartProvider>
-        </ProductProvider>
-      </AuthProvider>
+      <LanguageProvider>
+        <AuthProvider>
+          <ProductProvider>
+            <CartProvider>
+              <App />
+            </CartProvider>
+          </ProductProvider>
+        </AuthProvider>
+      </LanguageProvider>
     </MotionConfig>
   </StrictMode>,
 );
