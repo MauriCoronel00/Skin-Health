@@ -17,7 +17,7 @@ const LOCAL_STORAGE_KEY = 'skinhealth_language_v1';
 const translations = {
   es: {
     flag: '🇵🇾',
-    flagLabel: 'ES',
+    flagLabel: 'PY',
     currency: '₲',
     currencyLabel: 'Guaraníes',
     formatCurrency: (amount: number) => `₲ ${amount.toLocaleString('es-PY')}`,
@@ -33,7 +33,7 @@ const translations = {
   },
   pt: {
     flag: '🇧🇷',
-    flagLabel: 'PT',
+    flagLabel: 'BR',
     currency: 'R$',
     currencyLabel: 'Reais',
     formatCurrency: (amount: number) => `R$ ${amount.toLocaleString('pt-BR', {maximumFractionDigits: 0})}`,
@@ -49,7 +49,7 @@ const translations = {
   },
   en: {
     flag: '🇺🇸',
-    flagLabel: 'EN',
+    flagLabel: 'US',
     currency: '$',
     currencyLabel: 'USD',
     formatCurrency: (amount: number) => `$ ${amount.toLocaleString('en-US', {maximumFractionDigits: 0})}`,

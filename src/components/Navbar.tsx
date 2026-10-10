@@ -25,7 +25,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const languages: Language[] = ['es', 'pt', 'en'];
   const flagEmojis = { es: '🇵🇾', pt: '🇧🇷', en: '🇺🇸' };
-  const flagLabels = { es: 'ES', pt: 'PT', en: 'EN' };
+  const flagLabels = { es: 'PY', pt: 'BR', en: 'US' };
 
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);
 
@@ -73,7 +73,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
           <LoginButton />
 
-          {/* Language selector - dropdown */}
+          {/* Language selector - dropdown opening downward */}
           <div
             className="relative"
             onClick={() => setShowLanguageMenu((prev) => !prev)}
@@ -85,14 +85,14 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span className="w-4 h-4">
                 {flagEmojis[language]}
               </span>
-              <span className="hidden sm:inline text-[10px] mr-1">{flagLabels[language]}</span>
+              <span className="text-[10px] mr-1">{flagLabels[language]}</span>
             </button>
           </div>
 
-          {/* Language menu dropdown */}
+          {/* Language menu dropdown - opens downward */}
           {showLanguageMenu && (
             <div
-              className="absolute right-0 mt-2 w-32 rounded-md bg-white py-2 shadow-lg border border-neutral-200 z-50 min-w max-w-fit"
+              className="absolute bottom-full left-0 w-32 rounded-md bg-white py-2 shadow-lg border border-neutral-200 z-50 min-w max-w-fit mt-1"
               style={{
                 visibility: 'visible',
                 opacity: '1',
@@ -118,7 +118,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                       <span className="w-3 h-3">
                         {flagEmojis[lang]}
                       </span>
-                      <span className="hidden sm:inline">{flagLabels[lang]}</span>
+                      <span className="text-[10px]">{flagLabels[lang]}</span>
                     </button>
                   );
                 })}
