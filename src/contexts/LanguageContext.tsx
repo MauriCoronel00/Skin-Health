@@ -67,6 +67,16 @@ const translations = {
 
 const LanguageContext = createContext<LanguageContextValue | undefined>(undefined);
 
+LanguageContext.defaultValue = {
+  language: 'es',
+  setLanguage: () => {},
+  flag: '🇵🇾',
+  flagLabel: 'PY',
+  currency: '₲',
+  currencyLabel: 'Guaraníes',
+  formatCurrency: (amount: number) => `₲ ${amount.toLocaleString('es-PY')}`,
+};
+
 export const useLanguage = (): LanguageContextValue => {
   const context = useContext(LanguageContext);
   if (!context) {
