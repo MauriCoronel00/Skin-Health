@@ -1,7 +1,18 @@
 import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
+import { useAuth } from './AuthContext';
+import { useProducts } from './ProductContext';
 import { CartItem, Product } from '../types';
+import {
+  getDeviceId,
+  saveCart,
+  clearCartServer,
+  syncCart,
+  migrateCartToUser,
+  clientItemsToServer,
+} from '../data/cart';
 
 const CART_STORAGE_KEY = 'skinhealth_cart_v1';
+const SYNC_INTERVAL_MS = 30000; // 30 segundos
 
 interface CartContextValue {
   cartItems: CartItem[];
@@ -14,11 +25,13 @@ interface CartContextValue {
   totalAmount: number;
   cartQuantities: Record<string, number>;
   lastAddedTime: number;
+  isSyncing: boolean;
+  syncError: string | null;
 }
 
 const CartContext = createContext<CartContextValue | undefined>(undefined);
 
-function loadCart(): CartItem[] {
+function loadLocalCart(): CartItem[] {
   try {
     const saved = localStorage.getItem(CART_STORAGE_KEY);
     if (saved) {
@@ -31,17 +44,91 @@ function loadCart(): CartItem[] {
   return [];
 }
 
-export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [cartItems, setCartItems] = useState<CartItem[]>(loadCart);
-  const [lastAddedTime, setLastAddedTime] = useState(0);
+function saveLocalCart(items: CartItem[]) {
+  try {
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+  } catch {
+    // ignore
+  }
+}
 
+export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { user, isLoading: authLoading } = useAuth();
+  const { products, isLoadingProducts } = useProducts();
+
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [lastAddedTime, setLastAddedTime] = useState(0);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [syncError, setSyncError] = useState<string | null>(null);
+  const [initialized, setInitialized] = useState(false);
+
+  const deviceId = getDeviceId();
+  const userId = user?.id ?? null;
+  const isLoggedIn = !!user;
+
+  // Carga inicial: localStorage -> sync con servidor
   useEffect(() => {
-    try {
-      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartItems));
-    } catch {
-      // LocalStorage fallback
+    let mounted = true;
+
+    async function initialize() {
+      if (authLoading || isLoadingProducts) return;
+
+      const localCart = loadLocalCart();
+      setCartItems(localCart);
+
+      try {
+        setIsSyncing(true);
+        const synced = await syncCart(deviceId, localCart, products, userId);
+        if (mounted) {
+          setCartItems(synced);
+          saveLocalCart(synced);
+        }
+      } catch (error) {
+        console.error('Cart sync failed:', error);
+        if (mounted) setSyncError('No se pudo sincronizar el carrito');
+      } finally {
+        if (mounted) {
+          setIsSyncing(false);
+          setInitialized(true);
+        }
+      }
     }
-  }, [cartItems]);
+
+    initialize();
+
+    return () => { mounted = false; };
+  }, [authLoading, isLoadingProducts, deviceId, userId]);
+
+  // Sincronización periódica con servidor
+  useEffect(() => {
+    if (!initialized || authLoading || isLoadingProducts) return;
+
+    const interval = setInterval(async () => {
+      try {
+        const synced = await syncCart(deviceId, cartItems, products, userId);
+        setCartItems(synced);
+        saveLocalCart(synced);
+      } catch (error) {
+        console.error('Periodic cart sync failed:', error);
+      }
+    }, SYNC_INTERVAL_MS);
+
+    return () => clearInterval(interval);
+  }, [initialized, authLoading, isLoadingProducts, deviceId, userId, cartItems, products]);
+
+  // Migración al hacer login
+  useEffect(() => {
+    if (isLoggedIn && userId) {
+      migrateCartToUser(deviceId, userId).catch(console.error);
+    }
+  }, [isLoggedIn, userId, deviceId]);
+
+  // Persistencia local (fallback y respuesta inmediata)
+  useEffect(() => {
+    if (initialized) {
+      saveLocalCart(cartItems);
+    }
+  }, [cartItems, initialized]);
 
   const addToCart = useCallback((product: Product) => {
     setCartItems((prev) => {
@@ -58,10 +145,10 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setLastAddedTime(Date.now());
   }, []);
 
-  const addMultipleToCart = useCallback((products: Product[]) => {
+  const addMultipleToCart = useCallback((productsToAdd: Product[]) => {
     setCartItems((prev) => {
       const updated = [...prev];
-      for (const prod of products) {
+      for (const prod of productsToAdd) {
         const existingIdx = updated.findIndex((item) => item.product.id === prod.id);
         if (existingIdx >= 0) {
           updated[existingIdx] = {
@@ -97,7 +184,22 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const clearCart = useCallback(() => {
     setCartItems([]);
-  }, []);
+    clearCartServer(deviceId, userId).catch(console.error);
+  }, [deviceId, userId]);
+
+  // Sincronizar con servidor después de cada mutación
+  useEffect(() => {
+    if (!initialized) return;
+    const timeoutId = setTimeout(async () => {
+      if (cartItems.length === 0) return;
+      try {
+        await saveCart(deviceId, clientItemsToServer(cartItems), userId);
+      } catch (error) {
+        console.error('Failed to save cart to server:', error);
+      }
+    }, 500); // debounce
+    return () => clearTimeout(timeoutId);
+  }, [initialized]);
 
   const totalItems = useMemo(
     () => cartItems.reduce((acc, item) => acc + item.quantity, 0),
@@ -130,6 +232,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         totalAmount,
         cartQuantities,
         lastAddedTime,
+        isSyncing,
+        syncError,
       }}
     >
       {children}

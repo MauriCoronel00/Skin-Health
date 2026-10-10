@@ -1,8 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useLanguage } from '../contexts/LanguageContext';
 import { motion } from 'motion/react';
 import { X, Star, Plus, Check, Sparkles, Droplets, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
 import { Product, ProductReview, ReviewUser } from '../types';
-import { formatGuarani } from '../data/products';
 import { productImageUrl } from '../data/productImage';
 import { trackAddToCart } from '../utils/analytics';
 import { ProductReviewsSection } from './ProductReviewsSection';
@@ -37,6 +37,7 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
 }) => {
   const [justAdded, setJustAdded] = useState(false);
   const [zoomOpen, setZoomOpen] = useState(false);
+  const { formatCurrency } = useLanguage();
 
   useEffect(() => {
     if (!zoomOpen) return;
@@ -206,6 +207,12 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
                 </span>
                 <span className="text-neutral-300">•</span>
                 <span className="text-xs text-neutral-500">{product.volume}</span>
+                {product.variants?.[0]?.size && (
+                  <span className="flex items-center gap-1">
+                    <span className="text-neutral-300">/</span>
+                    <span className="text-xs font-medium text-[#102A43]">{product.variants[0].size}</span>
+                  </span>
+                )}
               </div>
 
               <h3 className="text-xl sm:text-2xl font-semibold text-neutral-900 leading-tight mb-2">
@@ -256,7 +263,7 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
 
               {/* Price */}
               <div className="text-2xl font-bold text-[#102A43]">
-                {formatGuarani(product.price)}
+                {formatCurrency(product.price)}
               </div>
             </div>
           </div>
@@ -374,9 +381,9 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
             <span className="text-[11px] text-neutral-500 uppercase tracking-wider block">
               Precio Unitario
             </span>
-            <span className="text-lg font-bold text-[#102A43]">
-              {formatGuarani(product.price)}
-            </span>
+<span className="text-lg font-bold text-[#102A43]">
+                {formatCurrency(product.price)}
+              </span>
           </div>
 
           <motion.button

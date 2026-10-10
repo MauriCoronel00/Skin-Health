@@ -22,6 +22,7 @@ export interface Product {
   skinType: string;
   howToUse: string;
   stock?: number; // Stock units available (from Supabase productos.stock)
+  variants?: ProductVariant[]; // Diferentes tamaños/presentaciones
 }
 
 export interface CartItem {
@@ -94,6 +95,33 @@ export interface AuditLogEntry {
   registro_objetivo: string | null;
   detalle: string | null;
   realizado_en: string;
+}
+
+export interface WishlistItem {
+  id: string;
+  product_id: string;
+  device_id?: string;
+  user_id?: string;
+  created_at: string;
+}
+
+export type Language = 'es' | 'pt' | 'en';
+
+export interface CurrencyInfo {
+  code: string;
+  symbol: string;
+  locale: string;
+  format: (amount: number) => string;
+}
+
+export interface ProductVariant {
+  id: string;
+  product_id: string;
+  size?: string; // ej: '50ml', '100ml'
+  volume?: string; // ej: '30ml', '50ml'
+  pack?: string; // ej: 'unidad', 'pack x3'
+  price_gs?: number; // precio específico de la variante (opcional)
+  sku?: string; // código de barras opcional
 }
 
 export interface ProductRatingStats {

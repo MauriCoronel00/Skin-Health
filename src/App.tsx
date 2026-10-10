@@ -6,6 +6,7 @@ import React, { useState, useEffect, useRef, Suspense, Component, ErrorInfo, Rea
 import { InstallBanner } from './components/InstallBanner';
 import { TrackingView } from './components/TrackingView';
 import { ToastMessage } from './components/Toast';
+import { LanguageProvider } from './contexts/LanguageContext';
 
 interface ErrorBoundaryState {
   hasError: boolean;
@@ -318,30 +319,31 @@ export default function App() {
     }, 100);
   };
 
-  return (
-    <ErrorBoundary>
-      <div className="min-h-screen bg-[#FAF8F5] text-neutral-900 flex flex-col selection:bg-[#102A43] selection:text-white">
-              <Navbar
-                totalItems={totalItems}
-                totalAmount={totalAmount}
-                onOpenCart={() => setIsCartOpen(true)}
-                searchQuery={searchQuery}
-                onSearchChange={setSearchQuery}
-              />
+return (
+    <LanguageProvider>
+      <ErrorBoundary>
+        <div className="min-h-screen bg-[#FAF8F5] text-neutral-900 flex flex-col selection:bg-[#102A43] selection:text-white">
+          <Navbar
+            totalItems={totalItems}
+            totalAmount={totalAmount}
+            onOpenCart={() => setIsCartOpen(true)}
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+          />
 
-              <Suspense fallback={null}>
-                <InstallBanner />
+          <Suspense fallback={null}>
+            <InstallBanner />
+          </Suspense>
+
+          <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 pb-36 sm:pb-44">
+            {blogPost ? (
+              <BlogPostView post={blogPost} onBack={exitBlog} onProductClick={handleBlogProductClick} />
+            ) : trackCode !== null ? (
+              <Suspense fallback={<div className="py-20 text-center text-neutral-500 text-sm">Cargando seguimiento…</div>}>
+                <TrackingView codigoInicial={trackCode} onVolver={exitTracking} />
               </Suspense>
-
-              <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 pb-36 sm:pb-44">
-                {blogPost ? (
-                  <BlogPostView post={blogPost} onBack={exitBlog} onProductClick={handleBlogProductClick} />
-                ) : trackCode !== null ? (
-                  <Suspense fallback={<div className="py-20 text-center text-neutral-500 text-sm">Cargando seguimiento…</div>}>
-                    <TrackingView codigoInicial={trackCode} onVolver={exitTracking} />
-                  </Suspense>
-                ) : (
-                <>
+            ) : (
+              <>
                 <HeroSection onScrollToCatalog={scrollToCatalog} onOpenQuiz={() => setQuizOpen(true)} />
 
                 <SavedQuizBannerSection
@@ -517,6 +519,7 @@ export default function App() {
                 isAdmin={isAdmin}
               />
             </div>
-    </ErrorBoundary>
-  );
+          </ErrorBoundary>
+        </LanguageProvider>
+      );
 }

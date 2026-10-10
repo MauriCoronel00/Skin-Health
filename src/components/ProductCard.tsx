@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useLanguage } from '../contexts/LanguageContext';
 import { motion, AnimatePresence } from 'motion/react';
-import { Share2, Link2, Eye, Plus, Check } from 'lucide-react';
+import { Eye, Plus, Check } from 'lucide-react';
 import { Product } from '../types';
 import { productLink } from '../utils/productLink';
 import { productImageUrl } from '../data/productImage';
-import { formatGuarani } from '../data/products';
 
 interface ProductCardProps {
   product: Product;
@@ -19,9 +19,46 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   onQuickView,
   onAdd,
 }) => {
+  const { formatCurrency } = useLanguage();
   const [linkCopied, setLinkCopied] = useState(false);
   const [imgError, setImgError] = useState(false);
   const [justAdded, setJustAdded] = useState(false);
+  const [isInWishlist, setIsInWishlist] = useState(false);
+
+  // Cargar estado de wishlist desde localStorage al montar (usando setTimeout para evitar setState sincrono)
+  useEffect(() => {
+    const saved = localStorage.getItem('skinhealth_wishlist_v1');
+    if (saved) {
+      try {
+        const data = JSON.parse(saved);
+        const item = data.find((item: any) => item.product_id === product.id);
+        // Usar setTimeout para evitar calling setState synchronously within an effect
+        setTimeout(() => setIsInWishlist(!!item), 0);
+      } catch {
+        // Si hay error parsing, empezar limpio
+      }
+    }
+  }, [product.id]);
+
+  const handleToggleWishlist = () => {
+    setIsInWishlist((prev) => {
+      const newVal = !prev;
+      // Guardar en localStorage
+      const saved = localStorage.getItem('skinhealth_wishlist_v1');
+      let data = saved ? JSON.parse(saved) : [];
+      if (newVal) {
+        // Agregar si no existe
+        if (!data.some((item: any) => item.product_id === product.id)) {
+          data.push({ product_id: product.id, created_at: new Date().toISOString() });
+        }
+      } else {
+        // Remover
+        data = data.filter((item: any) => item.product_id !== product.id);
+      }
+      localStorage.setItem('skinhealth_wishlist_v1', JSON.stringify(data));
+      return newVal;
+    });
+  };
 
   const handleAdd = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -56,26 +93,31 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               ¡Pocas unidades!
             </span>
           )}
+          {product.variants && product.variants.length > 1 && (
+            <span className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full bg-[#102A43]/5 text-[#102A43]">
+              {product.variants.length} variantes
+            </span>
+          )}
+          <button
+            onClick={handleToggleWishlist}
+            className={`inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full transition-colors ${
+              isInWishlist
+                ? 'bg-amber-50 text-amber-700 border border-amber-100 hover:border-amber-200'
+                : 'bg-white text-neutral-700 border border-neutral-200 hover:border-neutral-300'
+            }`}
+            title={isInWishlist ? 'Quitar de la wishlist' : 'Guardar en wishlist'}
+            aria-label={isInWishlist ? 'Quitar de la wishlist' : 'Guardar en wishlist'}
+          >
+            {isInWishlist ? (
+              <Check className="w-1.5 h-1.5 rounded-full bg-amber-500" aria-hidden="true" />
+            ) : (
+              <Plus className="w-1.5 h-1.5" />
+            )}
+            <span className="hidden sm:inline">{" "}</span>
+          </button>
         </div>
 
         <div className="flex items-center gap-0.5 shrink-0">
-          <button
-            onClick={async (e) => {
-              e.stopPropagation();
-              try {
-                await navigator.clipboard.writeText(productLink(product.id));
-                setLinkCopied(true);
-                setTimeout(() => setLinkCopied(false), 1500);
-              } catch {
-                // Portapapeles no disponible: no hace nada.
-              }
-            }}
-            className="text-neutral-400 hover:text-[#102A43] p-1 rounded-full hover:bg-neutral-100 transition-colors"
-            title="Copiar link del producto"
-            aria-label="Copiar link del producto"
-          >
-            {linkCopied ? <Link2 className="w-3.5 h-3.5 text-emerald-600" /> : <Share2 className="w-3.5 h-3.5" />}
-          </button>
           <button
             onClick={() => onQuickView(product)}
             className="text-neutral-400 hover:text-[#102A43] p-1 rounded-full hover:bg-neutral-100 transition-colors"
@@ -125,6 +167,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         <p className="text-[10px] sm:text-[11px] font-medium text-neutral-400 truncate">
           {product.brand}
           {product.volume ? ` · ${product.volume}` : ''}
+          {product.variants?.[0]?.size && ` ${product.variants[0].size}`}
         </p>
         <h3
           onClick={() => onQuickView(product)}
@@ -135,7 +178,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
         <div className="flex items-center justify-between gap-2 mt-2">
           <span className="text-sm sm:text-[15px] font-bold text-[#102A43] tabular-nums tracking-tight">
-            {formatGuarani(product.price)}
+            {formatCurrency(product.price)}
           </span>
           {onAdd && (
             <button

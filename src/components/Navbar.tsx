@@ -1,9 +1,10 @@
-import React from 'react';
-import { ShoppingBag, Search, X } from 'lucide-react';
+import React, { useState } from 'react';
+import { ShoppingBag, Search, X, ChevronDown } from 'lucide-react';
 import { motion } from 'motion/react';
 import { BrandLogo } from './BrandLogo';
 import { LoginButton } from './LoginButton';
-import { formatGuarani } from '../data/products';
+import { useLanguage } from '../contexts/LanguageContext';
+import type { Language } from '../types';
 
 interface NavbarProps {
   totalItems: number;
@@ -20,6 +21,19 @@ export const Navbar: React.FC<NavbarProps> = ({
   searchQuery,
   onSearchChange,
 }) => {
+  const { language, setLanguage, currency, formatCurrency } = useLanguage();
+
+  const languages: Language[] = ['es', 'pt', 'en'];
+  const flagEmojis = { es: '🇵🇾', pt: '🇧🇷', en: '🇺🇸' };
+  const flagLabels = { es: 'ES', pt: 'PT', en: 'EN' };
+
+  const [showLanguageMenu, setShowLanguageMenu] = useState(false);
+
+  const handleLanguageSelect = (lang: Language) => {
+    setLanguage(lang);
+    setShowLanguageMenu(false);
+  };
+
   return (
     <header className="sticky top-0 z-30 bg-[#FAF8F5]/95 backdrop-blur-md border-b border-[#102A43]/10 transition-all">
       {/* Announcement bar - navy centered, proper height */}
@@ -55,9 +69,62 @@ export const Navbar: React.FC<NavbarProps> = ({
           )}
         </div>
 
-        {/* Right Actions - Google Login + Cart */}
+        {/* Right Actions - Google Login + Language Dropdown + Cart */}
         <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
           <LoginButton />
+
+          {/* Language selector - dropdown */}
+          <div
+            className="relative"
+            onClick={() => setShowLanguageMenu((prev) => !prev)}
+            aria-label="Cambiar idioma"
+          >
+            <button
+              className={`flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-neutral-700 hover:text-[#102A43] transition-colors focus:outline-none focus:ring-2 focus:ring-[#102A43]/20 ${showLanguageMenu ? 'bg-white' : 'bg-transparent'}` }
+            >
+              <span className="w-4 h-4">
+                {flagEmojis[language]}
+              </span>
+              <span className="hidden sm:inline text-[10px] mr-1">{flagLabels[language]}</span>
+            </button>
+          </div>
+
+          {/* Language menu dropdown */}
+          {showLanguageMenu && (
+            <div
+              className="absolute right-0 mt-2 w-32 rounded-md bg-white py-2 shadow-lg border border-neutral-200 z-50 min-w max-w-fit"
+              style={{
+                visibility: 'visible',
+                opacity: '1',
+                transition: 'visibility 0s, opacity 0.2s ease',
+              }}
+            >
+              <span className="text-xs text-neutral-500 uppercase tracking-wider block mb-1">Idioma</span>
+              <div className="space-y-1 px-1">
+                {languages.map((lang) => {
+                  const isCurrent = lang === language;
+                  return (
+                    <button
+                      key={lang}
+                      type="button"
+                      onClick={() => handleLanguageSelect(lang)}
+                      className={`flex items-center gap-2 rounded-sm px-2 py-1.5 text-sm ${
+                        isCurrent
+                          ? 'bg-[#102A43] text-white'
+                          : 'text-neutral-700 hover:bg-neutral-100'
+                      }`}
+                      aria-label={`Cambiar a ${flagLabels[lang]}`}
+                    >
+                      <span className="w-3 h-3">
+                        {flagEmojis[lang]}
+                      </span>
+                      <span className="hidden sm:inline">{flagLabels[lang]}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           {/* Desktop Cart Button */}
           <motion.button
@@ -90,7 +157,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             </span>
             {totalItems > 0 && (
               <span className="hidden md:inline pl-1 text-xs text-white/80 font-normal border-l border-white/20">
-                {formatGuarani(totalAmount)}
+                {formatCurrency(totalAmount)}
               </span>
             )}
           </motion.button>

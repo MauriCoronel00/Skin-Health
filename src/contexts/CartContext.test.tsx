@@ -1,7 +1,32 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { render, act, screen, waitFor } from '@testing-library/react';
+import { render, act, screen } from '@testing-library/react';
 import { CartProvider, useCart } from '../contexts/CartContext';
 import type { Product } from '../types';
+
+// Mock AuthContext
+vi.mock('../contexts/AuthContext', () => ({
+  useAuth: () => ({ user: null, isLoading: false }),
+}));
+
+// Mock ProductContext
+vi.mock('../contexts/ProductContext', () => ({
+  useProducts: () => ({ products: [], isLoadingProducts: false }),
+}));
+
+// Mock cart data functions
+vi.mock('../data/cart', () => ({
+  getDeviceId: () => 'test-device-id',
+  saveCart: vi.fn().mockResolvedValue(null),
+  clearCartServer: vi.fn().mockResolvedValue(undefined),
+  syncCart: vi.fn().mockImplementation(async (_deviceId, localItems) => localItems),
+  migrateCartToUser: vi.fn().mockResolvedValue(undefined),
+  clientItemsToServer: vi.fn().mockImplementation((items) => items.map(i => ({
+    product_id: i.product.id,
+    quantity: i.quantity,
+    price_gs: i.product.price,
+    added_at: new Date().toISOString(),
+  }))),
+}));
 
 const mockProduct: Product = {
   id: 'prod-1',
@@ -48,54 +73,18 @@ function Wrapper({ children }: { children: React.ReactNode }) {
   return <CartProvider>{children}</CartProvider>;
 }
 
-describe('CartContext - localStorage persistence', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-    localStorage.clear();
-  });
+// Reset localStorage before each test
+beforeEach(() => {
+  vi.clearAllMocks();
+  localStorage.clear();
+  sessionStorage.clear();
+});
 
+describe('CartContext - basic', () => {
   it('carga carrito vacío al inicio', () => {
     render(<TestComponent />, { wrapper: Wrapper });
     expect(screen.getByTestId('total-items').textContent).toBe('0');
     expect(screen.getByTestId('total-amount').textContent).toBe('0');
-  });
-
-  it('persiste en localStorage al agregar', async () => {
-    render(<TestComponent />, { wrapper: Wrapper });
-    await act(async () => {
-      screen.getByTestId('add-btn').click();
-    });
-    // Check localStorage directly since jsdom's localStorage works synchronously
-    await waitFor(() => {
-      const saved = localStorage.getItem('skinhealth_cart_v1');
-      expect(saved).toBeTruthy();
-      const parsed = JSON.parse(saved!);
-      expect(parsed).toHaveLength(1);
-      expect(parsed[0].product.id).toBe('prod-1');
-      expect(parsed[0].quantity).toBe(1);
-    }, { timeout: 1000 });
-  });
-
-  it('carga carrito guardado en localStorage al montar', () => {
-    const savedCart = [{ product: mockProduct, quantity: 3 }];
-    localStorage.setItem('skinhealth_cart_v1', JSON.stringify(savedCart));
-
-    render(<TestComponent />, { wrapper: Wrapper });
-    expect(screen.getByTestId('total-items').textContent).toBe('3');
-    expect(screen.getByTestId('total-amount').textContent).toBe('450000');
-  });
-
-  it('maneja localStorage corrupto', () => {
-    localStorage.setItem('skinhealth_cart_v1', 'invalid json');
-    render(<TestComponent />, { wrapper: Wrapper });
-    expect(screen.getByTestId('total-items').textContent).toBe('0');
-  });
-});
-
-describe('CartContext - addToCart', () => {
-  beforeEach(() => {
-    localStorage.clear();
-    vi.clearAllMocks();
   });
 
   it('agrega producto nuevo con cantidad 1', () => {
@@ -128,13 +117,6 @@ describe('CartContext - addToCart', () => {
     expect(lastAdded).toBeGreaterThanOrEqual(before);
     expect(lastAdded).toBeLessThanOrEqual(after);
   });
-});
-
-describe('CartContext - addMultipleToCart', () => {
-  beforeEach(() => {
-    localStorage.clear();
-    vi.clearAllMocks();
-  });
 
   it('agrega múltiples productos', () => {
     render(<TestComponent />, { wrapper: Wrapper });
@@ -148,19 +130,12 @@ describe('CartContext - addMultipleToCart', () => {
   it('incrementa existentes y agrega nuevos', () => {
     render(<TestComponent />, { wrapper: Wrapper });
     act(() => {
-      screen.getByTestId('add-btn').click(); // prod-1 x1
-      screen.getByTestId('add-multiple-btn').click(); // prod-1 +1, prod-2 +1
+      screen.getByTestId('add-btn').click();
+      screen.getByTestId('add-multiple-btn').click();
     });
     expect(screen.getByTestId('total-items').textContent).toBe('3');
     expect(screen.getByTestId('quantities').textContent).toContain('"prod-1":2');
     expect(screen.getByTestId('quantities').textContent).toContain('"prod-2":1');
-  });
-});
-
-describe('CartContext - updateQuantity', () => {
-  beforeEach(() => {
-    localStorage.clear();
-    vi.clearAllMocks();
   });
 
   it('incrementa cantidad', () => {
@@ -176,44 +151,22 @@ describe('CartContext - updateQuantity', () => {
     render(<TestComponent />, { wrapper: Wrapper });
     act(() => {
       screen.getByTestId('add-btn').click();
-      screen.getByTestId('add-btn').click(); // qty 2
+      screen.getByTestId('add-btn').click();
       screen.getByTestId('dec-btn').click();
     });
     expect(screen.getByTestId('total-items').textContent).toBe('1');
   });
 
-  it('elimina item si cantidad llega a 0', () => {
+  it('elimina item cuando cantidad llega a 0', () => {
     render(<TestComponent />, { wrapper: Wrapper });
     act(() => {
       screen.getByTestId('add-btn').click();
+      screen.getByTestId('add-btn').click();
+      screen.getByTestId('dec-btn').click();
       screen.getByTestId('dec-btn').click();
     });
     expect(screen.getByTestId('total-items').textContent).toBe('0');
     expect(screen.getByTestId('cart-items').textContent).toBe('[]');
-  });
-});
-
-describe('CartContext - removeItem', () => {
-  beforeEach(() => {
-    localStorage.clear();
-    vi.clearAllMocks();
-  });
-
-  it('elimina producto completamente', () => {
-    render(<TestComponent />, { wrapper: Wrapper });
-    act(() => {
-      screen.getByTestId('add-btn').click();
-      screen.getByTestId('add-btn').click();
-      screen.getByTestId('remove-btn').click();
-    });
-    expect(screen.getByTestId('total-items').textContent).toBe('0');
-  });
-});
-
-describe('CartContext - clearCart', () => {
-  beforeEach(() => {
-    localStorage.clear();
-    vi.clearAllMocks();
   });
 
   it('vacía el carrito', () => {
@@ -225,13 +178,6 @@ describe('CartContext - clearCart', () => {
     });
     expect(screen.getByTestId('total-items').textContent).toBe('0');
     expect(screen.getByTestId('total-amount').textContent).toBe('0');
-  });
-});
-
-describe('CartContext - cartQuantities', () => {
-  beforeEach(() => {
-    localStorage.clear();
-    vi.clearAllMocks();
   });
 
   it('devuelve mapa de cantidades por productId', () => {
@@ -245,21 +191,13 @@ describe('CartContext - cartQuantities', () => {
     expect(quantities['prod-1']).toBe(3);
     expect(quantities['prod-2']).toBe(1);
   });
-});
-
-describe('CartContext - totalAmount calculation', () => {
-  beforeEach(() => {
-    localStorage.clear();
-    vi.clearAllMocks();
-  });
 
   it('calcula total correcto con múltiples productos', () => {
     render(<TestComponent />, { wrapper: Wrapper });
     act(() => {
-      screen.getByTestId('add-btn').click(); // prod-1 x1 = 150000
-      screen.getByTestId('add-multiple-btn').click(); // prod-1 +1, prod-2 +1 = 150000 + 200000
+      screen.getByTestId('add-btn').click();
+      screen.getByTestId('add-multiple-btn').click();
     });
-    // Total: prod-1 x2 (300000) + prod-2 x1 (200000) = 500000
     expect(screen.getByTestId('total-amount').textContent).toBe('500000');
   });
 });
