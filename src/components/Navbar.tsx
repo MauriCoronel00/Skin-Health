@@ -75,12 +75,17 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Language selector - dropdown opening downward */}
           <div
-            className="relative"
+            className="relative w-full sm:w-auto"
             onClick={() => setShowLanguageMenu((prev) => !prev)}
+            onTouchStart={() => setShowLanguageMenu((prev) => !prev)}
             aria-label="Cambiar idioma"
+            style={{
+              touchAction: 'manipulation',
+            }}
           >
             <button
               className={`flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-neutral-700 hover:text-[#102A43] transition-colors focus:outline-none focus:ring-2 focus:ring-[#102A43]/20 ${showLanguageMenu ? 'bg-white' : 'bg-transparent'}` }
+              aria-label="Cambiar idioma"
             >
               <span className="w-4 h-4">
                 {flagEmojis[language]}
@@ -89,10 +94,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
           </div>
 
-          {/* Language menu dropdown - opens downward */}
+          {/* Language menu dropdown - opens downward, optimized for mobile */}
           {showLanguageMenu && (
             <div
-              className="absolute bottom-full left-0 w-32 rounded-md bg-white py-2 shadow-lg border border-neutral-200 z-50 min-w max-w-fit mt-1"
+              className="absolute right-0 mt-2 w-full sm:w-32 max-w-full rounded-md bg-white py-2 shadow-lg border border-neutral-200 z-50 mx-1"
               style={{
                 visibility: 'visible',
                 opacity: '1',

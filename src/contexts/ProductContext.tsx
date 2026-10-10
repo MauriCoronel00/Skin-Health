@@ -1,13 +1,14 @@
 import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import { Product, CategoryId, CategoryOption } from '../types';
 import { fetchProducts, fetchCategories } from '../data/products';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface ProductContextValue {
   products: Product[];
   categories: CategoryOption[];
   isLoadingProducts: boolean;
   catalogError: boolean;
-  loadCatalog: () => Promise<void>;
+  loadCatalog: (language?: 'es' | 'pt' | 'en') => Promise<void>;
   selectedCategory: CategoryId;
   setSelectedCategory: (id: CategoryId) => void;
   searchQuery: string;
@@ -46,6 +47,7 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [categories, setCategories] = useState<CategoryOption[]>([]);
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
   const [catalogError, setCatalogError] = useState(false);
+  const { language } = useLanguage();
 
   const [selectedCategory, setSelectedCategory] = useState<CategoryId>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -53,11 +55,11 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [selectedSkin, setSelectedSkin] = useState('all');
   const [selectedPrice, setSelectedPrice] = useState('all');
 
-  const loadCatalog = useCallback(async () => {
+  const loadCatalog = useCallback(async (language: 'es' | 'pt' | 'en' = 'es') => {
     setIsLoadingProducts(true);
     setCatalogError(false);
     try {
-      const [prods, cats] = await Promise.all([fetchProducts(), fetchCategories()]);
+      const [prods, cats] = await Promise.all([fetchProducts(language), fetchCategories()]);
       setProducts(prods);
       setCategories(cats);
     } catch (err) {
@@ -69,9 +71,16 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
   }, []);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    void loadCatalog();
-  }, [loadCatalog]);
+    void loadCatalog(language);
+  }, [language, loadCatalog]);
+
+  useEffect(() => {
+    const handleLanguageChange = () => {
+      void loadCatalog(language);
+    };
+    // El idioma ya viene del contexto, no necesito suscribirme a cambios adicionales
+    // ya que language ya viene de useLanguage() arriba
+  }, [language]);
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {

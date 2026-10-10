@@ -1,39 +1,22 @@
 import { Product, CategoryOption, ProductVariant, Language } from '../types';
 import { supabase } from '../lib/supabaseClient';
-import { useDaiExchangeRate } from '../utils/exchangeRate';
 
-// Tasa base fija para desarrollo (aproximado: 1 USD = ~7.800 Gs)
-const BASE_RATE = 7800;
-
-/**
- * Obtiene las categorías desde Supabase
- */
-export async function fetchCategories(): Promise<CategoryOption[]> {
-  const { data, error } = await supabase
-    .from('categorias')
-    .select('id, label, icon, description');
-
-  if (error) throw error;
-
-  return (data ?? []).map((c) => ({
-    id: c.id,
-    label: c.label,
-    icon: c.icon,
-    description: c.description,
-  }));
-}
+// Tasa base oficial según usuario: 1 USD = 5890 Gs
+const BASE_RATE = 5890;
 
 /**
- * Formatea un precio mostrando tanto Gs como USD convertidos usando la tasa actual
+ * Formatea un precio mostrando tanto Gs como USD convertidos usando la tasa oficial
+ * @param amountGs Monto en Guaraníes
+ * @param language Idioma: 'es', 'pt' o 'en'
+ * @returns String formateado ej: "₲ 1.000 ( $17.03 )"
  */
 export const formatPriceWithRate = (
   amountGs: number,
-  language: 'es' | 'pt' | 'en',
-  rate: number = BASE_RATE
+  language: 'es' | 'pt' | 'en'
 ): string => {
   if (!amountGs || amountGs <= 0) return '--';
 
-  const amountUsd = Math.round((amountGs / rate) * 100) / 100;
+  const amountUsd = Math.round((amountGs / BASE_RATE) * 100) / 100;
 
   // Formato según idioma para Gs
   const formattedGs = new Intl.NumberFormat(language === 'es' ? 'es-PY' : language === 'pt' ? 'pt-BR' : 'en-US', {
@@ -60,16 +43,16 @@ export const formatPriceWithRate = (
 };
 
 /**
- * Obtiene la cotización actual del dólar Dai y formatea el precio
- * Este hook debe usarse dentro de un componente con useLanguage
+ * Hook para formatear precio con la tasa oficial (1 USD = 5890 Gs)
+ * Debe usarse dentro de un componente que tenga acceso al lenguaje actual
  */
 export const useFormattedPrice = (amountGs: number, language: Language): string => {
-  const rate = useDaiExchangeRate().rate;
-  return formatPriceWithRate(amountGs, language, rate);
+  return formatPriceWithRate(amountGs, language);
 };
 
 /**
  * Fetch products with the given language
+ * @param language Idioma para leer nombres/descripciones multilingües
  */
 export async function fetchProducts(language: Language = 'es'): Promise<Product[]> {
   const { data, error } = await supabase
@@ -141,3 +124,21 @@ export const formatGuarani = (amount: number): string => {
 
 export const STORE_PHONE_NUMBER = '595976659748';
 export const STORE_PHONE_DISPLAY = '+595 976 659 748';
+
+/**
+ * Obtiene las categorías desde Supabase
+ */
+export async function fetchCategories(): Promise<CategoryOption[]> {
+  const { data, error } = await supabase
+    .from('categorias')
+    .select('id, label, icon, description');
+
+  if (error) throw error;
+
+  return (data ?? []).map((c) => ({
+    id: c.id,
+    label: c.label,
+    icon: c.icon,
+    description: c.description,
+  }));
+}
