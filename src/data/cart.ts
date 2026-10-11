@@ -71,11 +71,19 @@ export async function fetchCart(deviceId: string, userId: string | null = null):
 
 /** Guarda/actualiza el carrito en el servidor */
 export async function saveCart(deviceId: string, items: CartItemServer[], userId: string | null = null): Promise<CartServer | null> {
-  const { data, error } = await supabase.rpc('upsert_cart', {
-    p_device_id: deviceId,
-    p_user_id: userId,
-    p_items: items,
-  });
+  const { data, error } = await supabase
+    .from('carritos')
+    .upsert(
+      items.map(item => ({
+        device_id: deviceId,
+        user_id: userId,
+        items: item,
+        updated_at: new Date().toISOString(),
+      })),
+      { onConflict: 'device_id' }
+    )
+    .select()
+    .single();
 
   if (error) {
     console.error('Error saving cart:', error);
