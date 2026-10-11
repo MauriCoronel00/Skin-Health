@@ -29,7 +29,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     pt: 'https://flagcdn.com/w40/br.png',
     en: 'https://flagcdn.com/w40/us.png',
   };
-  const flagLabels = { es: 'PY', pt: 'BR', en: 'US' };
+  const flagLabels = { es: 'ES', pt: 'PT', en: 'EN' };
 
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);
 
