@@ -40,7 +40,7 @@ interface CollapsibleRoutinesProps {
 }
 
 export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddRoutineToCart, onQuickView, focusNumber }) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { supabase } = useSupabase();
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [routines, setRoutines] = useState<SkincareRoutine[]>([]);
@@ -82,8 +82,16 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
         return na - nb;
       });
 
+      // Mapear campos multilingües
+      const localizedRoutines = sortedRoutines.map((r) => ({
+        ...r,
+        title: r[`title_${language}`] || r.title,
+        steps: r[`steps_${language}`] || r.steps,
+        instructionText: r[`instruction_text_${language}`] || r.instruction_text || r.instructionText,
+      }));
+
       setProducts(lookup);
-      setRoutines(sortedRoutines);
+      setRoutines(localizedRoutines);
       setLoading(false);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Error inesperado';
@@ -91,7 +99,7 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
       setError(message);
       setLoading(false);
     }
-  }, [supabase]);
+  }, [supabase, language]);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect

@@ -132,17 +132,17 @@ export const STORE_PHONE_DISPLAY = '+595 976 659 748';
 /**
  * Obtiene las categorías desde Supabase
  */
-export async function fetchCategories(): Promise<CategoryOption[]> {
+export async function fetchCategories(language: Language = 'es'): Promise<CategoryOption[]> {
   const { data, error } = await supabase
     .from('categorias')
-    .select('id, label, icon, description');
+    .select('id, label, icon, description, label_pt, label_en, description_pt, description_en');
 
   if (error) throw error;
 
   return (data ?? []).map((c) => ({
     id: c.id,
-    label: c.label,
+    label: c[`label_${language}`] || c.label,
     icon: c.icon,
-    description: c.description,
+    description: c[`description_${language}`] || c.description,
   }));
 }

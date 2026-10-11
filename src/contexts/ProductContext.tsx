@@ -60,7 +60,7 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setIsLoadingProducts(true);
     setCatalogError(false);
     try {
-      const [prods, cats] = await Promise.all([fetchProducts(language), fetchCategories()]);
+      const [prods, cats] = await Promise.all([fetchProducts(language), fetchCategories(language)]);
       setProducts(prods);
       setCategories(cats);
     } catch (err) {
