@@ -14,6 +14,9 @@ export interface CreatePedidoInput {
   items: CreatePedidoItemInput[];
   /** Costo de envío en Gs (calculado en cliente, validado server-side). */
   costoEnvioGs?: number;
+  zonaNombre?: string;
+  barrio?: string;
+  metodoPago?: string;
 }
 
 export interface PedidoReceipt {
@@ -60,6 +63,9 @@ export function buildPedidoMessage(opts: {
   nombre: string;
   telefono: string;
   direccion: string;
+  zonaNombre?: string;
+  barrio?: string;
+  metodoPago?: string;
   /** El borrador copiado a mano es estimado; el registrado es final. */
   totalLabel?: 'TOTAL' | 'TOTAL ESTIMADO';
 }): string {
@@ -68,20 +74,24 @@ export function buildPedidoMessage(opts: {
     .join('\n');
 
   const envio = opts.costoEnvioGs ?? 0;
+  const zonaDisplay = opts.zonaNombre
+    ? `${opts.zonaNombre}${opts.barrio ? ` (${opts.barrio})` : ''}`
+    : '';
+  const metodoPagoDisplay = opts.metodoPago ?? '';
 
   let message = `Hola 👋 Quiero realizar el pedido *${opts.codigo}* en *Skin Health*:\n\n🛍️ *PRODUCTOS SELECCIONADOS*\n${itemsLines}\n\n💰 *Subtotal*: ${formatGuarani(
     opts.totalGs
-  )}\n🚚 *Envío*: ${formatGuarani(envio)}\n💰 *${opts.totalLabel ?? 'TOTAL'}*: ${formatGuarani(
+  )}\n🚚 *Envío${zonaDisplay ? ` (${zonaDisplay})` : ''}*: ${formatGuarani(envio)}\n💰 *${opts.totalLabel ?? 'TOTAL'}*: ${formatGuarani(
     opts.totalGs + envio
-  )}\n\n📍 *REQUISITOS PARA EL ENVÍO*:\n• *Nombre del cliente*: ${
+  )}\n\n📍 *DATOS DE ENTREGA*:\n• *Cliente*: ${
     opts.nombre.trim() ? opts.nombre.trim() : '[Por especificar]'
-  }\n• *Teléfono de contacto*: ${
+  }\n• *Teléfono*: ${
     opts.telefono.trim() ? opts.telefono.trim() : '[Por especificar]'
-  }\n• *Lugar de ubicación*: ${
+  }${zonaDisplay ? `\n• *Zona*: ${zonaDisplay}` : ''}\n• *Dirección*: ${
     opts.direccion.trim() ? opts.direccion.trim() : '[Por especificar]'
-  }`;
+  }${metodoPagoDisplay ? `\n• *Método de Pago Seleccionado*: ${metodoPagoDisplay}` : ''}`;
 
-  message += `\n\nQuedo a la espera de confirmación de stock y métodos de pago. ¡Muchas gracias!`;
+  message += `\n\nQuedo a la espera de confirmación. ¡Muchas gracias!`;
   return message;
 }
 
@@ -191,7 +201,10 @@ export async function createPedido(input: CreatePedidoInput): Promise<PedidoRece
     costoEnvioGs,
     input.nombre,
     input.telefono,
-    input.direccion
+    input.direccion,
+    input.zonaNombre,
+    input.barrio,
+    input.metodoPago
   );
   const whatsappUrl = `https://wa.me/${STORE_PHONE_NUMBER}?text=${encodeURIComponent(message.text)}`;
 
@@ -215,7 +228,10 @@ async function buildReceiptMessage(
   costoEnvioGs: number,
   nombre: string,
   telefono: string,
-  direccion: string
+  direccion: string,
+  zonaNombre?: string,
+  barrio?: string,
+  metodoPago?: string
 ): Promise<{ text: string; lines: PedidoMessageLine[] }> {
   const { data: itemRows } = await supabase
     .from('pedido_items')
@@ -243,6 +259,9 @@ async function buildReceiptMessage(
     nombre,
     telefono,
     direccion,
+    zonaNombre,
+    barrio,
+    metodoPago,
   });
   return { text, lines };
 }

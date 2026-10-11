@@ -16,10 +16,11 @@ import {
   Truck,
   Loader2,
   AlertCircle,
+  CheckCircle2,
 } from 'lucide-react';
 import { CartItem } from '../types';
 import { productImageUrl } from '../data/productImage';
-import { calcularEnvio, ENVIO_BASE_GS, ENVIO_ORIGEN, ENVIO_ORIGEN_MAPS_URL } from '../utils/envio';
+import { ZONAS_COBERTURA, METODOS_PAGO, type ZonaEnvio, type MetodoPagoId } from '../data/zonasEnvio';
 import { trackBeginCheckout } from '../utils/analytics';
 import { OrderDetails } from './OrderConfirmationModal';
 import {
@@ -118,7 +119,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   }>({});
 
   const [isOrdering, setIsOrdering] = useState(false);
-  const [distanciaKm, setDistanciaKm] = useState('');
+  const [selectedZonaKey, setSelectedZonaKey] = useState<string>('ASUNCION');
+  const [selectedBarrio, setSelectedBarrio] = useState<string>('');
+  const [metodoPago, setMetodoPago] = useState<MetodoPagoId>('TRANSFERENCIA');
   /** Honeypot anti-bots: los humanos nunca lo completan (campo oculto). */
   const [website, setWebsite] = useState('');
   const lastOrderTimeRef = useRef<number>(0);
@@ -218,8 +221,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   );
   const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
-  const envioGs = calcularEnvio(distanciaKm.trim() === '' ? null : Number(distanciaKm));
-  const totalConEnvio = totalAmount + (envioGs ?? 0);
+  const zonaActual: ZonaEnvio = ZONAS_COBERTURA[selectedZonaKey];
+  const envioGs = zonaActual.precioGs;
+  const totalConEnvio = totalAmount + envioGs;
 
   // Track begin_checkout when the drawer opens with items
   useEffect(() => {
@@ -291,7 +295,10 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
         direccion: `${customerAddress.trim()}${
           googleMapsUrl.trim() ? ' — ' + googleMapsUrl.trim() : ''
         }`,
-        costoEnvioGs: envioGs ?? 0,
+        costoEnvioGs: envioGs,
+        zonaNombre: zonaActual.nombre,
+        barrio: selectedBarrio,
+        metodoPago,
         items: cartItems.map((item) => ({
           productoId: item.product.id,
           cantidad: item.quantity,
@@ -599,6 +606,102 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                       </p>
                     </div>
                   </div>
+
+                  {/* 5. Zona de Entrega */}
+                  <div className="space-y-1.5">
+                    <label className="block text-xs font-semibold text-neutral-700">
+                      Zona de Entrega <span className="text-rose-500">*</span>
+                    </label>
+                    <div className="relative">
+                      <select
+                        value={selectedZonaKey}
+                        onChange={(e) => {
+                          const key = e.target.value;
+                          setSelectedZonaKey(key);
+                          setSelectedBarrio('');
+                          const nuevaZona = ZONAS_COBERTURA[key];
+                          if (!nuevaZona.permiteEfectivoContraEntrega && metodoPago === 'EFECTIVO') {
+                            setMetodoPago('TRANSFERENCIA');
+                          }
+                        }}
+                        className="w-full p-2.5 bg-white border border-neutral-300 rounded-lg text-xs text-neutral-800 focus:outline-none focus:border-[#102A43] transition-colors"
+                      >
+                        {Object.entries(ZONAS_COBERTURA).map(([key, zona]) => (
+                          <option key={key} value={key}>
+                            {zona.nombre} — ₲ {zona.precioGs.toLocaleString('es-PY')}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    {zonaActual.barrios && zonaActual.barrios.length > 0 && (
+                      <select
+                        value={selectedBarrio}
+                        onChange={(e) => setSelectedBarrio(e.target.value)}
+                        className="w-full p-2.5 bg-white border border-neutral-300 rounded-lg text-xs text-neutral-800 focus:outline-none focus:border-[#102A43] transition-colors"
+                      >
+                        <option value="">-- Selecciona tu barrio --</option>
+                        {zonaActual.barrios.map((barrio) => (
+                          <option key={barrio} value={barrio}>
+                            {barrio}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                    <div className="flex items-center justify-between text-[11px] pt-1">
+                      <span className="text-neutral-500">{zonaActual.tiempoEstimado}</span>
+                      {!zonaActual.permiteEfectivoContraEntrega ? (
+                        <span className="inline-flex items-center gap-1 text-amber-700 bg-amber-50 px-2 py-0.5 rounded font-medium border border-amber-200">
+                          <AlertCircle className="w-3 h-3" /> Solo Pago Previo
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded font-medium border border-emerald-200">
+                          <CheckCircle2 className="w-3 h-3" /> Contra Entrega OK
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* 6. Método de Pago */}
+                  <div className="space-y-1.5">
+                    <label className="block text-xs font-semibold text-neutral-700">
+                      Método de Pago <span className="text-rose-500">*</span>
+                    </label>
+                    <div className="space-y-2">
+                      {METODOS_PAGO.map((metodo) => {
+                        const deshabilitado = !zonaActual.permiteEfectivoContraEntrega && !metodo.requierePagoPrevio;
+                        return (
+                          <label
+                            key={metodo.id}
+                            className={`flex items-center justify-between p-3 border rounded-xl transition-all ${
+                              deshabilitado
+                                ? 'opacity-50 bg-neutral-100 cursor-not-allowed border-neutral-200'
+                                : metodoPago === metodo.id
+                                  ? 'border-[#102A43] bg-[#102A43]/5'
+                                  : 'border-neutral-200 hover:border-neutral-300'
+                            }`}
+                          >
+                            <div className="flex items-center gap-3">
+                              <input
+                                type="radio"
+                                name="metodoPago"
+                                value={metodo.id}
+                                disabled={deshabilitado}
+                                checked={metodoPago === metodo.id}
+                                onChange={(e) => setMetodoPago(e.target.value as MetodoPagoId)}
+                                className="text-[#102A43]"
+                              />
+                              <span className="text-xs font-medium text-neutral-800">{metodo.label}</span>
+                            </div>
+                            {deshabilitado && (
+                              <span className="text-[10px] text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded">
+                                No disponible en tu zona
+                              </span>
+                            )}
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </div>
                 </div>
 
                 {/* Lista de productos seleccionados */}
@@ -707,43 +810,13 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   <span>{t.cartProductsCount.replace('{count}', String(totalItems))}</span>
                   <span>{formatCurrency(totalAmount)}</span>
                 </div>
-                <div className="flex items-center justify-between gap-2 text-xs">
-                  <label htmlFor="envio-km" className="text-neutral-500 shrink-0">
-                    {t.cartShippingOptional}
-                  </label>
-                  <input
-                    id="envio-km"
-                    type="number"
-                    min={0}
-                    max={200}
-                    inputMode="decimal"
-                    value={distanciaKm}
-                    onChange={(e) => setDistanciaKm(e.target.value)}
-                    placeholder={t.cartOptional}
-                    className="w-20 text-right font-semibold text-neutral-800 border border-neutral-200 rounded-lg py-1 px-2 focus:outline-none focus:border-[#102A43]"
-                  />
-                </div>
                 <div className="flex justify-between text-neutral-500 text-xs">
                   <span>{t.cartShipping}</span>
-                  {envioGs === null ? (
-                    <span className="text-neutral-400">{t.cartShippingCoord}</span>
-                  ) : (
-                    <span className="font-semibold text-neutral-800">{formatCurrency(envioGs)}</span>
-                  )}
+                  <span className="font-semibold text-neutral-800">{formatCurrency(envioGs)}</span>
                 </div>
                 <p className="text-xs text-neutral-400">
-                  {t.cartShippingFrom
-                    .replace('{origin}', ENVIO_ORIGEN)
-                    .replace('{base}', formatCurrency(ENVIO_BASE_GS))
-                    .replace('{perKm}', formatCurrency(2000))}{' '}
-                  <a
-                    href={ENVIO_ORIGEN_MAPS_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="underline hover:text-neutral-600"
-                  >
-                    {t.cartShippingHint}
-                  </a>
+                  {zonaActual.tiempoEstimado}
+                  {!zonaActual.permiteEfectivoContraEntrega && ' — Solo pago previo'}
                 </p>
                 <div className="flex justify-between items-baseline pt-1.5 border-t border-neutral-100">
                   <span className="font-semibold text-sm sm:text-base text-neutral-900">
