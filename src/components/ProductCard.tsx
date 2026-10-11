@@ -82,10 +82,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.3 }}
-      className="group relative bg-white rounded-2xl p-2 sm:p-3 border border-[#102A43]/10 hover:border-[#102A43]/25 hover:shadow-[0_6px_24px_rgba(16,42,67,0.12)] transition-[border-color,box-shadow] duration-300"
+      className="group relative bg-white rounded-2xl p-3 sm:p-4 border border-[#102A43]/10 hover:border-[#102A43]/25 hover:shadow-[0_4px_12px_rgba(16,42,67,0.08)] transition-[border-color,box-shadow] duration-300"
     >
       {/* Top row: badge + actions (altura fija para alinear la grilla) */}
-      <div className="flex items-center justify-between gap-1 mb-2 h-6">
+      <div className="flex items-center justify-between gap-2 mb-3 h-6">
         <div className="flex items-center gap-1 flex-1 min-w-0">
           {product.badge ? (
             <span className="inline-block text-[10px] sm:text-xs font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full bg-[#102A43]/5 text-[#102A43] truncate">
@@ -170,7 +170,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       </div>
 
       {/* Info: marca, nombre y fila de precio + agregar */}
-      <div className="px-0.5 pt-2.5 pb-0.5">
+      <div className="px-2 pt-3 pb-2">
         <p className="text-[10px] sm:text-[11px] font-medium text-neutral-400 truncate">
           {product.brand}
           {product.volume ? ` · ${product.volume}` : ''}
@@ -183,7 +183,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           {product.name}
         </h3>
 
-        <div className="flex items-center justify-between gap-2 mt-2">
+        <div className="flex items-center justify-between gap-3 mt-3">
           <span className="text-sm sm:text-[15px] font-bold text-[#102A43] tabular-nums tracking-tight">
             {formatCurrency(product.price)}
           </span>

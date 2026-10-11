@@ -72,7 +72,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog, onOpe
             {onOpenQuiz && (
               <button
                 onClick={onOpenQuiz}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-[#102A43] text-sm font-bold hover:bg-white/90 transition-all shadow-md cursor-pointer group"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-[#102A43] text-sm font-bold hover:bg-white/90 transition-all shadow-sm cursor-pointer"
               >
                 <span>{t.heroCtaQuiz}</span>
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
@@ -80,7 +80,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog, onOpe
             )}
             <button
               onClick={onScrollToCatalog}
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-full border-2 border-white/30 text-white text-sm font-semibold hover:bg-white/10 transition-all cursor-pointer group backdrop-blur-sm"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-white/30 text-white text-sm font-semibold hover:bg-white/10 transition-all cursor-pointer"
             >
               <span>{t.heroCtaCatalog}</span>
               <ArrowDown className="w-4 h-4 transition-transform group-hover:translate-y-0.5" />

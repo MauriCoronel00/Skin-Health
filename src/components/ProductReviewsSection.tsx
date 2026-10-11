@@ -28,7 +28,20 @@ export const ProductReviewsSection: React.FC<ProductReviewsSectionProps> = ({
   const [filterVerificado, setFilterVerificado] = useState(false);
   const [filterTipoPiel, setFilterTipoPiel] = useState<TipoPiel | 'all'>('all');
   const [sortMode, setSortMode] = useState<SortMode>('utiles');
+  const [sortMenuOpen, setSortMenuOpen] = useState(false);
   const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
+
+  const toggleSortMenu = () => setSortMenuOpen(!sortMenuOpen);
+  const closeSortMenu = () => setSortMenuOpen(false);
+  const getSelectedSortLabel = () => {
+    const labels: Record<SortMode, string> = {
+      utiles: t.reviewsSortHelpful,
+      recientes: t.reviewsSortRecent,
+      mejores: t.reviewSortBest,
+      peores: t.reviewSortWorst,
+    };
+    return labels[sortMode];
+  };
 
   const { t, language, dateLocale } = useLanguage();
 
@@ -258,16 +271,45 @@ export const ProductReviewsSection: React.FC<ProductReviewsSectionProps> = ({
           </span>
           <label className="inline-flex items-center gap-2">
             <span className="text-neutral-500">{t.reviewSortBy}</span>
-            <select
-              value={sortMode}
-              onChange={(e) => setSortMode(e.target.value as SortMode)}
-              className="text-xs font-semibold text-[#102A43] bg-white border border-neutral-200 rounded-lg px-2 py-1.5 cursor-pointer focus:outline-none focus:border-[#102A43]/40"
-            >
-              <option value="utiles">{t.reviewsSortHelpful}</option>
-              <option value="recientes">{t.reviewsSortRecent}</option>
-              <option value="mejores">{t.reviewSortBest}</option>
-              <option value="peores">{t.reviewSortWorst}</option>
-            </select>
+            <div className="flex items-center gap-1 rounded-full border border-neutral-200 p-1 select-none" role="button" onClick={toggleSortMenu} aria-expanded={sortMenuOpen} aria-label="Selector de ordenamiento de reseñas">
+              <span className="text-xs font-semibold text-[#102A43] selected-mode">{getSelectedSortLabel()}</span>
+              <svg className="w-3 h-3 text-neutral-400 transform transition-transform duration-200 group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path className="stroke-2" d="M6 9l6 6 6-6"/>
+              </svg>
+            </div>
+            {/* Menú desplegable personalizado */}
+            {sortMenuOpen && (
+              <div className="absolute right-0 mt-2 w-48 rounded-bg border border-neutral-300 bg-white shadow-lg p-2 z-50 min-w Max-w-fit">
+                <button
+                  value="utiles"
+                  onClick={() => { setSortMode('utiles'); closeSortMenu(); }}
+                  className={sortMode === 'utiles' ? 'bg-[#102A43] text-white px-3 py-1 rounded text-sm font-medium' : 'text-neutral-700 px-3 py-1 rounded text-sm hover:bg-neutral-50 hover:text-[#102A43] transition-colors'}
+                >
+                  {t.reviewsSortHelpful}
+                </button>
+                <button
+                  value="recientes"
+                  onClick={() => { setSortMode('recientes'); closeSortMenu(); }}
+                  className={sortMode === 'recientes' ? 'bg-[#102A43] text-white px-3 py-1 rounded text-sm font-medium' : 'text-neutral-700 px-3 py-1 rounded text-sm hover:bg-neutral-50 hover:text-[#102A43] transition-colors'}
+                >
+                  {t.reviewsSortRecent}
+                </button>
+                <button
+                  value="mejores"
+                  onClick={() => { setSortMode('mejores'); closeSortMenu(); }}
+                  className={sortMode === 'mejores' ? 'bg-[#102A43] text-white px-3 py-1 rounded text-sm font-medium' : 'text-neutral-700 px-3 py-1 rounded text-sm hover:bg-neutral-50 hover:text-[#102A43] transition-colors'}
+                >
+                  {t.reviewSortBest}
+                </button>
+                <button
+                  value="peores"
+                  onClick={() => { setSortMode('peores'); closeSortMenu(); }}
+                  className={sortMode === 'peores' ? 'bg-[#102A43] text-white px-3 py-1 rounded text-sm font-medium' : 'text-neutral-700 px-3 py-1 rounded text-sm hover:bg-neutral-50 hover:text-[#102A43] transition-colors'}
+                >
+                  {t.reviewSortWorst}
+                </button>
+              </div>
+            )}
           </label>
         </div>
       </div>
