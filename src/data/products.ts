@@ -61,28 +61,20 @@ export async function fetchProducts(language: Language = 'es'): Promise<Product[
       id, nombre, marca, subtitle, categoria_id, categoria_label,
       precio_gs, imagen_url, volumen, badge, rating, reviews_count,
       descripcion, key_ingredients, skin_type, how_to_use, stock,
-      producto_beneficios ( titulo, descripcion, orden ),
-      producto_variants (
-        id, size, volume, pack, price_gs, sku, active, created_at, updated_at
-      )
+      nombre_es, nombre_pt, nombre_en,
+      subtitle_es, subtitle_pt, subtitle_en,
+      descripcion_es, descripcion_pt, descripcion_en,
+      skin_type_es, skin_type_pt, skin_type_en,
+      how_to_use_es, how_to_use_pt, how_to_use_en,
+      key_ingredients_es, key_ingredients_pt, key_ingredients_en,
+      producto_beneficios ( titulo, descripcion, orden )
     `)
     .eq('activo', true);
 
   if (error) throw error;
 
   return (data ?? []).map((p) => {
-    const variants: ProductVariant[] = (p.producto_variants ?? [])
-      .filter((v) => v.active === true)
-      .map((v) => ({
-        id: v.id,
-        product_id: p.id,
-        size: v.size,
-        volume: v.volume,
-        pack: v.pack,
-        price_gs: v.price_gs,
-        sku: v.sku,
-        active: v.active,
-      }));
+    const variants: ProductVariant[] = [];
 
     // Helper para obtener valor por idioma con fallback
     const getText = (suffix: string, fallback: string = '') => {
