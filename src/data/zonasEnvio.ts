@@ -18,7 +18,7 @@ export const ZONAS_COBERTURA: Record<string, ZonaEnvio> = {
       'Carmelitas',
       'Recoleta',
       'Villa Morra',
-      'Murucoja',
+      'Pinozá',
       'Manora',
       'Centro',
       'Sajonia',
