@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { Star, ArrowDown, Sparkles, ArrowRight } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 import heroRadiantBg from '../assets/images/woman_applying_skincare_cream_1789318644556.jpg';
 
 interface HeroBannerProps {
@@ -12,6 +13,7 @@ interface HeroBannerProps {
 const BRAND_MARKS = ['Anua', 'Beauty of Joseon', 'COSRX', 'SKIN1004', 'Laneige', 'Medicube'];
 
 export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog, onOpenQuiz }) => {
+  const { t } = useLanguage();
   return (
     <section className="relative overflow-hidden rounded-3xl bg-[#102A43] text-white shadow-sm my-4 sm:my-6 border border-[#102A43]/20 flex flex-col">
       {/* Background con foto */}
@@ -38,7 +40,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog, onOpe
             className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 text-xs font-medium text-white mb-4 w-fit shadow-xs backdrop-blur-sm"
           >
             <Sparkles className="w-3.5 h-3.5 text-[#B9CBBE]" />
-            <span>Skincare importado · Asunción, Paraguay</span>
+            <span>{t.heroEyebrow}</span>
           </motion.div>
 
           {/* Heading */}
@@ -48,7 +50,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog, onOpe
             transition={{ delay: 0.1 }}
             className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-[54px] font-semibold tracking-tight text-white leading-[1.15] mb-4"
           >
-            Entendé tu piel.<br />Amala.
+            {t.heroTitle1}<br />{t.heroTitle2}
           </motion.h1>
 
           <motion.p
@@ -57,7 +59,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog, onOpe
             transition={{ delay: 0.2 }}
             className="text-sm sm:text-base md:text-lg text-white/80 leading-relaxed max-w-xl mb-5 font-light"
           >
-            Rutinas de dermocosmética con productos oficiales. 60 segundos de diagnóstico y armamos tu ritual de 4 pasos.
+            {t.heroSubtitle}
           </motion.p>
 
           {/* CTAs: quiz principal + catálogo secundario */}
@@ -72,7 +74,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog, onOpe
                 onClick={onOpenQuiz}
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-[#102A43] text-sm font-bold hover:bg-white/90 transition-all shadow-md cursor-pointer group"
               >
-                <span>Empezar mi diagnóstico</span>
+                <span>{t.heroCtaQuiz}</span>
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
               </button>
             )}
@@ -80,7 +82,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog, onOpe
               onClick={onScrollToCatalog}
               className="inline-flex items-center gap-2 px-5 py-3 rounded-full border-2 border-white/30 text-white text-sm font-semibold hover:bg-white/10 transition-all cursor-pointer group backdrop-blur-sm"
             >
-              <span>Ver catálogo</span>
+              <span>{t.heroCtaCatalog}</span>
               <ArrowDown className="w-4 h-4 transition-transform group-hover:translate-y-0.5" />
             </button>
           </motion.div>
@@ -98,7 +100,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog, onOpe
               ))}
             </div>
             <span className="font-semibold">4.9</span>
-            <span className="text-white/60">· Skincare hecho a tu medida</span>
+            <span className="text-white/60">{t.heroTagline}</span>
           </motion.div>
         </div>
       </div>
@@ -107,7 +109,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog, onOpe
       <div className="relative z-10 border-t border-white/20 bg-black/25 backdrop-blur-md px-6 py-5">
         <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-8">
           <span className="text-xs font-bold uppercase tracking-[0.15em] text-white/70 shrink-0">
-            Marcas oficiales
+            {t.officialBrands}
           </span>
           <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 sm:gap-x-5">
             {BRAND_MARKS.map((brand, i) => (

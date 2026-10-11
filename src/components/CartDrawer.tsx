@@ -28,6 +28,7 @@ import {
   PedidoError,
   PedidoReceipt,
 } from '../data/pedidos';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const CUSTOMER_DATA_KEY = 'skinhealth_customer_data_v1';
 /** Anti-spam: segundos mínimos entre pedidos desde el mismo dispositivo. */
@@ -55,6 +56,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   onOrderSuccess,
   onShowToast,
 }) => {
+  const { t } = useLanguage();
+
   // Customer data state with localStorage persistence
   const [customerName, setCustomerName] = useState(() => {
     try {
@@ -218,14 +221,14 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     setTouched((prev) => ({ ...prev, [field]: true }));
   };
 
-  const nameError = touched.name && !customerName.trim() ? 'Ingresá tu nombre para registrar tu pedido.' : null;
+  const nameError = touched.name && !customerName.trim() ? t.errName : null;
   const phoneError =
     touched.phone && customerPhone.replace(/\D/g, '').length < 8
-      ? 'Ingresá un teléfono válido (mínimo 8 dígitos) para coordinar por WhatsApp.'
+      ? t.errPhone
       : null;
   const addressError =
     touched.address && !customerAddress.trim()
-      ? 'Indicá tu barrio y ciudad para coordinar el envío.'
+      ? t.errAddress
       : null;
 
   const handleOrderWhatsApp = async () => {
@@ -239,8 +242,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       const now = lastOrderTimeRef.current || Date.now();
       if (now - last < ORDER_MIN_GAP_SECONDS * 1000) {
         onShowToast(
-          'Esperá un momento',
-          'Tu pedido anterior se está procesando. Intentá de nuevo en unos segundos.',
+          t.cartWait,
+          t.cartWaitDesc,
           'info'
         );
         return;
@@ -250,15 +253,15 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     }
 
     if (cartItems.length === 0) {
-      onShowToast('El carrito está vacío', 'Agregá productos antes de confirmar.', 'error');
+      onShowToast(t.cartEmptyError, t.cartEmptyErrorDesc, 'error');
       return;
     }
 
     if (!customerName.trim() || !customerAddress.trim() || customerPhone.replace(/\D/g, '').length < 8) {
       setTouched({ name: true, phone: true, address: true });
       onShowToast(
-        'Datos para el envío',
-        'Completá tu nombre, teléfono y ubicación para coordinar la entrega.',
+        t.cartFillData,
+        t.cartFillDataDesc,
         'info'
       );
       return;
@@ -291,9 +294,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
           setTouched({ name: true, address: true });
         }
         if (err.code === 'NOT_AUTHENTICATED') {
-          onShowToast('Iniciá sesión para continuar', err.userMessage, 'info');
+          onShowToast(t.cartLoginRequired, err.userMessage, 'info');
         } else if (err.code === 'NO_STOCK') {
-          onShowToast('Sin stock suficiente', err.userMessage, 'error');
+          onShowToast(t.cartNoStock, err.userMessage, 'error');
         } else if (err.code === 'UNAVAILABLE') {
           onShowToast('Producto no disponible', err.userMessage, 'error');
         } else {
@@ -353,7 +356,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       if (!opened) {
         onShowToast(
           'Tu pedido fue registrado',
-          'Si no se abrió WhatsApp automáticamente, podés hacer clic abajo.',
+          t.cartWhatsAppFallback,
           'info',
           true
         );
@@ -415,9 +418,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 <button
                   onClick={onClearCart}
                   className="text-xs text-neutral-400 hover:text-red-600 px-2 py-1 rounded-md transition-colors cursor-pointer"
-                  title="Vaciar carrito"
+                  title={t.cartClearTitle}
                 >
-                  Vaciar
+                  {t.cartClear}
                 </button>
               )}
               <button
@@ -438,16 +441,16 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   <ShoppingBag className="w-8 h-8" />
                 </div>
                 <h3 className="font-medium text-neutral-800 text-base mb-1">
-                  Tu carrito está vacío
+                  {t.cartEmptyTitle}
                 </h3>
                 <p className="text-sm text-neutral-400 max-w-xs mb-6">
-                  Explora nuestro catálogo y presiona &quot;+&quot; en los productos que deseas pedir.
+                  {t.cartEmptyDesc}
                 </p>
                 <button
                   onClick={onClose}
                   className="px-5 py-2.5 bg-[#102A43] text-white text-sm font-medium rounded-full hover:bg-[#102A43]/90 transition-colors cursor-pointer"
                 >
-                  Explorar Catálogo
+                  {t.cartExplore}
                 </button>
               </div>
             ) : (
@@ -469,7 +472,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     {/* 1. Nombre del cliente */}
                     <div>
                       <label className="block text-xs font-semibold text-neutral-700 mb-1">
-                        Nombre del cliente <span className="text-rose-500">*</span>
+                        {t.cartNameLabel} <span className="text-rose-500">*</span>
                       </label>
                       <div className="relative">
                         <input
@@ -478,7 +481,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                           name="name"
                           autoComplete="name"
                           autoCapitalize="words"
-                          placeholder="Ej. María Coronel"
+                          placeholder={t.cartNamePlaceholder}
                           value={customerName}
                           onChange={(e) => setCustomerName(e.target.value)}
                           onBlur={() => handleBlur('name')}
@@ -501,7 +504,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     {/* 2. Teléfono de contacto */}
                     <div>
                       <label className="block text-xs font-semibold text-neutral-700 mb-1">
-                        Teléfono de contacto (WhatsApp) <span className="text-rose-500">*</span>
+                        {t.cartPhoneLabel} <span className="text-rose-500">*</span>
                       </label>
                       <div className="relative">
                         <input
@@ -533,7 +536,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     {/* 3. Lugar de ubicación para envío */}
                     <div>
                       <label className="block text-xs font-semibold text-neutral-700 mb-1">
-                        Lugar de ubicación para el envío <span className="text-rose-500">*</span>
+                        {t.cartAddressLabel} <span className="text-rose-500">*</span>
                       </label>
                       <div className="relative">
                         <input
@@ -542,7 +545,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                           name="street-address"
                           autoComplete="street-address"
                           autoCapitalize="sentences"
-                          placeholder="Ej. Barrio Herrera, Asunción"
+                          placeholder={t.cartAddressPlaceholder}
                           value={customerAddress}
                           onChange={(e) => setCustomerAddress(e.target.value)}
                           onBlur={() => handleBlur('address')}
@@ -573,7 +576,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                           type="url"
                           inputMode="url"
                           autoComplete="off"
-                          placeholder="Ej. https://maps.app.goo.gl/... o enlace de ubicación"
+                          placeholder={t.cartMapsPlaceholder}
                           value={googleMapsUrl}
                           onChange={(e) => setGoogleMapsUrl(e.target.value)}
                           className="w-full text-xs bg-white border border-neutral-200 rounded-lg py-2 pl-7 pr-2.5 text-neutral-800 placeholder:text-neutral-400 focus:outline-none focus:border-[#102A43] transition-colors"
@@ -581,7 +584,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                         <Link2 className="w-3.5 h-3.5 text-neutral-400 absolute left-2 top-1/2 -translate-y-1/2" />
                       </div>
                       <p className="text-xs text-neutral-500 mt-1">
-                        💡 Si no tenés el link ahora, también podés adjuntar tu ubicación en tiempo real directamente en WhatsApp.
+                        💡 {t.cartMapsHint}
                       </p>
                     </div>
                   </div>
@@ -593,7 +596,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     <span className="font-semibold uppercase tracking-wider text-[#102A43]">
                       Productos seleccionados ({totalItems})
                     </span>
-                    <span>Subtotal</span>
+                    <span>{t.cartSubtotal}</span>
                   </div>
 
                   <AnimatePresence initial={false}>
@@ -649,7 +652,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                               <button
                                 onClick={() => onUpdateQuantity(item.product.id, -1)}
                                 className="w-6 h-6 flex items-center justify-center text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 rounded-md transition-colors cursor-pointer"
-                                aria-label="Disminuir cantidad"
+                                aria-label={t.cartDecrease}
                               >
                                 <Minus className="w-3 h-3" />
                               </button>
@@ -664,7 +667,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                               <button
                                 onClick={() => onUpdateQuantity(item.product.id, 1)}
                                 className="w-6 h-6 flex items-center justify-center text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 rounded-md transition-colors cursor-pointer"
-                                aria-label="Aumentar cantidad"
+                                aria-label={t.cartIncrease}
                               >
                                 <Plus className="w-3 h-3" />
                               </button>
@@ -695,7 +698,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 </div>
                 <div className="flex items-center justify-between gap-2 text-xs">
                   <label htmlFor="envio-km" className="text-neutral-500 shrink-0">
-                    Envío · distancia en km (opcional)
+                    {t.cartShippingOptional}
                   </label>
                   <input
                     id="envio-km"
@@ -710,7 +713,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   />
                 </div>
                 <div className="flex justify-between text-neutral-500 text-xs">
-                  <span>Costo de envío</span>
+                  <span>{t.cartShipping}</span>
                   {envioGs === null ? (
                     <span className="text-neutral-400">Se coordina por WhatsApp</span>
                   ) : (
@@ -725,13 +728,12 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     rel="noopener noreferrer"
                     className="underline hover:text-neutral-600"
                   >
-                    Medí tu distancia en Maps
+                    {t.cartShippingHint}
                   </a>
-                  . Si no sabés, dejalo en 0 y lo coordinamos por WhatsApp.
                 </p>
                 <div className="flex justify-between items-baseline pt-1.5 border-t border-neutral-100">
                   <span className="font-semibold text-sm sm:text-base text-neutral-900">
-                    TOTAL ESTIMADO
+                    {t.cartTotal}
                   </span>
                   <motion.span
                     key={totalConEnvio}
@@ -778,17 +780,17 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 </div>
                 <div className="flex items-center justify-center gap-1">
                   <Truck className="w-3 h-3 text-sky-600 shrink-0" />
-                  <span>Envío coordinado</span>
+                  <span>{t.cartShippingMode}</span>
                 </div>
                 <div className="flex items-center justify-center gap-1">
                   <Check className="w-3 h-3 text-emerald-600 shrink-0" />
-                  <span>Stock verificado</span>
+                  <span>{t.cartStockVerified}</span>
                 </div>
               </div>
 
               {/* Atención oficial */}
               <div className="flex items-center text-xs pt-0.5">
-                <span className="text-neutral-400">Atención oficial Skin Health</span>
+                <span className="text-neutral-400">{t.cartOfficialCare}</span>
               </div>
             </div>
           )}

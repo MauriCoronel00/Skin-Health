@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Sparkles, ArrowRight } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface WelcomePopupProps {
   open: boolean;
@@ -9,6 +10,7 @@ interface WelcomePopupProps {
 }
 
 export const WelcomePopup: React.FC<WelcomePopupProps> = ({ open, onStartQuiz, onClose }) => {
+  const { t } = useLanguage();
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -53,16 +55,16 @@ export const WelcomePopup: React.FC<WelcomePopupProps> = ({ open, onStartQuiz, o
               <Sparkles className="w-5 h-5 text-[#B9CBBE]" />
             </div>
             <h2 id="welcome-popup-title" className="font-serif text-2xl font-semibold text-[#102A43] leading-tight mb-2">
-              Descubrí tu rutina ideal
+              {t.welcomeTitle}
             </h2>
             <p className="text-sm text-neutral-600 leading-relaxed mb-5">
-              Hacé el diagnóstico gratis de 60 segundos y te armamos tu ritual de 4 pasos con productos oficiales.
+              {t.welcomeDesc}
             </p>
             <button
               onClick={onStartQuiz}
               className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-[#102A43] text-white text-sm font-bold hover:bg-[#102A43]/90 transition-all cursor-pointer group"
             >
-              <span>Hacer mi diagnóstico gratis</span>
+              <span>{t.welcomeCta}</span>
               <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
             </button>
             <button

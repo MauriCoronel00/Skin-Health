@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { ArrowRight, X, Sparkles, RotateCcw } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const QUIZ_STORAGE_KEY = 'skinhealth_quiz_result_v1';
 
@@ -20,11 +21,11 @@ interface SavedQuizBannerProps {
   onViewRoutine: (routineId: string) => void;
 }
 
-const SKIN_TYPE_LABELS: Record<string, string> = {
-  grasa: 'Piel grasa',
-  mixta: 'Piel mixta',
-  seca: 'Piel seca',
-  sensible: 'Piel sensible',
+const SKIN_TYPE_LABELS: Record<string, 'savedGrasa' | 'savedMixta' | 'savedSeca' | 'savedSensible'> = {
+  grasa: 'savedGrasa',
+  mixta: 'savedMixta',
+  seca: 'savedSeca',
+  sensible: 'savedSensible',
 };
 
 export const SavedQuizBanner: React.FC<SavedQuizBannerProps> = ({
@@ -32,6 +33,7 @@ export const SavedQuizBanner: React.FC<SavedQuizBannerProps> = ({
   onRetakeQuiz,
   onViewRoutine,
 }) => {
+  const { t } = useLanguage();
   const [savedResult, setSavedResult] = useState<SavedQuizResult | null>(null);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -63,7 +65,8 @@ export const SavedQuizBanner: React.FC<SavedQuizBannerProps> = ({
 
   if (!isVisible || !savedResult) return null;
 
-  const skinLabel = SKIN_TYPE_LABELS[savedResult.skinType] || savedResult.skinType;
+  const skinKey = SKIN_TYPE_LABELS[savedResult.skinType];
+  const skinLabel = skinKey ? t[skinKey] : savedResult.skinType;
 
   return (
     <motion.div
@@ -81,7 +84,7 @@ export const SavedQuizBanner: React.FC<SavedQuizBannerProps> = ({
         {/* Close button */}
         <button
           onClick={handleDismiss}
-          aria-label="Ocultar recomendación guardada"
+          aria-label={t.savedHide}
           className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors z-10"
         >
           <X className="w-4 h-4 text-white/80" />
@@ -95,11 +98,11 @@ export const SavedQuizBanner: React.FC<SavedQuizBannerProps> = ({
                 <Sparkles className="w-4 h-4" />
               </span>
               <h3 className="font-serif text-lg sm:text-xl font-semibold text-white leading-tight">
-                ¡Tu rutina te espera!
+                {t.savedTitle}
               </h3>
             </div>
             <p className="text-white/80 text-sm sm:text-base mb-1.5">
-              Hola de nuevo. Aquí tienes tu rutina para <span className="font-semibold underline underline-offset-1">{skinLabel}</span> lista para pedir.
+              {t.savedDesc} <span className="font-semibold underline underline-offset-1">{skinLabel}</span> lista para pedir.
             </p>
             <p className="text-white/60 text-xs sm:text-sm">
               {savedResult.routineTitle}
@@ -122,7 +125,7 @@ export const SavedQuizBanner: React.FC<SavedQuizBannerProps> = ({
               className="w-full sm:w-auto px-4 py-2 text-sm font-medium text-white/80 hover:text-white transition-colors flex items-center justify-center gap-1.5"
             >
               <RotateCcw className="w-3.5 h-3.5" />
-              <span>Refaz diagnóstico</span>
+              <span>{t.savedRedo}</span>
             </button>
           </div>
         </div>

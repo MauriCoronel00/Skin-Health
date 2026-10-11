@@ -6,11 +6,45 @@ import React, { useState, useEffect, useRef, Suspense, Component, ErrorInfo, Rea
 import { InstallBanner } from './components/InstallBanner';
 import { TrackingView } from './components/TrackingView';
 import { ToastMessage } from './components/Toast';
-import { LanguageProvider } from './contexts/LanguageContext';
+import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
 
 interface ErrorBoundaryState {
   hasError: boolean;
   error: Error | null;
+}
+
+function AppErrorFallback({ error }: { error: Error | null }) {
+  const { t } = useLanguage();
+  return (
+    <div className="min-h-screen bg-[#FAF8F5] flex items-center justify-center p-4">
+      <div className="max-w-md mx-auto text-center bg-white rounded-3xl border border-rose-200 p-8 shadow-lg">
+        <div className="w-16 h-16 rounded-full bg-rose-50 flex items-center justify-center mx-auto mb-4">
+          <svg className="w-8 h-8 text-rose-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+        </div>
+        <h2 className="text-lg font-semibold text-neutral-900 mb-2">{t.appErrorTitle}</h2>
+        <p className="text-sm text-neutral-600 mb-4">
+          {t.appErrorDesc}
+        </p>
+        {error && (
+          <details className="text-left text-xs text-neutral-500 bg-neutral-50 rounded-xl p-3 mb-4">
+            <summary className="font-mono cursor-pointer mb-1">{t.appErrorDetail}</summary>
+            <pre className="whitespace-pre-wrap font-mono">{error.message}</pre>
+            {error.stack && (
+              <pre className="whitespace-pre-wrap font-mono mt-2">{error.stack}</pre>
+            )}
+          </details>
+        )}
+        <button
+          onClick={() => window.location.reload()}
+          className="px-6 py-2.5 bg-[#102A43] text-white text-sm font-semibold rounded-full hover:bg-[#102A43]/90 transition-colors"
+        >
+          {t.appErrorReload}
+        </button>
+      </div>
+    </div>
+  );
 }
 
 class ErrorBoundary extends Component<{ children: ReactNode }, ErrorBoundaryState> {
@@ -26,36 +60,7 @@ class ErrorBoundary extends Component<{ children: ReactNode }, ErrorBoundaryStat
 
   render() {
     if (this.state.hasError) {
-      return (
-        <div className="min-h-screen bg-[#FAF8F5] flex items-center justify-center p-4">
-          <div className="max-w-md mx-auto text-center bg-white rounded-3xl border border-rose-200 p-8 shadow-lg">
-            <div className="w-16 h-16 rounded-full bg-rose-50 flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-rose-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-              </svg>
-            </div>
-            <h2 className="text-lg font-semibold text-neutral-900 mb-2">Algo salió mal</h2>
-            <p className="text-sm text-neutral-600 mb-4">
-              La aplicación se encontró con un error inesperado.
-            </p>
-            {this.state.error && (
-              <details className="text-left text-xs text-neutral-500 bg-neutral-50 rounded-xl p-3 mb-4">
-                <summary className="font-mono cursor-pointer mb-1">Ver detalle técnico</summary>
-                <pre className="whitespace-pre-wrap font-mono">{this.state.error.message}</pre>
-                {this.state.error.stack && (
-                  <pre className="whitespace-pre-wrap font-mono mt-2">{this.state.error.stack}</pre>
-                )}
-              </details>
-            )}
-            <button
-              onClick={() => window.location.reload()}
-              className="px-6 py-2.5 bg-[#102A43] text-white text-sm font-semibold rounded-full hover:bg-[#102A43]/90 transition-colors"
-            >
-              Recargar página
-            </button>
-          </div>
-        </div>
-      );
+      return <AppErrorFallback error={this.state.error} />;
     }
     return this.props.children;
   }
@@ -94,6 +99,7 @@ import { MobileBottomNavSection } from './components/sections/MobileBottomNavSec
 import { FooterSection } from './components/sections/FooterSection';
 
 export default function App() {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState<TabId>('home');
   const [quizOpen, setQuizOpen] = useState(false);
   const [focusRoutineNumber, setFocusRoutineNumber] = useState<string | null>(null);
@@ -207,7 +213,7 @@ export default function App() {
       });
       return {
         ok: false,
-        message: 'Te redirigimos al login de Google. Volvé a enviar tu reseña al regresar.',
+        message: t.appReviewRedirect,
       };
     }
 
@@ -221,8 +227,8 @@ export default function App() {
     });
     if (result.ok) {
       showToast(
-        '¡Reseña enviada!',
-        'Quedará visible luego de la moderación. ¡Gracias!',
+        t.appReviewSent,
+        t.appReviewSentDesc,
         'success'
       );
     }
@@ -378,11 +384,11 @@ return (
                   <div>
                     <h2 className="font-serif text-2xl sm:text-3xl font-semibold text-[#102A43]">
                       {selectedCategory === 'all'
-                        ? 'Catálogo Completo'
-                        : categories.find((c) => c.id === selectedCategory)?.label || 'Catálogo Completo'}
+                        ? t.catalogTitle
+                        : categories.find((c) => c.id === selectedCategory)?.label || t.catalogTitle}
                     </h2>
                     <p className="text-xs text-neutral-500 mt-0.5">
-                      {products.length} fórmulas esenciales seleccionadas para resultados visibles.
+                      {products.length} {t.catalogSubtitle}
                     </p>
                   </div>
 
@@ -513,7 +519,7 @@ return (
               <FooterSection
                 onOpenAdminPanel={() => {
                   if (isAdmin) setIsAdminPanelOpen(true);
-                  else showToast('Zona de administradores', 'Iniciá sesión con una cuenta administradora.', 'info');
+                  else showToast(t.adminZone, t.adminLoginHint, 'info');
                 }}
                 isAdmin={isAdmin}
               />

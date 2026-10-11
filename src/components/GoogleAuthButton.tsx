@@ -5,6 +5,7 @@ import { ReviewUser } from '../types';
 import { saveGoogleUser, clearGoogleUser } from '../utils/reviewsStorage';
 import { supabase } from '../lib/supabaseClient';
 import { currentReviewer } from '../data/identity';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface GoogleAuthButtonProps {
   onUserAuthenticated: (user: ReviewUser | null) => void;
@@ -20,6 +21,7 @@ export const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({
   onUserAuthenticated,
   currentUser,
 }) => {
+  const { t } = useLanguage();
   const syncedRef = useRef<string | null>(null);
 
   // Sincroniza la identidad real con el display local una sola vez
@@ -84,7 +86,7 @@ export const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({
               </span>
             </div>
             <p className="text-[11px] text-neutral-500">
-              Tu reseña se publica a nombre de{' '}
+              {t.authReviewAs}{' '}
               <strong className="text-neutral-700">{currentUser.name}</strong>
             </p>
           </div>
@@ -94,10 +96,10 @@ export const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({
           type="button"
           onClick={() => void handleLogout()}
           className="text-xs text-neutral-400 hover:text-rose-600 flex items-center gap-1 px-2.5 py-1.5 rounded-lg hover:bg-neutral-50 transition-colors"
-          title="Cerrar sesión"
+          title={t.authLogout}
         >
           <LogOut className="w-3.5 h-3.5" />
-          <span className="hidden sm:inline">Salir</span>
+          <span className="hidden sm:inline">{t.authLogout}</span>
         </button>
       </div>
     );
@@ -130,12 +132,12 @@ export const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({
             d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
           />
         </svg>
-        <span>Continuar con Google</span>
+        <span>{t.authContinue}</span>
       </motion.button>
 
       <p className="text-[11px] text-neutral-400 text-center sm:text-left flex items-center justify-center sm:justify-start gap-1">
         <Shield className="w-3.5 h-3.5 text-neutral-400" />
-        Solo usamos tu nombre público para firmar tu opinión. Sin contraseñas ni spam.
+        {t.authPrivacy}
       </p>
     </div>
   );

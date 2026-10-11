@@ -6,6 +6,7 @@ import { StarRatingInput } from './StarRatingInput';
 import { GoogleAuthButton } from './GoogleAuthButton';
 import { validateReviewContent } from '../utils/reviewsStorage';
 import { uploadReviewPhoto } from '../data/reviews';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface ReviewFormModalProps {
   isOpen: boolean;
@@ -24,14 +25,6 @@ interface ReviewFormModalProps {
   }) => Promise<{ ok: boolean; message?: string }>;
 }
 
-const TIPOS_PIEL: { value: TipoPiel; label: string }[] = [
-  { value: 'grasa', label: 'Grasa' },
-  { value: 'seca', label: 'Seca' },
-  { value: 'mixta', label: 'Mixta' },
-  { value: 'sensible', label: 'Sensible' },
-  { value: 'normal', label: 'Normal' },
-];
-
 export const ReviewFormModal: React.FC<ReviewFormModalProps> = ({
   isOpen,
   onClose,
@@ -40,6 +33,14 @@ export const ReviewFormModal: React.FC<ReviewFormModalProps> = ({
   onUserAuthenticated,
   onSubmitReview,
 }) => {
+  const { t } = useLanguage();
+  const TIPOS_PIEL: { value: TipoPiel; label: string }[] = [
+    { value: 'grasa', label: t.reviewGrasa },
+    { value: 'seca', label: t.reviewSeca },
+    { value: 'mixta', label: t.reviewMixta },
+    { value: 'sensible', label: t.reviewSensible },
+    { value: 'normal', label: 'Normal' },
+  ];
   const [rating, setRating] = useState<number>(5);
   const [comment, setComment] = useState('');
   const [tipoPiel, setTipoPiel] = useState<TipoPiel | ''>('');
@@ -53,7 +54,7 @@ export const ReviewFormModal: React.FC<ReviewFormModalProps> = ({
     const file = e.target.files?.[0];
     if (!file) return;
     if (fotos.length >= 3) {
-      setErrorMsg('Máximo 3 fotos por reseña.');
+      setErrorMsg(t.reviewFormMaxPhotos);
       return;
     }
     if (file.size > 5 * 1024 * 1024) {
@@ -66,7 +67,7 @@ export const ReviewFormModal: React.FC<ReviewFormModalProps> = ({
       const url = await uploadReviewPhoto(file);
       setFotos((prev) => [...prev, url]);
     } catch (err: unknown) {
-      setErrorMsg('No pudimos subir la foto. Probá de nuevo.');
+      setErrorMsg(t.reviewFormPhotoError);
       console.error(err);
     } finally {
       setUploadingPhoto(false);
@@ -86,20 +87,20 @@ export const ReviewFormModal: React.FC<ReviewFormModalProps> = ({
 
     // Step 1: Star validation
     if (!rating || rating < 1 || rating > 5) {
-      setErrorMsg('Por favor selecciona una calificación de 1 a 5 estrellas.');
+      setErrorMsg(t.reviewFormRatingError);
       return;
     }
 
     // Step 2: Auth check
     if (!currentUser) {
-      setErrorMsg('Por favor identifícate con tu cuenta Google para firmar tu valoración.');
+      setErrorMsg(t.reviewFormAuthError);
       return;
     }
 
     // Step 3: Comment validation (optional, but if present must be respectful & clean)
     const valResult = validateReviewContent(comment);
     if (!valResult.isValid) {
-      setErrorMsg(valResult.message || 'El comentario no es válido.');
+      setErrorMsg(valResult.message || t.reviewFormCommentError);
       return;
     }
 
@@ -117,7 +118,7 @@ export const ReviewFormModal: React.FC<ReviewFormModalProps> = ({
     setIsSubmitting(false);
 
     if (!result.ok) {
-      setErrorMsg(result.message || 'No pudimos guardar tu reseña. Probá de nuevo.');
+      setErrorMsg(result.message || t.reviewFormSaveError);
       return;
     }
 
@@ -170,10 +171,10 @@ export const ReviewFormModal: React.FC<ReviewFormModalProps> = ({
               <CheckCircle2 className="w-9 h-9 stroke-[2.5]" />
             </div>
             <h3 className="text-xl font-bold text-neutral-900 font-serif">
-              ¡Muchas gracias por tu opinión!
+              {t.reviewFormThanks}
             </h3>
             <p className="text-xs sm:text-sm text-neutral-600 max-w-sm mx-auto">
-              Tu opinión quedó en revisión y será visible tras la moderación. ¡Gracias por ayudar a la comunidad!
+              {t.reviewFormThanksDesc}
             </p>
           </motion.div>
         ) : (
@@ -195,7 +196,7 @@ export const ReviewFormModal: React.FC<ReviewFormModalProps> = ({
                   {product.name}
                 </h3>
                 <p className="text-xs text-neutral-500 truncate">
-                  Dejá tu valoración sincera
+                  {t.reviewFormTitle}
                 </p>
               </div>
             </div>
@@ -204,7 +205,7 @@ export const ReviewFormModal: React.FC<ReviewFormModalProps> = ({
               {/* Step 1: Star Rating */}
               <div className="bg-[#FAF8F5] p-4 rounded-2xl border border-neutral-100/90 text-center sm:text-left">
                 <label className="block text-xs font-bold uppercase tracking-wider text-[#102A43] mb-2">
-                  1. ¿Qué puntuación le das al producto? <span className="text-rose-500">*</span>
+                  {t.reviewFormQ1} <span className="text-rose-500">*</span>
                 </label>
                 <StarRatingInput value={rating} onChange={setRating} size="lg" />
               </div>
@@ -213,7 +214,7 @@ export const ReviewFormModal: React.FC<ReviewFormModalProps> = ({
               <div>
                 <div className="flex items-center justify-between mb-1.5">
                   <label className="block text-xs font-semibold text-neutral-800">
-                    2. Tu comentario u opinión <span className="text-neutral-400 font-normal">(Opcional)</span>
+                    {t.reviewFormQ2}
                   </label>
                   <span className="text-xs text-neutral-400">
                     {comment.length}/600
@@ -222,7 +223,7 @@ export const ReviewFormModal: React.FC<ReviewFormModalProps> = ({
                 <textarea
                   rows={3}
                   maxLength={600}
-                  placeholder="Contanos tu experiencia: textura, cómo te sentó en la piel, rapidez de entrega..."
+                  placeholder={t.reviewFormPlaceholder}
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
                   className="w-full p-3 rounded-2xl border border-neutral-200 text-sm focus:outline-none focus:border-[#102A43] focus:ring-1 focus:ring-[#102A43] resize-none leading-relaxed"
@@ -232,7 +233,7 @@ export const ReviewFormModal: React.FC<ReviewFormModalProps> = ({
               {/* Step 3: Tipo de piel */}
               <div>
                 <label className="block text-xs font-semibold text-neutral-800 mb-2">
-                  3. Tu tipo de piel <span className="text-neutral-400 font-normal">(Opcional, ayuda a otros clientes)</span>
+                  {t.reviewFormQ3}
                 </label>
                 <div className="flex flex-wrap gap-2">
                   {TIPOS_PIEL.map((tp) => {
@@ -266,7 +267,7 @@ export const ReviewFormModal: React.FC<ReviewFormModalProps> = ({
                       key={url}
                       className="relative w-16 h-16 rounded-xl overflow-hidden border border-neutral-200"
                     >
-                      <img src={url} alt="Foto de reseña" className="w-full h-full object-cover" />
+                      <img src={url} alt={t.reviewsPhoto} className="w-full h-full object-cover" />
                       <button
                         type="button"
                         onClick={() => removePhoto(url)}
@@ -302,7 +303,7 @@ export const ReviewFormModal: React.FC<ReviewFormModalProps> = ({
               {/* Step 5: Google Identification */}
               <div>
                 <label className="block text-xs font-semibold text-neutral-800 mb-2">
-                  5. Identificación antes de publicar <span className="text-rose-500">*</span>
+                  {t.reviewFormQ5} <span className="text-rose-500">*</span>
                 </label>
                 <GoogleAuthButton
                   currentUser={currentUser}
@@ -332,11 +333,11 @@ export const ReviewFormModal: React.FC<ReviewFormModalProps> = ({
                   }`}
                 >
                   {isSubmitting ? (
-                    <span>Publicando opinión...</span>
+                    <span>{t.reviewFormSubmitting}</span>
                   ) : (
                     <>
                       <Send className="w-4 h-4" />
-                      <span>Publicar mi Reseña</span>
+                      <span>{t.reviewFormSubmit}</span>
                     </>
                   )}
                 </motion.button>

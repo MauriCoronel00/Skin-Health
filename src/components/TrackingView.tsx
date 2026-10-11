@@ -18,6 +18,7 @@ import {
 } from '../data/tracking';
 import { formatGuarani } from '../data/products';
 import { ENVIO_ORIGEN_MAPS_URL } from '../utils/envio';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const STEP_ICON = [PackageSearch, CheckCircle2, Truck, Home] as const;
 
@@ -29,6 +30,7 @@ export const TrackingView: React.FC<{ codigoInicial: string; onVolver: () => voi
   codigoInicial,
   onVolver,
 }) => {
+  const { t } = useLanguage();
   const [codigo, setCodigo] = useState(codigoInicial);
   const [info, setInfo] = useState<TrackingInfo | null>(null);
   const [loading, setLoading] = useState(true);
@@ -76,7 +78,7 @@ export const TrackingView: React.FC<{ codigoInicial: string; onVolver: () => voi
 
       <div className="bg-white rounded-3xl border border-[#102A43]/10 p-6 sm:p-8 shadow-xs">
         <h2 className="font-serif text-2xl font-semibold text-[#102A43] text-center">
-          Seguí tu pedido
+          {t.trackTitle}
         </h2>
 
         <form
@@ -90,7 +92,7 @@ export const TrackingView: React.FC<{ codigoInicial: string; onVolver: () => voi
             value={codigo}
             onChange={(e) => setCodigo(e.target.value.toUpperCase())}
             placeholder="SKIN-XXXXXXXX"
-            aria-label="Código de pedido"
+            aria-label={t.trackCodeLabel}
             className="flex-1 h-11 px-4 rounded-full bg-[#FAF8F5] border border-neutral-200 text-sm font-mono uppercase outline-none focus:border-[#102A43]/40"
           />
           <button
@@ -104,7 +106,7 @@ export const TrackingView: React.FC<{ codigoInicial: string; onVolver: () => voi
 
         {notFound && !loading && (
           <p className="text-center text-sm text-rose-600 mt-6">
-            No encontramos ese código. Revisalo e intentá de nuevo.
+            {t.trackNotFound}
           </p>
         )}
 
@@ -120,7 +122,7 @@ export const TrackingView: React.FC<{ codigoInicial: string; onVolver: () => voi
             {info.estado === 'cancelado' ? (
               <div className="flex items-center justify-center gap-2 mt-6 p-4 bg-rose-50 rounded-2xl border border-rose-100 text-rose-700 text-sm font-semibold">
                 <Ban className="w-5 h-5" />
-                <span>Este pedido fue cancelado. Escribinos y lo armamos de nuevo.</span>
+                <span>{t.trackCancelled}</span>
               </div>
             ) : (
               <ol className="mt-6 space-y-0">
@@ -163,11 +165,11 @@ export const TrackingView: React.FC<{ codigoInicial: string; onVolver: () => voi
                 </div>
               ))}
               <div className="flex justify-between text-neutral-500 pt-1">
-                <span>Envío a {info.zona || 'tu zona'}</span>
+                <span>{t.trackShippingTo} {info.zona || 'tu zona'}</span>
                 <span>{formatGuarani(info.costoEnvioGs)}</span>
               </div>
               <div className="flex justify-between font-bold text-sm text-[#102A43] pt-1 border-t border-neutral-200">
-                <span>Total</span>
+                <span>{t.trackTotal}</span>
                 <span>{formatTrackingTotal(info)}</span>
               </div>
             </div>
@@ -179,7 +181,7 @@ export const TrackingView: React.FC<{ codigoInicial: string; onVolver: () => voi
                   Zona de entrega aproximada
                 </p>
                 <iframe
-                  title={`Mapa de entrega ${info.codigo}`}
+                  title={`${t.trackMapTitle} ${info.codigo}`}
                   src={mapQuery}
                   className="w-full h-56 rounded-2xl border border-neutral-200"
                   loading="lazy"
@@ -190,7 +192,7 @@ export const TrackingView: React.FC<{ codigoInicial: string; onVolver: () => voi
                   rel="noopener noreferrer"
                   className="text-xs text-sky-700 underline mt-2 inline-block"
                 >
-                  Cómo llegar desde nuestro local
+                  {t.trackMapCta}
                 </a>
               </div>
             )}

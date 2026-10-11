@@ -11,10 +11,11 @@ import {
   X,
 } from 'lucide-react';
 import { CartItem } from '../types';
-import { formatGuarani, STORE_PHONE_NUMBER, STORE_PHONE_DISPLAY } from '../data/products';
+import { formatGuarani, STORE_PHONE_NUMBER } from '../data/products';
 import { buildPedidoMessage } from '../data/pedidos';
 import { trackingLink } from '../data/tracking';
 import { STORE_PHONE_NUMBER as WHATSAPP_NUMBER } from '../data/products';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export interface OrderDetails {
   orderId: string;
@@ -40,6 +41,7 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
   order,
 }) => {
   const [copied, setCopied] = useState(false);
+  const { t } = useLanguage();
 
   if (!isOpen || !order) return null;
 
@@ -100,7 +102,7 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
           </div>
 
           <span className="text-[11px] font-bold uppercase tracking-widest text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-100">
-            ¡Pedido Registrado con Éxito!
+            {t.orderSuccessTitle}
           </span>
 
           <h3 className="font-serif text-2xl font-bold text-[#102A43] mt-2 mb-1">
@@ -112,12 +114,12 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
 
           {/* Unique Order Code Box */}
           <div className="mt-4 inline-flex items-center gap-2 bg-white px-4 py-2 rounded-xl border border-neutral-200 shadow-2xs">
-            <span className="text-xs text-neutral-400 font-medium">Código de Pedido:</span>
+            <span className="text-xs text-neutral-400 font-medium">{t.orderCode}</span>
             <span className="font-mono font-bold text-sm text-[#102A43]">{order.orderId}</span>
             <button
               onClick={handleCopyCode}
               className="text-neutral-400 hover:text-[#102A43] transition-colors p-1"
-              title="Copiar código"
+              title={t.orderCopyCode}
             >
               {copied ? (
                 <Check className="w-3.5 h-3.5 text-emerald-600" />
@@ -142,9 +144,9 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
                   1
                 </span>
                 <div>
-                  <p className="font-semibold text-neutral-900">Confirmación por WhatsApp</p>
+                  <p className="font-semibold text-neutral-900">{t.orderWhatsTitle}</p>
                   <p className="text-neutral-500 mt-0.5 leading-relaxed">
-                    Nuestro equipo en {STORE_PHONE_DISPLAY} confirmará la disponibilidad inmediata de tus productos.
+                    {t.orderWhatsDesc}
                   </p>
                 </div>
               </div>
@@ -154,9 +156,9 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
                   2
                 </span>
                 <div>
-                  <p className="font-semibold text-neutral-900">Método de pago flexible</p>
+                  <p className="font-semibold text-neutral-900">{t.orderPayTitle}</p>
                   <p className="text-neutral-500 mt-0.5 leading-relaxed">
-                    Podés abonar vía transferencia bancaria (SIPAP) o en efectivo / POS al recibir el paquete.
+                    {t.orderPayDesc}
                   </p>
                 </div>
               </div>
@@ -166,9 +168,9 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
                   3
                 </span>
                 <div>
-                  <p className="font-semibold text-neutral-900">Entrega rápida a tu ubicación</p>
+                  <p className="font-semibold text-neutral-900">{t.orderDeliveryTitle}</p>
                   <p className="text-neutral-500 mt-0.5 leading-relaxed">
-                    Envío seguro con motodelivery en Asunción y Gran Asunción o encomienda express al interior del país.
+                    {t.orderDeliveryDesc}
                   </p>
                 </div>
               </div>
@@ -182,7 +184,7 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
                 <Package className="w-3.5 h-3.5 text-neutral-500" />
                 <span>Resumen de Productos</span>
               </span>
-              <span className="font-normal text-neutral-500 text-[11px]">{order.items.length} ítems</span>
+              <span className="font-normal text-neutral-500 text-[11px]">{order.items.length} {t.orderItems}</span>
             </h4>
 
             <div className="divide-y divide-neutral-100 bg-[#FAF8F5] rounded-xl p-3 border border-neutral-100 text-xs">
@@ -199,13 +201,13 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
               ))}
 
               <div className="pt-2.5 mt-1 border-t border-neutral-200 flex justify-between items-baseline text-xs text-neutral-500">
-                <span>Envío</span>
+                <span>{t.orderShipping}</span>
                 <span className="font-semibold text-neutral-700">
                   {formatGuarani(order.costoEnvioGs ?? 0)}
                 </span>
               </div>
               <div className="pt-2.5 mt-1 border-t border-neutral-200 flex justify-between items-baseline font-bold text-sm text-[#102A43]">
-                <span>Total</span>
+                <span>{t.orderTotal}</span>
                 <span>{formatGuarani(order.totalAmount + (order.costoEnvioGs ?? 0))}</span>
               </div>
             </div>
@@ -216,7 +218,7 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
             <div className="bg-neutral-50 rounded-xl p-3 border border-neutral-100 text-xs flex items-start gap-2.5">
               <MapPin className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
               <div>
-                <span className="font-semibold text-neutral-900 block">Destino de envío:</span>
+                <span className="font-semibold text-neutral-900 block">{t.orderDestination}</span>
                 <span className="text-neutral-600">{order.customerAddress}</span>
                 {order.customerName && (
                   <span className="text-neutral-400 block mt-0.5">Destinatario: {order.customerName}</span>
@@ -240,7 +242,7 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
             className="w-full sm:flex-1 py-3 px-4 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-md shadow-emerald-500/20"
           >
             <MessageCircle className="w-4 h-4 fill-white text-[#25D366]" />
-            <span>Reabrir chat de WhatsApp</span>
+            <span>{t.orderReopenWhats}</span>
           </button>
 
           <button

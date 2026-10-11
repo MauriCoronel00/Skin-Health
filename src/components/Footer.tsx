@@ -1,6 +1,7 @@
 import React from 'react';
 import { MessageCircle, ShieldCheck, Truck, Heart, Instagram } from 'lucide-react';
 import { STORE_PHONE_NUMBER, STORE_PHONE_DISPLAY } from '../data/products';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface FooterProps {
   onOpenAdminPanel?: () => void;
@@ -8,6 +9,7 @@ interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({ onOpenAdminPanel, isAdmin }) => {
+  const { t } = useLanguage();
   return (
     <footer className="mt-16 bg-[#0E2338] text-white pt-12 pb-24 sm:pb-16 border-t border-white/10">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
@@ -18,9 +20,9 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdminPanel, isAdmin }) => 
               <ShieldCheck className="w-5 h-5 text-[#B9CBBE]" />
             </div>
             <div>
-              <h4 className="font-semibold text-sm text-white">100% Originales</h4>
+              <h4 className="font-semibold text-sm text-white">{t.footerOriginalTitle}</h4>
               <p className="text-xs text-white/70 mt-0.5">
-                Productos importados de marcas oficiales de Corea del Sur.
+                {t.footerOriginalDesc}
               </p>
             </div>
           </div>
@@ -30,9 +32,9 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdminPanel, isAdmin }) => 
               <Truck className="w-5 h-5 text-sky-300" />
             </div>
             <div>
-              <h4 className="font-semibold text-sm text-white">Delivery en Paraguay</h4>
+              <h4 className="font-semibold text-sm text-white">{t.footerDeliveryTitle}</h4>
               <p className="text-xs text-white/70 mt-0.5">
-                Entregas en el día en Asunción y Gran Asunción. Envíos a todo el interior.
+                {t.footerDeliveryDesc}
               </p>
             </div>
           </div>
@@ -42,9 +44,9 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdminPanel, isAdmin }) => 
               <MessageCircle className="w-5 h-5 text-[#B9CBBE]" />
             </div>
             <div>
-              <h4 className="font-semibold text-sm text-white">Pedidos por WhatsApp</h4>
+              <h4 className="font-semibold text-sm text-white">{t.footerWhatsTitle}</h4>
               <p className="text-xs text-white/70 mt-0.5">
-                Sin registros engorrosos. Armás tu carrito y coordinamos todo directo por chat.
+                {t.footerWhatsDesc}
               </p>
             </div>
           </div>
@@ -54,20 +56,20 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdminPanel, isAdmin }) => 
         <div className="py-8 flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="text-center sm:text-right">
             <p className="text-xs text-white/60">
-              ¿Ya pediste?
+              {t.footerOrdered}
             </p>
             <a
               href="?track="
               className="text-sm font-semibold text-white hover:text-[#B9CBBE] inline-flex items-center gap-1.5 mt-1"
             >
               <Truck className="w-4 h-4" />
-              <span>Seguir mi pedido</span>
+              <span>{t.footerTrack}</span>
             </a>
           </div>
 
           <div className="text-center sm:text-right">
             <p className="text-xs text-white/60">
-              Síguenos en las redes:
+              {t.footerFollow}
             </p>
             <a
               href="https://www.instagram.com/skinhealthpy"
@@ -82,7 +84,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdminPanel, isAdmin }) => 
 
           <div className="text-center sm:text-right">
             <p className="text-xs text-white/60">
-              Atención y pedidos al instante:
+              {t.footerContact}
             </p>
             <a
               href={`https://wa.me/${STORE_PHONE_NUMBER}?text=Hola%20Skin%20Health`}
@@ -98,10 +100,10 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdminPanel, isAdmin }) => 
 
         {/* Bottom copyright */}
         <div className="pt-6 border-t border-white/10 text-center text-xs text-white/50 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span>© {new Date().getFullYear()} Skin Health. Todos los derechos reservados.</span>
+          <span>© {new Date().getFullYear()} Skin Health. {t.footerRights}</span>
           <div className="flex items-center gap-4">
             <span className="inline-flex items-center gap-1 text-white/60">
-                K-beauty hecha con <Heart className="w-3.5 h-3.5 text-rose-400 fill-rose-400" /> para tu piel.
+                {t.footerKbeauty} <Heart className="w-3.5 h-3.5 text-rose-400 fill-rose-400" /> {t.footerKbeautyTail}
             </span>
             {isAdmin && onOpenAdminPanel && (
               <button

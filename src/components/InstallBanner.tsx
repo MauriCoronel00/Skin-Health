@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Smartphone, X, Share } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const DISMISS_KEY = 'sh_install_dismissed_v1';
 
@@ -11,6 +12,7 @@ interface BeforeInstallPromptEvent extends Event {
 
 /** Banner "Agregar a pantalla de inicio" (PWA). Solo si no está instalada. */
 export const InstallBanner: React.FC = () => {
+  const { t } = useLanguage();
   const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(null);
   const [visible, setVisible] = useState(false);
   const [isIos, setIsIos] = useState(false);
@@ -66,16 +68,16 @@ export const InstallBanner: React.FC = () => {
           exit={{ opacity: 0, y: -8 }}
           className="mx-4 sm:mx-6 mt-3 flex items-center gap-3 bg-[#102A43] text-white rounded-2xl px-4 py-3 shadow-md"
           role="complementary"
-          aria-label="Instalar aplicación"
+          aria-label={t.installAria}
         >
           <span className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center shrink-0">
             {isIos ? <Share className="w-4 h-4" /> : <Smartphone className="w-4 h-4" />}
           </span>
           <p className="flex-1 text-xs leading-snug text-white/90">
             {isIos ? (
-              <>En iPhone: tocá <strong>Compartir</strong> y elegí <strong>Agregar a pantalla de inicio</strong>.</>
+              t.installIos
             ) : (
-              <>Agregá Skin Health a tu inicio para comprar en 1 toque.</>
+              t.installDesc
             )}
           </p>
           {!isIos && deferred && (

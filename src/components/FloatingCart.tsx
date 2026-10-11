@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ShoppingBag, ArrowRight } from 'lucide-react';
 import { formatGuarani } from '../data/products';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface FloatingCartProps {
   totalItems: number;
@@ -18,6 +19,7 @@ export const FloatingCart: React.FC<FloatingCartProps> = ({
 }) => {
   const [pulse, setPulse] = useState(false);
   const [pressed, setPressed] = useState(false);
+  const { t } = useLanguage();
 
   // Haptic feedback
   const triggerHaptic = (type: 'light' | 'medium' = 'light') => {
@@ -50,7 +52,7 @@ export const FloatingCart: React.FC<FloatingCartProps> = ({
     <AnimatePresence>
       {totalItems > 0 && (
         <aside
-          aria-label="Carrito flotante de compras"
+          aria-label={t.floatingCartAria}
           className="fixed bottom-[72px] sm:bottom-6 left-0 right-0 z-40 px-4 pointer-events-none flex justify-center pb-safe"
         >
           <motion.div

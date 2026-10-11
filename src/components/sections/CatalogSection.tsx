@@ -4,6 +4,7 @@ import { ProductCard } from '../ProductCard';
 import { SlidersHorizontal } from 'lucide-react';
 import { motion } from 'motion/react';
 import { Product } from '../../types';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 interface CatalogSectionProps {
   isLoadingProducts: boolean;
@@ -26,6 +27,7 @@ export function CatalogSection({
   loadCatalog,
   resetFilters,
 }: CatalogSectionProps) {
+  const { t } = useLanguage();
   return (
     <ErrorBoundary>
       <div className="mt-6">
@@ -34,10 +36,10 @@ export function CatalogSection({
         ) : catalogError ? (
           <div className="text-center py-16 bg-white rounded-3xl border border-red-100 p-8">
             <h3 className="font-semibold text-neutral-800 text-lg mb-1">
-              No pudimos cargar el catálogo
+              {t.catalogError}
             </h3>
             <p className="text-sm text-neutral-500 max-w-sm mx-auto mb-5">
-              Revisá tu conexión e intentá de nuevo. Si sigue fallando, escribinos por WhatsApp.
+              {t.catalogErrorHint}
             </p>
             <button
               onClick={() => void loadCatalog()}
@@ -52,10 +54,10 @@ export function CatalogSection({
               <SlidersHorizontal className="w-5 h-5" />
             </div>
             <h3 className="font-semibold text-neutral-800 text-lg mb-1">
-              No encontramos productos con esos filtros
+              {t.catalogEmpty}
             </h3>
             <p className="text-sm text-neutral-500 max-w-sm mx-auto mb-5">
-              Intenta buscar con otro término o limpia los filtros para ver los productos disponibles.
+              {t.catalogEmptyHint}
             </p>
             <button
               onClick={resetFilters}

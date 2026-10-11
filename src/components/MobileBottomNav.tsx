@@ -8,6 +8,7 @@ import {
   User,
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../contexts/LanguageContext';
 import { STORE_PHONE_NUMBER } from '../data/products';
 
 export type TabId = 'home' | 'search' | 'cart' | 'chat' | 'account';
@@ -20,12 +21,12 @@ interface MobileBottomNavProps {
   onOpenCart: () => void;
 }
 
-const tabs: { id: TabId; label: string; icon: React.ReactNode; requiresAuth?: boolean }[] = [
-  { id: 'home', label: 'Inicio', icon: <Home className="w-5 h-5" /> },
-  { id: 'search', label: 'Buscar', icon: <Search className="w-5 h-5" /> },
-  { id: 'cart', label: 'Pedido', icon: <ShoppingBag className="w-5 h-5" /> },
-  { id: 'chat', label: 'Asesoría', icon: <MessageCircle className="w-5 h-5" /> },
-  { id: 'account', label: 'Cuenta', icon: <User className="w-5 h-5" />, requiresAuth: true },
+const tabs: { id: TabId; icon: React.ReactNode; requiresAuth?: boolean }[] = [
+  { id: 'home', icon: <Home className="w-5 h-5" /> },
+  { id: 'search', icon: <Search className="w-5 h-5" /> },
+  { id: 'cart', icon: <ShoppingBag className="w-5 h-5" /> },
+  { id: 'chat', icon: <MessageCircle className="w-5 h-5" /> },
+  { id: 'account', icon: <User className="w-5 h-5" />, requiresAuth: true },
 ];
 
 export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
@@ -36,6 +37,15 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
   onOpenCart,
 }) => {
   const { user } = useAuth();
+  const { t } = useLanguage();
+
+  const labels: Record<TabId, string> = {
+    home: t.navHome,
+    search: t.navSearch,
+    cart: t.navCart,
+    chat: t.navAdvice,
+    account: t.navAccount,
+  };
 
   const handleTabClick = (tabId: TabId) => {
     // Special handling for cart - open drawer instead of switching tab
@@ -46,7 +56,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
 
     // Asesoría: abrir WhatsApp de Skin Health directamente
     if (tabId === 'chat') {
-      const mensaje = 'Hola Skin Health, necesito asesoría para elegir mi rutina.';
+      const mensaje = t.navWhatsMessage;
       const whatsappUrl = `https://wa.me/${STORE_PHONE_NUMBER}?text=${encodeURIComponent(mensaje)}`;
       window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
       return;
@@ -81,7 +91,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
     <motion.nav
       id="mobile-bottom-nav"
       role="navigation"
-      aria-label="Navegación principal"
+      aria-label={t.navAria}
       initial={{ y: 100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       exit={{ y: 100, opacity: 0 }}
@@ -102,7 +112,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
                 isActive ? 'text-[#102A43]' : 'text-neutral-400'
               }`}
               aria-current={isActive ? 'page' : undefined}
-              aria-label={tab.label}
+              aria-label={labels[tab.id]}
             >
               <div className="relative flex items-center justify-center w-6 h-6">
                 <span className="z-10">{tab.icon}</span>
@@ -121,7 +131,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
               <span className={`text-xs font-medium tracking-wide transition-colors ${
                 isActive ? 'text-[#102A43]' : 'text-neutral-400'
               }`}>
-                {tab.label}
+                {labels[tab.id]}
               </span>
               {/* Active indicator */}
               <motion.div

@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useMemo, useCall
 import { Product, CategoryId, CategoryOption } from '../types';
 import { fetchProducts, fetchCategories } from '../data/products';
 import { useLanguage } from '../contexts/LanguageContext';
+import { Translations } from '../i18n/translations';
 
 interface ProductContextValue {
   products: Product[];
@@ -27,27 +28,27 @@ interface ProductContextValue {
 
 const ProductContext = createContext<ProductContextValue | undefined>(undefined);
 
-const SKIN_FILTERS: { id: string; label: string; test: RegExp }[] = [
-  { id: 'grasa', label: 'Grasa', test: /grasa|brillo/i },
-  { id: 'seca', label: 'Seca', test: /seca|deshidratada/i },
-  { id: 'mixta', label: 'Mixta', test: /mixta/i },
-  { id: 'sensible', label: 'Sensible', test: /sensible|irritada|agredida|recuperaci/i },
+const getSkinFilters = (t: Translations): { id: string; label: string; test: RegExp }[] => [
+  { id: 'grasa', label: t.skinGrasa, test: /grasa|brillo/i },
+  { id: 'seca', label: t.skinSeca, test: /seca|deshidratada/i },
+  { id: 'mixta', label: t.skinMixta, test: /mixta/i },
+  { id: 'sensible', label: t.skinSensible, test: /sensible|irritada|agredida|recuperaci/i },
 ];
 
-const PRICE_FILTERS: { id: string; label: string; test: (price: number) => boolean }[] = [
-  { id: 'low', label: 'Hasta Gs. 150.000', test: (p) => p <= 150000 },
-  { id: 'mid', label: 'Gs. 150.000 – 250.000', test: (p) => p > 150000 && p <= 250000 },
-  { id: 'high', label: 'Más de Gs. 250.000', test: (p) => p > 250000 },
+const getPriceFilters = (t: Translations): { id: string; label: string; test: (price: number) => boolean }[] => [
+  { id: 'low', label: t.priceLow, test: (p) => p <= 150000 },
+  { id: 'mid', label: t.priceMid, test: (p) => p > 150000 && p <= 250000 },
+  { id: 'high', label: t.priceHigh, test: (p) => p > 250000 },
 ];
 
-export { SKIN_FILTERS, PRICE_FILTERS };
+export { getSkinFilters, getPriceFilters };
 
 export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<CategoryOption[]>([]);
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
   const [catalogError, setCatalogError] = useState(false);
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
 
   const [selectedCategory, setSelectedCategory] = useState<CategoryId>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -83,18 +84,20 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
   }, [language]);
 
   const filteredProducts = useMemo(() => {
+    const skinFilters = getSkinFilters(t);
+    const priceFilters = getPriceFilters(t);
     return products.filter((product) => {
       if (selectedCategory !== 'all' && product.category !== selectedCategory) return false;
       if (selectedBrand !== 'all' && product.brand !== selectedBrand) return false;
 
       if (selectedSkin !== 'all') {
         const skin = product.skinType ?? '';
-        const matcher = SKIN_FILTERS.find((f) => f.id === selectedSkin);
+        const matcher = skinFilters.find((f) => f.id === selectedSkin);
         if (matcher && !/todo tipo/i.test(skin) && !matcher.test.test(skin)) return false;
       }
 
       if (selectedPrice !== 'all') {
-        const range = PRICE_FILTERS.find((f) => f.id === selectedPrice);
+        const range = priceFilters.find((f) => f.id === selectedPrice);
         if (range && !range.test(product.price ?? 0)) return false;
       }
 
@@ -111,7 +114,7 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
       return true;
     });
-  }, [products, selectedCategory, selectedBrand, searchQuery, selectedSkin, selectedPrice]);
+  }, [products, selectedCategory, selectedBrand, searchQuery, selectedSkin, selectedPrice, t]);
 
   const brandOptions = useMemo(() => {
     const set = new Set<string>();

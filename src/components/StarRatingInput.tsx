@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { Star } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface StarRatingInputProps {
   value: number; // 0 to 5
@@ -9,20 +10,22 @@ interface StarRatingInputProps {
   disabled?: boolean;
 }
 
-const RATING_LABELS: Record<number, string> = {
-  1: 'Muy malo',
-  2: 'Malo',
-  3: 'Regular',
-  4: 'Bueno',
-  5: 'Excelente',
-};
-
 export const StarRatingInput: React.FC<StarRatingInputProps> = ({
   value,
   onChange,
   size = 'lg',
   disabled = false,
 }) => {
+  const { t } = useLanguage();
+
+  const RATING_LABELS: Record<number, string> = {
+    1: t.starVeryBad,
+    2: t.starBad,
+    3: t.starRegular,
+    4: t.starGood,
+    5: t.starExcellent,
+  };
+
   const [hovered, setHovered] = useState<number | null>(null);
 
   const starSizeClasses = {
@@ -39,7 +42,7 @@ export const StarRatingInput: React.FC<StarRatingInputProps> = ({
         className="flex items-center gap-1.5 focus:outline-none"
         onMouseLeave={() => setHovered(null)}
         role="radiogroup"
-        aria-label="Calificación de 1 a 5 estrellas"
+        aria-label={t.starAria}
       >
         {[1, 2, 3, 4, 5].map((star) => {
           const isFilled = star <= currentDisplay;
@@ -58,7 +61,7 @@ export const StarRatingInput: React.FC<StarRatingInputProps> = ({
               className={`p-1 rounded-xl transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-400/40 ${
                 disabled ? 'cursor-not-allowed opacity-60' : ''
               }`}
-              aria-label={`${star} estrella${star > 1 ? 's' : ''}: ${RATING_LABELS[star]}`}
+              aria-label={`${star} ${star === 1 ? t.starCount.replace(/s$/, '') : t.starCount}: ${RATING_LABELS[star]}`}
             >
               <Star
                 className={`${starSizeClasses} transition-all duration-200 ${
@@ -87,12 +90,12 @@ export const StarRatingInput: React.FC<StarRatingInputProps> = ({
                 : 'text-rose-600'
             }`}
           >
-            {currentDisplay} {currentDisplay === 1 ? 'estrella' : 'estrellas'} —{' '}
+            {currentDisplay} {currentDisplay === 1 ? t.starCount.replace(/s$/, '') : t.starCount} —{' '}
             <span className="capitalize">{RATING_LABELS[currentDisplay]}</span>
           </motion.span>
         ) : (
           <span className="text-[11px] text-neutral-400 font-normal">
-            Toca las estrellas para calificar
+            {t.starHint}
           </span>
         )}
       </div>

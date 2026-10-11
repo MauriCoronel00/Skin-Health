@@ -4,6 +4,7 @@ import { Star, ShieldCheck, ThumbsUp, ImageIcon, MessageSquare } from 'lucide-re
 import { Product, ProductReview, ReviewUser, TipoPiel } from '../types';
 import { getProductRatingStats } from '../data/demoReviews';
 import { formatReviewDate } from '../utils/reviewsStorage';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface ProductReviewsSectionProps {
   product: Product;
@@ -14,14 +15,6 @@ interface ProductReviewsSectionProps {
 }
 
 type SortMode = 'utiles' | 'recientes' | 'mejores' | 'peores';
-
-const TIPO_PIEL_LABEL: Record<TipoPiel, string> = {
-  grasa: 'Piel grasa',
-  seca: 'Piel seca',
-  mixta: 'Piel mixta',
-  sensible: 'Piel sensible',
-  normal: 'Piel normal',
-};
 
 export const ProductReviewsSection: React.FC<ProductReviewsSectionProps> = ({
   product,
@@ -36,6 +29,16 @@ export const ProductReviewsSection: React.FC<ProductReviewsSectionProps> = ({
   const [filterTipoPiel, setFilterTipoPiel] = useState<TipoPiel | 'all'>('all');
   const [sortMode, setSortMode] = useState<SortMode>('utiles');
   const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
+
+  const { t } = useLanguage();
+
+  const TIPO_PIEL_LABEL: Record<TipoPiel, string> = {
+    grasa: t.skinTypeOily,
+    seca: t.skinTypeDry,
+    mixta: t.skinTypeCombo,
+    sensible: t.skinTypeSensitive,
+    normal: 'Piel normal',
+  };
 
   // Relevant approved reviews for this product
   const productReviews = reviews.filter(
@@ -102,7 +105,7 @@ export const ProductReviewsSection: React.FC<ProductReviewsSectionProps> = ({
         <div>
           <div className="flex items-center gap-2">
             <h4 className="font-serif text-lg sm:text-xl font-bold text-[#102A43]">
-              Opiniones de clientes
+              {t.reviewsTitle}
             </h4>
             <span className="text-xs bg-[#102A43]/5 text-[#102A43] font-semibold px-2.5 py-0.5 rounded-full">
               {stats.totalReviews}
@@ -123,7 +126,7 @@ export const ProductReviewsSection: React.FC<ProductReviewsSectionProps> = ({
           <div className="flex items-center text-amber-400">
             <Star className="w-3.5 h-3.5 fill-amber-400 stroke-amber-400" />
           </div>
-          <span>Dejar una reseña</span>
+          <span>{t.reviewsLeave}</span>
         </motion.button>
       </div>
 
@@ -147,7 +150,7 @@ export const ProductReviewsSection: React.FC<ProductReviewsSectionProps> = ({
             ))}
           </div>
           <span className="text-xs text-neutral-500 font-medium">
-            Basado en {stats.totalReviews} opiniones
+            {t.reviewsBasedOn} {stats.totalReviews} {t.reviewsCount}
           </span>
         </div>
 
@@ -260,8 +263,8 @@ export const ProductReviewsSection: React.FC<ProductReviewsSectionProps> = ({
               onChange={(e) => setSortMode(e.target.value as SortMode)}
               className="text-xs font-semibold text-[#102A43] bg-white border border-neutral-200 rounded-lg px-2 py-1.5 cursor-pointer focus:outline-none focus:border-[#102A43]/40"
             >
-              <option value="utiles">Más útiles</option>
-              <option value="recientes">Más recientes</option>
+              <option value="utiles">{t.reviewsSortHelpful}</option>
+              <option value="recientes">{t.reviewsSortRecent}</option>
               <option value="mejores">Mejor puntaje</option>
               <option value="peores">Peor puntaje</option>
             </select>
@@ -274,13 +277,13 @@ export const ProductReviewsSection: React.FC<ProductReviewsSectionProps> = ({
         {displayedReviews.length === 0 ? (
           <div className="text-center py-8 bg-neutral-50 rounded-2xl border border-neutral-100 p-6">
             <p className="text-xs text-neutral-500 mb-3">
-              No hay opiniones con esta cantidad de estrellas todavía.
+              {t.reviewsEmpty}
             </p>
             <button
               onClick={() => setSelectedFilter('all')}
               className="text-xs text-[#102A43] font-semibold underline cursor-pointer"
             >
-              Ver todas las opiniones
+              {t.reviewsShowAll}
             </button>
           </div>
         ) : (
@@ -322,7 +325,7 @@ export const ProductReviewsSection: React.FC<ProductReviewsSectionProps> = ({
                         {rev.isVerifiedPurchase && (
                           <span
                             className="inline-flex items-center gap-0.5 text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 font-semibold px-1.5 py-0.5 rounded-md"
-                            title="Este cliente compró el producto en Skin Health"
+                            title={t.reviewsVerified}
                           >
                             <ShieldCheck className="w-3 h-3 text-emerald-600" />
                             Verificada
@@ -387,7 +390,7 @@ export const ProductReviewsSection: React.FC<ProductReviewsSectionProps> = ({
                         className="w-20 h-20 rounded-xl overflow-hidden border border-neutral-200 hover:border-[#102A43]/40 transition-all cursor-zoom-in"
                         aria-label="Ver foto en grande"
                       >
-                        <img src={url} alt="Foto de reseña" className="w-full h-full object-cover" loading="lazy" />
+                        <img src={url} alt={t.reviewsPhoto} className="w-full h-full object-cover" loading="lazy" />
                       </button>
                     ))}
                   </div>
@@ -428,13 +431,13 @@ export const ProductReviewsSection: React.FC<ProductReviewsSectionProps> = ({
                   >
                     <ThumbsUp className={`w-3 h-3 ${isHelpful ? 'fill-emerald-600' : ''}`} />
                     <span>
-                      {isHelpful ? 'Te resultó útil' : '¿Te resultó útil?'}
+                      {isHelpful ? t.reviewsHelpful : t.reviewsAskHelpful}
                       {utilesCount > 0 && ` (${utilesCount})`}
                     </span>
                   </button>
 
                   <span className="text-xs text-neutral-400">
-                    Opinión de cliente de Skin Health
+                    {t.reviewsAttribution}
                   </span>
                 </div>
               </motion.div>
@@ -446,7 +449,7 @@ export const ProductReviewsSection: React.FC<ProductReviewsSectionProps> = ({
             onClick={onOpenReviewModal}
             className="text-xs text-neutral-500 hover:text-[#102A43] underline underline-offset-2"
           >
-            Déjanos tu opinión
+            {t.reviewsLeaveTitle}
           </button>
         </div>
       </div>
@@ -461,7 +464,7 @@ export const ProductReviewsSection: React.FC<ProductReviewsSectionProps> = ({
         >
           <img
             src={lightboxUrl}
-            alt="Foto de reseña"
+            alt={t.reviewsPhoto}
             className="max-w-full max-h-full object-contain rounded-2xl shadow-2xl"
           />
         </div>

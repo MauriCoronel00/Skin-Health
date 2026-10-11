@@ -5,6 +5,7 @@ import { useSupabase } from '../hooks/useSupabase';
 import { fetchProducts, formatGuarani } from '../data/products';
 import { productImageUrl } from '../data/productImage';
 import { RoutinesSectionSkeleton } from './Skeleton';
+import { useLanguage } from '../contexts/LanguageContext';
 import type { Product } from '../types';
 
 type ProductLookup = Record<string, Product>;
@@ -39,6 +40,7 @@ interface CollapsibleRoutinesProps {
 }
 
 export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddRoutineToCart, onQuickView, focusNumber }) => {
+  const { t } = useLanguage();
   const { supabase } = useSupabase();
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [routines, setRoutines] = useState<SkincareRoutine[]>([]);
@@ -178,10 +180,10 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
             <span>5 rituales · 5 tipos de piel</span>
           </div>
           <h2 className="font-serif text-3xl sm:text-4xl font-semibold text-[#102A43] tracking-tight">
-            Encontrá tu rutina
+            {t.routinesTitle}
           </h2>
           <p className="text-xs sm:text-sm text-neutral-600 mt-2 leading-relaxed">
-            Cada rutina son 3 a 4 pasos con productos oficiales, en el orden correcto de aplicación. Elegí la que va con tu piel y llevala completa.
+            {t.routinesSubtitle}
           </p>
         </div>
 
@@ -278,7 +280,7 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
                           >
                             {/* Paso */}
                             <span className="text-xs font-bold text-[#102A43]/70 uppercase tracking-wider">
-                              Paso {step.stepNumber} · {step.label}
+                              {t.routinesStep} {step.stepNumber} · {step.label}
                             </span>
 
                             {/* Imagen del producto (80px) */}

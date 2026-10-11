@@ -1,7 +1,9 @@
 import { ErrorBoundary } from '../ErrorBoundary';
 import { Gem, Check, MessageCircle } from 'lucide-react';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 export function PremiumSection() {
+  const { t } = useLanguage();
   return (
     <ErrorBoundary>
       <section className="mt-10 bg-[#102A43] rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden">
@@ -11,8 +13,8 @@ export function PremiumSection() {
             <Gem className="w-3.5 h-3.5 text-[#B9CBBE]" />
             Plan mensual
           </span>
-          <h3 className="font-serif text-xl sm:text-2xl font-semibold text-white mt-3">Suscripción Premium</h3>
-          <p className="text-sm text-white/70 mt-2">Acceso exclusivo para cuidar tu piel sin equivocarte. Asesoría 100% enfocada a tu necesidad.</p>
+          <h3 className="font-serif text-xl sm:text-2xl font-semibold text-white mt-3">{t.premiumTitle}</h3>
+          <p className="text-sm text-white/70 mt-2">{t.premiumSubtitle}</p>
           <ul className="mt-5 text-sm text-white/85 text-left max-w-md mx-auto space-y-2.5">
             <li className="flex items-center gap-2.5"><span className="w-5 h-5 rounded-full bg-[#93A896]/20 flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-[#B9CBBE]" /></span> Rutina 100% personalizada + seguimiento mensual</li>
             <li className="flex items-center gap-2.5"><span className="w-5 h-5 rounded-full bg-[#93A896]/20 flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-[#B9CBBE]" /></span> Atención prioritaria por WhatsApp</li>
@@ -23,7 +25,7 @@ export function PremiumSection() {
             <MessageCircle className="w-4 h-4" />
             <span>Suscribirme — 55.000 Gs./mes</span>
           </a>
-          <p className="text-[11px] text-white/60 mt-2">Cancelás cuando quieras. Atención directa por WhatsApp.</p>
+          <p className="text-[11px] text-white/60 mt-2">{t.premiumCancel}</p>
         </div>
       </section>
     </ErrorBoundary>

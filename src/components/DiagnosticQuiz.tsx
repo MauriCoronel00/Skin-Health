@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowRight, ArrowLeft, Check, Sparkles, Leaf, Droplets, ShieldCheck, X } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const QUIZ_STORAGE_KEY = 'skinhealth_quiz_result_v1';
 
@@ -22,51 +23,6 @@ interface DiagnosticQuizProps {
 
 type Step = 1 | 2 | 3 | 4 | 'result';
 
-const QUESTIONS = {
-  1: {
-    title: 'Tipo de piel',
-    subtitle: 'Seleccioná la que mejor te describe',
-    options: [
-      { id: 'grasa', label: 'Piel grasa / con brillo', desc: 'Brillo en zona T, poros visibles, tendencia a granos', icon: Droplets },
-      { id: 'mixta', label: 'Piel mixta', desc: 'Grasa en zona T, normal/seca en mejillas', icon: Leaf },
-      { id: 'seca', label: 'Piel seca / tirante', desc: 'Sensación de tirantez, descamación, líneas finas', icon: Droplets },
-      { id: 'sensible', label: 'Piel sensible / reactiva', desc: 'Enrojecimiento fácil, picor, reacciona a productos', icon: ShieldCheck },
-    ],
-  },
-  2: {
-    title: 'Preocupación principal',
-    subtitle: 'Podés elegir más de una',
-    multiSelect: true,
-    options: [
-      { id: 'acne', label: 'Acné / granos', desc: 'Brotes frecuentes, marcas post-acné', icon: Sparkles },
-      { id: 'poros', label: 'Poros dilatados', desc: 'Textura irregular, puntos negros', icon: Leaf },
-      { id: 'manchas', label: 'Manchas / hiperpigmentación', desc: 'Tono desigual, manchas solares, melasma', icon: Sparkles },
-      { id: 'lineas', label: 'Líneas de expresión / firmeza', desc: 'Arrugas tempranas, pérdida de elasticidad', icon: Leaf },
-      { id: 'hidratacion', label: 'Deshidratación / falta de luminosidad', desc: 'Piel apagada, líneas finas por sequedad', icon: Droplets },
-      { id: 'rojez', label: 'Enrojecimiento / rosácea', desc: 'Calor facial, vasos visibles, sensibilidad', icon: ShieldCheck },
-    ],
-  },
-  3: {
-    title: 'Nivel de rutina',
-    subtitle: 'Según tu tiempo y compromiso',
-    options: [
-      { id: 'basica', label: 'Básica (3 pasos)', desc: 'Limpieza + Tratamiento + Protección — 2 min', icon: Leaf },
-      { id: 'completa', label: 'Completa (4 pasos)', desc: 'Limpieza + Tónico/Sérum + Hidratación + Protección — 4 min', icon: Sparkles },
-      { id: 'avanzada', label: 'Avanzada (5+ pasos)', desc: 'Doble limpieza + múltiples sérums + contorno ojos + crema + SPF — 6 min', icon: ShieldCheck },
-    ],
-  },
-  4: {
-    title: 'Protector solar',
-    subtitle: 'Clave para definir tu rutina de día',
-    options: [
-      { id: 'siempre', label: 'Todos los días, llueva o truene', desc: 'Hábito instalado, reaplico cada 2-3hs', icon: ShieldCheck },
-      { id: 'salgo', label: 'Solo cuando salgo al sol directo', desc: 'Playa, pileta, deporte al aire libre', icon: Leaf },
-      { id: 'maquillaje', label: 'Solo si mi base/crema tiene SPF', desc: 'Dependo del SPF del maquillaje', icon: Droplets },
-      { id: 'nunca', label: 'Casi nunca / me olvido', desc: 'No es parte de mi rutina actual', icon: Sparkles },
-    ],
-  },
-};
-
 /** Scoring por prioridad: sensible/rojez > acné/poros > manchas > líneas > hidratación. */
 function matchRoutine(skin: string, concerns: string[]): string {
   const c = new Set(concerns);
@@ -77,23 +33,69 @@ function matchRoutine(skin: string, concerns: string[]): string {
   return skin === 'seca' ? 'hidratacion-sensible' : 'hidratacion-universal';
 }
 
-const ROUTINE_TITLES: Record<string, string> = {
-  'piel-grasa': 'Rutina para Piel Grasa y Tendencia al Acné',
-  'hidratacion-sensible': 'Rutina para Piel Sensible y Barrera Cutánea',
-  'manchas-luminosidad': 'Rutina para Manchas, Hiperpigmentación y Luminosidad',
-  'anti-edad-renovacion': 'Rutina Anti-Edad y Textura (Renovación)',
-  'hidratacion-universal': 'Rutina Básica de Hidratación Universal',
-};
-
 export const DiagnosticQuiz: React.FC<DiagnosticQuizProps> = ({
   isOpen,
   onClose,
   onComplete,
 }) => {
+  const { t } = useLanguage();
   const [currentStep, setCurrentStep] = useState<Step>(1);
   const [answers, setAnswers] = useState<Record<number, string | string[]>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [matchedRoutine, setMatchedRoutine] = useState<string | null>(null);
+
+  const ROUTINE_TITLES: Record<string, string> = {
+    'piel-grasa': t.quizRoutineOily,
+    'hidratacion-sensible': t.quizRoutineSensitive,
+    'manchas-luminosidad': t.quizRoutineSpots,
+    'anti-edad-renovacion': t.quizRoutineAntiAge,
+    'hidratacion-universal': t.quizRoutineUniversal,
+  };
+
+  const QUESTIONS = {
+    1: {
+      title: 'Tipo de piel',
+      subtitle: t.quizQ1Sub,
+      options: [
+        { id: 'grasa', label: t.quizOptionOily, desc: t.quizOptionOilyDesc, icon: Droplets },
+        { id: 'mixta', label: t.quizOptionCombo, desc: t.quizOptionComboDesc, icon: Leaf },
+        { id: 'seca', label: t.quizOptionDry, desc: t.quizOptionDryDesc, icon: Droplets },
+        { id: 'sensible', label: t.quizOptionSensitive, desc: t.quizOptionSensitiveDesc, icon: ShieldCheck },
+      ],
+    },
+    2: {
+      title: t.quizQ2Title,
+      subtitle: t.quizQ2Sub,
+      multiSelect: true,
+      options: [
+        { id: 'acne', label: t.quizConcernAcne, desc: t.quizConcernAcneDesc, icon: Sparkles },
+        { id: 'poros', label: 'Poros dilatados', desc: 'Textura irregular, puntos negros', icon: Leaf },
+        { id: 'manchas', label: t.quizConcernSpots, desc: t.quizConcernSpotsDesc, icon: Sparkles },
+        { id: 'lineas', label: t.quizConcernLines, desc: t.quizConcernLinesDesc, icon: Leaf },
+        { id: 'hidratacion', label: t.quizConcernDehydr, desc: t.quizConcernDehydrDesc, icon: Droplets },
+        { id: 'rojez', label: t.quizConcernRedness, desc: t.quizConcernRednessDesc, icon: ShieldCheck },
+      ],
+    },
+    3: {
+      title: 'Nivel de rutina',
+      subtitle: t.quizQ3Sub,
+      options: [
+        { id: 'basica', label: t.quizRoutineBasic, desc: t.quizRoutineBasicDesc, icon: Leaf },
+        { id: 'completa', label: t.quizRoutineComplete, desc: t.quizRoutineCompleteDesc, icon: Sparkles },
+        { id: 'avanzada', label: t.quizRoutineAdvanced, desc: t.quizRoutineAdvancedDesc, icon: ShieldCheck },
+      ],
+    },
+    4: {
+      title: 'Protector solar',
+      subtitle: t.quizQ4Sub,
+      options: [
+        { id: 'siempre', label: t.quizQ4Daily, desc: 'Hábito instalado, reaplico cada 2-3hs', icon: ShieldCheck },
+        { id: 'salgo', label: 'Solo cuando salgo al sol directo', desc: 'Playa, pileta, deporte al aire libre', icon: Leaf },
+        { id: 'maquillaje', label: 'Solo si mi base/crema tiene SPF', desc: 'Dependo del SPF del maquillaje', icon: Droplets },
+        { id: 'nunca', label: 'Casi nunca / me olvido', desc: 'No es parte de mi rutina actual', icon: Sparkles },
+      ],
+    },
+  };
 
   // Save quiz result to localStorage when matched
   useEffect(() => {
@@ -187,12 +189,12 @@ export const DiagnosticQuiz: React.FC<DiagnosticQuizProps> = ({
           <button
             onClick={handleClose}
             className="w-9 h-9 rounded-full bg-neutral-100 hover:bg-neutral-200 flex items-center justify-center text-neutral-600 transition-colors"
-            aria-label="Cerrar diagnóstico"
+            aria-label={t.quizClose}
           >
             <X className="w-5 h-5" />
           </button>
           <h2 id="quiz-title" className="font-serif text-lg sm:text-xl font-semibold text-[#102A43] text-center flex-1 px-4">
-            Diagnóstico de Piel
+            {t.quizTitle}
           </h2>
           <div className="w-9" />
         </div>
@@ -207,10 +209,10 @@ export const DiagnosticQuiz: React.FC<DiagnosticQuizProps> = ({
             />
           </div>
           <div className="flex justify-between text-[10px] text-neutral-400 mt-1.5 px-0.5">
-            <span>Paso 1</span>
-            <span>Paso 2</span>
-            <span>Paso 3</span>
-            <span>Paso 4</span>
+            <span>{t.quizStep} 1</span>
+            <span>{t.quizStep} 2</span>
+            <span>{t.quizStep} 3</span>
+            <span>{t.quizStep} 4</span>
           </div>
         </div>
 
@@ -228,7 +230,7 @@ export const DiagnosticQuiz: React.FC<DiagnosticQuizProps> = ({
             >
               <div className="text-center mb-6">
                 <span className="text-xs font-semibold text-[#102A43] uppercase tracking-wider">
-                  Paso {currentStep} de 4
+                  {t.quizStep} {currentStep} {t.quizStepOf} 4
                 </span>
                 <h3 className="font-serif text-xl sm:text-2xl font-semibold text-neutral-900 mt-2">
                   {question.title}
@@ -307,7 +309,7 @@ export const DiagnosticQuiz: React.FC<DiagnosticQuizProps> = ({
                     disabled={!((answers[currentStep] as string[]) ?? []).length}
                     className="flex items-center gap-1.5 px-6 py-2.5 bg-[#102A43] text-white text-sm font-semibold rounded-2xl hover:bg-[#102A43]/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg"
                   >
-                    <span>Continuar</span>
+                    <span>{t.quizContinue}</span>
                     <ArrowRight className="w-4 h-4" />
                   </motion.button>
                 )}
@@ -353,7 +355,7 @@ export const DiagnosticQuiz: React.FC<DiagnosticQuizProps> = ({
                 <Sparkles className="w-10 h-10 text-emerald-600" />
               </motion.div>
               <h3 className="font-serif text-2xl font-semibold text-[#102A43] mb-2">
-                ¡Tu rutina está lista!
+                {t.quizResultTitle}
               </h3>
               <p className="text-neutral-600 mb-2">Basado en tus respuestas, te recomendamos:</p>
               <motion.div
@@ -380,7 +382,7 @@ export const DiagnosticQuiz: React.FC<DiagnosticQuizProps> = ({
                 onClick={() => { setCurrentStep(1); setMatchedRoutine(null); }}
                 className="w-full mt-3 py-2.5 text-sm font-medium text-neutral-500 hover:text-[#102A43] transition-colors"
               >
-                Hacer el diagnóstico de nuevo
+                {t.quizRestart}
               </motion.button>
             </motion.div>
           )}

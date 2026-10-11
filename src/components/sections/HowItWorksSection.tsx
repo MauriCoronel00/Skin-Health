@@ -1,18 +1,20 @@
 import { ErrorBoundary } from '../ErrorBoundary';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 export function HowItWorksSection() {
+  const { t } = useLanguage();
   return (
     <ErrorBoundary>
       <section className="mt-14 bg-white/80 border border-[#102A43]/10 rounded-3xl p-6 sm:p-8 shadow-xs hidden sm:block">
         <div className="max-w-5xl mx-auto text-center">
           <span className="text-[11px] font-bold uppercase tracking-widest text-[#55705E] bg-[#E5EDE7] px-3 py-1 rounded-full border border-[#93A896]/40">
-            Flujo de Compra Rápido
+            {t.howTitle}
           </span>
           <h3 className="font-serif text-xl sm:text-2xl font-semibold text-[#102A43] mt-2 mb-2">
-            ¿Cómo realizo mi pedido?
+            {t.howSubtitle}
           </h3>
           <p className="text-xs sm:text-sm text-neutral-500 mb-6">
-            Sin registros lentos ni pasarelas complejas. Cuatro simples pasos:
+            {t.howIntro}
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-left">
@@ -21,9 +23,9 @@ export function HowItWorksSection() {
                 1
               </span>
               <div>
-                <h4 className="font-semibold text-xs text-neutral-900">Elegí tus productos</h4>
+                <h4 className="font-semibold text-xs text-neutral-900">{t.howStep1Title}</h4>
                 <p className="text-[11px] text-neutral-500 mt-0.5 leading-relaxed">
-                  Presioná "+" en cualquier sérum o crema para sumarlo al carrito.
+                  {t.howStep1Desc}
                 </p>
               </div>
             </div>
@@ -33,9 +35,9 @@ export function HowItWorksSection() {
                 2
               </span>
               <div>
-                <h4 className="font-semibold text-xs text-neutral-900">Revisá en tu pedido</h4>
+                <h4 className="font-semibold text-xs text-neutral-900">{t.howStep2Title}</h4>
                 <p className="text-[11px] text-neutral-500 mt-0.5 leading-relaxed">
-                  Tocá el carrito flotante para verificar cantidades y el total estimado.
+                  {t.howStep2Desc}
                 </p>
               </div>
             </div>
@@ -45,22 +47,22 @@ export function HowItWorksSection() {
                 3
               </span>
               <div>
-                <h4 className="font-semibold text-xs text-neutral-900">Datos para el envío</h4>
+                <h4 className="font-semibold text-xs text-neutral-900">{t.howStep3Title}</h4>
                 <p className="text-[11px] text-neutral-600 mt-0.5 leading-relaxed">
-                  Completá en el carrito tus datos para coordinar la entrega:
+                  {t.howStep3Desc}
                 </p>
                 <ul className="mt-1.5 space-y-0.5 text-[10px] text-neutral-700 font-medium">
                   <li className="flex items-center gap-1">
                     <span className="w-1 h-1 rounded-full bg-[#55705E]"></span>
-                    <span>Nombre del cliente</span>
+                    <span>{t.howStep3Label1}</span>
                   </li>
                   <li className="flex items-center gap-1">
                     <span className="w-1 h-1 rounded-full bg-[#55705E]"></span>
-                    <span>Lugar de ubicación para envío</span>
+                    <span>{t.howStep3Label2}</span>
                   </li>
                   <li className="flex items-center gap-1">
                     <span className="w-1 h-1 rounded-full bg-[#55705E]"></span>
-                    <span>Link de Google Maps</span>
+                    <span>Google Maps link</span>
                   </li>
                 </ul>
               </div>
@@ -71,9 +73,9 @@ export function HowItWorksSection() {
                 4
               </span>
               <div>
-                <h4 className="font-semibold text-xs text-neutral-900">Pedir por WhatsApp</h4>
+                <h4 className="font-semibold text-xs text-neutral-900">{t.howStep4Title}</h4>
                 <p className="text-[11px] text-neutral-500 mt-0.5 leading-relaxed">
-                  Se abrirá tu chat con la lista completa de productos y todos tus datos listos para confirmar.
+                  {t.howStep4Desc}
                 </p>
               </div>
             </div>
