@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { Droplets, Sparkles, Sun, Leaf, ShieldCheck, Sparkle } from 'lucide-react';
 import { CategoryId, CategoryOption } from '../types';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface CategoryFilterProps {
   categories: CategoryOption[];
@@ -16,6 +17,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
   onSelectCategory,
   productCounts,
 }) => {
+  const { t } = useLanguage();
   const getIcon = (iconName: string) => {
     const className = "w-5 h-5";
     switch (iconName) {
@@ -38,10 +40,11 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
     <section className="my-6">
       <div className="flex items-center justify-between mb-3 px-1">
         <h2 className="text-xs font-semibold uppercase tracking-widest text-[#102A43]/70">
-          Explorar por Necesidad
+          {t.exploreByNeed}
         </h2>
         <span className="text-xs text-neutral-400">
-          {productCounts[selectedCategory] || 0} {productCounts[selectedCategory] === 1 ? 'producto' : 'productos'}
+          {productCounts[selectedCategory] || 0}{' '}
+          {productCounts[selectedCategory] === 1 ? t.productCountOne : t.productCountOther}
         </span>
       </div>
 

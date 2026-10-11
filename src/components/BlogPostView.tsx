@@ -3,7 +3,7 @@ import { ArrowLeft, Clock, Calendar, ChevronRight } from 'lucide-react';
 import { BlogPost } from '../data/blog';
 import { useProducts } from '../contexts/ProductContext';
 import { productImageUrl } from '../data/productImage';
-import { formatGuarani } from '../data/products';
+import { useLanguage } from '../contexts/LanguageContext';
 import { setBlogSEO, clearBlogSEO } from '../utils/seo';
 
 interface BlogPostViewProps {
@@ -14,6 +14,7 @@ interface BlogPostViewProps {
 
 export const BlogPostView: React.FC<BlogPostViewProps> = ({ post, onBack, onProductClick }) => {
   const { products } = useProducts();
+  const { t, formatCurrency, dateLocale } = useLanguage();
 
   useEffect(() => {
     setBlogSEO(post);
@@ -27,7 +28,7 @@ export const BlogPostView: React.FC<BlogPostViewProps> = ({ post, onBack, onProd
         className="flex items-center gap-1.5 text-sm text-neutral-500 hover:text-[#102A43] mb-6 cursor-pointer"
       >
         <ArrowLeft className="w-4 h-4" />
-        Volver al blog
+        {t.blogBack}
       </button>
 
       <article>
@@ -35,11 +36,11 @@ export const BlogPostView: React.FC<BlogPostViewProps> = ({ post, onBack, onProd
           <div className="flex items-center gap-3 text-xs text-neutral-500 mb-3">
             <span className="flex items-center gap-1">
               <Calendar className="w-3.5 h-3.5" />
-              {new Date(post.date).toLocaleDateString('es-PY', { day: 'numeric', month: 'long', year: 'numeric' })}
+              {new Date(post.date).toLocaleDateString(dateLocale, { day: 'numeric', month: 'long', year: 'numeric' })}
             </span>
             <span className="flex items-center gap-1">
               <Clock className="w-3.5 h-3.5" />
-              {post.readingTime} de lectura
+              {t.blogReadingTime.replace('{minutes}', String(post.readingTime))}
             </span>
           </div>
           <h1 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-semibold text-[#102A43] leading-tight mb-4">
@@ -84,7 +85,7 @@ export const BlogPostView: React.FC<BlogPostViewProps> = ({ post, onBack, onProd
                           </span>
                           {fullProduct && (
                             <span className="text-xs font-bold text-[#102A43]">
-                              {formatGuarani(fullProduct.price)}
+                              {formatCurrency(fullProduct.price)}
                             </span>
                           )}
                         </div>
@@ -101,7 +102,7 @@ export const BlogPostView: React.FC<BlogPostViewProps> = ({ post, onBack, onProd
         {post.faq.length > 0 && (
           <section className="mt-10 pt-8 border-t border-[#102A43]/10">
             <h2 className="font-serif text-xl sm:text-2xl font-semibold text-[#102A43] mb-4">
-              Preguntas frecuentes
+              {t.blogFaqTitle}
             </h2>
             <div className="space-y-4">
               {post.faq.map((item, idx) => (

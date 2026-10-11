@@ -66,28 +66,56 @@ export function decodeJwtPayload(token: string): {
   }
 }
 
-// Format date relative or in local Spanish format
-export function formatReviewDate(isoString: string): string {
+// Format date relative or in local format per language
+const REVIEW_DATE_TEXT: Record<string, { today: string; yesterday: string; recent: string; days: (n: number) => string; weeks: (n: number) => string; locale: string }> = {
+  es: {
+    today: 'Hoy',
+    yesterday: 'Ayer',
+    recent: 'Reciente',
+    days: (n) => `Hace ${n} día${n === 1 ? '' : 's'}`,
+    weeks: (n) => `Hace ${n} semana${n === 1 ? '' : 's'}`,
+    locale: 'es-PY',
+  },
+  pt: {
+    today: 'Hoje',
+    yesterday: 'Ontem',
+    recent: 'Recentemente',
+    days: (n) => `Há ${n} dia${n === 1 ? '' : 's'}`,
+    weeks: (n) => `Há ${n} semana${n === 1 ? '' : 's'}`,
+    locale: 'pt-BR',
+  },
+  en: {
+    today: 'Today',
+    yesterday: 'Yesterday',
+    recent: 'Recently',
+    days: (n) => `${n} day${n === 1 ? '' : 's'} ago`,
+    weeks: (n) => `${n} week${n === 1 ? '' : 's'} ago`,
+    locale: 'en-US',
+  },
+};
+
+export function formatReviewDate(isoString: string, language: string = 'es'): string {
+  const L = REVIEW_DATE_TEXT[language] || REVIEW_DATE_TEXT.es;
   try {
     const date = new Date(isoString);
-    if (isNaN(date.getTime())) return 'Reciente';
+    if (isNaN(date.getTime())) return L.recent;
 
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-    if (diffDays === 0) return 'Hoy';
-    if (diffDays === 1) return 'Ayer';
-    if (diffDays < 7) return `Hace ${diffDays} días`;
-    if (diffDays < 30) return `Hace ${Math.floor(diffDays / 7)} semanas`;
+    if (diffDays === 0) return L.today;
+    if (diffDays === 1) return L.yesterday;
+    if (diffDays < 7) return L.days(diffDays);
+    if (diffDays < 30) return L.weeks(Math.floor(diffDays / 7));
 
-    return date.toLocaleDateString('es-PY', {
+    return date.toLocaleDateString(L.locale, {
       day: 'numeric',
       month: 'short',
       year: 'numeric',
     });
   } catch {
-    return 'Reciente';
+    return L.recent;
   }
 }
 

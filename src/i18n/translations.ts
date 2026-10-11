@@ -116,6 +116,7 @@ export interface Translations {
   cartSyncError: string;
   cartWhatsAppFallback: string;
   errName: string;
+  errUnexpected: string;
   errPhone: string;
   errAddress: string;
 
@@ -165,6 +166,7 @@ export interface Translations {
   skinTypeDry: string;
   skinTypeCombo: string;
   skinTypeSensitive: string;
+  skinTypeNormal: string;
 
   // Review form
   reviewFormTitle: string;
@@ -312,6 +314,149 @@ export interface Translations {
   // Testimonios
   testimonialsTitle: string;
   testimonialsAria: string;
+
+  // Cart / checkout (pass 2)
+  cartTitle: string;
+  cartClose: string;
+  cartPhonePlaceholder: string;
+  cartRemoveTitle: string;
+  cartRemoveItem: string;
+  cartUnitPrice: string;
+  cartProductsCount: string;
+  cartOptional: string;
+  cartShippingCoord: string;
+  cartShippingFrom: string;
+  cartPreparing: string;
+  cartOrderCta: string;
+  cartPayTransfer: string;
+  cartUnavailable: string;
+  cartOrderError: string;
+  cartOrderErrorDesc: string;
+  cartOrderRegistered: string;
+  pedErrEmpty: string;
+  pedErrCustomerData: string;
+  pedErrAuth: string;
+  pedErrStock: string;
+  pedErrUnavailable: string;
+  pedErrFailed: string;
+
+  // Order confirmation (pass 2)
+  orderThanks: string;
+  orderPrepared: string;
+  orderClose: string;
+  orderStepsTitle: string;
+  orderSummary: string;
+  orderRecipient: string;
+  orderTrackLive: string;
+  orderShareExp: string;
+
+  // Quiz (pass 2)
+  quizQ1Title: string;
+  quizQ3Title: string;
+  quizQ4Title: string;
+  quizConcernPores: string;
+  quizConcernPoresDesc: string;
+  quizQ4DailyDesc: string;
+  quizQ4SometimesLabel: string;
+  quizQ4SometimesDesc: string;
+  quizQ4MakeupLabel: string;
+  quizQ4MakeupDesc: string;
+  quizQ4NeverLabel: string;
+  quizQ4NeverDesc: string;
+  quizBack: string;
+  quizAnalyzing: string;
+  quizViewRoutine: string;
+  quizBasedOn: string;
+  quizStepsForSkin: string;
+  quizViewFull: string;
+  savedReadySuffix: string;
+  savedDiagnosed: string;
+
+  // Counts / misc
+  productCountOne: string;
+  productCountOther: string;
+  viewOrder: string;
+  trackLoading: string;
+  commonClose: string;
+  mapsLinkLabel: string;
+
+  // Toast (pass 2)
+  toastWhatsCta: string;
+  toastClose: string;
+
+  // Tracking (pass 2)
+  trackViewBtn: string;
+  trackAutoRefresh: string;
+  trackCurrentState: string;
+  trackYourZone: string;
+  trackZoneApprox: string;
+
+  // Reviews (pass 2)
+  reviewSortBest: string;
+  reviewSortWorst: string;
+  reviewCountOne: string;
+  reviewCountOther: string;
+  reviewPhotoLarge: string;
+  reviewPhotoExpanded: string;
+  reviewPhotosStep: string;
+  reviewPhotosHint: string;
+  reviewLoginPhotos: string;
+  reviewRemovePhoto: string;
+  reviewNormal: string;
+  reviewPhotoSize: string;
+  reviewSortBy: string;
+  reviewsClearFilters: string;
+  reviewsWithFilters: string;
+  reviewReplyBadge: string;
+
+  // Routines (pass 2)
+  routinesError: string;
+  routinesNoTable: string;
+  routinesBadStructure: string;
+  routineAddedMsg: string;
+  routineAddCta: string;
+  routineFullLabel: string;
+  viewDetailsOf: string;
+  routinesNone: string;
+  viewRoutineAria: string;
+  routinesCauses: string;
+  routinesRls: string;
+  routinesBadge: string;
+
+  // Premium
+  premiumPlanBadge: string;
+  premiumB1: string;
+  premiumB2: string;
+  premiumB3: string;
+  premiumB4: string;
+  premiumSubscribe: string;
+
+  // Product card / quick view / nav a11y (pass 2)
+  wishlistRemove: string;
+  wishlistSave: string;
+  productDetails: string;
+  addToOrderAria: string;
+  quickViewClose: string;
+  quickViewPrev: string;
+  quickViewNext: string;
+  quickViewZoomTitle: string;
+  quickViewZoomClose: string;
+  newArrival: string;
+  leaveReview: string;
+  addedExclaim: string;
+  navClearSearch: string;
+  navOpenOrder: string;
+  navOpenOrderItems: string;
+  navChangeLanguage: string;
+  navSwitchTo: string;
+  navLanguageHeader: string;
+  installHide: string;
+  authSignInGoogle: string;
+  reviewFormClose: string;
+  toastRegion: string;
+  blogBack: string;
+  blogReadingTime: string;
+  blogFaqTitle: string;
 }
 
 type TranslationsMap = Record<Language, Translations>;
@@ -422,6 +567,7 @@ export const translations: TranslationsMap = {
     errName: 'Ingresá tu nombre para registrar tu pedido.',
     errPhone: 'Ingresá un teléfono válido (mínimo 8 dígitos) para coordinar por WhatsApp.',
     errAddress: 'Indicá tu barrio y ciudad para coordinar el envío.',
+    errUnexpected: 'Error inesperado.',
 
     orderSuccessTitle: '¡Pedido Registrado con Éxito!',
     orderCode: 'Código de Pedido:',
@@ -466,6 +612,7 @@ export const translations: TranslationsMap = {
     skinTypeDry: 'Piel seca',
     skinTypeCombo: 'Piel mixta',
     skinTypeSensitive: 'Piel sensible',
+    skinTypeNormal: 'Piel normal',
 
     reviewFormTitle: 'Dejá tu valoración sincera',
     reviewFormQ1: '1. ¿Qué puntuación le das al producto?',
@@ -598,6 +745,140 @@ export const translations: TranslationsMap = {
 
     testimonialsTitle: 'Opiniones de clientas verificadas',
     testimonialsAria: 'de 5 estrellas',
+
+    // ——— pass 2 ———
+    cartTitle: 'Mi Pedido',
+    cartClose: 'Cerrar pedido',
+    cartPhonePlaceholder: 'Ej. 0971 123 456',
+    cartRemoveTitle: 'Eliminar del pedido',
+    cartRemoveItem: 'Eliminar {name}',
+    cartUnitPrice: 'Unitario:',
+    cartProductsCount: 'Productos ({count})',
+    cartOptional: 'Opcional',
+    cartShippingCoord: 'Se coordina por WhatsApp',
+    cartShippingFrom: 'Salimos de {origin} ({base} hasta 3 km + {perKm}/km).',
+    cartPreparing: 'Preparando tu pedido...',
+    cartOrderCta: 'PEDIR POR WHATSAPP →',
+    cartPayTransfer: 'Pago por transferencia',
+    cartUnavailable: 'Producto no disponible',
+    cartOrderError: 'No pudimos registrar tu pedido',
+    cartOrderErrorDesc: 'Tu carrito está a salvo. Probá de nuevo en unos segundos.',
+    cartOrderRegistered: 'Tu pedido fue registrado',
+    pedErrEmpty: 'Agregá productos antes de confirmar.',
+    pedErrCustomerData: 'Revisá los datos del pedido (nombre, ubicación y teléfono) e intentá de nuevo.',
+    pedErrAuth: 'Iniciá sesión para coordinar la entrega.',
+    pedErrStock: 'Algún producto se quedó sin stock. Ajustá cantidades e intentá de nuevo.',
+    pedErrUnavailable: 'Algún producto ya no está disponible. Revisá tu carrito e intentá de nuevo.',
+    pedErrFailed: 'Tu carrito está a salvo. Probá de nuevo en unos segundos.',
+
+    orderThanks: 'Gracias por tu compra',
+    orderPrepared: 'Hemos preparado tu pedido y te redirigimos al WhatsApp oficial para coordinar el despacho.',
+    orderClose: 'Cerrar modal',
+    orderStepsTitle: 'Siguientes pasos de entrega',
+    orderSummary: 'Resumen de Productos',
+    orderRecipient: 'Destinatario:',
+    orderTrackLive: 'Seguir mi pedido en vivo',
+    orderShareExp: 'Contar mi experiencia',
+
+    quizQ1Title: 'Tipo de piel',
+    quizQ3Title: 'Nivel de rutina',
+    quizQ4Title: 'Protector solar',
+    quizConcernPores: 'Poros dilatados',
+    quizConcernPoresDesc: 'Textura irregular, puntos negros',
+    quizQ4DailyDesc: 'Hábito instalado, reaplico cada 2-3hs',
+    quizQ4SometimesLabel: 'Solo cuando salgo al sol directo',
+    quizQ4SometimesDesc: 'Playa, pileta, deporte al aire libre',
+    quizQ4MakeupLabel: 'Solo si mi base/crema tiene SPF',
+    quizQ4MakeupDesc: 'Dependo del SPF del maquillaje',
+    quizQ4NeverLabel: 'Casi nunca / me olvido',
+    quizQ4NeverDesc: 'No es parte de mi rutina actual',
+    quizBack: 'Volver',
+    quizAnalyzing: 'Analizando...',
+    quizViewRoutine: 'Ver mi rutina',
+    quizBasedOn: 'Basado en tus respuestas, te recomendamos:',
+    quizStepsForSkin: '{count} pasos personalizados para tu piel',
+    quizViewFull: 'Ver mi rutina completa',
+    savedReadySuffix: 'lista para pedir.',
+    savedDiagnosed: 'Diagnosticado {date}',
+
+    productCountOne: 'producto',
+    productCountOther: 'productos',
+    viewOrder: 'Ver pedido',
+    trackLoading: 'Cargando seguimiento…',
+    commonClose: 'Cerrar',
+    mapsLinkLabel: 'Enlace de Google Maps',
+
+    toastWhatsCta: 'Pedir directamente por WhatsApp',
+    toastClose: 'Cerrar notificación',
+
+    trackViewBtn: 'Ver',
+    trackAutoRefresh: 'actualiza solo cada 30 seg',
+    trackCurrentState: 'Estado actual',
+    trackYourZone: 'tu zona',
+    trackZoneApprox: 'Zona de entrega aproximada',
+
+    reviewSortBest: 'Mejor puntaje',
+    reviewSortWorst: 'Peor puntaje',
+    reviewCountOne: 'reseña',
+    reviewCountOther: 'reseñas',
+    reviewPhotoLarge: 'Ver foto en grande',
+    reviewPhotoExpanded: 'Foto de reseña ampliada',
+    reviewPhotosStep: '4. Fotos del producto',
+    reviewPhotosHint: '(Opcional, hasta 3)',
+    reviewLoginPhotos: 'Identificate primero para subir fotos.',
+    reviewRemovePhoto: 'Eliminar foto',
+    reviewNormal: 'Normal',
+    reviewPhotoSize: 'La foto debe pesar menos de 5MB.',
+    reviewSortBy: 'Ordenar:',
+    reviewsClearFilters: 'Limpiar filtros',
+    reviewsWithFilters: 'con estos filtros',
+    reviewReplyBadge: 'Skin Health responde',
+
+    routinesError: 'Error cargando rutinas:',
+    routinesNoTable: 'La tabla skincare_routines no tiene datos',
+    routinesBadStructure: 'Estructura de tabla incorrecta',
+    routineAddedMsg: 'Listo, va en tu pedido',
+    routineAddCta: 'Llevo esta rutina ({count})',
+    routineFullLabel: 'Rutina completa · {count} productos',
+    viewDetailsOf: 'Ver detalles de {brand} {name}',
+    routinesNone: 'No se encontraron rutinas',
+    viewRoutineAria: 'Ver rutina {title}',
+    routinesCauses: 'Posibles causas:',
+    routinesRls: 'RLS (Row Level Security) bloqueando acceso anónimo',
+    routinesBadge: '5 rituales · 5 tipos de piel',
+
+    premiumPlanBadge: 'Plan mensual',
+    premiumB1: 'Rutina 100% personalizada + seguimiento mensual',
+    premiumB2: 'Atención prioritaria por WhatsApp',
+    premiumB3: 'Acceso anticipado a nuevos ingresos',
+    premiumB4: 'Envíos Priority a todo el país',
+    premiumSubscribe: 'Suscribirme — {price}/mes',
+
+    wishlistRemove: 'Quitar de la wishlist',
+    wishlistSave: 'Guardar en wishlist',
+    productDetails: 'Ver detalles del producto',
+    addToOrderAria: 'Agregar {name} al pedido',
+    quickViewClose: 'Cerrar detalles',
+    quickViewPrev: 'Producto anterior',
+    quickViewNext: 'Producto siguiente',
+    quickViewZoomTitle: 'Imagen del producto ampliada',
+    quickViewZoomClose: 'Cerrar imagen ampliada',
+    newArrival: 'Nuevo ingreso',
+    leaveReview: 'Dejar opinión',
+    addedExclaim: '¡Agregado!',
+    navClearSearch: 'Limpiar búsqueda',
+    navOpenOrder: 'Abrir mi pedido',
+    navOpenOrderItems: 'Abrir mi pedido, {count} productos',
+    navChangeLanguage: 'Cambiar idioma',
+    navSwitchTo: 'Cambiar a {lang}',
+    navLanguageHeader: 'Idioma',
+    installHide: 'Ocultar aviso',
+    authSignInGoogle: 'Ingresar con Google',
+    reviewFormClose: 'Cerrar formulario',
+    toastRegion: 'Notificaciones',
+    blogBack: 'Volver al blog',
+    blogReadingTime: '{minutes} de lectura',
+    blogFaqTitle: 'Preguntas frecuentes',
   },
 
   pt: {
@@ -708,6 +989,7 @@ export const translations: TranslationsMap = {
     errName: 'Digite seu nome para registrar o pedido.',
     errPhone: 'Digite um telefone válido (mínimo 8 dígitos) para coordenar por WhatsApp.',
     errAddress: 'Informe seu bairro e cidade para coordenar a entrega.',
+    errUnexpected: 'Erro inesperado.',
 
     orderSuccessTitle: 'Pedido Registrado com Sucesso!',
     orderCode: 'Código do Pedido:',
@@ -752,6 +1034,7 @@ export const translations: TranslationsMap = {
     skinTypeDry: 'Pele seca',
     skinTypeCombo: 'Pele mista',
     skinTypeSensitive: 'Pele sensível',
+    skinTypeNormal: 'Pele normal',
 
     reviewFormTitle: 'Deixe sua avaliação sincera',
     reviewFormQ1: '1. Que nota você dá ao produto?',
@@ -884,6 +1167,140 @@ export const translations: TranslationsMap = {
 
     testimonialsTitle: 'Opiniões de clientes verificados',
     testimonialsAria: 'de 5 estrelas',
+
+    // ——— pass 2 ———
+    cartTitle: 'Meu Pedido',
+    cartClose: 'Fechar pedido',
+    cartPhonePlaceholder: 'Ex.: 0971 123 456',
+    cartRemoveTitle: 'Remover do pedido',
+    cartRemoveItem: 'Remover {name}',
+    cartUnitPrice: 'Unitário:',
+    cartProductsCount: 'Produtos ({count})',
+    cartOptional: 'Opcional',
+    cartShippingCoord: 'Coordena por WhatsApp',
+    cartShippingFrom: 'Saímos de {origin} ({base} até 3 km + {perKm}/km).',
+    cartPreparing: 'Preparando seu pedido...',
+    cartOrderCta: 'PEDIR POR WHATSAPP →',
+    cartPayTransfer: 'Pagamento por transferência',
+    cartUnavailable: 'Produto indisponível',
+    cartOrderError: 'Não foi possível registrar seu pedido',
+    cartOrderErrorDesc: 'Seu carrinho está seguro. Tente de novo em alguns segundos.',
+    cartOrderRegistered: 'Seu pedido foi registrado',
+    pedErrEmpty: 'Adicione produtos antes de confirmar.',
+    pedErrCustomerData: 'Revise os dados do pedido (nome, endereço e telefone) e tente novamente.',
+    pedErrAuth: 'Faça login para coordenar a entrega.',
+    pedErrStock: 'Algum produto ficou sem estoque. Ajuste as quantidades e tente novamente.',
+    pedErrUnavailable: 'Algum produto não está mais disponível. Revise seu carrinho e tente novamente.',
+    pedErrFailed: 'Seu carrinho está seguro. Tente de novo em alguns segundos.',
+
+    orderThanks: 'Obrigado pela sua compra',
+    orderPrepared: 'Preparamos seu pedido e o redirecionamos ao WhatsApp oficial para coordenar a entrega.',
+    orderClose: 'Fechar modal',
+    orderStepsTitle: 'Próximos passos da entrega',
+    orderSummary: 'Resumo dos Produtos',
+    orderRecipient: 'Destinatário:',
+    orderTrackLive: 'Acompanhar meu pedido ao vivo',
+    orderShareExp: 'Compartilhar minha experiência',
+
+    quizQ1Title: 'Tipo de pele',
+    quizQ3Title: 'Nível de rotina',
+    quizQ4Title: 'Protetor solar',
+    quizConcernPores: 'Poros dilatados',
+    quizConcernPoresDesc: 'Textura irregular, cravos',
+    quizQ4DailyDesc: 'Hábito instalado, reaplico a cada 2-3h',
+    quizQ4SometimesLabel: 'Só quando saio ao sol direto',
+    quizQ4SometimesDesc: 'Praia, piscina, esporte ao ar livre',
+    quizQ4MakeupLabel: 'Só se minha base/creme tem FPS',
+    quizQ4MakeupDesc: 'Dependo do FPS da maquiagem',
+    quizQ4NeverLabel: 'Quase nunca / esqueço',
+    quizQ4NeverDesc: 'Não faz parte da minha rotina atual',
+    quizBack: 'Voltar',
+    quizAnalyzing: 'Analisando...',
+    quizViewRoutine: 'Ver minha rotina',
+    quizBasedOn: 'Com base nas suas respostas, recomendamos:',
+    quizStepsForSkin: '{count} passos personalizados para a sua pele',
+    quizViewFull: 'Ver minha rotina completa',
+    savedReadySuffix: 'pronta para pedir.',
+    savedDiagnosed: 'Diagnosticado em {date}',
+
+    productCountOne: 'produto',
+    productCountOther: 'produtos',
+    viewOrder: 'Ver pedido',
+    trackLoading: 'Carregando rastreamento…',
+    commonClose: 'Fechar',
+    mapsLinkLabel: 'Link do Google Maps',
+
+    toastWhatsCta: 'Pedir diretamente no WhatsApp',
+    toastClose: 'Fechar notificação',
+
+    trackViewBtn: 'Ver',
+    trackAutoRefresh: 'atualiza a cada 30 s',
+    trackCurrentState: 'Estado atual',
+    trackYourZone: 'sua zona',
+    trackZoneApprox: 'Zona de entrega aproximada',
+
+    reviewSortBest: 'Melhor avaliação',
+    reviewSortWorst: 'Pior avaliação',
+    reviewCountOne: 'avaliação',
+    reviewCountOther: 'avaliações',
+    reviewPhotoLarge: 'Ver foto em tamanho grande',
+    reviewPhotoExpanded: 'Foto da avaliação ampliada',
+    reviewPhotosStep: '4. Fotos do produto',
+    reviewPhotosHint: '(Opcional, até 3)',
+    reviewLoginPhotos: 'Identifique-se primeiro para enviar fotos.',
+    reviewRemovePhoto: 'Remover foto',
+    reviewNormal: 'Normal',
+    reviewPhotoSize: 'A foto deve ter menos de 5MB.',
+    reviewSortBy: 'Ordenar:',
+    reviewsClearFilters: 'Limpar filtros',
+    reviewsWithFilters: 'com esses filtros',
+    reviewReplyBadge: 'Skin Health responde',
+
+    routinesError: 'Erro ao carregar rotinas:',
+    routinesNoTable: 'A tabela skincare_routines não tem dados',
+    routinesBadStructure: 'Estrutura de tabela incorreta',
+    routineAddedMsg: 'Pronto, vai no seu pedido',
+    routineAddCta: 'Levar esta rotina ({count})',
+    routineFullLabel: 'Rotina completa · {count} produtos',
+    viewDetailsOf: 'Ver detalhes de {brand} {name}',
+    routinesNone: 'Nenhuma rotina encontrada',
+    viewRoutineAria: 'Ver rotina {title}',
+    routinesCauses: 'Possíveis causas:',
+    routinesRls: 'RLS (Row Level Security) bloqueando acesso anônimo',
+    routinesBadge: '5 rituais · 5 tipos de pele',
+
+    premiumPlanBadge: 'Plano mensal',
+    premiumB1: 'Rotina 100% personalizada + acompanhamento mensal',
+    premiumB2: 'Atendimento prioritário por WhatsApp',
+    premiumB3: 'Acesso antecipado a novos produtos',
+    premiumB4: 'Envios Priority para todo o país',
+    premiumSubscribe: 'Assinar — {price}/mês',
+
+    wishlistRemove: 'Remover da lista de desejos',
+    wishlistSave: 'Salvar na lista de desejos',
+    productDetails: 'Ver detalhes do produto',
+    addToOrderAria: 'Adicionar {name} ao pedido',
+    quickViewClose: 'Fechar detalhes',
+    quickViewPrev: 'Produto anterior',
+    quickViewNext: 'Próximo produto',
+    quickViewZoomTitle: 'Imagem do produto ampliada',
+    quickViewZoomClose: 'Fechar imagem ampliada',
+    newArrival: 'Novidade',
+    leaveReview: 'Deixar opinião',
+    addedExclaim: 'Adicionado!',
+    navClearSearch: 'Limpar busca',
+    navOpenOrder: 'Abrir meu pedido',
+    navOpenOrderItems: 'Abrir meu pedido, {count} produtos',
+    navChangeLanguage: 'Alterar idioma',
+    navSwitchTo: 'Mudar para {lang}',
+    navLanguageHeader: 'Idioma',
+    installHide: 'Ocultar aviso',
+    authSignInGoogle: 'Entrar com Google',
+    reviewFormClose: 'Fechar formulário',
+    toastRegion: 'Notificações',
+    blogBack: 'Voltar ao blog',
+    blogReadingTime: '{minutes} de leitura',
+    blogFaqTitle: 'Perguntas frequentes',
   },
 
   en: {
@@ -994,6 +1411,7 @@ export const translations: TranslationsMap = {
     errName: 'Enter your name to place the order.',
     errPhone: 'Enter a valid phone (at least 8 digits) to coordinate via WhatsApp.',
     errAddress: 'Enter your neighborhood and city to coordinate shipping.',
+    errUnexpected: 'Unexpected error.',
 
     orderSuccessTitle: 'Order Placed Successfully!',
     orderCode: 'Order Code:',
@@ -1038,6 +1456,7 @@ export const translations: TranslationsMap = {
     skinTypeDry: 'Dry skin',
     skinTypeCombo: 'Combination skin',
     skinTypeSensitive: 'Sensitive skin',
+    skinTypeNormal: 'Normal skin',
 
     reviewFormTitle: 'Leave your honest review',
     reviewFormQ1: '1. What rating do you give this product?',
@@ -1170,5 +1589,139 @@ export const translations: TranslationsMap = {
 
     testimonialsTitle: 'Verified customer reviews',
     testimonialsAria: 'out of 5 stars',
+
+    // ——— pass 2 ———
+    cartTitle: 'My Order',
+    cartClose: 'Close order',
+    cartPhonePlaceholder: 'E.g. 0971 123 456',
+    cartRemoveTitle: 'Remove from order',
+    cartRemoveItem: 'Remove {name}',
+    cartUnitPrice: 'Unit price:',
+    cartProductsCount: 'Products ({count})',
+    cartOptional: 'Optional',
+    cartShippingCoord: 'Coordinated via WhatsApp',
+    cartShippingFrom: 'We ship from {origin} ({base} up to 3 km + {perKm}/km).',
+    cartPreparing: 'Preparing your order...',
+    cartOrderCta: 'ORDER ON WHATSAPP →',
+    cartPayTransfer: 'Bank transfer payment',
+    cartUnavailable: 'Product unavailable',
+    cartOrderError: "We couldn't register your order",
+    cartOrderErrorDesc: 'Your cart is safe. Try again in a few seconds.',
+    cartOrderRegistered: 'Your order was registered',
+    pedErrEmpty: 'Add products before confirming.',
+    pedErrCustomerData: 'Check your order details (name, address and phone) and try again.',
+    pedErrAuth: 'Sign in to coordinate delivery.',
+    pedErrStock: 'A product is out of stock. Adjust quantities and try again.',
+    pedErrUnavailable: 'A product is no longer available. Check your cart and try again.',
+    pedErrFailed: 'Your cart is safe. Try again in a few seconds.',
+
+    orderThanks: 'Thank you for your purchase',
+    orderPrepared: 'We have prepared your order and redirected you to the official WhatsApp to coordinate delivery.',
+    orderClose: 'Close modal',
+    orderStepsTitle: 'Next delivery steps',
+    orderSummary: 'Product Summary',
+    orderRecipient: 'Recipient:',
+    orderTrackLive: 'Track my order live',
+    orderShareExp: 'Share my experience',
+
+    quizQ1Title: 'Skin type',
+    quizQ3Title: 'Routine level',
+    quizQ4Title: 'Sunscreen',
+    quizConcernPores: 'Enlarged pores',
+    quizConcernPoresDesc: 'Uneven texture, blackheads',
+    quizQ4DailyDesc: 'Built-in habit, reapply every 2-3h',
+    quizQ4SometimesLabel: 'Only when I go out in direct sun',
+    quizQ4SometimesDesc: 'Beach, pool, outdoor sports',
+    quizQ4MakeupLabel: 'Only if my foundation/cream has SPF',
+    quizQ4MakeupDesc: "I rely on my makeup's SPF",
+    quizQ4NeverLabel: 'Almost never / I forget',
+    quizQ4NeverDesc: "Not part of my current routine",
+    quizBack: 'Back',
+    quizAnalyzing: 'Analyzing...',
+    quizViewRoutine: 'View my routine',
+    quizBasedOn: 'Based on your answers, we recommend:',
+    quizStepsForSkin: '{count} steps personalized for your skin',
+    quizViewFull: 'View my full routine',
+    savedReadySuffix: 'ready to order.',
+    savedDiagnosed: 'Diagnosed on {date}',
+
+    productCountOne: 'product',
+    productCountOther: 'products',
+    viewOrder: 'View order',
+    trackLoading: 'Loading tracking…',
+    commonClose: 'Close',
+    mapsLinkLabel: 'Google Maps link',
+
+    toastWhatsCta: 'Order directly on WhatsApp',
+    toastClose: 'Close notification',
+
+    trackViewBtn: 'View',
+    trackAutoRefresh: 'updates every 30 s',
+    trackCurrentState: 'Current status',
+    trackYourZone: 'your area',
+    trackZoneApprox: 'Approximate delivery area',
+
+    reviewSortBest: 'Highest rated',
+    reviewSortWorst: 'Lowest rated',
+    reviewCountOne: 'review',
+    reviewCountOther: 'reviews',
+    reviewPhotoLarge: 'View photo full size',
+    reviewPhotoExpanded: 'Enlarged review photo',
+    reviewPhotosStep: '4. Product photos',
+    reviewPhotosHint: '(Optional, up to 3)',
+    reviewLoginPhotos: 'Sign in first to upload photos.',
+    reviewRemovePhoto: 'Remove photo',
+    reviewNormal: 'Normal',
+    reviewPhotoSize: 'The photo must be under 5MB.',
+    reviewSortBy: 'Sort:',
+    reviewsClearFilters: 'Clear filters',
+    reviewsWithFilters: 'with these filters',
+    reviewReplyBadge: 'Skin Health replies',
+
+    routinesError: 'Error loading routines:',
+    routinesNoTable: 'The skincare_routines table has no data',
+    routinesBadStructure: 'Wrong table structure',
+    routineAddedMsg: "Done, it's in your order",
+    routineAddCta: 'Take this routine ({count})',
+    routineFullLabel: 'Full routine · {count} products',
+    viewDetailsOf: 'View details of {brand} {name}',
+    routinesNone: 'No routines found',
+    viewRoutineAria: 'View routine {title}',
+    routinesCauses: 'Possible causes:',
+    routinesRls: 'RLS (Row Level Security) blocking anon access',
+    routinesBadge: '5 rituals · 5 skin types',
+
+    premiumPlanBadge: 'Monthly plan',
+    premiumB1: '100% personalized routine + monthly follow-up',
+    premiumB2: 'Priority support on WhatsApp',
+    premiumB3: 'Early access to new arrivals',
+    premiumB4: 'Priority shipping nationwide',
+    premiumSubscribe: 'Subscribe — {price}/mo',
+
+    wishlistRemove: 'Remove from wishlist',
+    wishlistSave: 'Save to wishlist',
+    productDetails: 'View product details',
+    addToOrderAria: 'Add {name} to order',
+    quickViewClose: 'Close details',
+    quickViewPrev: 'Previous product',
+    quickViewNext: 'Next product',
+    quickViewZoomTitle: 'Enlarged product image',
+    quickViewZoomClose: 'Close enlarged image',
+    newArrival: 'New arrival',
+    leaveReview: 'Leave a review',
+    addedExclaim: 'Added!',
+    navClearSearch: 'Clear search',
+    navOpenOrder: 'Open my order',
+    navOpenOrderItems: 'Open my order, {count} products',
+    navChangeLanguage: 'Change language',
+    navSwitchTo: 'Switch to {lang}',
+    navLanguageHeader: 'Language',
+    installHide: 'Hide notice',
+    authSignInGoogle: 'Sign in with Google',
+    reviewFormClose: 'Close form',
+    toastRegion: 'Notifications',
+    blogBack: 'Back to blog',
+    blogReadingTime: '{minutes} read',
+    blogFaqTitle: 'Frequently asked questions',
   },
 };

@@ -65,7 +65,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           {searchQuery && (
             <button
               onClick={() => onSearchChange('')}
-              aria-label="Limpiar búsqueda"
+              aria-label={t.navClearSearch}
               className="absolute right-2.5 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-700 cursor-pointer"
             >
               <X className="w-4 h-4" />
@@ -82,14 +82,14 @@ export const Navbar: React.FC<NavbarProps> = ({
             className="relative w-full sm:w-auto"
             onClick={() => setShowLanguageMenu((prev) => !prev)}
             onTouchStart={() => setShowLanguageMenu((prev) => !prev)}
-            aria-label="Cambiar idioma"
+            aria-label={t.navChangeLanguage}
             style={{
               touchAction: 'manipulation',
             }}
           >
             <button
               className={`flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-neutral-700 hover:text-[#102A43] transition-colors focus:outline-none focus:ring-2 focus:ring-[#102A43]/20 ${showLanguageMenu ? 'bg-white' : 'bg-transparent'}` }
-              aria-label="Cambiar idioma"
+              aria-label={t.navChangeLanguage}
             >
               <img src={flagImages[language]} alt="" className="w-5 h-auto rounded-sm" />
               <span className="text-[10px] mr-1">{flagLabels[language]}</span>
@@ -107,7 +107,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               }}
             >
               <span className="text-xs text-neutral-500 uppercase tracking-wider block mb-1">
-                {language === 'es' ? 'Idioma' : language === 'pt' ? 'Idioma' : 'Language'}
+                {t.navLanguageHeader}
               </span>
               <div className="space-y-1 px-1">
                 {languages.map((lang) => {
@@ -122,7 +122,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                           ? 'bg-[#102A43] text-white'
                           : 'text-neutral-700 hover:bg-neutral-100'
                       }`}
-                      aria-label={`Cambiar a ${flagLabels[lang]}`}
+                      aria-label={t.navSwitchTo.replace('{lang}', flagLabels[lang])}
                     >
                       <img src={flagImages[lang]} alt="" className="w-4 h-auto rounded-sm" />
                       <span className="text-[10px]">{flagLabels[lang]}</span>
@@ -137,7 +137,11 @@ export const Navbar: React.FC<NavbarProps> = ({
           <motion.button
             id="desktop-header-cart-btn"
             onClick={onOpenCart}
-            aria-label={totalItems > 0 ? `Abrir mi pedido, ${totalItems} productos` : 'Abrir mi pedido'}
+            aria-label={
+              totalItems > 0
+                ? t.navOpenOrderItems.replace('{count}', String(totalItems))
+                : t.navOpenOrder
+            }
             whileTap={{ scale: 0.95 }}
             className={`relative flex items-center gap-2 px-3.5 py-2 rounded-full font-medium text-sm transition-all shadow-sm ${
               totalItems > 0
@@ -186,7 +190,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         {searchQuery && (
           <button
             onClick={() => onSearchChange('')}
-            aria-label="Limpiar búsqueda"
+            aria-label={t.navClearSearch}
             className="absolute right-6 top-1/2 -translate-y-[calc(50%+6px)] text-neutral-400 hover:text-neutral-700 cursor-pointer"
           >
             <X className="w-4 h-4" />

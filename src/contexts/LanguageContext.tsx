@@ -10,6 +10,7 @@ interface LanguageContextValue {
   currency: string;
   currencyLabel: string;
   formatCurrency: (amount: number) => string;
+  dateLocale: string;
   t: Translations;
 }
 
@@ -47,6 +48,7 @@ const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children })
       currency: t.currency,
       currencyLabel: t.currencyLabel,
       formatCurrency: t.formatCurrency,
+      dateLocale: language === 'pt' ? 'pt-BR' : language === 'en' ? 'en-US' : 'es-PY',
       t,
     }}>
       {children}

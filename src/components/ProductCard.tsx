@@ -19,7 +19,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   onQuickView,
   onAdd,
 }) => {
-  const { formatCurrency, language } = useLanguage();
+  const { formatCurrency, language, t } = useLanguage();
 
   const labels = {
     es: { lowStock: '¡Pocas unidades!', variants: 'variantes', inCart: 'en carrito' },
@@ -112,8 +112,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 ? 'bg-amber-50 text-amber-700 border border-amber-100 hover:border-amber-200'
                 : 'bg-white text-neutral-700 border border-neutral-200 hover:border-neutral-300'
             }`}
-            title={isInWishlist ? 'Quitar de la wishlist' : 'Guardar en wishlist'}
-            aria-label={isInWishlist ? 'Quitar de la wishlist' : 'Guardar en wishlist'}
+            title={isInWishlist ? t.wishlistRemove : t.wishlistSave}
+            aria-label={isInWishlist ? t.wishlistRemove : t.wishlistSave}
           >
             {isInWishlist ? (
               <Check className="w-1.5 h-1.5 rounded-full bg-amber-500" aria-hidden="true" />
@@ -128,8 +128,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <button
             onClick={() => onQuickView(product)}
             className="text-neutral-400 hover:text-[#102A43] p-1 rounded-full hover:bg-neutral-100 transition-colors"
-            title="Ver detalles del producto"
-            aria-label="Ver detalles"
+            title={t.productDetails}
+            aria-label={t.productDetails}
           >
             <Eye className="w-3.5 h-3.5" />
           </button>
@@ -190,7 +190,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           {onAdd && (
             <button
               onClick={handleAdd}
-              aria-label={`Agregar ${product.name} al pedido`}
+              aria-label={t.addToOrderAria.replace('{name}', product.name)}
               aria-pressed={justAdded}
               className={`w-8 h-8 rounded-full flex items-center justify-center shadow-md active:scale-95 transition-transform duration-150 ease-out active:brightness-95 transition-colors duration-300 ${
                 justAdded

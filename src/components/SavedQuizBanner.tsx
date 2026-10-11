@@ -33,7 +33,7 @@ export const SavedQuizBanner: React.FC<SavedQuizBannerProps> = ({
   onRetakeQuiz,
   onViewRoutine,
 }) => {
-  const { t } = useLanguage();
+  const { t, dateLocale } = useLanguage();
   const [savedResult, setSavedResult] = useState<SavedQuizResult | null>(null);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -102,7 +102,7 @@ export const SavedQuizBanner: React.FC<SavedQuizBannerProps> = ({
               </h3>
             </div>
             <p className="text-white/80 text-sm sm:text-base mb-1.5">
-              {t.savedDesc} <span className="font-semibold underline underline-offset-1">{skinLabel}</span> lista para pedir.
+              {t.savedDesc} <span className="font-semibold underline underline-offset-1">{skinLabel}</span> {t.savedReadySuffix}
             </p>
             <p className="text-white/60 text-xs sm:text-sm">
               {savedResult.routineTitle}
@@ -117,7 +117,7 @@ export const SavedQuizBanner: React.FC<SavedQuizBannerProps> = ({
               className="w-full sm:w-auto px-5 py-2.5 sm:px-6 bg-white text-[#102A43] font-bold text-sm sm:text-base rounded-2xl hover:bg-white/90 transition-all shadow-lg flex items-center justify-center gap-2"
             >
               <ArrowRight className="w-4 h-4" />
-              <span>Ver mi rutina</span>
+              <span>{t.quizViewRoutine}</span>
             </motion.button>
 
             <button
@@ -132,7 +132,10 @@ export const SavedQuizBanner: React.FC<SavedQuizBannerProps> = ({
 
         {/* Small timestamp */}
         <p className="absolute bottom-2 right-3 text-[10px] text-white/40 text-right">
-          Diagnosticado {new Date(savedResult.completedAt).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })}
+          {t.savedDiagnosed.replace(
+            '{date}',
+            new Date(savedResult.completedAt).toLocaleDateString(dateLocale, { day: '2-digit', month: 'short' })
+          )}
         </p>
       </div>
     </motion.div>

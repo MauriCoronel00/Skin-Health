@@ -45,7 +45,7 @@ export const WelcomePopup: React.FC<WelcomePopupProps> = ({ open, onStartQuiz, o
             <div className="absolute -top-10 -right-10 w-36 h-36 rounded-full bg-[#dbeafe]/60 blur-2xl pointer-events-none" />
             <button
               onClick={onClose}
-              aria-label="Cerrar"
+              aria-label={t.commonClose}
               className="absolute top-3.5 right-3.5 w-8 h-8 rounded-full bg-neutral-100 hover:bg-neutral-200 flex items-center justify-center text-neutral-500 transition-colors cursor-pointer"
             >
               <X className="w-4 h-4" />

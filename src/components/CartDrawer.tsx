@@ -18,7 +18,6 @@ import {
   AlertCircle,
 } from 'lucide-react';
 import { CartItem } from '../types';
-import { formatGuarani } from '../data/products';
 import { productImageUrl } from '../data/productImage';
 import { calcularEnvio, ENVIO_BASE_GS, ENVIO_ORIGEN, ENVIO_ORIGEN_MAPS_URL } from '../utils/envio';
 import { trackBeginCheckout } from '../utils/analytics';
@@ -56,7 +55,19 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   onOrderSuccess,
   onShowToast,
 }) => {
-  const { t } = useLanguage();
+  const { t, formatCurrency, dateLocale } = useLanguage();
+
+  /** Descripción del error de pedido localizada por código. */
+  const pedErrDesc = (err: PedidoError): string => {
+    switch (err.code) {
+      case 'EMPTY': return t.pedErrEmpty;
+      case 'CUSTOMER_DATA': return t.pedErrCustomerData;
+      case 'NOT_AUTHENTICATED': return t.pedErrAuth;
+      case 'NO_STOCK': return t.pedErrStock;
+      case 'UNAVAILABLE': return t.pedErrUnavailable;
+      default: return t.pedErrFailed;
+    }
+  };
 
   // Customer data state with localStorage persistence
   const [customerName, setCustomerName] = useState(() => {
@@ -294,18 +305,18 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
           setTouched({ name: true, address: true });
         }
         if (err.code === 'NOT_AUTHENTICATED') {
-          onShowToast(t.cartLoginRequired, err.userMessage, 'info');
+          onShowToast(t.cartLoginRequired, pedErrDesc(err), 'info');
         } else if (err.code === 'NO_STOCK') {
-          onShowToast(t.cartNoStock, err.userMessage, 'error');
+          onShowToast(t.cartNoStock, pedErrDesc(err), 'error');
         } else if (err.code === 'UNAVAILABLE') {
-          onShowToast('Producto no disponible', err.userMessage, 'error');
+          onShowToast(t.cartUnavailable, pedErrDesc(err), 'error');
         } else {
-          onShowToast('No pudimos registrar tu pedido', err.userMessage, 'error');
+          onShowToast(t.cartOrderError, pedErrDesc(err), 'error');
         }
       } else {
         onShowToast(
-          'No pudimos registrar tu pedido',
-          'Tu carrito está a salvo. Probá de nuevo en unos segundos.',
+          t.cartOrderError,
+          t.cartOrderErrorDesc,
           'error'
         );
       }
@@ -346,7 +357,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
         items: [...cartItems],
         totalAmount: serverTotal,
         costoEnvioGs: serverEnvio,
-        date: new Date().toLocaleDateString('es-PY', {
+        date: new Date().toLocaleDateString(dateLocale, {
           day: '2-digit',
           month: 'long',
           year: 'numeric',
@@ -355,7 +366,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
       if (!opened) {
         onShowToast(
-          'Tu pedido fue registrado',
+          t.cartOrderRegistered,
           t.cartWhatsAppFallback,
           'info',
           true
@@ -404,7 +415,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             <div className="flex items-center gap-2">
               <ShoppingBag className="w-5 h-5 text-[#102A43]" />
               <h2 className="font-semibold text-lg text-[#102A43]">
-                Mi Pedido
+                {t.cartTitle}
               </h2>
               {totalItems > 0 && (
                 <span className="bg-[#102A43]/10 text-[#102A43] text-xs font-bold px-2 py-0.5 rounded-full">
@@ -426,7 +437,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               <button
                 onClick={onClose}
                 className="p-1.5 rounded-full text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 transition-colors cursor-pointer"
-                aria-label="Cerrar pedido"
+                aria-label={t.cartClose}
               >
                 <X className="w-5 h-5" />
               </button>
@@ -513,7 +524,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                           inputMode="tel"
                           name="tel"
                           autoComplete="tel"
-                          placeholder="Ej. 0971 123 456"
+                          placeholder={t.cartPhonePlaceholder}
                           value={customerPhone}
                           onChange={(e) => setCustomerPhone(e.target.value)}
                           onBlur={() => handleBlur('phone')}
@@ -634,15 +645,15 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                             <button
                               onClick={() => onRemoveItem(item.product.id)}
                               className="text-neutral-400 hover:text-red-500 p-1 transition-colors cursor-pointer"
-                              title="Eliminar del pedido"
-                              aria-label={`Eliminar ${item.product.name}`}
+                              title={t.cartRemoveTitle}
+                              aria-label={t.cartRemoveItem.replace('{name}', item.product.name)}
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
                           </div>
 
                           <div className="text-xs text-neutral-500 mt-0.5">
-                            Unitario: {formatGuarani(item.product.price)}
+                            {t.cartUnitPrice} {formatCurrency(item.product.price)}
                           </div>
 
                           {/* Quantity Controls & Subtotal */}
@@ -675,7 +686,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
                             {/* Line subtotal */}
                             <span className="font-semibold text-sm text-[#102A43]">
-                              {formatGuarani(item.product.price * item.quantity)}
+                              {formatCurrency(item.product.price * item.quantity)}
                             </span>
                           </div>
                         </div>
@@ -693,8 +704,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               {/* Pricing breakdown */}
               <div className="space-y-1 text-sm">
                 <div className="flex justify-between text-neutral-500 text-xs">
-                  <span>Productos ({totalItems})</span>
-                  <span>{formatGuarani(totalAmount)}</span>
+                  <span>{t.cartProductsCount.replace('{count}', String(totalItems))}</span>
+                  <span>{formatCurrency(totalAmount)}</span>
                 </div>
                 <div className="flex items-center justify-between gap-2 text-xs">
                   <label htmlFor="envio-km" className="text-neutral-500 shrink-0">
@@ -708,20 +719,23 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     inputMode="decimal"
                     value={distanciaKm}
                     onChange={(e) => setDistanciaKm(e.target.value)}
-                    placeholder="Opcional"
+                    placeholder={t.cartOptional}
                     className="w-20 text-right font-semibold text-neutral-800 border border-neutral-200 rounded-lg py-1 px-2 focus:outline-none focus:border-[#102A43]"
                   />
                 </div>
                 <div className="flex justify-between text-neutral-500 text-xs">
                   <span>{t.cartShipping}</span>
                   {envioGs === null ? (
-                    <span className="text-neutral-400">Se coordina por WhatsApp</span>
+                    <span className="text-neutral-400">{t.cartShippingCoord}</span>
                   ) : (
-                    <span className="font-semibold text-neutral-800">{formatGuarani(envioGs)}</span>
+                    <span className="font-semibold text-neutral-800">{formatCurrency(envioGs)}</span>
                   )}
                 </div>
                 <p className="text-xs text-neutral-400">
-                  Salimos de {ENVIO_ORIGEN} ({formatGuarani(ENVIO_BASE_GS)} hasta 3 km + ₲ 2.000/km).{' '}
+                  {t.cartShippingFrom
+                    .replace('{origin}', ENVIO_ORIGEN)
+                    .replace('{base}', formatCurrency(ENVIO_BASE_GS))
+                    .replace('{perKm}', formatCurrency(2000))}{' '}
                   <a
                     href={ENVIO_ORIGEN_MAPS_URL}
                     target="_blank"
@@ -741,7 +755,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     animate={{ scale: 1 }}
                     className="font-bold text-lg sm:text-xl text-[#102A43]"
                   >
-                    {formatGuarani(totalConEnvio)}
+                    {formatCurrency(totalConEnvio)}
                   </motion.span>
                 </div>
               </div>
@@ -762,12 +776,12 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 {isOrdering ? (
                   <>
                     <Loader2 className="w-5 h-5 animate-spin" />
-                    <span>Preparando tu pedido...</span>
+                    <span>{t.cartPreparing}</span>
                   </>
                 ) : (
                   <>
                     <MessageCircle className="w-5 h-5" />
-                    <span>PEDIR POR WHATSAPP →</span>
+                    <span>{t.cartOrderCta}</span>
                   </>
                 )}
               </motion.button>
@@ -776,7 +790,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               <div className="grid grid-cols-3 gap-1 pt-1 text-xs text-neutral-500 text-center border-t border-neutral-100/80">
                 <div className="flex items-center justify-center gap-1">
                   <ShieldCheck className="w-3 h-3 text-emerald-600 shrink-0" />
-                  <span>Pago por transferencia</span>
+                  <span>{t.cartPayTransfer}</span>
                 </div>
                 <div className="flex items-center justify-center gap-1">
                   <Truck className="w-3 h-3 text-sky-600 shrink-0" />

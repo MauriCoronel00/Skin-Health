@@ -54,7 +54,7 @@ export const DiagnosticQuiz: React.FC<DiagnosticQuizProps> = ({
 
   const QUESTIONS = {
     1: {
-      title: 'Tipo de piel',
+      title: t.quizQ1Title,
       subtitle: t.quizQ1Sub,
       options: [
         { id: 'grasa', label: t.quizOptionOily, desc: t.quizOptionOilyDesc, icon: Droplets },
@@ -69,7 +69,7 @@ export const DiagnosticQuiz: React.FC<DiagnosticQuizProps> = ({
       multiSelect: true,
       options: [
         { id: 'acne', label: t.quizConcernAcne, desc: t.quizConcernAcneDesc, icon: Sparkles },
-        { id: 'poros', label: 'Poros dilatados', desc: 'Textura irregular, puntos negros', icon: Leaf },
+        { id: 'poros', label: t.quizConcernPores, desc: t.quizConcernPoresDesc, icon: Leaf },
         { id: 'manchas', label: t.quizConcernSpots, desc: t.quizConcernSpotsDesc, icon: Sparkles },
         { id: 'lineas', label: t.quizConcernLines, desc: t.quizConcernLinesDesc, icon: Leaf },
         { id: 'hidratacion', label: t.quizConcernDehydr, desc: t.quizConcernDehydrDesc, icon: Droplets },
@@ -77,7 +77,7 @@ export const DiagnosticQuiz: React.FC<DiagnosticQuizProps> = ({
       ],
     },
     3: {
-      title: 'Nivel de rutina',
+      title: t.quizQ3Title,
       subtitle: t.quizQ3Sub,
       options: [
         { id: 'basica', label: t.quizRoutineBasic, desc: t.quizRoutineBasicDesc, icon: Leaf },
@@ -86,13 +86,13 @@ export const DiagnosticQuiz: React.FC<DiagnosticQuizProps> = ({
       ],
     },
     4: {
-      title: 'Protector solar',
+      title: t.quizQ4Title,
       subtitle: t.quizQ4Sub,
       options: [
-        { id: 'siempre', label: t.quizQ4Daily, desc: 'Hábito instalado, reaplico cada 2-3hs', icon: ShieldCheck },
-        { id: 'salgo', label: 'Solo cuando salgo al sol directo', desc: 'Playa, pileta, deporte al aire libre', icon: Leaf },
-        { id: 'maquillaje', label: 'Solo si mi base/crema tiene SPF', desc: 'Dependo del SPF del maquillaje', icon: Droplets },
-        { id: 'nunca', label: 'Casi nunca / me olvido', desc: 'No es parte de mi rutina actual', icon: Sparkles },
+        { id: 'siempre', label: t.quizQ4Daily, desc: t.quizQ4DailyDesc, icon: ShieldCheck },
+        { id: 'salgo', label: t.quizQ4SometimesLabel, desc: t.quizQ4SometimesDesc, icon: Leaf },
+        { id: 'maquillaje', label: t.quizQ4MakeupLabel, desc: t.quizQ4MakeupDesc, icon: Droplets },
+        { id: 'nunca', label: t.quizQ4NeverLabel, desc: t.quizQ4NeverDesc, icon: Sparkles },
       ],
     },
   };
@@ -300,7 +300,7 @@ export const DiagnosticQuiz: React.FC<DiagnosticQuizProps> = ({
                   className="flex items-center gap-1.5 text-sm font-medium text-neutral-500 hover:text-[#102A43] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                 >
                   <ArrowLeft className="w-4 h-4" />
-                  Volver
+                  {t.quizBack}
                 </motion.button>
                 {question.multiSelect && (
                   <motion.button
@@ -323,11 +323,11 @@ export const DiagnosticQuiz: React.FC<DiagnosticQuizProps> = ({
                     {isSubmitting ? (
                       <>
                         <motion.div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                        <span>Analizando...</span>
+                        <span>{t.quizAnalyzing}</span>
                       </>
                     ) : (
                       <>
-                        <span>Ver mi rutina</span>
+                        <span>{t.quizViewRoutine}</span>
                         <ArrowRight className="w-4 h-4" />
                       </>
                     )}
@@ -357,7 +357,7 @@ export const DiagnosticQuiz: React.FC<DiagnosticQuizProps> = ({
               <h3 className="font-serif text-2xl font-semibold text-[#102A43] mb-2">
                 {t.quizResultTitle}
               </h3>
-              <p className="text-neutral-600 mb-2">Basado en tus respuestas, te recomendamos:</p>
+              <p className="text-neutral-600 mb-2">{t.quizBasedOn}</p>
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -366,7 +366,7 @@ export const DiagnosticQuiz: React.FC<DiagnosticQuizProps> = ({
               >
                 <p className="font-bold text-[#102A43] text-lg">{ROUTINE_TITLES[matchedRoutine]}</p>
                 <p className="text-sm text-neutral-600 mt-1">
-                  {matchedRoutine === 'manchas-luminosidad' ? 3 : 4} pasos personalizados para tu piel
+                  {t.quizStepsForSkin.replace('{count}', String(matchedRoutine === 'manchas-luminosidad' ? 3 : 4))}
                 </p>
               </motion.div>
               <motion.button
@@ -374,7 +374,7 @@ export const DiagnosticQuiz: React.FC<DiagnosticQuizProps> = ({
                 onClick={handleViewRoutine}
                 className="w-full py-3.5 px-6 bg-[#102A43] text-white font-bold text-base rounded-2xl hover:bg-[#102A43]/90 transition-all shadow-lg"
               >
-                Ver mi rutina completa
+                {t.quizViewFull}
                 <ArrowRight className="w-5 h-5 inline-block ml-2" />
               </motion.button>
               <motion.button

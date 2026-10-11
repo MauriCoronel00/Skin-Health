@@ -14,9 +14,7 @@ import {
   fetchTracking,
   TRACKING_STEPS,
   TrackingInfo,
-  formatTrackingTotal,
 } from '../data/tracking';
-import { formatGuarani } from '../data/products';
 import { ENVIO_ORIGEN_MAPS_URL } from '../utils/envio';
 import { useLanguage } from '../contexts/LanguageContext';
 
@@ -30,7 +28,14 @@ export const TrackingView: React.FC<{ codigoInicial: string; onVolver: () => voi
   codigoInicial,
   onVolver,
 }) => {
-  const { t } = useLanguage();
+  const { t, formatCurrency } = useLanguage();
+
+  const stepLabels: Record<string, string> = {
+    pendiente: t.stepReceived,
+    pagado: t.stepPaid,
+    enviado: t.stepShipped,
+    entregado: t.stepDelivered,
+  };
   const [codigo, setCodigo] = useState(codigoInicial);
   const [info, setInfo] = useState<TrackingInfo | null>(null);
   const [loading, setLoading] = useState(true);
@@ -100,7 +105,7 @@ export const TrackingView: React.FC<{ codigoInicial: string; onVolver: () => voi
             className="h-11 px-5 rounded-full bg-[#102A43] text-white text-sm font-semibold hover:bg-[#102A43]/90 cursor-pointer flex items-center gap-1.5"
           >
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
-            <span>Ver</span>
+            <span>{t.trackViewBtn}</span>
           </button>
         </form>
 
@@ -115,7 +120,7 @@ export const TrackingView: React.FC<{ codigoInicial: string; onVolver: () => voi
             <div className="text-center">
               <span className="font-mono font-bold text-[#102A43]">{info.codigo}</span>
               <span className="text-neutral-400 text-xs ml-2">
-                actualiza solo cada 30 seg
+                {t.trackAutoRefresh}
               </span>
             </div>
 
@@ -146,10 +151,10 @@ export const TrackingView: React.FC<{ codigoInicial: string; onVolver: () => voi
                       </div>
                       <div className="pb-6">
                         <p className={`text-sm font-semibold ${done ? 'text-neutral-900' : 'text-neutral-400'}`}>
-                          {step.label}
+                          {stepLabels[step.id] ?? step.label}
                         </p>
                         {current && (
-                          <p className="text-xs text-emerald-600 font-medium">Estado actual</p>
+                          <p className="text-xs text-emerald-600 font-medium">{t.trackCurrentState}</p>
                         )}
                       </div>
                     </li>
@@ -165,12 +170,12 @@ export const TrackingView: React.FC<{ codigoInicial: string; onVolver: () => voi
                 </div>
               ))}
               <div className="flex justify-between text-neutral-500 pt-1">
-                <span>{t.trackShippingTo} {info.zona || 'tu zona'}</span>
-                <span>{formatGuarani(info.costoEnvioGs)}</span>
+                <span>{t.trackShippingTo} {info.zona || t.trackYourZone}</span>
+                <span>{formatCurrency(info.costoEnvioGs)}</span>
               </div>
               <div className="flex justify-between font-bold text-sm text-[#102A43] pt-1 border-t border-neutral-200">
                 <span>{t.trackTotal}</span>
-                <span>{formatTrackingTotal(info)}</span>
+                <span>{formatCurrency(info.totalGs + info.costoEnvioGs)}</span>
               </div>
             </div>
 
@@ -178,7 +183,7 @@ export const TrackingView: React.FC<{ codigoInicial: string; onVolver: () => voi
               <div className="mt-4">
                 <p className="text-xs text-neutral-500 flex items-center gap-1.5 mb-2">
                   <MapPin className="w-3.5 h-3.5 text-emerald-600" />
-                  Zona de entrega aproximada
+                  {t.trackZoneApprox}
                 </p>
                 <iframe
                   title={`${t.trackMapTitle} ${info.codigo}`}

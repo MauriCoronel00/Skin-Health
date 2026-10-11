@@ -39,7 +39,7 @@ export const ReviewFormModal: React.FC<ReviewFormModalProps> = ({
     { value: 'seca', label: t.reviewSeca },
     { value: 'mixta', label: t.reviewMixta },
     { value: 'sensible', label: t.reviewSensible },
-    { value: 'normal', label: 'Normal' },
+    { value: 'normal', label: t.reviewNormal },
   ];
   const [rating, setRating] = useState<number>(5);
   const [comment, setComment] = useState('');
@@ -58,7 +58,7 @@ export const ReviewFormModal: React.FC<ReviewFormModalProps> = ({
       return;
     }
     if (file.size > 5 * 1024 * 1024) {
-      setErrorMsg('La foto debe pesar menos de 5MB.');
+      setErrorMsg(t.reviewPhotoSize);
       return;
     }
     setErrorMsg(null);
@@ -156,7 +156,7 @@ export const ReviewFormModal: React.FC<ReviewFormModalProps> = ({
         <button
           onClick={onClose}
           className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-neutral-100 hover:bg-neutral-200 flex items-center justify-center text-neutral-500 hover:text-neutral-800 transition-colors"
-          aria-label="Cerrar formulario"
+          aria-label={t.reviewFormClose}
         >
           <X className="w-4 h-4" />
         </button>
@@ -272,7 +272,7 @@ export const ReviewFormModal: React.FC<ReviewFormModalProps> = ({
                         type="button"
                         onClick={() => removePhoto(url)}
                         className="absolute top-0.5 right-0.5 w-5 h-5 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/80"
-                        aria-label="Eliminar foto"
+                        aria-label={t.reviewRemovePhoto}
                       >
                         <X className="w-3 h-3" />
                       </button>
@@ -296,7 +296,7 @@ export const ReviewFormModal: React.FC<ReviewFormModalProps> = ({
                   )}
                 </div>
                 {!currentUser && (
-                  <p className="text-xs text-neutral-400 mt-1">Identificate primero para subir fotos.</p>
+                  <p className="text-xs text-neutral-400 mt-1">{t.reviewLoginPhotos}</p>
                 )}
               </div>
 

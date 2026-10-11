@@ -11,7 +11,7 @@ import {
   X,
 } from 'lucide-react';
 import { CartItem } from '../types';
-import { formatGuarani, STORE_PHONE_NUMBER } from '../data/products';
+import { STORE_PHONE_NUMBER } from '../data/products';
 import { buildPedidoMessage } from '../data/pedidos';
 import { trackingLink } from '../data/tracking';
 import { STORE_PHONE_NUMBER as WHATSAPP_NUMBER } from '../data/products';
@@ -41,7 +41,7 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
   order,
 }) => {
   const [copied, setCopied] = useState(false);
-  const { t } = useLanguage();
+  const { t, formatCurrency } = useLanguage();
 
   if (!isOpen || !order) return null;
 
@@ -92,7 +92,7 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
           <button
             onClick={onClose}
             className="absolute top-4 right-4 p-2 text-neutral-400 hover:text-neutral-700 rounded-full hover:bg-neutral-200/50 transition-colors"
-            aria-label="Cerrar modal"
+            aria-label={t.orderClose}
           >
             <X className="w-5 h-5" />
           </button>
@@ -106,10 +106,10 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
           </span>
 
           <h3 className="font-serif text-2xl font-bold text-[#102A43] mt-2 mb-1">
-            Gracias por tu compra
+            {t.orderThanks}
           </h3>
           <p className="text-xs text-neutral-500 max-w-sm mx-auto">
-            Hemos preparado tu pedido y te redirigimos al WhatsApp oficial para coordinar el despacho.
+            {t.orderPrepared}
           </p>
 
           {/* Unique Order Code Box */}
@@ -136,7 +136,7 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
           <div>
             <h4 className="text-xs font-bold uppercase tracking-wider text-[#102A43] mb-3 flex items-center gap-1.5">
               <Clock className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Siguientes pasos de entrega</span>
+              <span>{t.orderStepsTitle}</span>
             </h4>
             <div className="space-y-2.5 text-xs">
               <div className="p-3 bg-[#FAF8F5] rounded-xl border border-neutral-100 flex items-start gap-3">
@@ -182,7 +182,7 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
             <h4 className="text-xs font-bold uppercase tracking-wider text-[#102A43] mb-2 flex items-center justify-between">
               <span className="flex items-center gap-1.5">
                 <Package className="w-3.5 h-3.5 text-neutral-500" />
-                <span>Resumen de Productos</span>
+                <span>{t.orderSummary}</span>
               </span>
               <span className="font-normal text-neutral-500 text-[11px]">{order.items.length} {t.orderItems}</span>
             </h4>
@@ -195,7 +195,7 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
                     <span className="text-neutral-400 ml-1.5 font-normal">x{item.quantity}</span>
                   </div>
                   <span className="font-semibold text-[#102A43]">
-                    {formatGuarani(item.product.price * item.quantity)}
+                    {formatCurrency(item.product.price * item.quantity)}
                   </span>
                 </div>
               ))}
@@ -203,12 +203,12 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
               <div className="pt-2.5 mt-1 border-t border-neutral-200 flex justify-between items-baseline text-xs text-neutral-500">
                 <span>{t.orderShipping}</span>
                 <span className="font-semibold text-neutral-700">
-                  {formatGuarani(order.costoEnvioGs ?? 0)}
+                  {formatCurrency(order.costoEnvioGs ?? 0)}
                 </span>
               </div>
               <div className="pt-2.5 mt-1 border-t border-neutral-200 flex justify-between items-baseline font-bold text-sm text-[#102A43]">
                 <span>{t.orderTotal}</span>
-                <span>{formatGuarani(order.totalAmount + (order.costoEnvioGs ?? 0))}</span>
+                <span>{formatCurrency(order.totalAmount + (order.costoEnvioGs ?? 0))}</span>
               </div>
             </div>
           </div>
@@ -221,7 +221,7 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
                 <span className="font-semibold text-neutral-900 block">{t.orderDestination}</span>
                 <span className="text-neutral-600">{order.customerAddress}</span>
                 {order.customerName && (
-                  <span className="text-neutral-400 block mt-0.5">Destinatario: {order.customerName}</span>
+                  <span className="text-neutral-400 block mt-0.5">{t.orderRecipient} {order.customerName}</span>
                 )}
               </div>
             </div>
@@ -235,7 +235,7 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
             className="w-full sm:flex-1 py-3 px-4 rounded-xl bg-[#102A43] hover:bg-[#102A43]/90 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-colors cursor-pointer"
           >
             <MapPin className="w-4 h-4" />
-            <span>Seguir mi pedido en vivo</span>
+            <span>{t.orderTrackLive}</span>
           </a>
           <button
             onClick={reOpenWhatsApp}
@@ -249,7 +249,7 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
             onClick={requestReview}
             className="w-full sm:w-auto py-3 px-5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-semibold text-xs sm:text-sm transition-colors cursor-pointer border border-emerald-200"
           >
-            Contar mi experiencia
+            {t.orderShareExp}
           </button>
 
           <button

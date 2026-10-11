@@ -30,14 +30,14 @@ export const ProductReviewsSection: React.FC<ProductReviewsSectionProps> = ({
   const [sortMode, setSortMode] = useState<SortMode>('utiles');
   const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
 
-  const { t } = useLanguage();
+  const { t, language, dateLocale } = useLanguage();
 
   const TIPO_PIEL_LABEL: Record<TipoPiel, string> = {
     grasa: t.skinTypeOily,
     seca: t.skinTypeDry,
     mixta: t.skinTypeCombo,
     sensible: t.skinTypeSensitive,
-    normal: 'Piel normal',
+    normal: t.skinTypeNormal,
   };
 
   // Relevant approved reviews for this product
@@ -244,7 +244,7 @@ export const ProductReviewsSection: React.FC<ProductReviewsSectionProps> = ({
               onClick={clearAllFilters}
               className="text-xs text-[#102A43] font-semibold hover:underline cursor-pointer ml-1"
             >
-              Limpiar filtros ({activeFiltersCount})
+              {t.reviewsClearFilters} ({activeFiltersCount})
             </button>
           )}
         </div>
@@ -253,11 +253,11 @@ export const ProductReviewsSection: React.FC<ProductReviewsSectionProps> = ({
         <div className="flex items-center justify-between text-xs text-neutral-500">
           <span>
             {displayedReviews.length}{' '}
-            {displayedReviews.length === 1 ? 'reseña' : 'reseñas'}
-            {activeFiltersCount > 0 && ' con estos filtros'}
+            {displayedReviews.length === 1 ? t.reviewCountOne : t.reviewCountOther}
+            {activeFiltersCount > 0 && ` ${t.reviewsWithFilters}`}
           </span>
           <label className="inline-flex items-center gap-2">
-            <span className="text-neutral-500">Ordenar:</span>
+            <span className="text-neutral-500">{t.reviewSortBy}</span>
             <select
               value={sortMode}
               onChange={(e) => setSortMode(e.target.value as SortMode)}
@@ -265,8 +265,8 @@ export const ProductReviewsSection: React.FC<ProductReviewsSectionProps> = ({
             >
               <option value="utiles">{t.reviewsSortHelpful}</option>
               <option value="recientes">{t.reviewsSortRecent}</option>
-              <option value="mejores">Mejor puntaje</option>
-              <option value="peores">Peor puntaje</option>
+              <option value="mejores">{t.reviewSortBest}</option>
+              <option value="peores">{t.reviewSortWorst}</option>
             </select>
           </label>
         </div>
@@ -366,9 +366,9 @@ export const ProductReviewsSection: React.FC<ProductReviewsSectionProps> = ({
 
                   <span
                     className="text-xs text-neutral-400 whitespace-nowrap shrink-0"
-                    title={new Date(rev.createdAt).toLocaleString('es-PY')}
+                    title={new Date(rev.createdAt).toLocaleString(dateLocale)}
                   >
-                    {formatReviewDate(rev.createdAt)}
+                    {formatReviewDate(rev.createdAt, language)}
                   </span>
                 </div>
 
@@ -388,7 +388,7 @@ export const ProductReviewsSection: React.FC<ProductReviewsSectionProps> = ({
                         type="button"
                         onClick={() => setLightboxUrl(url)}
                         className="w-20 h-20 rounded-xl overflow-hidden border border-neutral-200 hover:border-[#102A43]/40 transition-all cursor-zoom-in"
-                        aria-label="Ver foto en grande"
+                        aria-label={t.reviewPhotoLarge}
                       >
                         <img src={url} alt={t.reviewsPhoto} className="w-full h-full object-cover" loading="lazy" />
                       </button>
@@ -402,14 +402,14 @@ export const ProductReviewsSection: React.FC<ProductReviewsSectionProps> = ({
                     <div className="bg-[#102A43]/5 border-l-2 border-[#102A43] rounded-r-xl px-3 py-2.5">
                       <div className="flex items-center gap-1.5 mb-1">
                         <MessageSquare className="w-3 h-3 text-[#102A43]" />
-                        <span className="text-xs font-bold text-[#102A43]">
-                          Skin Health responde
-                        </span>
-                        {rev.respuestaAdminCreadaEn && (
-                          <span className="text-xs text-neutral-400">
-                            · {formatReviewDate(rev.respuestaAdminCreadaEn)}
+                          <span className="text-xs font-bold text-[#102A43]">
+                            {t.reviewReplyBadge}
                           </span>
-                        )}
+                          {rev.respuestaAdminCreadaEn && (
+                            <span className="text-xs text-neutral-400">
+                              · {formatReviewDate(rev.respuestaAdminCreadaEn, language)}
+                            </span>
+                          )}
                       </div>
                       <p className="text-xs sm:text-sm text-neutral-700 leading-relaxed">
                         {rev.respuestaAdmin}
@@ -460,7 +460,7 @@ export const ProductReviewsSection: React.FC<ProductReviewsSectionProps> = ({
           className="fixed inset-0 z-50 bg-white/95 flex items-center justify-center p-4 cursor-zoom-out"
           onClick={() => setLightboxUrl(null)}
           role="dialog"
-          aria-label="Foto de reseña ampliada"
+                aria-label={t.reviewPhotoExpanded}
         >
           <img
             src={lightboxUrl}

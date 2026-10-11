@@ -62,7 +62,7 @@ export function HowItWorksSection() {
                   </li>
                   <li className="flex items-center gap-1">
                     <span className="w-1 h-1 rounded-full bg-[#55705E]"></span>
-                    <span>Google Maps link</span>
+                    <span>{t.mapsLinkLabel}</span>
                   </li>
                 </ul>
               </div>

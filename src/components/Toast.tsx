@@ -2,6 +2,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { AlertCircle, CheckCircle2, MessageCircle, X } from 'lucide-react';
 import { STORE_PHONE_NUMBER } from '../data/products';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export interface ToastMessage {
   id: string;
@@ -17,11 +18,12 @@ interface ToastProps {
 }
 
 export const ToastContainer: React.FC<ToastProps> = ({ toasts, onDismiss }) => {
+  const { t } = useLanguage();
   return (
     <div
       className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-4 z-50 flex flex-col gap-2 max-w-sm pointer-events-none"
       role="region"
-      aria-label="Notificaciones"
+      aria-label={t.toastRegion}
       aria-live="polite"
     >
       <AnimatePresence>
@@ -70,7 +72,7 @@ export const ToastContainer: React.FC<ToastProps> = ({ toasts, onDismiss }) => {
                   className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#25D366] text-white text-xs font-bold hover:bg-[#20bd5a] transition-colors"
                 >
                   <MessageCircle className="w-3.5 h-3.5 fill-white text-[#25D366]" />
-                  <span>Pedir directamente por WhatsApp</span>
+                  <span>{t.toastWhatsCta}</span>
                 </a>
               )}
             </div>
@@ -78,7 +80,7 @@ export const ToastContainer: React.FC<ToastProps> = ({ toasts, onDismiss }) => {
             <button
               onClick={() => onDismiss(toast.id)}
               className="text-neutral-400 hover:text-neutral-200 p-1 -mr-1 -mt-1 transition-colors"
-              aria-label="Cerrar notificación"
+              aria-label={t.toastClose}
             >
               <X className="w-4 h-4" />
             </button>

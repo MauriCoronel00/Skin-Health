@@ -344,7 +344,7 @@ return (
             {blogPost ? (
               <BlogPostView post={blogPost} onBack={exitBlog} onProductClick={handleBlogProductClick} />
             ) : trackCode !== null ? (
-              <Suspense fallback={<div className="py-20 text-center text-neutral-500 text-sm">Cargando seguimiento…</div>}>
+              <Suspense fallback={<div className="py-20 text-center text-neutral-500 text-sm">{t.trackLoading}</div>}>
                 <TrackingView codigoInicial={trackCode} onVolver={exitTracking} />
               </Suspense>
             ) : (

@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
 import { User as UserIcon } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export const LoginButton: React.FC = () => {
   const { user, isLoading, signInWithGoogle, signOut } = useAuth();
+  const { t } = useLanguage();
 
   // El bottom nav móvil dispara 'auth-required' para abrir el login
   useEffect(() => {
@@ -21,14 +23,14 @@ export const LoginButton: React.FC = () => {
       <button
         onClick={signOut}
         className="flex items-center gap-1.5 text-xs font-medium text-neutral-600 hover:text-[#102A43] px-3 py-1.5 rounded-full border border-neutral-200 hover:border-[#102A43] transition-colors bg-white"
-        title="Cerrar sesión"
+        title={t.authLogout}
       >
         {user.user_metadata?.avatar_url ? (
           <img src={user.user_metadata.avatar_url} alt="" className="w-5 h-5 rounded-full" />
         ) : (
           <UserIcon className="w-4 h-4" />
         )}
-        <span className="hidden sm:inline">{user.user_metadata?.full_name?.split(' ')[0] || 'Salir'}</span>
+        <span className="hidden sm:inline">{user.user_metadata?.full_name?.split(' ')[0] || t.authLogout}</span>
       </button>
     );
   }
@@ -37,8 +39,8 @@ export const LoginButton: React.FC = () => {
     <button
       onClick={signInWithGoogle}
       className="flex items-center justify-center w-9 h-9 rounded-full bg-[#102A43] hover:bg-[#102A43]/90 transition-colors text-white"
-      title="Ingresar con Google"
-      aria-label="Ingresar con Google"
+      title={t.authSignInGoogle}
+      aria-label={t.authSignInGoogle}
     >
       <svg className="w-5 h-5" viewBox="0 0 24 24" aria-hidden="true">
         <path

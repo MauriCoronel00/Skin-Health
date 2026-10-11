@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ShoppingBag, ArrowRight } from 'lucide-react';
-import { formatGuarani } from '../data/products';
 import { useLanguage } from '../contexts/LanguageContext';
 
 interface FloatingCartProps {
@@ -19,7 +18,7 @@ export const FloatingCart: React.FC<FloatingCartProps> = ({
 }) => {
   const [pulse, setPulse] = useState(false);
   const [pressed, setPressed] = useState(false);
-  const { t } = useLanguage();
+  const { t, formatCurrency } = useLanguage();
 
   // Haptic feedback
   const triggerHaptic = (type: 'light' | 'medium' = 'light') => {
@@ -101,7 +100,7 @@ export const FloatingCart: React.FC<FloatingCartProps> = ({
                     {totalItems}
                   </motion.span>
                   <span className="text-xs sm:text-sm text-neutral-300 font-medium">
-                    {totalItems === 1 ? 'producto' : 'productos'}
+                    {totalItems === 1 ? t.productCountOne : t.productCountOther}
                   </span>
                 </div>
               </div>
@@ -114,7 +113,7 @@ export const FloatingCart: React.FC<FloatingCartProps> = ({
                   animate={{ opacity: 1, scale: 1 }}
                   className="font-semibold text-base sm:text-lg text-[#B9CBBE] tracking-tight"
                 >
-                  {formatGuarani(totalAmount)}
+                  {formatCurrency(totalAmount)}
                 </motion.span>
               </div>
             </div>
@@ -126,7 +125,7 @@ export const FloatingCart: React.FC<FloatingCartProps> = ({
               onClick={onOpenCart}
               className="w-full bg-white hover:bg-neutral-100 text-[#0E2338] font-semibold text-sm sm:text-base py-2.5 px-4 rounded-xl sm:rounded-2xl flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-md group"
             >
-              <span>Ver pedido</span>
+              <span>{t.viewOrder}</span>
               <ArrowRight className="w-4 h-4 text-[#102A43] transition-transform group-hover:translate-x-1" />
             </motion.button>
           </motion.div>

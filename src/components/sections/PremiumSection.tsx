@@ -3,7 +3,7 @@ import { Gem, Check, MessageCircle } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 
 export function PremiumSection() {
-  const { t } = useLanguage();
+  const { t, formatCurrency } = useLanguage();
   return (
     <ErrorBoundary>
       <section className="mt-10 bg-[#102A43] rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden">
@@ -11,19 +11,19 @@ export function PremiumSection() {
         <div className="max-w-3xl mx-auto text-center relative">
           <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/15 text-xs font-semibold uppercase tracking-wider text-white/90">
             <Gem className="w-3.5 h-3.5 text-[#B9CBBE]" />
-            Plan mensual
+            {t.premiumPlanBadge}
           </span>
           <h3 className="font-serif text-xl sm:text-2xl font-semibold text-white mt-3">{t.premiumTitle}</h3>
           <p className="text-sm text-white/70 mt-2">{t.premiumSubtitle}</p>
           <ul className="mt-5 text-sm text-white/85 text-left max-w-md mx-auto space-y-2.5">
-            <li className="flex items-center gap-2.5"><span className="w-5 h-5 rounded-full bg-[#93A896]/20 flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-[#B9CBBE]" /></span> Rutina 100% personalizada + seguimiento mensual</li>
-            <li className="flex items-center gap-2.5"><span className="w-5 h-5 rounded-full bg-[#93A896]/20 flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-[#B9CBBE]" /></span> Atención prioritaria por WhatsApp</li>
-            <li className="flex items-center gap-2.5"><span className="w-5 h-5 rounded-full bg-[#93A896]/20 flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-[#B9CBBE]" /></span> Acceso anticipado a nuevos ingresos</li>
-            <li className="flex items-center gap-2.5"><span className="w-5 h-5 rounded-full bg-[#93A896]/20 flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-[#B9CBBE]" /></span> Envíos Priority a todo el país</li>
+            <li className="flex items-center gap-2.5"><span className="w-5 h-5 rounded-full bg-[#93A896]/20 flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-[#B9CBBE]" /></span> {t.premiumB1}</li>
+            <li className="flex items-center gap-2.5"><span className="w-5 h-5 rounded-full bg-[#93A896]/20 flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-[#B9CBBE]" /></span> {t.premiumB2}</li>
+            <li className="flex items-center gap-2.5"><span className="w-5 h-5 rounded-full bg-[#93A896]/20 flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-[#B9CBBE]" /></span> {t.premiumB3}</li>
+            <li className="flex items-center gap-2.5"><span className="w-5 h-5 rounded-full bg-[#93A896]/20 flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-[#B9CBBE]" /></span> {t.premiumB4}</li>
           </ul>
           <a href="https://wa.me/595976659748?text=Hola%20Skin%20Health%20quiero%20la%20suscripcion%20Premium%2055.000Gs" target="_blank" className="mt-6 inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-[#102A43] text-sm font-bold hover:bg-white/90 transition-all shadow-md">
             <MessageCircle className="w-4 h-4" />
-            <span>Suscribirme — 55.000 Gs./mes</span>
+            <span>{t.premiumSubscribe.replace('{price}', formatCurrency(55000))}</span>
           </a>
           <p className="text-[11px] text-white/60 mt-2">{t.premiumCancel}</p>
         </div>

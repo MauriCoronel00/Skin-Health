@@ -37,7 +37,7 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
 }) => {
   const [justAdded, setJustAdded] = useState(false);
   const [zoomOpen, setZoomOpen] = useState(false);
-  const { formatCurrency, language } = useLanguage();
+  const { formatCurrency, language, t } = useLanguage();
 
   const labels = {
     es: {
@@ -188,7 +188,7 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
         <button
           onClick={onClose}
           className="absolute top-4 right-4 z-20 w-9 h-9 rounded-full bg-white/80 hover:bg-neutral-100 flex items-center justify-center text-neutral-500 hover:text-neutral-800 transition-colors shadow-xs"
-          aria-label="Cerrar detalles"
+          aria-label={t.quickViewClose}
         >
           <X className="w-5 h-5" />
         </button>
@@ -201,7 +201,7 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
                 onClick={() => { triggerHaptic('light'); onNavigate?.('prev'); }}
                 whileTap={{ scale: 0.9 }}
                 className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/90 hover:bg-white flex items-center justify-center text-neutral-600 hover:text-neutral-900 shadow-lg transition-all"
-                aria-label="Producto anterior"
+                aria-label={t.quickViewPrev}
               >
                 <ChevronLeft className="w-5 h-5" />
               </motion.button>
@@ -211,7 +211,7 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
                 onClick={() => { triggerHaptic('light'); onNavigate?.('next'); }}
                 whileTap={{ scale: 0.9 }}
                 className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/90 hover:bg-white flex items-center justify-center text-neutral-600 hover:text-neutral-900 shadow-lg transition-all"
-                aria-label="Producto siguiente"
+                aria-label={t.quickViewNext}
               >
                 <ChevronRight className="w-5 h-5" />
               </motion.button>
@@ -287,7 +287,7 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
                 ) : (
                   <>
                     <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-100">
-                      Nuevo ingreso
+                      {t.newArrival}
                     </span>
                     <span className="text-neutral-300">•</span>
                   </>
@@ -297,7 +297,7 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
                   onClick={() => onOpenReviewModal(product)}
                   className="text-xs font-semibold text-[#102A43] hover:underline cursor-pointer"
                 >
-                  Dejar opinión
+                  {t.leaveReview}
                 </button>
               </div>
 
@@ -439,7 +439,7 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
             {justAdded ? (
               <>
                 <Check className="w-5 h-5" />
-                <span>¡Agregado!</span>
+                <span>{t.addedExclaim}</span>
               </>
             ) : (
               <>
@@ -460,11 +460,11 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
             className="fixed inset-0 z-30 bg-white/95 flex items-center justify-center p-4 cursor-zoom-out"
             onClick={() => setZoomOpen(false)}
             role="dialog"
-            aria-label="Imagen del producto ampliada"
+            aria-label={t.quickViewZoomTitle}
           >
             <button
               onClick={() => setZoomOpen(false)}
-              aria-label="Cerrar imagen ampliada"
+              aria-label={t.quickViewZoomClose}
               className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white hover:bg-neutral-100 flex items-center justify-center text-neutral-500 shadow-md cursor-pointer"
             >
               <X className="w-5 h-5" />

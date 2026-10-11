@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'motion/react';
 import { ChevronDown, ChevronUp, ShoppingBag, Repeat } from 'lucide-react';
 import { useSupabase } from '../hooks/useSupabase';
-import { fetchProducts, formatGuarani } from '../data/products';
+import { fetchProducts } from '../data/products';
 import { productImageUrl } from '../data/productImage';
 import { RoutinesSectionSkeleton } from './Skeleton';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -40,7 +40,7 @@ interface CollapsibleRoutinesProps {
 }
 
 export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddRoutineToCart, onQuickView, focusNumber }) => {
-  const { t, language } = useLanguage();
+  const { t, language, formatCurrency } = useLanguage();
   const { supabase } = useSupabase();
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [routines, setRoutines] = useState<SkincareRoutine[]>([]);
@@ -65,7 +65,7 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
       ]);
 
       if (routinesRes.error) {
-        setError(routinesRes.error.message || 'Error cargando rutinas');
+        setError(routinesRes.error.message || t.routinesError);
         throw routinesRes.error;
       }
 
@@ -94,12 +94,12 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
       setRoutines(localizedRoutines);
       setLoading(false);
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Error inesperado';
+      const message = err instanceof Error ? err.message : t.errUnexpected;
       console.error('❌ Excepción al fetch:', message);
       setError(message);
       setLoading(false);
     }
-  }, [supabase, language]);
+  }, [supabase, language, t]);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -163,15 +163,15 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
   if (error && !loading) {
     return (
       <div className="text-center py-12 text-red-600">
-        <p>Error cargando rutinas:</p>
+        <p>{t.routinesError}</p>
         <p className="mt-2 break-all">{error}</p>
         <p className="mt-4 text-sm text-neutral-600">
-          Possibles causas:
+          {t.routinesCauses}
         </p>
         <ul className="mt-2 text-left text-neutral-600 text-xs max-w-lg mx-auto">
-          <li>Tabla skincare_routines sin datos</li>
-          <li>RLS (Row Level Security) bloqueando acceso anon</li>
-          <li>Estructura de tabla incorrecta</li>
+          <li>{t.routinesNoTable}</li>
+          <li>{t.routinesRls}</li>
+          <li>{t.routinesBadStructure}</li>
         </ul>
       </div>
     );
@@ -185,7 +185,7 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
             <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <path d="M12 2L2 7l10 5 10-5-10-5z" />
             </svg>
-            <span>5 rituales · 5 tipos de piel</span>
+            <span>{t.routinesBadge}</span>
           </div>
           <h2 className="font-serif text-3xl sm:text-4xl font-semibold text-[#102A43] tracking-tight">
             {t.routinesTitle}
@@ -198,7 +198,7 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
         <div className="space-y-6 sm:space-y-8">
           {routines.length === 0 && !loading && !error && (
             <div className="text-center py-12 text-neutral-500">
-              No se encontraron rutinas
+              {t.routinesNone}
             </div>
           )}
 
@@ -219,7 +219,7 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
                 className="bg-white rounded-3xl border border-[#102A43]/15 shadow-sm hover:shadow-md transition-shadow overflow-hidden"
                 role="button"
                 aria-expanded={isOpen}
-                aria-label={`Ver ${routine.title}`}
+                aria-label={t.viewRoutineAria.replace('{title}', routine.title)}
                 onClick={() => toggleRoutine(id)}
               >
                 {/* Routine Header - entire header is clickable */}
@@ -284,7 +284,11 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
                               if (canQuickView && product) openQuickView(e, product);
                             }}
                             role={canQuickView ? 'button' : undefined}
-                            aria-label={canQuickView ? `Ver detalles de ${productBrand} ${productName}` : undefined}
+                            aria-label={
+                              canQuickView
+                                ? t.viewDetailsOf.replace('{brand}', productBrand).replace('{name}', productName)
+                                : undefined
+                            }
                           >
                             {/* Paso */}
                             <span className="text-xs font-bold text-[#102A43]/70 uppercase tracking-wider">
@@ -313,7 +317,7 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
                               </span>
                               {product?.price && (
                                 <span className="text-xs font-semibold text-[#102A43] mt-1">
-                                  {formatGuarani(product.price)}
+                                  {formatCurrency(product.price)}
                                 </span>
                               )}
                             </div>
@@ -342,7 +346,7 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
                                             ? 'hover:border-[#102A43]/30 hover:shadow-xs hover:bg-white cursor-pointer active:scale-[0.98]'
                                             : 'cursor-default'
                                         }`}
-                                        aria-label={`Ver detalles de ${alt.brand} ${alt.name}`}
+                                        aria-label={t.viewDetailsOf.replace('{brand}', alt.brand).replace('{name}', alt.name)}
                                       >
                                         <img
                                           src={productImageUrl(alt.image, 200)}
@@ -359,7 +363,7 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
                                           </span>
                                         </span>
                                         <span className="text-[11px] font-bold text-[#102A43] shrink-0">
-                                          {formatGuarani(alt.price)}
+                                          {formatCurrency(alt.price)}
                                         </span>
                                       </button>
                                     );
@@ -410,10 +414,10 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
                         <div className="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl bg-gradient-to-r from-[#102A43]/5 to-[#102A43]/10 border border-[#102A43]/20">
                           <div className="flex flex-col">
                             <span className="text-xs font-semibold text-[#102A43]/70 uppercase tracking-wider">
-                              Rutina completa · {routineProducts.length} productos
+                              {t.routineFullLabel.replace('{count}', String(routineProducts.length))}
                             </span>
                             <span className="text-lg font-bold text-[#102A43]">
-                              {formatGuarani(total)}
+                              {formatCurrency(total)}
                             </span>
                           </div>
                           <button
@@ -429,7 +433,9 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
                             }`}
                           >
                             <ShoppingBag className="w-4 h-4" />
-                            {isAdded ? '✓ Listo, va en tu pedido' : `Llevo esta rutina (${routineProducts.length})`}
+                            {isAdded
+                              ? `✓ ${t.routineAddedMsg}`
+                              : t.routineAddCta.replace('{count}', String(routineProducts.length))}
                           </button>
                         </div>
                       );
