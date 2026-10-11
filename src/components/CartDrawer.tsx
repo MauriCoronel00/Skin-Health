@@ -92,16 +92,6 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     return '';
   });
 
-  const [customerAddress, setCustomerAddress] = useState(() => {
-    try {
-      const saved = localStorage.getItem(CUSTOMER_DATA_KEY);
-      if (saved) return JSON.parse(saved).customerAddress || '';
-    } catch {
-      // ignore
-    }
-    return '';
-  });
-
   const [googleMapsUrl, setGoogleMapsUrl] = useState(() => {
     try {
       const saved = localStorage.getItem(CUSTOMER_DATA_KEY);
@@ -148,14 +138,13 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
         JSON.stringify({
           customerName,
           customerPhone,
-          customerAddress,
           googleMapsUrl,
         })
       );
     } catch {
       // ignore
     }
-  }, [customerName, customerPhone, customerAddress, googleMapsUrl]);
+  }, [customerName, customerPhone, googleMapsUrl]);
 
   // Haptic feedback helper
   const triggerHaptic = (type: 'light' | 'medium' | 'heavy' = 'light') => {
@@ -249,10 +238,6 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     touched.phone && customerPhone.replace(/\D/g, '').length < 8
       ? t.errPhone
       : null;
-  const addressError =
-    touched.address && !customerAddress.trim()
-      ? t.errAddress
-      : null;
 
   const handleOrderWhatsApp = async () => {
     // Honeypot: bot detectado → salida silenciosa
@@ -280,8 +265,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       return;
     }
 
-    if (!customerName.trim() || !customerAddress.trim() || customerPhone.replace(/\D/g, '').length < 8) {
-      setTouched({ name: true, phone: true, address: true });
+    if (!customerName.trim() || customerPhone.replace(/\D/g, '').length < 8) {
+      setTouched({ name: true, phone: true });
       onShowToast(
         t.cartFillData,
         t.cartFillDataDesc,
@@ -300,9 +285,6 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       receipt = await createPedido({
         nombre: customerName,
         telefono: customerPhone,
-        direccion: `${customerAddress.trim()}${
-          googleMapsUrl.trim() ? ' — ' + googleMapsUrl.trim() : ''
-        }`,
         costoEnvioGs: envioGs,
         zonaNombre: zonaActual.nombre,
         barrio: selectedBarrio,
@@ -367,7 +349,6 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
         orderId,
         customerName: customerName.trim(),
         customerPhone: customerPhone.trim(),
-        customerAddress: customerAddress.trim(),
         googleMapsUrl: googleMapsUrl.trim(),
         items: [...cartItems],
         totalAmount: serverTotal,
@@ -559,37 +540,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                       )}
                     </div>
 
-                    {/* 3. Lugar de ubicación para envío */}
-                    <div>
-                      <label className="block text-xs font-semibold text-neutral-700 mb-1">
-                        {t.cartAddressLabel} <span className="text-rose-500">*</span>
-                      </label>
-                      <div className="relative">
-                        <input
-                          id="cart-customer-address"
-                          type="text"
-                          name="street-address"
-                          autoComplete="street-address"
-                          autoCapitalize="sentences"
-                          placeholder={t.cartAddressPlaceholder}
-                          value={customerAddress}
-                          onChange={(e) => setCustomerAddress(e.target.value)}
-                          onBlur={() => handleBlur('address')}
-                          className={`w-full text-xs bg-white border rounded-lg py-2 pl-7 pr-2.5 text-neutral-800 placeholder:text-neutral-400 focus:outline-none transition-colors ${
-                            addressError
-                              ? 'border-rose-400 focus:border-rose-500 bg-rose-50/20'
-                              : 'border-neutral-200 focus:border-[#102A43]'
-                          }`}
-                        />
-                        <MapPin className="w-3.5 h-3.5 text-neutral-400 absolute left-2 top-1/2 -translate-y-1/2" />
-                      </div>
-                      {addressError && (
-                        <p className="text-xs text-rose-500 flex items-center gap-1 mt-1 font-medium">
-                          <AlertCircle className="w-3 h-3 shrink-0" />
-                          <span>{addressError}</span>
-                        </p>
-                      )}
-                    </div>
+                    
 
                     {/* 4. Link de Google Maps (collapsible) */}
                     <div>

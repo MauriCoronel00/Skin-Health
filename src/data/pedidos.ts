@@ -10,7 +10,7 @@ export interface CreatePedidoItemInput {
 export interface CreatePedidoInput {
   nombre: string;
   telefono: string;
-  direccion: string;
+  direccion?: string;
   items: CreatePedidoItemInput[];
   /** Costo de envío en Gs (calculado en cliente, validado server-side). */
   costoEnvioGs?: number;

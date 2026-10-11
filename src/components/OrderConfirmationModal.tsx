@@ -21,7 +21,7 @@ export interface OrderDetails {
   orderId: string;
   customerName: string;
   customerPhone?: string;
-  customerAddress: string;
+  customerAddress?: string;
   googleMapsUrl?: string;
   items: CartItem[];
   totalAmount: number;
