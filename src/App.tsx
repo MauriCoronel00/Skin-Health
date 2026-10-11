@@ -394,7 +394,7 @@ return (
 
                   <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
                     <span className="text-[11px] text-neutral-400 font-medium mr-1 hidden sm:inline">
-                      Marca:
+                      {t.filterBrand}
                     </span>
                     {brandOptions.map((brand) => (
                       <button
@@ -406,7 +406,7 @@ return (
                             : 'bg-white text-neutral-600 border border-neutral-200 hover:border-neutral-400'
                         }`}
                       >
-                        {brand === 'all' ? 'Todas' : brand}
+                        {brand === 'all' ? t.filterAll : brand}
                       </button>
                     ))}
                   </div>

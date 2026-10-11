@@ -15,7 +15,7 @@ export function CatalogFiltersSection({
   selectedPrice,
   setSelectedPrice,
 }: CatalogFiltersSectionProps) {
-  const { t } = useLanguage();
+  const { t, formatCurrency } = useLanguage();
   return (
     <ErrorBoundary>
       <div className="flex flex-col gap-2 pb-4 border-b border-[#102A43]/10">
@@ -41,7 +41,7 @@ export function CatalogFiltersSection({
           <span className="text-[11px] text-neutral-400 font-medium mr-1 shrink-0">
             {t.filterPrice}
           </span>
-          {[{ id: 'all', label: t.filterPriceAll }, ...getPriceFilters(t)].map((f) => (
+          {[{ id: 'all', label: t.filterPriceAll }, ...getPriceFilters(t, formatCurrency)].map((f) => (
             <button
               key={f.id}
               onClick={() => setSelectedPrice(f.id)}

@@ -36,10 +36,10 @@ export interface Translations {
   filterAll: string;
   filterSkin: string;
   filterPrice: string;
+  filterBrand: string;
   filterPriceAll: string;
-  priceLow: string;
-  priceMid: string;
-  priceHigh: string;
+  priceUpTo: string;
+  priceOver: string;
   skinGrasa: string;
   skinSeca: string;
   skinMixta: string;
@@ -344,10 +344,10 @@ export const translations: TranslationsMap = {
     filterAll: 'Todas',
     filterSkin: 'Piel:',
     filterPrice: 'Precio:',
+    filterBrand: 'Marca:',
     filterPriceAll: 'Todos',
-    priceLow: 'Hasta Gs. 150.000',
-    priceMid: 'Gs. 150.000 – 250.000',
-    priceHigh: 'Más de Gs. 250.000',
+    priceUpTo: 'Hasta',
+    priceOver: 'Más de',
     skinGrasa: 'Grasa',
     skinSeca: 'Seca',
     skinMixta: 'Mixta',
@@ -630,10 +630,10 @@ export const translations: TranslationsMap = {
     filterAll: 'Todas',
     filterSkin: 'Pele:',
     filterPrice: 'Preço:',
+    filterBrand: 'Marca:',
     filterPriceAll: 'Todos',
-    priceLow: 'Até Gs. 150.000',
-    priceMid: 'Gs. 150.000 – 250.000',
-    priceHigh: 'Mais de Gs. 250.000',
+    priceUpTo: 'Até',
+    priceOver: 'Acima de',
     skinGrasa: 'Oleosa',
     skinSeca: 'Seca',
     skinMixta: 'Mista',
@@ -916,10 +916,10 @@ export const translations: TranslationsMap = {
     filterAll: 'All',
     filterSkin: 'Skin:',
     filterPrice: 'Price:',
+    filterBrand: 'Brand:',
     filterPriceAll: 'All',
-    priceLow: 'Up to Gs. 150,000',
-    priceMid: 'Gs. 150,000 – 250,000',
-    priceHigh: 'Over Gs. 250,000',
+    priceUpTo: 'Up to',
+    priceOver: 'Over',
     skinGrasa: 'Oily',
     skinSeca: 'Dry',
     skinMixta: 'Combination',

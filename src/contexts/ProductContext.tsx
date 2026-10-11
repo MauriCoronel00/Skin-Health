@@ -35,10 +35,13 @@ const getSkinFilters = (t: Translations): { id: string; label: string; test: Reg
   { id: 'sensible', label: t.skinSensible, test: /sensible|irritada|agredida|recuperaci/i },
 ];
 
-const getPriceFilters = (t: Translations): { id: string; label: string; test: (price: number) => boolean }[] => [
-  { id: 'low', label: t.priceLow, test: (p) => p <= 150000 },
-  { id: 'mid', label: t.priceMid, test: (p) => p > 150000 && p <= 250000 },
-  { id: 'high', label: t.priceHigh, test: (p) => p > 250000 },
+const getPriceFilters = (
+  t: Translations,
+  formatCurrency: (amount: number) => string
+): { id: string; label: string; test: (price: number) => boolean }[] => [
+  { id: 'low', label: `${t.priceUpTo} ${formatCurrency(150000)}`, test: (p) => p <= 150000 },
+  { id: 'mid', label: `${formatCurrency(150000)} – ${formatCurrency(250000)}`, test: (p) => p > 150000 && p <= 250000 },
+  { id: 'high', label: `${t.priceOver} ${formatCurrency(250000)}`, test: (p) => p > 250000 },
 ];
 
 export { getSkinFilters, getPriceFilters };
@@ -48,7 +51,7 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [categories, setCategories] = useState<CategoryOption[]>([]);
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
   const [catalogError, setCatalogError] = useState(false);
-  const { language, t } = useLanguage();
+  const { language, t, formatCurrency } = useLanguage();
 
   const [selectedCategory, setSelectedCategory] = useState<CategoryId>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -85,7 +88,7 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const filteredProducts = useMemo(() => {
     const skinFilters = getSkinFilters(t);
-    const priceFilters = getPriceFilters(t);
+    const priceFilters = getPriceFilters(t, formatCurrency);
     return products.filter((product) => {
       if (selectedCategory !== 'all' && product.category !== selectedCategory) return false;
       if (selectedBrand !== 'all' && product.brand !== selectedBrand) return false;
@@ -114,7 +117,7 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
       return true;
     });
-  }, [products, selectedCategory, selectedBrand, searchQuery, selectedSkin, selectedPrice, t]);
+  }, [products, selectedCategory, selectedBrand, searchQuery, selectedSkin, selectedPrice, t, formatCurrency]);
 
   const brandOptions = useMemo(() => {
     const set = new Set<string>();

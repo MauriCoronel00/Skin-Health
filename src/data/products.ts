@@ -67,7 +67,8 @@ export async function fetchProducts(language: Language = 'es'): Promise<Product[
       skin_type_es, skin_type_pt, skin_type_en,
       how_to_use_es, how_to_use_pt, how_to_use_en,
       key_ingredients_es, key_ingredients_pt, key_ingredients_en,
-      producto_beneficios ( titulo, descripcion, orden )
+      producto_beneficios ( titulo, descripcion, orden ),
+      producto_beneficios_pt, producto_beneficios_en
     `)
     .eq('activo', true);
 
