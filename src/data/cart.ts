@@ -57,11 +57,10 @@ export function clientItemsToServer(items: Array<{ product: Product; quantity: n
 
 /** Obtiene el carrito del servidor */
 export async function fetchCart(deviceId: string, userId: string | null = null): Promise<CartServer | null> {
-  const { data, error } = await supabase
-    .from('cart')
-    .select('*')
-    .eq('device_id', deviceId)
-    .maybeSingle();
+  const { data, error } = await supabase.rpc('get_cart', {
+    p_device_id: deviceId,
+    p_user_id: userId,
+  });
 
   if (error) {
     console.error('Error fetching cart:', error);
@@ -72,19 +71,11 @@ export async function fetchCart(deviceId: string, userId: string | null = null):
 
 /** Guarda/actualiza el carrito en el servidor */
 export async function saveCart(deviceId: string, items: CartItemServer[], userId: string | null = null): Promise<CartServer | null> {
-  const { data, error } = await supabase
-    .from('cart')
-    .upsert(
-      items.map(item => ({
-        device_id: deviceId,
-        user_id: userId,
-        items: item,
-        updated_at: new Date().toISOString(),
-      })),
-      { onConflict: 'device_id' }
-    )
-    .select()
-    .single();
+  const { data, error } = await supabase.rpc('upsert_cart', {
+    p_device_id: deviceId,
+    p_user_id: userId,
+    p_items: items,
+  });
 
   if (error) {
     console.error('Error saving cart:', error);
@@ -95,10 +86,10 @@ export async function saveCart(deviceId: string, items: CartItemServer[], userId
 
 /** Limpia el carrito en el servidor */
 export async function clearCartServer(deviceId: string, userId: string | null = null): Promise<void> {
-  const { error } = await supabase
-    .from('cart')
-    .delete()
-    .eq('device_id', deviceId);
+  const { error } = await supabase.rpc('clear_cart', {
+    p_device_id: deviceId,
+    p_user_id: userId,
+  });
 
   if (error) {
     console.error('Error clearing cart:', error);
@@ -108,7 +99,7 @@ export async function clearCartServer(deviceId: string, userId: string | null = 
 /** Migra carrito anónimo a usuario autenticado (login) */
 export async function migrateCartToUser(deviceId: string, userId: string): Promise<void> {
   const { error } = await supabase
-    .from('cart')
+    .from('carritos')
     .update({ user_id: userId, device_id: null })
     .eq('device_id', deviceId)
     .is('user_id', null);
