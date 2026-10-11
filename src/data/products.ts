@@ -97,10 +97,22 @@ export async function fetchProducts(language: Language = 'es'): Promise<Product[
       description: getText('descripcion'),
       skinType: getText('skin_type'),
       howToUse: getText('how_to_use'),
-      benefits: (p.producto_beneficios ?? [])
-        .sort((a: any, b: any) => a.orden - b.orden)
-        .map((b: any) => ({ title: b.titulo, desc: b.descripcion })),
-      keyIngredients: p.key_ingredients ?? [],
+      benefits: (() => {
+        const localized = p[`producto_beneficios_${language}`];
+        if (Array.isArray(localized) && localized.length > 0) {
+          return localized
+            .sort((a: any, b: any) => (a.orden ?? 0) - (b.orden ?? 0))
+            .map((b: any) => ({ title: b.titulo ?? '', desc: b.descripcion ?? '' }));
+        }
+        return (p.producto_beneficios ?? [])
+          .sort((a: any, b: any) => a.orden - b.orden)
+          .map((b: any) => ({ title: b.titulo, desc: b.descripcion }));
+      })(),
+      keyIngredients: (() => {
+        const localized = p[`key_ingredients_${language}`];
+        if (Array.isArray(localized) && localized.length > 0) return localized;
+        return p.key_ingredients ?? [];
+      })(),
       stock: p.stock ?? undefined,
       variants,
     };

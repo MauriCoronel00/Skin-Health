@@ -19,7 +19,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   onQuickView,
   onAdd,
 }) => {
-  const { formatCurrency } = useLanguage();
+  const { formatCurrency, language } = useLanguage();
+
+  const labels = {
+    es: { lowStock: '¡Pocas unidades!', variants: 'variantes', inCart: 'en carrito' },
+    pt: { lowStock: 'Poucas unidades!', variants: 'variantes', inCart: 'no carrinho' },
+    en: { lowStock: 'Low stock!', variants: 'variants', inCart: 'in cart' },
+  };
+  const L = labels[language];
   const [linkCopied, setLinkCopied] = useState(false);
   const [imgError, setImgError] = useState(false);
   const [justAdded, setJustAdded] = useState(false);
@@ -90,12 +97,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           {product.stock !== undefined && product.stock > 0 && product.stock <= 5 && (
             <span className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-100 animate-pulse">
               <span className="w-1.5 h-1.5 rounded-full bg-amber-500" aria-hidden="true"></span>
-              ¡Pocas unidades!
+              {L.lowStock}
             </span>
           )}
           {product.variants && product.variants.length > 1 && (
             <span className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full bg-[#102A43]/5 text-[#102A43]">
-              {product.variants.length} variantes
+              {product.variants.length} {L.variants}
             </span>
           )}
           <button
@@ -157,7 +164,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             animate={{ scale: 1 }}
             className="absolute top-2 left-2 bg-[#102A43] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-md shadow-xs"
           >
-            {quantityInCart} en carrito
+            {quantityInCart} {L.inCart}
           </motion.span>
         )}
       </div>

@@ -21,10 +21,14 @@ export const Navbar: React.FC<NavbarProps> = ({
   searchQuery,
   onSearchChange,
 }) => {
-  const { language, setLanguage, currency, formatCurrency } = useLanguage();
+  const { language, setLanguage, formatCurrency, t } = useLanguage();
 
   const languages: Language[] = ['es', 'pt', 'en'];
-  const flagEmojis = { es: '🇵🇾', pt: '🇧🇷', en: '🇺🇸' };
+  const flagImages = {
+    es: 'https://flagcdn.com/w40/py.png',
+    pt: 'https://flagcdn.com/w40/br.png',
+    en: 'https://flagcdn.com/w40/us.png',
+  };
   const flagLabels = { es: 'PY', pt: 'BR', en: 'US' };
 
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);
@@ -38,7 +42,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     <header className="sticky top-0 z-30 bg-[#FAF8F5]/95 backdrop-blur-md border-b border-[#102A43]/10 transition-all">
       {/* Announcement bar - navy centered, proper height */}
       <div className="bg-[#102A43] text-white text-[11px] py-2.5 px-4 text-center font-medium tracking-wide border-b border-white/10 flex justify-center items-center min-h-[28px]">
-        Productos 100% originales — Envíos a todo Paraguay
+        {t.announcement}
       </div>
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-2 sm:gap-4">
@@ -54,8 +58,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             type="search"
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            placeholder="Buscar producto, marca o ingrediente…"
-            aria-label="Buscar productos"
+            placeholder={t.searchPlaceholder}
+            aria-label={t.searchPlaceholder}
             className="w-full h-10 pl-10 pr-9 rounded-full bg-white border border-neutral-200 text-sm text-neutral-800 placeholder:text-neutral-400 outline-none focus:border-[#102A43]/40 focus:ring-2 focus:ring-[#102A43]/10 transition-all"
           />
           {searchQuery && (
@@ -87,9 +91,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               className={`flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-neutral-700 hover:text-[#102A43] transition-colors focus:outline-none focus:ring-2 focus:ring-[#102A43]/20 ${showLanguageMenu ? 'bg-white' : 'bg-transparent'}` }
               aria-label="Cambiar idioma"
             >
-              <span className="w-4 h-4">
-                {flagEmojis[language]}
-              </span>
+              <img src={flagImages[language]} alt="" className="w-5 h-auto rounded-sm" />
               <span className="text-[10px] mr-1">{flagLabels[language]}</span>
             </button>
           </div>
@@ -104,7 +106,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                 transition: 'visibility 0s, opacity 0.2s ease',
               }}
             >
-              <span className="text-xs text-neutral-500 uppercase tracking-wider block mb-1">Idioma</span>
+              <span className="text-xs text-neutral-500 uppercase tracking-wider block mb-1">
+                {language === 'es' ? 'Idioma' : language === 'pt' ? 'Idioma' : 'Language'}
+              </span>
               <div className="space-y-1 px-1">
                 {languages.map((lang) => {
                   const isCurrent = lang === language;
@@ -120,9 +124,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                       }`}
                       aria-label={`Cambiar a ${flagLabels[lang]}`}
                     >
-                      <span className="w-3 h-3">
-                        {flagEmojis[lang]}
-                      </span>
+                      <img src={flagImages[lang]} alt="" className="w-4 h-auto rounded-sm" />
                       <span className="text-[10px]">{flagLabels[lang]}</span>
                     </button>
                   );
@@ -158,7 +160,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               )}
             </div>
             <span className="hidden sm:inline">
-              {totalItems > 0 ? `Pedido (${totalItems})` : 'Mi Pedido'}
+              {totalItems > 0 ? `${t.cartLabel} (${totalItems})` : t.cartLabel}
             </span>
             {totalItems > 0 && (
               <span className="hidden md:inline pl-1 text-xs text-white/80 font-normal border-l border-white/20">
@@ -177,8 +179,8 @@ export const Navbar: React.FC<NavbarProps> = ({
           type="search"
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
-          placeholder="Buscar producto, marca o ingrediente…"
-          aria-label="Buscar productos"
+          placeholder={t.searchPlaceholder}
+          aria-label={t.searchPlaceholder}
           className="w-full h-10 pl-10 pr-9 rounded-full bg-white border border-neutral-200 text-sm text-neutral-800 placeholder:text-neutral-400 outline-none focus:border-[#102A43]/40 focus:ring-2 focus:ring-[#102A43]/10 transition-all"
         />
         {searchQuery && (

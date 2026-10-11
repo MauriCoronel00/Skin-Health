@@ -37,7 +37,47 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
 }) => {
   const [justAdded, setJustAdded] = useState(false);
   const [zoomOpen, setZoomOpen] = useState(false);
-  const { formatCurrency } = useLanguage();
+  const { formatCurrency, language } = useLanguage();
+
+  const labels = {
+    es: {
+      description: 'Descripción',
+      benefits: 'Beneficios Principales',
+      ingredients: 'Ingredientes Activos Clave',
+      skinType: 'Tipo de Piel',
+      howToUse: 'Modo de Uso',
+      unitPrice: 'Precio Unitario',
+      lowStock: (n: number) => `¡Quedan solo ${n} unidades! Alta demanda`,
+      addToCart: 'Agregar al Pedido',
+      added: 'Agregado ✓',
+      addToCartWithCount: (n: number) => `Agregar otro (+${n} en carrito)`,
+    },
+    pt: {
+      description: 'Descrição',
+      benefits: 'Benefícios Principais',
+      ingredients: 'Ingredientes Ativos Chave',
+      skinType: 'Tipo de Pele',
+      howToUse: 'Modo de Uso',
+      unitPrice: 'Preço Unitário',
+      lowStock: (n: number) => `Restam apenas ${n} unidades! Alta procura`,
+      addToCart: 'Adicionar ao Pedido',
+      added: 'Adicionado ✓',
+      addToCartWithCount: (n: number) => `Adicionar outro (+${n} no carrinho)`,
+    },
+    en: {
+      description: 'Description',
+      benefits: 'Key Benefits',
+      ingredients: 'Key Active Ingredients',
+      skinType: 'Skin Type',
+      howToUse: 'How to Use',
+      unitPrice: 'Unit Price',
+      lowStock: (n: number) => `Only ${n} left! High demand`,
+      addToCart: 'Add to Cart',
+      added: 'Added ✓',
+      addToCartWithCount: (n: number) => `Add another (+${n} in cart)`,
+    },
+  };
+  const L = labels[language];
 
   useEffect(() => {
     if (!zoomOpen) return;
@@ -272,7 +312,7 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
           {product.description && (
             <div className="pt-2">
               <h4 className="text-xs font-semibold uppercase tracking-wider text-[#102A43] mb-2">
-                Descripción
+                {L.description}
               </h4>
               <p className="text-sm text-neutral-700 leading-relaxed text-justify">
                 {product.description}
@@ -284,7 +324,7 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
           {product.benefits && product.benefits.length > 0 && (
             <div className="pt-2">
               <h4 className="text-xs font-semibold uppercase tracking-wider text-[#102A43] mb-3">
-                Beneficios Principales
+                {L.benefits}
               </h4>
               <ul className="space-y-3" role="list">
                 {product.benefits.map((b, i) => (
@@ -309,7 +349,7 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
           {product.keyIngredients && product.keyIngredients.length > 0 && (
             <div className="pt-2">
               <h4 className="text-xs font-semibold uppercase tracking-wider text-[#102A43] mb-3">
-                Ingredientes Activos Clave
+                {L.ingredients}
               </h4>
               <div className="flex flex-wrap gap-2">
                 {product.keyIngredients.map((ingredient, i) => (
@@ -334,7 +374,7 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
                     <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center">
                       <Droplets className="w-4 h-4 text-emerald-600" />
                     </div>
-                    <span className="font-semibold text-[#102A43] text-sm">Tipo de Piel</span>
+                    <span className="font-semibold text-[#102A43] text-sm">{L.skinType}</span>
                   </div>
                   <p className="text-sm text-neutral-700 leading-relaxed">{product.skinType}</p>
                 </div>
@@ -345,7 +385,7 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
                     <div className="w-8 h-8 rounded-lg bg-sky-50 flex items-center justify-center">
                       <Sparkles className="w-4 h-4 text-sky-600" />
                     </div>
-                    <span className="font-semibold text-[#102A43] text-sm">Modo de Uso</span>
+                    <span className="font-semibold text-[#102A43] text-sm">{L.howToUse}</span>
                   </div>
                   <p className="text-sm text-neutral-700 leading-relaxed">{product.howToUse}</p>
                 </div>
@@ -370,7 +410,7 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
           <div className="px-4 sm:px-6 py-2">
             <div className="inline-flex items-center gap-1.5 px-3 py-2 bg-amber-50 text-amber-700 border border-amber-100 rounded-xl animate-pulse">
               <span className="w-2 h-2 rounded-full bg-amber-500" aria-hidden="true"></span>
-              <span className="text-xs font-medium">¡Quedan solo {product.stock} unidades! Alta demanda</span>
+              <span className="text-xs font-medium">{L.lowStock(product.stock)}</span>
             </div>
           </div>
         )}
@@ -379,7 +419,7 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
         <div className="p-4 sm:p-5 bg-[#FAF8F5] border-t border-neutral-200 flex items-center justify-between gap-4">
           <div>
             <span className="text-[11px] text-neutral-500 uppercase tracking-wider block">
-              Precio Unitario
+              {L.unitPrice}
             </span>
 <span className="text-lg font-bold text-[#102A43]">
                 {formatCurrency(product.price)}
@@ -406,8 +446,8 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
                 <Plus className="w-5 h-5" />
                 <span>
                   {quantityInCart > 0
-                    ? `Agregar otro (+${quantityInCart} en carrito)`
-                    : 'Agregar al Pedido'}
+                    ? L.addToCartWithCount(quantityInCart)
+                    : L.addToCart}
                 </span>
               </>
             )}

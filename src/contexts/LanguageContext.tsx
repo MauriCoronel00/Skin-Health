@@ -2,6 +2,23 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 type Language = 'es' | 'pt' | 'en';
 
+interface Translations {
+  flag: string;
+  flagLabel: string;
+  currency: string;
+  currencyLabel: string;
+  formatCurrency: (amount: number) => string;
+  brand: string;
+  subtitle: string;
+  brandLabel: string;
+  volumeLabel: string;
+  searchPlaceholder: string;
+  cartLabel: string;
+  routinesTitle: string;
+  routinesSubtitle: string;
+  announcement: string;
+}
+
 interface LanguageContextValue {
   language: Language;
   setLanguage: (lang: Language) => void;
@@ -10,9 +27,13 @@ interface LanguageContextValue {
   currency: string;
   currencyLabel: string;
   formatCurrency: (amount: number) => string;
+  t: Translations;
 }
 
 const LOCAL_STORAGE_KEY = 'skinhealth_language_v1';
+
+const GS_PER_USD = 5890;
+const GS_PER_BRL = 1140;
 
 const translations = {
   es: {
@@ -36,7 +57,10 @@ const translations = {
     flagLabel: 'BR',
     currency: 'R$',
     currencyLabel: 'Reais',
-    formatCurrency: (amount: number) => `R$ ${amount.toLocaleString('pt-BR', {maximumFractionDigits: 0})}`,
+    formatCurrency: (amount: number) => {
+      const brl = amount / GS_PER_BRL;
+      return `R$ ${brl.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    },
     brand: 'Marca',
     subtitle: 'Subtítulo',
     brandLabel: 'Marca',
@@ -52,7 +76,10 @@ const translations = {
     flagLabel: 'US',
     currency: '$',
     currencyLabel: 'USD',
-    formatCurrency: (amount: number) => `$ ${amount.toLocaleString('en-US', {maximumFractionDigits: 0})}`,
+    formatCurrency: (amount: number) => {
+      const usd = amount / GS_PER_USD;
+      return `$${usd.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    },
     brand: 'Brand',
     subtitle: 'Subtitle',
     brandLabel: 'Brand',
@@ -96,6 +123,7 @@ const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children })
       currency: getTranslations(language).currency,
       currencyLabel: getTranslations(language).currencyLabel,
       formatCurrency: getTranslations(language).formatCurrency,
+      t: getTranslations(language),
     }}>
       {children}
     </LanguageContext.Provider>
