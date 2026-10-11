@@ -23,6 +23,7 @@ import { productImageUrl } from '../data/productImage';
 import { ZONAS_COBERTURA, METODOS_PAGO, type ZonaEnvio, type MetodoPagoId } from '../data/zonasEnvio';
 import { trackBeginCheckout } from '../utils/analytics';
 import { OrderDetails } from './OrderConfirmationModal';
+import { ZonaCard } from './ZonaCard';
 import {
   createPedido,
   PedidoError,
@@ -122,6 +123,13 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   const [selectedZonaKey, setSelectedZonaKey] = useState<string>('ASUNCION');
   const [selectedBarrio, setSelectedBarrio] = useState<string>('');
   const [metodoPago, setMetodoPago] = useState<MetodoPagoId>('TRANSFERENCIA');
+  const [showMapsInput, setShowMapsInput] = useState(() => {
+    try {
+      const saved = localStorage.getItem('skinhealth_customer_data_v1');
+      if (saved) return !!JSON.parse(saved).googleMapsUrl;
+    } catch {}
+    return false;
+  });
   /** Honeypot anti-bots: los humanos nunca lo completan (campo oculto). */
   const [website, setWebsite] = useState('');
   const lastOrderTimeRef = useRef<number>(0);
@@ -583,82 +591,79 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                       )}
                     </div>
 
-                    {/* 4. Link de Google Maps */}
+                    {/* 4. Link de Google Maps (collapsible) */}
                     <div>
-                      <label className="block text-xs font-semibold text-neutral-700 mb-1">
-                        Link de Google Maps:
-                      </label>
-                      <div className="relative">
-                        <input
-                          id="cart-customer-maps"
-                          type="url"
-                          inputMode="url"
-                          autoComplete="off"
-                          placeholder={t.cartMapsPlaceholder}
-                          value={googleMapsUrl}
-                          onChange={(e) => setGoogleMapsUrl(e.target.value)}
-                          className="w-full text-xs bg-white border border-neutral-200 rounded-lg py-2 pl-7 pr-2.5 text-neutral-800 placeholder:text-neutral-400 focus:outline-none focus:border-[#102A43] transition-colors"
-                        />
-                        <Link2 className="w-3.5 h-3.5 text-neutral-400 absolute left-2 top-1/2 -translate-y-1/2" />
-                      </div>
-                      <p className="text-xs text-neutral-500 mt-1">
-                        💡 {t.cartMapsHint}
-                      </p>
+                      <button
+                        type="button"
+                        onClick={() => setShowMapsInput(!showMapsInput)}
+                        className="text-xs text-neutral-500 hover:text-neutral-700 flex items-center gap-1 transition-colors"
+                      >
+                        <Link2 className="w-3.5 h-3.5" />
+                        {showMapsInput ? '− Ocultar pin de Google Maps' : '+ Añadir pin de Google Maps (Recomendado para entrega rápida)'}
+                      </button>
+                      {showMapsInput && (
+                        <div className="relative mt-2">
+                          <input
+                            id="cart-customer-maps"
+                            type="url"
+                            inputMode="url"
+                            autoComplete="off"
+                            placeholder={t.cartMapsPlaceholder}
+                            value={googleMapsUrl}
+                            onChange={(e) => setGoogleMapsUrl(e.target.value)}
+                            className="w-full text-xs bg-white border border-neutral-200 rounded-lg py-2 pl-7 pr-2.5 text-neutral-800 placeholder:text-neutral-400 focus:outline-none focus:border-[#102A43] transition-colors"
+                          />
+                          <Link2 className="w-3.5 h-3.5 text-neutral-400 absolute left-2 top-1/2 -translate-y-1/2" />
+                          <p className="text-xs text-neutral-500 mt-1">
+                            💡 {t.cartMapsHint}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </div>
 
-                  {/* 5. Zona de Entrega */}
-                  <div className="space-y-1.5">
+                  {/* 5. Zona de Entrega (cards) */}
+                  <div className="space-y-2">
                     <label className="block text-xs font-semibold text-neutral-700">
                       Zona de Entrega <span className="text-rose-500">*</span>
                     </label>
-                    <div className="relative">
-                      <select
-                        value={selectedZonaKey}
-                        onChange={(e) => {
-                          const key = e.target.value;
-                          setSelectedZonaKey(key);
-                          setSelectedBarrio('');
-                          const nuevaZona = ZONAS_COBERTURA[key];
-                          if (!nuevaZona.permiteEfectivoContraEntrega && metodoPago === 'EFECTIVO') {
-                            setMetodoPago('TRANSFERENCIA');
-                          }
-                        }}
-                        className="w-full p-2.5 bg-white border border-neutral-300 rounded-lg text-xs text-neutral-800 focus:outline-none focus:border-[#102A43] transition-colors"
-                      >
-                        {Object.entries(ZONAS_COBERTURA).map(([key, zona]) => (
-                          <option key={key} value={key}>
-                            {zona.nombre} — ₲ {zona.precioGs.toLocaleString('es-PY')}
-                          </option>
-                        ))}
-                      </select>
+                    <div className="space-y-2">
+                      {Object.entries(ZONAS_COBERTURA).map(([key, zona]) => (
+                        <ZonaCard
+                          key={key}
+                          zona={zona}
+                          isSelected={selectedZonaKey === key}
+                          onSelect={() => {
+                            setSelectedZonaKey(key);
+                            setSelectedBarrio('');
+                            if (!zona.permiteEfectivoContraEntrega && metodoPago === 'EFECTIVO') {
+                              setMetodoPago('TRANSFERENCIA');
+                            }
+                          }}
+                        />
+                      ))}
                     </div>
                     {zonaActual.barrios && zonaActual.barrios.length > 0 && (
-                      <select
-                        value={selectedBarrio}
-                        onChange={(e) => setSelectedBarrio(e.target.value)}
-                        className="w-full p-2.5 bg-white border border-neutral-300 rounded-lg text-xs text-neutral-800 focus:outline-none focus:border-[#102A43] transition-colors"
-                      >
-                        <option value="">-- Selecciona tu barrio --</option>
-                        {zonaActual.barrios.map((barrio) => (
-                          <option key={barrio} value={barrio}>
-                            {barrio}
-                          </option>
-                        ))}
-                      </select>
+                      <div className="pt-2 space-y-1.5">
+                        <p className="text-xs text-neutral-500 font-medium">Barrio:</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {zonaActual.barrios.map((barrio) => (
+                            <button
+                              key={barrio}
+                              type="button"
+                              onClick={() => setSelectedBarrio(barrio === selectedBarrio ? '' : barrio)}
+                              className={`text-xs px-3 py-1.5 rounded-full border transition-all ${
+                                selectedBarrio === barrio
+                                  ? 'bg-[#102A43] text-white border-[#102A43]'
+                                  : 'bg-white text-neutral-700 border-neutral-300 hover:border-neutral-400'
+                              }`}
+                            >
+                              {barrio}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
                     )}
-                    <div className="flex items-center justify-between text-[11px] pt-1">
-                      <span className="text-neutral-500">{zonaActual.tiempoEstimado}</span>
-                      {!zonaActual.permiteEfectivoContraEntrega ? (
-                        <span className="inline-flex items-center gap-1 text-amber-700 bg-amber-50 px-2 py-0.5 rounded font-medium border border-amber-200">
-                          <AlertCircle className="w-3 h-3" /> Solo Pago Previo
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1 text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded font-medium border border-emerald-200">
-                          <CheckCircle2 className="w-3 h-3" /> Contra Entrega OK
-                        </span>
-                      )}
-                    </div>
                   </div>
 
                   {/* 6. Método de Pago */}
