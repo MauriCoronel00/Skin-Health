@@ -107,6 +107,22 @@ export function setProductSEO(product: Product): void {
       price: product.price,
       availability: 'https://schema.org/InStock',
       itemCondition: 'https://schema.org/NewCondition',
+      shippingDetails: {
+        '@type': 'OfferShippingDetails',
+        shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'PY' },
+        deliveryTime: {
+          '@type': 'ShippingDeliveryTime',
+          handlingTime: { '@type': 'QuantitativeValue', minValue: 0, maxValue: 1, unitCode: 'DAY' },
+          transitTime: { '@type': 'QuantitativeValue', minValue: 3, maxValue: 7, unitCode: 'DAY' },
+        },
+      },
+      hasMerchantReturnPolicy: {
+        '@type': 'MerchantReturnPolicy',
+        returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
+        merchantReturnDays: 2,
+        returnMethod: 'https://schema.org/ReturnByMail',
+        returnFees: 'https://schema.org/FreeReturn',
+      },
     },
     ...(product.rating && product.reviewsCount && product.reviewsCount >= 3
       ? {
@@ -118,11 +134,27 @@ export function setProductSEO(product: Product): void {
         }
       : {}),
   });
+  // BreadcrumbList: Tienda > producto (sin URL de categoría: la SPA no tiene rutas por categoría)
+  const crumbs: { name: string; url: string }[] = [
+    { name: 'Tienda', url: SITE_URL },
+    { name: `${product.brand} ${product.name}`, url: productUrl },
+  ];
+  injectJsonLd('breadcrumb-schema', {
+    '@context': 'https://schema.org/',
+    '@type': 'BreadcrumbList',
+    itemListElement: crumbs.map((c, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: c.name,
+      item: c.url,
+    })),
+  });
 }
 
 /** Remueve el schema de producto (al cerrar QuickView). */
 export function clearProductSEO(): void {
   removeJsonLd('product-schema');
+  removeJsonLd('breadcrumb-schema');
   setHomeSEO();
 }
 

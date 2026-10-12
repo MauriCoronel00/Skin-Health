@@ -220,6 +220,24 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
         )}
 
         <div className="overflow-y-auto flex-1 p-6 sm:p-8 space-y-6">
+          {/* Breadcrumb: Tienda > producto */}
+          <nav aria-label="Breadcrumb" className="text-xs text-neutral-400">
+            <ol className="flex items-center gap-1.5 flex-wrap">
+              <li>
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="hover:text-[#102A43] hover:underline transition-colors cursor-pointer"
+                >
+                  Tienda
+                </button>
+              </li>
+              <li aria-hidden="true">/</li>
+              <li aria-current="page" className="text-neutral-600 font-medium line-clamp-1">
+                {product.brand} {product.name}
+              </li>
+            </ol>
+          </nav>
           {/* Header & Brand */}
           <div className="flex flex-col sm:flex-row gap-6 items-center sm:items-start">
             {/* Packshot (tocar para ampliar) */}
