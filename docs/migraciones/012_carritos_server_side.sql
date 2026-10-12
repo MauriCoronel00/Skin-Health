@@ -80,6 +80,8 @@ end;
 $$;
 
 -- 4. Función para obtener carrito (server-side)
+-- (elimina sobrecarga vieja p_user_id text que causaba PGRST203 300 Multiple Choices)
+drop function if exists public.get_cart(text, text);
 create or replace function public.get_cart(
   p_device_id text,
   p_user_id uuid default null
