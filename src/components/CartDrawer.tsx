@@ -553,7 +553,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                         className="text-xs text-neutral-500 hover:text-neutral-700 flex items-center gap-1 transition-colors"
                       >
                         <Link2 className="w-3.5 h-3.5" />
-                        {showMapsInput ? '− Ocultar pin de Google Maps' : '+ Añadir pin de Google Maps (Recomendado para entrega rápida)'}
+                        {showMapsInput ? t.cartMapsToggleHide : t.cartMapsToggleAdd}
                       </button>
                       {showMapsInput && (
                         <div className="relative mt-2">

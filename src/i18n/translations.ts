@@ -95,6 +95,8 @@ export interface Translations {
   cartAddressPlaceholder: string;
   cartMapsPlaceholder: string;
   cartMapsHint: string;
+  cartMapsToggleAdd: string;
+  cartMapsToggleHide: string;
   cartSubtotal: string;
   cartShipping: string;
   shippingToConfirm: string;
@@ -545,6 +547,8 @@ export const translations: TranslationsMap = {
     cartAddressPlaceholder: 'Ej. Barrio Herrera, Asunción',
     cartMapsPlaceholder: 'Ej. https://maps.app.goo.gl/... o enlace de ubicación',
     cartMapsHint: 'Si no tenés el link ahora, también podés adjuntar tu ubicación en tiempo real directamente en WhatsApp.',
+    cartMapsToggleAdd: '+ Añadir pin de Google Maps (Recomendado para entrega rápida)',
+    cartMapsToggleHide: '− Ocultar pin de Google Maps',
     cartSubtotal: 'Subtotal',
     cartShipping: 'Envío',
     shippingToConfirm: 'Precio a confirmar',
@@ -968,6 +972,8 @@ export const translations: TranslationsMap = {
     cartAddressPlaceholder: 'Ex. Barrio Herrera, Assunção',
     cartMapsPlaceholder: 'Ex. https://maps.app.goo.gl/... ou link de localização',
     cartMapsHint: 'Se não tem o link agora, também pode enviar sua localização em tempo real direto no WhatsApp.',
+    cartMapsToggleAdd: '+ Adicionar pin do Google Maps (Recomendado para entrega rápida)',
+    cartMapsToggleHide: '− Ocultar pin do Google Maps',
     cartSubtotal: 'Subtotal',
     cartShipping: 'Entrega',
     shippingToConfirm: 'Preço a confirmar',
@@ -1391,6 +1397,8 @@ export const translations: TranslationsMap = {
     cartAddressPlaceholder: 'e.g. Barrio Herrera, Asunción',
     cartMapsPlaceholder: 'e.g. https://maps.app.goo.gl/... or location link',
     cartMapsHint: 'If you don\'t have the link now, you can also share your live location directly on WhatsApp.',
+    cartMapsToggleAdd: '+ Add Google Maps pin (Recommended for fast delivery)',
+    cartMapsToggleHide: '− Hide Google Maps pin',
     cartSubtotal: 'Subtotal',
     cartShipping: 'Shipping',
     shippingToConfirm: 'Price to confirm',
