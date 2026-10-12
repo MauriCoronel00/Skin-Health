@@ -12,7 +12,6 @@ import {
 } from '../data/cart';
 
 const CART_STORAGE_KEY = 'skinhealth_cart_v1';
-const SYNC_INTERVAL_MS = 30000; // 30 segundos
 
 interface CartContextValue {
   cartItems: CartItem[];
@@ -98,23 +97,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     return () => { mounted = false; };
   }, [authLoading, isLoadingProducts, deviceId, userId]);
-
-  // Sincronización periódica con servidor
-  useEffect(() => {
-    if (!initialized || authLoading || isLoadingProducts) return;
-
-    const interval = setInterval(async () => {
-      try {
-        const synced = await syncCart(deviceId, cartItems, products, userId);
-        setCartItems(synced);
-        saveLocalCart(synced);
-      } catch (error) {
-        console.error('Periodic cart sync failed:', error);
-      }
-    }, SYNC_INTERVAL_MS);
-
-    return () => clearInterval(interval);
-  }, [initialized, authLoading, isLoadingProducts, deviceId, userId, cartItems, products]);
 
   // Migración al hacer login
   useEffect(() => {

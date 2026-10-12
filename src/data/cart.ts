@@ -110,7 +110,10 @@ export async function migrateCartToUser(deviceId: string, userId: string): Promi
   }
 }
 
-/** Sincroniza carrito local con servidor (merge strategy: server wins for conflicts) */
+/** Sincroniza carrito local con servidor (estrategia: el servidor manda).
+ *  Nunca suma cantidades: si el servidor tiene ítems se usan tal cual,
+ *  si está vacío se sube el local. Sumar en cada sync duplicaba el
+ *  carrito en cada ciclo (2→4→8…) hasta miles de unidades. */
 export async function syncCart(
   deviceId: string,
   localItems: Array<{ product: Product; quantity: number }>,
@@ -127,32 +130,8 @@ export async function syncCart(
       return localItems;
     }
 
-    // Merge: combinar cantidades, server wins para timestamps
-    const merged = new Map<string, CartItemServer>();
-    serverItems.forEach(item => merged.set(item.product_id, item));
-
-    localItems.forEach(localItem => {
-      const existing = merged.get(localItem.product.id);
-      if (existing) {
-        // Sumar cantidades, mantener precio del servidor
-        merged.set(localItem.product.id, {
-          ...existing,
-          quantity: existing.quantity + localItem.quantity,
-        });
-      } else {
-        merged.set(localItem.product.id, {
-          product_id: localItem.product.id,
-          quantity: localItem.quantity,
-          price_gs: localItem.product.price,
-          added_at: new Date().toISOString(),
-        });
-      }
-    });
-
-    const mergedItems = Array.from(merged.values());
-    await saveCart(deviceId, mergedItems, userId);
-
-    return serverItemsToClient(mergedItems, products);
+    // El servidor manda: devolver sus ítems sin modificar ni re-sumar.
+    return serverItemsToClient(serverItems, products);
   } catch (error) {
     console.error('Error syncing cart:', error);
     // Fallback: devolver localItems si falla la sincronización
