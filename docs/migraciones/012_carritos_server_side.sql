@@ -113,3 +113,9 @@ $$;
 create trigger trigger_carritos_updated_at
   before update on public.carritos
   for each row execute function public.set_updated_at();
+
+-- 7. Permisos: PostgREST solo expone funciones con EXECUTE para anon/authenticated.
+-- Sin estos grants, los RPC devuelven 404 PGRST202 aunque la función exista.
+grant execute on function public.upsert_cart(text, uuid, jsonb) to anon, authenticated;
+grant execute on function public.get_cart(text, uuid) to anon, authenticated;
+grant execute on function public.clear_cart(text, uuid) to anon, authenticated;
