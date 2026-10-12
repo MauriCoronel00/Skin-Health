@@ -26,6 +26,7 @@ export interface OrderDetails {
   items: CartItem[];
   totalAmount: number;
   costoEnvioGs?: number;
+  envioAConfirmar?: boolean;
   date: string;
 }
 
@@ -63,6 +64,7 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
       })),
       totalGs: order.totalAmount,
       costoEnvioGs: order.costoEnvioGs ?? 0,
+      envioAConfirmar: order.envioAConfirmar,
       nombre: order.customerName,
       telefono: order.customerPhone ?? '',
       direccion: `${order.customerAddress}${order.googleMapsUrl ? ' — ' + order.googleMapsUrl : ''}`,
@@ -203,12 +205,12 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
               <div className="pt-2.5 mt-1 border-t border-neutral-200 flex justify-between items-baseline text-xs text-neutral-500">
                 <span>{t.orderShipping}</span>
                 <span className="font-semibold text-neutral-700">
-                  {formatCurrency(order.costoEnvioGs ?? 0)}
+                  {order.envioAConfirmar ? t.shippingToConfirm : formatCurrency(order.costoEnvioGs ?? 0)}
                 </span>
               </div>
               <div className="pt-2.5 mt-1 border-t border-neutral-200 flex justify-between items-baseline font-bold text-sm text-[#102A43]">
                 <span>{t.orderTotal}</span>
-                <span>{formatCurrency(order.totalAmount + (order.costoEnvioGs ?? 0))}</span>
+                <span>{formatCurrency(order.totalAmount + (order.envioAConfirmar ? 0 : (order.costoEnvioGs ?? 0)))}</span>
               </div>
             </div>
           </div>

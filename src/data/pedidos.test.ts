@@ -39,6 +39,13 @@ describe('buildPedidoMessage', () => {
     expect(msg).toContain('*Envío*');
     expect(msg).toContain('₲ 211.000');
   });
+
+  it('muestra "A confirmar" cuando el envío no tiene precio fijo', () => {
+    const msg = buildPedidoMessage({ ...base, costoEnvioGs: 0, envioAConfirmar: true });
+    expect(msg).toContain('A confirmar');
+    expect(msg).toContain('₲ 200.000');
+    expect(msg).not.toContain('₲ 0');
+  });
 });
 
 describe('rpcErrorToPedidoError', () => {

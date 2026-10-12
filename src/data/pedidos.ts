@@ -14,6 +14,8 @@ export interface CreatePedidoInput {
   items: CreatePedidoItemInput[];
   /** Costo de envío en Gs (calculado en cliente, validado server-side). */
   costoEnvioGs?: number;
+  /** true si la zona no tiene precio fijo (ej. interior): el envío se confirma por WhatsApp. */
+  envioAConfirmar?: boolean;
   zonaNombre?: string;
   barrio?: string;
   metodoPago?: string;
@@ -24,6 +26,7 @@ export interface PedidoReceipt {
   codigo: string;
   totalGs: number;
   costoEnvioGs: number;
+  envioAConfirmar: boolean;
   message: string;
   whatsappUrl: string;
 }
@@ -68,12 +71,15 @@ export function buildPedidoMessage(opts: {
   metodoPago?: string;
   /** El borrador copiado a mano es estimado; el registrado es final. */
   totalLabel?: 'TOTAL' | 'TOTAL ESTIMADO';
+  /** Si true, el mensaje muestra "A confirmar" en lugar del monto de envío. */
+  envioAConfirmar?: boolean;
 }): string {
   const itemsLines = opts.lines
     .map((l) => `• ${l.name} x${l.quantity} — ${formatGuarani(l.lineTotal)}`)
     .join('\n');
 
-  const envio = opts.costoEnvioGs ?? 0;
+  const envio = opts.envioAConfirmar ? 0 : (opts.costoEnvioGs ?? 0);
+  const envioDisplay = opts.envioAConfirmar ? 'A confirmar' : formatGuarani(envio);
   const zonaDisplay = opts.zonaNombre
     ? `${opts.zonaNombre}${opts.barrio ? ` (${opts.barrio})` : ''}`
     : '';
@@ -81,7 +87,7 @@ export function buildPedidoMessage(opts: {
 
   let message = `Hola 👋 Quiero realizar el pedido *${opts.codigo}* en *Skin Health*:\n\n🛍️ *PRODUCTOS SELECCIONADOS*\n${itemsLines}\n\n💰 *Subtotal*: ${formatGuarani(
     opts.totalGs
-  )}\n🚚 *Envío${zonaDisplay ? ` (${zonaDisplay})` : ''}*: ${formatGuarani(envio)}\n💰 *${opts.totalLabel ?? 'TOTAL'}*: ${formatGuarani(
+  )}\n🚚 *Envío${zonaDisplay ? ` (${zonaDisplay})` : ''}*: ${envioDisplay}\n💰 *${opts.totalLabel ?? 'TOTAL'}*: ${formatGuarani(
     opts.totalGs + envio
   )}\n\n📍 *DATOS DE ENTREGA*:\n• *Cliente*: ${
     opts.nombre.trim() ? opts.nombre.trim() : '[Por especificar]'
@@ -204,7 +210,8 @@ export async function createPedido(input: CreatePedidoInput): Promise<PedidoRece
     input.direccion,
     input.zonaNombre,
     input.barrio,
-    input.metodoPago
+    input.metodoPago,
+    input.envioAConfirmar ?? false
   );
   const whatsappUrl = `https://wa.me/${STORE_PHONE_NUMBER}?text=${encodeURIComponent(message.text)}`;
 
@@ -217,7 +224,7 @@ export async function createPedido(input: CreatePedidoInput): Promise<PedidoRece
     totalGs
   );
 
-  return { pedidoId, codigo, totalGs, costoEnvioGs, message: message.text, whatsappUrl };
+  return { pedidoId, codigo, totalGs, costoEnvioGs, envioAConfirmar: input.envioAConfirmar ?? false, message: message.text, whatsappUrl };
 }
 
 /** Arma las líneas del recibo desde la DB (nombres y precios reales). */
@@ -231,7 +238,8 @@ async function buildReceiptMessage(
   direccion: string,
   zonaNombre?: string,
   barrio?: string,
-  metodoPago?: string
+  metodoPago?: string,
+  envioAConfirmar?: boolean
 ): Promise<{ text: string; lines: PedidoMessageLine[] }> {
   const { data: itemRows } = await supabase
     .from('pedido_items')
@@ -256,6 +264,7 @@ async function buildReceiptMessage(
     lines,
     totalGs,
     costoEnvioGs,
+    envioAConfirmar,
     nombre,
     telefono,
     direccion,

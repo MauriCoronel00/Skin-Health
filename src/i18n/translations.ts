@@ -97,6 +97,7 @@ export interface Translations {
   cartMapsHint: string;
   cartSubtotal: string;
   cartShipping: string;
+  shippingToConfirm: string;
   cartShippingOptional: string;
   cartShippingHint: string;
   cartTotal: string;
@@ -546,6 +547,7 @@ export const translations: TranslationsMap = {
     cartMapsHint: 'Si no tenés el link ahora, también podés adjuntar tu ubicación en tiempo real directamente en WhatsApp.',
     cartSubtotal: 'Subtotal',
     cartShipping: 'Envío',
+    shippingToConfirm: 'Precio a confirmar',
     cartShippingOptional: 'Envío – distancia en km (opcional)',
     cartShippingHint: 'Medí tu distancia en Maps. Si no sabés, dejalo en 0 y lo coordinamos por WhatsApp.',
     cartTotal: 'TOTAL ESTIMADO',
@@ -968,6 +970,7 @@ export const translations: TranslationsMap = {
     cartMapsHint: 'Se não tem o link agora, também pode enviar sua localização em tempo real direto no WhatsApp.',
     cartSubtotal: 'Subtotal',
     cartShipping: 'Entrega',
+    shippingToConfirm: 'Preço a confirmar',
     cartShippingOptional: 'Entrega – distância em km (opcional)',
     cartShippingHint: 'Meça sua distância no Maps. Se não souber, deixe em 0 e coordenamos por WhatsApp.',
     cartTotal: 'TOTAL ESTIMADO',
@@ -1390,6 +1393,7 @@ export const translations: TranslationsMap = {
     cartMapsHint: 'If you don\'t have the link now, you can also share your live location directly on WhatsApp.',
     cartSubtotal: 'Subtotal',
     cartShipping: 'Shipping',
+    shippingToConfirm: 'Price to confirm',
     cartShippingOptional: 'Shipping – distance in km (optional)',
     cartShippingHint: 'Measure your distance on Maps. If unsure, leave it at 0 and we\'ll coordinate via WhatsApp.',
     cartTotal: 'ESTIMATED TOTAL',

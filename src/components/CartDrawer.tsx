@@ -219,7 +219,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   const zonaActual: ZonaEnvio = ZONAS_COBERTURA[selectedZonaKey] ?? ZONAS_COBERTURA['LUQUE'];
-  const envioGs = zonaActual.precioGs;
+  const envioGs = zonaActual.precioGs ?? 0;
+  const envioAConfirmar = zonaActual.precioGs == null;
   const totalConEnvio = totalAmount + envioGs;
 
   // Track begin_checkout when the drawer opens with items
@@ -286,6 +287,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
         nombre: customerName,
         telefono: customerPhone,
         costoEnvioGs: envioGs,
+        envioAConfirmar,
         zonaNombre: zonaActual.nombre,
         barrio: selectedBarrio,
         metodoPago,
@@ -353,6 +355,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
         items: [...cartItems],
         totalAmount: serverTotal,
         costoEnvioGs: serverEnvio,
+        envioAConfirmar,
         date: new Date().toLocaleDateString(dateLocale, {
           day: '2-digit',
           month: 'long',
@@ -768,7 +771,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 </div>
                 <div className="flex justify-between text-neutral-500 text-xs">
                   <span>{t.cartShipping}</span>
-                  <span className="font-semibold text-neutral-800">{formatCurrency(envioGs)}</span>
+                  <span className="font-semibold text-neutral-800">{envioAConfirmar ? t.shippingToConfirm : formatCurrency(envioGs)}</span>
                 </div>
                 <p className="text-xs text-neutral-400">
                   {zonaActual.tiempoEstimado}

@@ -1,7 +1,8 @@
 export interface ZonaEnvio {
   id: string;
   nombre: string;
-  precioGs: number;
+  /** null = precio a confirmar (ej. interior por transportadora) */
+  precioGs: number | null;
   permiteEfectivoContraEntrega: boolean;
   tiempoEstimado: string;
   barrios?: string[];
@@ -25,14 +26,14 @@ export const ZONAS_COBERTURA: Record<string, ZonaEnvio> = {
   GRAN_ASU_PERIFERICO: {
     id: 'GRAN_ASU_PERIFERICO',
     nombre: 'Zona 2 (Asunción Centro, Lambaré, Ñemby, Limpio)',
-    precioGs: 40000,
+    precioGs: 35000,
     permiteEfectivoContraEntrega: true,
     tiempoEstimado: '24 a 48hs',
   },
   INTERIOR: {
     id: 'INTERIOR',
     nombre: 'Interior del País (Encomienda / Transportadora)',
-    precioGs: 35000,
+    precioGs: null,
     permiteEfectivoContraEntrega: false,
     tiempoEstimado: '48 a 72hs',
   },

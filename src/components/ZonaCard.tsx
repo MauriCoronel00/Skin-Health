@@ -1,5 +1,6 @@
 import { MapPin, CheckCircle2 } from 'lucide-react';
 import { ZonaEnvio } from '../data/zonasEnvio';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface ZonaCardProps {
   zona: ZonaEnvio;
@@ -8,6 +9,7 @@ interface ZonaCardProps {
 }
 
 export const ZonaCard = ({ zona, isSelected, onSelect }: ZonaCardProps) => {
+  const { t, formatCurrency } = useLanguage();
   return (
     <button
       type="button"
@@ -25,7 +27,7 @@ export const ZonaCard = ({ zona, isSelected, onSelect }: ZonaCardProps) => {
             {zona.nombre}
           </p>
           <p className="text-xs text-stone-500">
-            ₲ {zona.precioGs.toLocaleString('es-PY')} — {zona.tiempoEstimado}
+            {zona.precioGs == null ? t.shippingToConfirm : formatCurrency(zona.precioGs)} — {zona.tiempoEstimado}
           </p>
         </div>
       </div>
