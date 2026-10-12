@@ -138,10 +138,14 @@ export async function createPedido(input: CreatePedidoInput): Promise<PedidoRece
   if (input.items.length === 0) {
     throw new PedidoError('EMPTY', 'Agregá productos antes de confirmar.');
   }
-  if (!input.nombre.trim() || !input.direccion.trim()) {
+  // Sin campo de dirección manual: la ubicación sale de zona + barrio.
+  const direccion = (
+    input.direccion?.trim() || [input.zonaNombre, input.barrio].filter(Boolean).join(' - ')
+  ).trim();
+  if (!input.nombre.trim() || !direccion) {
     throw new PedidoError(
       'CUSTOMER_DATA',
-      'Completá tu nombre y ubicación para coordinar la entrega.'
+      'Completá tu nombre y elegí tu zona de entrega.'
     );
   }
   if (!input.telefono.trim() || input.telefono.replace(/\D/g, '').length < 8) {
@@ -162,7 +166,7 @@ export async function createPedido(input: CreatePedidoInput): Promise<PedidoRece
     const { data, error } = await supabase.rpc('crear_pedido', {
       p_cliente_nombre: input.nombre.trim(),
       p_cliente_telefono: input.telefono.trim(),
-      p_direccion_envio: input.direccion.trim(),
+      p_direccion_envio: direccion,
       p_costo_envio_gs: costoEnvio,
       p_items: input.items.map((item) => ({
         producto_id: item.productoId,
@@ -207,7 +211,7 @@ export async function createPedido(input: CreatePedidoInput): Promise<PedidoRece
     costoEnvioGs,
     input.nombre,
     input.telefono,
-    input.direccion,
+    direccion,
     input.zonaNombre,
     input.barrio,
     input.metodoPago,
