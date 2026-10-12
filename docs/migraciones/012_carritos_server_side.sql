@@ -19,28 +19,36 @@ create index if not exists idx_carritos_user_id on public.carritos(user_id);
 alter table public.carritos enable row level security;
 
 -- Política para usuarios anónimos (por device_id)
+drop policy if exists "anon_select_own_cart" on public.carritos;
 create policy "anon_select_own_cart" on public.carritos
   for select using (user_id is null and device_id = current_setting('app.current_device_id', true));
 
+drop policy if exists "anon_insert_own_cart" on public.carritos;
 create policy "anon_insert_own_cart" on public.carritos
   for insert with check (user_id is null and device_id = current_setting('app.current_device_id', true));
 
+drop policy if exists "anon_update_own_cart" on public.carritos;
 create policy "anon_update_own_cart" on public.carritos
   for update using (user_id is null and device_id = current_setting('app.current_device_id', true));
 
+drop policy if exists "anon_delete_own_cart" on public.carritos;
 create policy "anon_delete_own_cart" on public.carritos
   for delete using (user_id is null and device_id = current_setting('app.current_device_id', true));
 
 -- Política para usuarios autenticados (por user_id)
+drop policy if exists "auth_select_own_cart" on public.carritos;
 create policy "auth_select_own_cart" on public.carritos
   for select using (auth.uid() = user_id);
 
+drop policy if exists "auth_insert_own_cart" on public.carritos;
 create policy "auth_insert_own_cart" on public.carritos
   for insert with check (auth.uid() = user_id);
 
+drop policy if exists "auth_update_own_cart" on public.carritos;
 create policy "auth_update_own_cart" on public.carritos
   for update using (auth.uid() = user_id);
 
+drop policy if exists "auth_delete_own_cart" on public.carritos;
 create policy "auth_delete_own_cart" on public.carritos
   for delete using (auth.uid() = user_id);
 
@@ -48,7 +56,7 @@ create policy "auth_delete_own_cart" on public.carritos
 create or replace function public.upsert_cart(
   p_device_id text,
   p_user_id uuid default null,
-  p_items jsonb
+  p_items jsonb default '[]'::jsonb
 ) returns public.carritos language plpgsql security definer as $$
 declare
   v_cart public.carritos;
@@ -110,6 +118,7 @@ begin
 end;
 $$;
 
+drop trigger if exists trigger_carritos_updated_at on public.carritos;
 create trigger trigger_carritos_updated_at
   before update on public.carritos
   for each row execute function public.set_updated_at();
