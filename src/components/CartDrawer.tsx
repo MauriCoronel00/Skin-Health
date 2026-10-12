@@ -110,7 +110,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   }>({});
 
   const [isOrdering, setIsOrdering] = useState(false);
-  const [selectedZonaKey, setSelectedZonaKey] = useState<string>('ASUNCION');
+  const [selectedZonaKey, setSelectedZonaKey] = useState<string>('LUQUE');
   const [selectedBarrio, setSelectedBarrio] = useState<string>('');
   const [metodoPago, setMetodoPago] = useState<MetodoPagoId>('TRANSFERENCIA');
   const [showMapsInput, setShowMapsInput] = useState(() => {
@@ -218,7 +218,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   );
   const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
-  const zonaActual: ZonaEnvio = ZONAS_COBERTURA[selectedZonaKey];
+  const zonaActual: ZonaEnvio = ZONAS_COBERTURA[selectedZonaKey] ?? ZONAS_COBERTURA['LUQUE'];
   const envioGs = zonaActual.precioGs;
   const totalConEnvio = totalAmount + envioGs;
 
