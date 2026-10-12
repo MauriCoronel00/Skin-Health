@@ -21,14 +21,14 @@ export const ZONAS_COBERTURA: Record<string, ZonaEnvio> = {
     nombre: 'Zona 1 (San Lorenzo, Fernando, Villamorra, Carmelitas)',
     precioGs: 30000,
     permiteEfectivoContraEntrega: true,
-    tiempoEstimado: '24hs',
+    tiempoEstimado: 'Envíos en el día',
   },
   GRAN_ASU_PERIFERICO: {
     id: 'GRAN_ASU_PERIFERICO',
     nombre: 'Zona 2 (Asunción Centro, Lambaré, Ñemby, Limpio)',
     precioGs: 35000,
     permiteEfectivoContraEntrega: true,
-    tiempoEstimado: '24 a 48hs',
+    tiempoEstimado: 'Envíos en el día',
   },
   INTERIOR: {
     id: 'INTERIOR',
