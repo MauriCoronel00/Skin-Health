@@ -372,6 +372,7 @@ export interface Translations {
   quizBasedOn: string;
   quizStepsForSkin: string;
   quizViewFull: string;
+  quizWhatsCta: string;
   savedReadySuffix: string;
   savedDiagnosed: string;
 
@@ -804,6 +805,7 @@ export const translations: TranslationsMap = {
     quizBasedOn: 'Basado en tus respuestas, te recomendamos:',
     quizStepsForSkin: '{count} pasos personalizados para tu piel',
     quizViewFull: 'Ver mi rutina completa',
+    quizWhatsCta: 'Asesorarme por WhatsApp',
     savedReadySuffix: 'lista para pedir.',
     savedDiagnosed: 'Diagnosticado {date}',
 
@@ -1229,6 +1231,7 @@ export const translations: TranslationsMap = {
     quizBasedOn: 'Com base nas suas respostas, recomendamos:',
     quizStepsForSkin: '{count} passos personalizados para a sua pele',
     quizViewFull: 'Ver minha rotina completa',
+    quizWhatsCta: 'Receber assessoria no WhatsApp',
     savedReadySuffix: 'pronta para pedir.',
     savedDiagnosed: 'Diagnosticado em {date}',
 
@@ -1654,6 +1657,7 @@ export const translations: TranslationsMap = {
     quizBasedOn: 'Based on your answers, we recommend:',
     quizStepsForSkin: '{count} steps personalized for your skin',
     quizViewFull: 'View my full routine',
+    quizWhatsCta: 'Get advice on WhatsApp',
     savedReadySuffix: 'ready to order.',
     savedDiagnosed: 'Diagnosed on {date}',
 

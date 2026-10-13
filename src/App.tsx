@@ -308,13 +308,6 @@ export default function App() {
     setQuizOpen(true);
   };
 
-  const handleSavedQuizViewRoutine = (routineId: string) => {
-    setFocusRoutineNumber(routineId);
-    setTimeout(() => {
-      document.getElementById('rutinas')?.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
-  };
-
   const handleBlogProductClick = (productId: string) => {
     exitBlog();
     setTimeout(() => {
@@ -353,7 +346,6 @@ return (
 
                 <SavedQuizBannerSection
                   onRetakeQuiz={handleSavedQuizRetake}
-                  onViewRoutine={handleSavedQuizViewRoutine}
                 />
 
                 <WelcomeSection
@@ -371,9 +363,6 @@ return (
                   onComplete={(routineId) => {
                     setQuizOpen(false);
                     setFocusRoutineNumber(routineId);
-                    setTimeout(() => {
-                      document.getElementById('rutinas')?.scrollIntoView({ behavior: 'smooth' });
-                    }, 100);
                   }}
                 />
 

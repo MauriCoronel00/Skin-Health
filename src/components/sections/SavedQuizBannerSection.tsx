@@ -3,16 +3,14 @@ import { SavedQuizBanner } from '../SavedQuizBanner';
 
 interface SavedQuizBannerSectionProps {
   onRetakeQuiz: () => void;
-  onViewRoutine: (routineId: string) => void;
 }
 
-export function SavedQuizBannerSection({ onRetakeQuiz, onViewRoutine }: SavedQuizBannerSectionProps) {
+export function SavedQuizBannerSection({ onRetakeQuiz }: SavedQuizBannerSectionProps) {
   return (
     <ErrorBoundary>
       <SavedQuizBanner
         onDismiss={() => {}}
         onRetakeQuiz={onRetakeQuiz}
-        onViewRoutine={onViewRoutine}
       />
     </ErrorBoundary>
   );

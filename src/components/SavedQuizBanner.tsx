@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
-import { ArrowRight, X, Sparkles, RotateCcw } from 'lucide-react';
+import { MessageCircle, X, Sparkles, RotateCcw } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { buildQuizWhatsAppUrl } from '../utils/quizWhatsApp';
 
 const QUIZ_STORAGE_KEY = 'skinhealth_quiz_result_v1';
 
@@ -18,7 +19,6 @@ interface SavedQuizResult {
 interface SavedQuizBannerProps {
   onDismiss: () => void;
   onRetakeQuiz: () => void;
-  onViewRoutine: (routineId: string) => void;
 }
 
 const SKIN_TYPE_LABELS: Record<string, 'savedGrasa' | 'savedMixta' | 'savedSeca' | 'savedSensible'> = {
@@ -31,7 +31,6 @@ const SKIN_TYPE_LABELS: Record<string, 'savedGrasa' | 'savedMixta' | 'savedSeca'
 export const SavedQuizBanner: React.FC<SavedQuizBannerProps> = ({
   onDismiss,
   onRetakeQuiz,
-  onViewRoutine,
 }) => {
   const { t, dateLocale } = useLanguage();
   const [savedResult, setSavedResult] = useState<SavedQuizResult | null>(null);
@@ -59,7 +58,7 @@ export const SavedQuizBanner: React.FC<SavedQuizBannerProps> = ({
 
   const handleViewRoutine = () => {
     if (savedResult) {
-      onViewRoutine(savedResult.routineId);
+      window.open(buildQuizWhatsAppUrl(savedResult), '_blank', 'noopener,noreferrer');
     }
   };
 
@@ -116,8 +115,8 @@ export const SavedQuizBanner: React.FC<SavedQuizBannerProps> = ({
               onClick={handleViewRoutine}
               className="w-full sm:w-auto px-5 py-2.5 sm:px-6 bg-white text-[#102A43] font-bold text-sm sm:text-base rounded-2xl hover:bg-white/90 transition-all shadow-lg flex items-center justify-center gap-2"
             >
-              <ArrowRight className="w-4 h-4" />
-              <span>{t.quizViewRoutine}</span>
+              <MessageCircle className="w-4 h-4" />
+              <span>{t.quizWhatsCta}</span>
             </motion.button>
 
             <button

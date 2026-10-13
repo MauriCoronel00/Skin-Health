@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowRight, ArrowLeft, Check, Sparkles, Leaf, Droplets, ShieldCheck, X } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Check, Sparkles, Leaf, Droplets, ShieldCheck, X, MessageCircle } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { buildQuizWhatsAppUrl } from '../utils/quizWhatsApp';
 
 const QUIZ_STORAGE_KEY = 'skinhealth_quiz_result_v1';
 
@@ -156,6 +157,15 @@ export const DiagnosticQuiz: React.FC<DiagnosticQuizProps> = ({
 
   const handleViewRoutine = () => {
     if (matchedRoutine) {
+      // El resultado va a WhatsApp para que el bot asesore y cierre la venta.
+      const url = buildQuizWhatsAppUrl({
+        routineId: matchedRoutine,
+        skinType: (answers[1] as string) ?? 'mixta',
+        concerns: ((answers[2] as string[]) ?? []) as string[],
+        routineLevel: (answers[3] as string) ?? 'completa',
+        spfHabit: (answers[4] as string) ?? 'nunca',
+      });
+      window.open(url, '_blank', 'noopener,noreferrer');
       onComplete(matchedRoutine);
       handleClose();
     }
@@ -372,10 +382,10 @@ export const DiagnosticQuiz: React.FC<DiagnosticQuizProps> = ({
               <motion.button
                 whileTap={{ scale: 0.97 }}
                 onClick={handleViewRoutine}
-                className="w-full py-3.5 px-6 bg-[#102A43] text-white font-bold text-base rounded-2xl hover:bg-[#102A43]/90 transition-all shadow-lg"
+                className="w-full py-3.5 px-6 bg-[#25D366] text-white font-bold text-base rounded-2xl hover:bg-[#25D366]/90 transition-all shadow-lg"
               >
-                {t.quizViewFull}
-                <ArrowRight className="w-5 h-5 inline-block ml-2" />
+                <MessageCircle className="w-5 h-5 inline-block mr-2" />
+                {t.quizWhatsCta}
               </motion.button>
               <motion.button
                 whileTap={{ scale: 0.95 }}
