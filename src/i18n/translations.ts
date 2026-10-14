@@ -18,6 +18,10 @@ export interface Translations {
 
   // Hero
   heroEyebrow: string;
+  ritualCleanse: string;
+  ritualTreat: string;
+  ritualHydrate: string;
+  ritualProtect: string;
   heroTitle1: string;
   heroTitle2: string;
   heroSubtitle: string;
@@ -476,6 +480,10 @@ export const translations: TranslationsMap = {
     languageLabel: 'Idioma',
 
     heroEyebrow: 'Skincare importado · Asunción, Paraguay',
+    ritualCleanse: 'Limpieza',
+    ritualTreat: 'Tratamiento',
+    ritualHydrate: 'Hidratación',
+    ritualProtect: 'Protección',
     heroTitle1: 'Entendé tu piel.',
     heroTitle2: 'Amala.',
     heroSubtitle: 'Rutinas de dermocosmética con productos oficiales. 60 segundos de diagnóstico y armamos tu ritual de 4 pasos.',
@@ -902,6 +910,10 @@ export const translations: TranslationsMap = {
     languageLabel: 'Idioma',
 
     heroEyebrow: 'Skincare importado · Assunção, Paraguai',
+    ritualCleanse: 'Limpeza',
+    ritualTreat: 'Tratamento',
+    ritualHydrate: 'Hidratação',
+    ritualProtect: 'Proteção',
     heroTitle1: 'Entenda sua pele.',
     heroTitle2: 'Ame-a.',
     heroSubtitle: 'Rotinas de dermocosmética com produtos oficiais. 60 segundos de diagnóstico e montamos seu ritual de 4 passos.',
@@ -1328,6 +1340,10 @@ export const translations: TranslationsMap = {
     languageLabel: 'Language',
 
     heroEyebrow: 'Imported skincare · Asunción, Paraguay',
+    ritualCleanse: 'Cleanse',
+    ritualTreat: 'Treat',
+    ritualHydrate: 'Hydrate',
+    ritualProtect: 'Protect',
     heroTitle1: 'Understand your skin.',
     heroTitle2: 'Love it.',
     heroSubtitle: 'Dermocosmetic routines with official products. 60-second diagnosis and we build your 4-step ritual.',

@@ -13,7 +13,7 @@
   }
 
   body {
-    background-color: #FAF8F5;
+    background-color: #F1F4EF;
     color: #1A202C;
     overflow-x: hidden;
     letter-spacing: 0.01em;
@@ -60,6 +60,16 @@
     --brand-accent-light: #B9CBBE;
     --brand-accent-ink: #55705E;
 
+    /* Skin Health · identidad ritual (2026-10)
+       Superficie fría porcelana en vez de crema cálida; pino para acciones
+       primarias sobre claro; ámbar reservado al hilo quiz → rutina → WhatsApp. */
+    --surface-porcelain: #F1F4EF;
+    --surface-glass: #DCE9E4;
+    --brand-pine: #1E4D3B;
+    --brand-pine-hover: #183E30;
+    --brand-amber: #C98A2C;
+    --brand-amber-hover: #B57A25;
+
     /* Semanticos */
     --color-success: #059669;
     --color-danger: #DC2626;
@@ -70,6 +80,12 @@
     font-family: 'Fraunces', 'Playfair Display', Georgia, serif;
     font-optical-sizing: auto;
     letter-spacing: -0.01em;
+  }
+
+  /* Tratamiento display editorial: solo hero, titulares grandes y apretados. */
+  .hero-display {
+    letter-spacing: -0.03em;
+    text-wrap: balance;
   }
 
   /* Native app feel */

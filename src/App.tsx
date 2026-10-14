@@ -16,7 +16,7 @@ interface ErrorBoundaryState {
 function AppErrorFallback({ error }: { error: Error | null }) {
   const { t } = useLanguage();
   return (
-    <div className="min-h-screen bg-[#FAF8F5] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#F1F4EF] flex items-center justify-center p-4">
       <div className="max-w-md mx-auto text-center bg-white rounded-3xl border border-rose-200 p-8 shadow-lg">
         <div className="w-16 h-16 rounded-full bg-rose-50 flex items-center justify-center mx-auto mb-4">
           <svg className="w-8 h-8 text-rose-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -320,7 +320,7 @@ export default function App() {
 
 return (
     <ErrorBoundary>
-        <div className="min-h-screen bg-[#FAF8F5] text-neutral-900 flex flex-col selection:bg-[#102A43] selection:text-white">
+        <div className="min-h-screen bg-[#F1F4EF] text-neutral-900 flex flex-col selection:bg-[#102A43] selection:text-white">
           <Navbar
             totalItems={totalItems}
             totalAmount={totalAmount}

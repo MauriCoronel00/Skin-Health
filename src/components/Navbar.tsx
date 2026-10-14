@@ -39,7 +39,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   return (
-    <header className="sticky top-0 z-30 bg-[#FAF8F5]/95 backdrop-blur-md border-b border-[#102A43]/10 transition-all">
+    <header className="sticky top-0 z-30 bg-[#F1F4EF]/95 backdrop-blur-md border-b border-[#102A43]/10 transition-all">
       {/* Announcement bar - navy centered, proper height */}
       <div className="bg-[#102A43] text-white text-[11px] py-2.5 px-4 text-center font-medium tracking-wide border-b border-white/10 flex justify-center items-center min-h-[28px]">
         {t.announcement}
