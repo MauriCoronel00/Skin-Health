@@ -13,8 +13,8 @@ update public.productos set
   skin_type_en = 'Ideal for combination, oily, sensitive or dehydrated skin looking for lightness and comfort.',
   how_to_use_pt = 'Como última etapa da sua rotina, aplique uma camada generosa no rosto e massageie suavemente até absorver. Reaplique nas áreas mais secas quando precisar.',
   how_to_use_en = 'As the last step of your routine, apply a generous layer over the face and massage gently until absorbed. Reapply on drier areas as needed.',
-  key_ingredients_pt = '["5 tipos de ácido hialurônico", "Complexo Cica"]'::jsonb,
-  key_ingredients_en = '["5 types of hyaluronic acid", "Cica complex"]'::jsonb,
+  key_ingredients_pt = ARRAY['5 tipos de ácido hialurônico', 'Complexo Cica'],
+  key_ingredients_en = ARRAY['5 types of hyaluronic acid', 'Cica complex'],
   producto_beneficios_pt = '[]'::jsonb,
   producto_beneficios_en = '[]'::jsonb
 where id = 'torriden-dive-in-cream';
@@ -31,8 +31,8 @@ update public.productos set
   skin_type_en = 'Ideal for dry, dehydrated, dull or uneven-toned skin.',
   how_to_use_pt = 'Após limpar o rosto, aplique 2-3 camadas com as palmas das mãos sobre a pele levemente úmida e pressione suavemente até absorver. Use de dia e à noite, antes do hidratante.',
   how_to_use_en = 'After cleansing, apply 2-3 layers with your palms over slightly damp skin and press gently until absorbed. Use day and night, before moisturizer.',
-  key_ingredients_pt = '["Extrato de arroz", "Ceramidas", "Niacinamida"]'::jsonb,
-  key_ingredients_en = '["Rice extract", "Ceramides", "Niacinamide"]'::jsonb,
+  key_ingredients_pt = ARRAY['Extrato de arroz', 'Ceramidas', 'Niacinamida'],
+  key_ingredients_en = ARRAY['Rice extract', 'Ceramides', 'Niacinamide'],
   producto_beneficios_pt = '[]'::jsonb,
   producto_beneficios_en = '[]'::jsonb
 where id = 'tirtir-milk-skin-toner';
