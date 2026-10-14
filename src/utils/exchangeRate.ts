@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 
 const STORAGE_KEY = 'skinhealth_dai_exchange_rate';
-const STORAGE_TIME_KEY = 'skinhealth_dai_exchange_rate_time';
-const CACHE_DURATION = 60 * 1000; // 1 minuto en milisegundos
 
 // Tipos
 export type RateSource = 'api' | 'cached' | 'base';
@@ -43,44 +41,6 @@ export const useExchangeRate = (): ExchangeRate => {
 export const convertGsToUsd = (amountGs: number): number => {
   if (!amountGs || amountGs <= 0) return 0;
   return Math.round((amountGs / BASE_RATE) * 100) / 100;
-};
-
-/**
- * Formatea un precio mostrando Guaraníes y USD convertidos
- * @param amountGs Monto en Guaraníes
- * @param language Idioma: 'es', 'pt' o 'en'
- * @returns String formateado ej: "₲ 1.000 ( $17.03 )"
- */
-export const formatPriceDivisa = (
-  amountGs: number,
-  language: 'es' | 'pt' | 'en'
-): string => {
-  if (!amountGs || amountGs <= 0) return '--';
-
-  const amountUsd = convertGsToUsd(amountGs);
-
-  // Formato según idioma para Gs
-  const formattedGs = new Intl.NumberFormat(language === 'es' ? 'es-PY' : language === 'pt' ? 'pt-BR' : 'en-US', {
-    maximumFractionDigits: 0,
-    minimumFractionDigits: 0,
-  }).format(amountGs);
-
-  // Formato USD
-  const formattedUsd = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(amountUsd);
-
-  // Prefijo según idioma
-  const prefix = language === 'es'
-    ? '₲'
-    : language === 'pt'
-    ? 'R$'
-    : '$';
-
-  return `${prefix} ${formattedGs} (${formattedUsd})`;
 };
 
 /**

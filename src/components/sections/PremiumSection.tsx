@@ -1,4 +1,4 @@
-import { ErrorBoundary } from '../ErrorBoundary';
+﻿import { ErrorBoundary } from '../ErrorBoundary';
 import { Gem, Check, MessageCircle } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 
@@ -25,7 +25,7 @@ export function PremiumSection() {
             <MessageCircle className="w-4 h-4" />
             <span>{t.premiumSubscribe.replace('{price}', formatCurrency(55000))}</span>
           </a>
-          <p className="text-[11px] text-white/60 mt-2">{t.premiumCancel}</p>
+          <p className="text-xs text-white/60 mt-2">{t.premiumCancel}</p>
         </div>
       </section>
     </ErrorBoundary>

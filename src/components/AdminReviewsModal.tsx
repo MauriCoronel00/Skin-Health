@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { ShieldCheck, Eye, EyeOff, Trash2, X } from 'lucide-react';
 import { ProductReview } from '../types';
@@ -54,11 +54,11 @@ export const AdminReviewsModal: React.FC<AdminReviewsModalProps> = ({
                 <ShieldCheck className="w-4 h-4" />
               </span>
               <h3 className="font-semibold text-lg text-[#102A43]">
-                Panel de Moderación de Reseñas
+                Panel de ModeraciÃ³n de ReseÃ±as
               </h3>
             </div>
             <p className="text-xs text-neutral-500 mt-0.5">
-              Gestiona, aprueba, oculta o elimina opiniones enviadas por clientes y contenido de demostración.
+              Gestiona, aprueba, oculta o elimina opiniones enviadas por clientes y contenido de demostraciÃ³n.
             </p>
           </div>
 
@@ -100,7 +100,7 @@ export const AdminReviewsModal: React.FC<AdminReviewsModalProps> = ({
                 : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
             }`}
           >
-            Contenido Demostración ({reviews.filter((r) => !!r.isExample).length})
+            Contenido DemostraciÃ³n ({reviews.filter((r) => !!r.isExample).length})
           </button>
           <button
             onClick={() => setFilter('hidden')}
@@ -128,7 +128,7 @@ export const AdminReviewsModal: React.FC<AdminReviewsModalProps> = ({
         <div className="overflow-y-auto flex-1 space-y-3 pr-1">
           {filteredReviews.length === 0 ? (
             <div className="text-center py-10 text-neutral-400 text-xs">
-              No hay reseñas en esta categoría.
+              No hay reseÃ±as en esta categorÃ­a.
             </div>
           ) : (
             filteredReviews.map((rev) => (
@@ -144,25 +144,25 @@ export const AdminReviewsModal: React.FC<AdminReviewsModalProps> = ({
                   <div className="flex items-center gap-2">
                     <span className="font-semibold text-neutral-900">{rev.author.name}</span>
                     <span className="text-amber-500 font-bold flex items-center gap-0.5">
-                      ★ {rev.rating}
+                      â˜… {rev.rating}
                     </span>
                     {rev.isExample ? (
-                      <span className="text-[10px] bg-sky-50 text-sky-700 px-1.5 py-0.5 rounded font-medium border border-sky-100">
+                      <span className="text-xs bg-sky-50 text-sky-700 px-1.5 py-0.5 rounded font-medium border border-sky-100">
                         Demo
                       </span>
                     ) : (
-                      <span className="text-[10px] bg-emerald-50 text-emerald-700 px-1.5 py-0.5 rounded font-medium border border-emerald-100">
+                      <span className="text-xs bg-emerald-50 text-emerald-700 px-1.5 py-0.5 rounded font-medium border border-emerald-100">
                         Cliente Real
                       </span>
                     )}
                     {rev.status === 'hidden' && (
-                      <span className="text-[10px] bg-neutral-200 text-neutral-600 px-1.5 py-0.5 rounded font-semibold">
+                      <span className="text-xs bg-neutral-200 text-neutral-600 px-1.5 py-0.5 rounded font-semibold">
                         Oculta
                       </span>
                     )}
                   </div>
 
-                  <span className="text-[11px] text-neutral-400">
+                  <span className="text-xs text-neutral-400">
                     {formatReviewDate(rev.createdAt)}
                   </span>
                 </div>
@@ -172,7 +172,7 @@ export const AdminReviewsModal: React.FC<AdminReviewsModalProps> = ({
                 </p>
 
                 <div className="flex items-center justify-between pt-2 border-t border-neutral-100">
-                  <span className="text-[11px] text-neutral-400 font-mono">
+                  <span className="text-xs text-neutral-400 font-mono">
                     ID Producto: {rev.productId}
                   </span>
 
@@ -205,7 +205,7 @@ export const AdminReviewsModal: React.FC<AdminReviewsModalProps> = ({
                       type="button"
                       onClick={() => onDeleteReview(rev.id)}
                       className="p-1.5 rounded-lg text-neutral-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
-                      title="Eliminar reseña"
+                      title="Eliminar reseÃ±a"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -219,3 +219,4 @@ export const AdminReviewsModal: React.FC<AdminReviewsModalProps> = ({
     </div>
   );
 };
+

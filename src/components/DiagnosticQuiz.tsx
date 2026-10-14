@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowRight, ArrowLeft, Check, Sparkles, Leaf, Droplets, ShieldCheck, X, MessageCircle } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -24,7 +24,7 @@ interface DiagnosticQuizProps {
 
 type Step = 1 | 2 | 3 | 4 | 'result';
 
-/** Scoring por prioridad: sensible/rojez > acné/poros > manchas > líneas > hidratación. */
+/** Scoring por prioridad: sensible/rojez > acnÃ©/poros > manchas > lÃ­neas > hidrataciÃ³n. */
 function matchRoutine(skin: string, concerns: string[]): string {
   const c = new Set(concerns);
   if (skin === 'sensible' || c.has('rojez')) return 'hidratacion-sensible';
@@ -218,7 +218,7 @@ export const DiagnosticQuiz: React.FC<DiagnosticQuizProps> = ({
               className="h-full bg-gradient-to-r from-[#102A43] to-[#1e3a5f] rounded-full"
             />
           </div>
-          <div className="flex justify-between text-[10px] text-neutral-400 mt-1.5 px-0.5">
+          <div className="flex justify-between text-xs text-neutral-400 mt-1.5 px-0.5">
             <span>{t.quizStep} 1</span>
             <span>{t.quizStep} 2</span>
             <span>{t.quizStep} 3</span>
@@ -287,7 +287,7 @@ export const DiagnosticQuiz: React.FC<DiagnosticQuizProps> = ({
                         <span className={`font-semibold text-sm ${isSelected ? 'text-[#102A43]' : 'text-neutral-900'}`}>
                           {opt.label}
                         </span>
-                        <p className="text-[11px] text-neutral-500 mt-0.5 line-clamp-1">{opt.desc}</p>
+                        <p className="text-xs text-neutral-500 mt-0.5 line-clamp-1">{opt.desc}</p>
                       </div>
                       <motion.div
                         animate={{ scale: isSelected ? 1 : 0 }}

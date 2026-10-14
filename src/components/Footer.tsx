@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { MessageCircle, ShieldCheck, Truck, Heart, Instagram } from 'lucide-react';
 import { STORE_PHONE_NUMBER, STORE_PHONE_DISPLAY } from '../data/products';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -100,7 +100,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdminPanel, isAdmin }) => 
 
         {/* Bottom copyright */}
         <div className="pt-6 border-t border-white/10 text-center text-xs text-white/50 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span>© {new Date().getFullYear()} Skin Health. {t.footerRights}</span>
+          <span>Â© {new Date().getFullYear()} Skin Health. {t.footerRights}</span>
           <div className="flex items-center gap-4">
             <span className="inline-flex items-center gap-1 text-white/60">
                 {t.footerKbeauty} <Heart className="w-3.5 h-3.5 text-rose-400 fill-rose-400" /> {t.footerKbeautyTail}
@@ -109,7 +109,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdminPanel, isAdmin }) => 
               <button
                 type="button"
                 onClick={onOpenAdminPanel}
-                className="text-[#B9CBBE]/80 hover:text-[#B9CBBE] transition-colors text-[11px] underline cursor-pointer"
+                className="text-[#B9CBBE]/80 hover:text-[#B9CBBE] transition-colors text-xs underline cursor-pointer"
               >
                 Panel admin
               </button>
@@ -120,3 +120,4 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdminPanel, isAdmin }) => 
     </footer>
   );
 };
+

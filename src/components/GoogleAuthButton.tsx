@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+﻿import React, { useEffect, useRef } from 'react';
 import { motion } from 'motion/react';
 import { LogOut, Shield } from 'lucide-react';
 import { ReviewUser } from '../types';
@@ -15,7 +15,7 @@ interface GoogleAuthButtonProps {
 
 /**
  * Identidad con OAuth real (Supabase + Google). Sin formularios manuales:
- * el nombre visible sale de la sesión, nunca de texto libre.
+ * el nombre visible sale de la sesiÃ³n, nunca de texto libre.
  */
 export const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({
   onUserAuthenticated,
@@ -80,12 +80,12 @@ export const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({
               <span className="font-semibold text-sm text-neutral-900 leading-tight">
                 {currentUser.name}
               </span>
-              <span className="text-[10px] bg-emerald-50 text-emerald-700 font-medium px-2 py-0.5 rounded-full border border-emerald-100 flex items-center gap-0.5">
+              <span className="text-xs bg-emerald-50 text-emerald-700 font-medium px-2 py-0.5 rounded-full border border-emerald-100 flex items-center gap-0.5">
                 <Shield className="w-3 h-3 text-emerald-600" />
                 Identificado
               </span>
             </div>
-            <p className="text-[11px] text-neutral-500">
+            <p className="text-xs text-neutral-500">
               {t.authReviewAs}{' '}
               <strong className="text-neutral-700">{currentUser.name}</strong>
             </p>
@@ -135,10 +135,11 @@ export const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({
         <span>{t.authContinue}</span>
       </motion.button>
 
-      <p className="text-[11px] text-neutral-400 text-center sm:text-left flex items-center justify-center sm:justify-start gap-1">
+      <p className="text-xs text-neutral-400 text-center sm:text-left flex items-center justify-center sm:justify-start gap-1">
         <Shield className="w-3.5 h-3.5 text-neutral-400" />
         {t.authPrivacy}
       </p>
     </div>
   );
 };
+

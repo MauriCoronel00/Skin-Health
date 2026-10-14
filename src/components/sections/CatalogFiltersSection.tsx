@@ -1,4 +1,4 @@
-import { ErrorBoundary } from '../ErrorBoundary';
+﻿import { ErrorBoundary } from '../ErrorBoundary';
 import { getSkinFilters, getPriceFilters } from '../../contexts/ProductContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 
@@ -20,7 +20,7 @@ export function CatalogFiltersSection({
     <ErrorBoundary>
       <div className="flex flex-col gap-2 pb-4 border-b border-[#102A43]/10">
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-          <span className="text-[11px] text-neutral-400 font-medium mr-1 shrink-0">
+          <span className="text-xs text-neutral-400 font-medium mr-1 shrink-0">
             {t.filterSkin}
           </span>
           {[{ id: 'all', label: t.filterAll }, ...getSkinFilters(t)].map((f) => (
@@ -38,7 +38,7 @@ export function CatalogFiltersSection({
           ))}
         </div>
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-          <span className="text-[11px] text-neutral-400 font-medium mr-1 shrink-0">
+          <span className="text-xs text-neutral-400 font-medium mr-1 shrink-0">
             {t.filterPrice}
           </span>
           {[{ id: 'all', label: t.filterPriceAll }, ...getPriceFilters(t, formatCurrency)].map((f) => (

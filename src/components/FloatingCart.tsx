@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ShoppingBag, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -52,7 +52,7 @@ export const FloatingCart: React.FC<FloatingCartProps> = ({
       {totalItems > 0 && (
         <aside
           aria-label={t.floatingCartAria}
-          className="fixed bottom-[72px] sm:bottom-6 left-0 right-0 z-40 px-4 pointer-events-none flex justify-center pb-safe"
+          className="fixed bottom-\[4\.5rem\] sm:bottom-6 left-0 right-0 z-40 px-4 pointer-events-none flex justify-center pb-safe"
         >
           <motion.div
             id="floating-cart-bar"
@@ -105,7 +105,7 @@ export const FloatingCart: React.FC<FloatingCartProps> = ({
                 </div>
               </div>
 
-              {/* Total amount formatted in Guaraníes */}
+              {/* Total amount formatted in GuaranÃ­es */}
               <div className="text-right">
                 <motion.span
                   key={totalAmount}
@@ -118,7 +118,7 @@ export const FloatingCart: React.FC<FloatingCartProps> = ({
               </div>
             </div>
 
-            {/* Bottom Row / CTA button: "Ver pedido →" */}
+            {/* Bottom Row / CTA button: "Ver pedido â†’" */}
             <motion.button
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.98 }}
@@ -134,3 +134,4 @@ export const FloatingCart: React.FC<FloatingCartProps> = ({
     </AnimatePresence>
   );
 };
+

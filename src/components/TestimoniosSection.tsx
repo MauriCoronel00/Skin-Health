@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import { Star, Quote, BadgeCheck } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -12,7 +12,7 @@ interface Testimonio {
   productName: string;
 }
 
-/** Reseñas destacadas (is_featured = true) aprobadas, con nombre del producto. */
+/** ReseÃ±as destacadas (is_featured = true) aprobadas, con nombre del producto. */
 export async function fetchTestimonios(limit = 4): Promise<Testimonio[]> {
   const { data, error } = await supabase
     .from('reviews')
@@ -54,7 +54,7 @@ export const TestimoniosSection: React.FC = () => {
   return (
     <section className="mt-14">
       <div className="text-center mb-6">
-        <span className="text-[11px] font-bold uppercase tracking-widest text-[#102A43] bg-white px-3 py-1 rounded-full border border-[#102A43]/20 flex items-center justify-center gap-1.5 mx-auto">
+        <span className="text-xs font-bold uppercase tracking-widest text-[#102A43] bg-white px-3 py-1 rounded-full border border-[#102A43]/20 flex items-center justify-center gap-1.5 mx-auto">
           <BadgeCheck className="w-3.5 h-3.5 text-[#102A43]" />
           <span>{t.testimonialsTitle}</span>
         </span>
@@ -84,12 +84,12 @@ export const TestimoniosSection: React.FC = () => {
               ))}
             </div>
             <blockquote className="text-sm text-neutral-700 leading-relaxed flex-1 min-h-[60px]">
-              “{item.comment}”
+              â€œ{item.comment}â€
             </blockquote>
             <figcaption className="mt-3 pt-3 border-t border-neutral-100 text-xs space-y-0.5">
               <span className="font-semibold text-neutral-900 flex items-center gap-1.5">
                 {item.author}
-                {item.city && <span className="text-neutral-400">— {item.city}</span>}
+                {item.city && <span className="text-neutral-400">â€” {item.city}</span>}
               </span>
             </figcaption>
           </figure>

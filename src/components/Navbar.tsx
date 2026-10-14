@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { ShoppingBag, Search, X, ChevronDown } from 'lucide-react';
 import { motion } from 'motion/react';
 import { BrandLogo } from './BrandLogo';
@@ -41,7 +41,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   return (
     <header className="sticky top-0 z-30 bg-[#F1F4EF]/95 backdrop-blur-md border-b border-[#102A43]/10 transition-all">
       {/* Announcement bar - navy centered, proper height */}
-      <div className="bg-[#102A43] text-white text-[11px] py-2.5 px-4 text-center font-medium tracking-wide border-b border-white/10 flex justify-center items-center min-h-[28px]">
+      <div className="bg-[#102A43] text-white text-xs py-2.5 px-4 text-center font-medium tracking-wide border-b border-white/10 flex justify-center items-center min-h-\[1\.75rem\]">
         {t.announcement}
       </div>
 
@@ -92,7 +92,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               aria-label={t.navChangeLanguage}
             >
               <img src={flagImages[language]} alt="" className="w-5 h-auto rounded-sm" />
-              <span className="text-[10px] mr-1">{flagLabels[language]}</span>
+              <span className="text-xs mr-1">{flagLabels[language]}</span>
             </button>
           </div>
 
@@ -125,7 +125,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                       aria-label={t.navSwitchTo.replace('{lang}', flagLabels[lang])}
                     >
                       <img src={flagImages[lang]} alt="" className="w-4 h-auto rounded-sm" />
-                      <span className="text-[10px]">{flagLabels[lang]}</span>
+                      <span className="text-xs">{flagLabels[lang]}</span>
                     </button>
                   );
                 })}
@@ -157,7 +157,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ type: 'spring', stiffness: 500, damping: 20 }}
-                  className="absolute -top-1.5 -right-2 bg-white text-[#102A43] text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-xs ring-1 ring-[#102A43]/15"
+                  className="absolute -top-1.5 -right-2 bg-white text-[#102A43] text-xs font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-xs ring-1 ring-[#102A43]/15"
                 >
                   {totalItems}
                 </motion.span>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { MessageCircle, X, Sparkles, RotateCcw } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -130,7 +130,7 @@ export const SavedQuizBanner: React.FC<SavedQuizBannerProps> = ({
         </div>
 
         {/* Small timestamp */}
-        <p className="absolute bottom-2 right-3 text-[10px] text-white/40 text-right">
+        <p className="absolute bottom-2 right-3 text-xs text-white/40 text-right">
           {t.savedDiagnosed.replace(
             '{date}',
             new Date(savedResult.completedAt).toLocaleDateString(dateLocale, { day: '2-digit', month: 'short' })

@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { motion } from 'motion/react';
 import { Droplets, Sparkles, Sun, Leaf, ShieldCheck, Sparkle } from 'lucide-react';
 import { CategoryId, CategoryOption } from '../types';
@@ -57,7 +57,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
               key={cat.id}
               onClick={() => onSelectCategory(cat.id)}
               whileTap={{ scale: 0.94 }}
-              className={`flex flex-col items-center gap-1.5 shrink-0 px-3.5 py-3 rounded-2xl transition-all duration-200 min-w-[76px] cursor-pointer ${
+              className={`flex flex-col items-center gap-1.5 shrink-0 px-3.5 py-3 rounded-2xl transition-all duration-200 min-w-[4.75rem] cursor-pointer ${
                 isSelected
                   ? 'bg-[#102A43] text-white shadow-md shadow-[#102A43]/15'
                   : 'bg-white/80 hover:bg-white text-neutral-600 border border-[#102A43]/10 hover:border-[#102A43]/30'
@@ -82,3 +82,4 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
     </section>
   );
 };
+

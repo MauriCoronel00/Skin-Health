@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import {
   CheckCircle2,
@@ -67,7 +67,7 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
       envioAConfirmar: order.envioAConfirmar,
       nombre: order.customerName,
       telefono: order.customerPhone ?? '',
-      direccion: `${order.customerAddress}${order.googleMapsUrl ? ' — ' + order.googleMapsUrl : ''}`,
+      direccion: `${order.customerAddress}${order.googleMapsUrl ? ' â€” ' + order.googleMapsUrl : ''}`,
     });
 
     const encoded = encodeURIComponent(message);
@@ -76,7 +76,7 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
 
   const requestReview = () => {
     const firstName = order.customerName.trim().split(' ')[0] || 'hola';
-    const message = `Hola ${firstName}! 💙 Gracias por tu pedido ${order.orderId} en Skin Health. ¿Cómo te fue con los productos? Si tenés un minuto, contanos tu experiencia y ayudá a otras personas a elegir su rutina. Podés dejar tu opinión directamente en la tienda: https://skin-health-three.vercel.app/`;
+    const message = `Hola ${firstName}! ðŸ’™ Gracias por tu pedido ${order.orderId} en Skin Health. Â¿CÃ³mo te fue con los productos? Si tenÃ©s un minuto, contanos tu experiencia y ayudÃ¡ a otras personas a elegir su rutina. PodÃ©s dejar tu opiniÃ³n directamente en la tienda: https://skin-health-three.vercel.app/`;
     const encoded = encodeURIComponent(message);
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encoded}`, '_blank', 'noopener,noreferrer');
   };
@@ -103,7 +103,7 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
             <CheckCircle2 className="w-8 h-8" />
           </div>
 
-          <span className="text-[11px] font-bold uppercase tracking-widest text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-100">
+          <span className="text-xs font-bold uppercase tracking-widest text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-100">
             {t.orderSuccessTitle}
           </span>
 
@@ -142,7 +142,7 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
             </h4>
             <div className="space-y-2.5 text-xs">
               <div className="p-3 bg-[#FAF8F5] rounded-xl border border-neutral-100 flex items-start gap-3">
-                <span className="w-5 h-5 rounded-full bg-[#102A43] text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">
+                <span className="w-5 h-5 rounded-full bg-[#102A43] text-white text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
                   1
                 </span>
                 <div>
@@ -154,7 +154,7 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
               </div>
 
               <div className="p-3 bg-[#FAF8F5] rounded-xl border border-neutral-100 flex items-start gap-3">
-                <span className="w-5 h-5 rounded-full bg-[#102A43] text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">
+                <span className="w-5 h-5 rounded-full bg-[#102A43] text-white text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
                   2
                 </span>
                 <div>
@@ -166,7 +166,7 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
               </div>
 
               <div className="p-3 bg-[#FAF8F5] rounded-xl border border-neutral-100 flex items-start gap-3">
-                <span className="w-5 h-5 rounded-full bg-[#102A43] text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">
+                <span className="w-5 h-5 rounded-full bg-[#102A43] text-white text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
                   3
                 </span>
                 <div>
@@ -186,7 +186,7 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
                 <Package className="w-3.5 h-3.5 text-neutral-500" />
                 <span>{t.orderSummary}</span>
               </span>
-              <span className="font-normal text-neutral-500 text-[11px]">{order.items.length} {t.orderItems}</span>
+              <span className="font-normal text-neutral-500 text-xs">{order.items.length} {t.orderItems}</span>
             </h4>
 
             <div className="divide-y divide-neutral-100 bg-[#FAF8F5] rounded-xl p-3 border border-neutral-100 text-xs">
@@ -265,3 +265,4 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
     </div>
   );
 };
+

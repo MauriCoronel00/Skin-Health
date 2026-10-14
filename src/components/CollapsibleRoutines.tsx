@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+﻿import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'motion/react';
 import { ChevronDown, ChevronUp, ShoppingBag, Repeat } from 'lucide-react';
 import { useSupabase } from '../hooks/useSupabase';
@@ -35,7 +35,7 @@ interface SkincareRoutine {
 interface CollapsibleRoutinesProps {
   onAddRoutineToCart?: (products: Product[]) => void;
   onQuickView?: (product: Product) => void;
-  /** Número ("01".."05") a expandir y mostrar (viene del quiz). */
+  /** NÃºmero ("01".."05") a expandir y mostrar (viene del quiz). */
   focusNumber?: string | null;
 }
 
@@ -59,7 +59,7 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
           .from('skincare_routines')
           .select('*'),
         fetchProducts().catch((e) => {
-          console.error('⚠️ Error cargando productos:', e);
+          console.error('âš ï¸ Error cargando productos:', e);
           return [] as Product[];
         }),
       ]);
@@ -69,20 +69,20 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
         throw routinesRes.error;
       }
 
-      // Mapa productId → Product completo
+      // Mapa productId â†’ Product completo
       const lookup: ProductLookup = {};
       productsList.forEach((p) => {
         lookup[p.id] = p;
       });
 
-      // Sort client-side por number numérico (tolerante a espacios/formato)
+      // Sort client-side por number numÃ©rico (tolerante a espacios/formato)
       const sortedRoutines = [...(routinesRes.data || [])].sort((a, b) => {
         const na = parseInt(String(a.number || '').trim(), 10) || 0;
         const nb = parseInt(String(b.number || '').trim(), 10) || 0;
         return na - nb;
       });
 
-      // Mapear campos multilingües
+      // Mapear campos multilingÃ¼es
       const localizedRoutines = sortedRoutines.map((r) => ({
         ...r,
         title: r[`title_${language}`] || r.title,
@@ -95,7 +95,7 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
       setLoading(false);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : t.errUnexpected;
-      console.error('❌ Excepción al fetch:', message);
+      console.error('âŒ ExcepciÃ³n al fetch:', message);
       setError(message);
       setLoading(false);
     }
@@ -159,7 +159,7 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
     return <RoutinesSectionSkeleton />;
   }
 
-  // Si hubo error, mostrar mensaje útil
+  // Si hubo error, mostrar mensaje Ãºtil
   if (error && !loading) {
     return (
       <div className="text-center py-12 text-red-600">
@@ -292,7 +292,7 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
                           >
                             {/* Paso */}
                             <span className="text-xs font-bold text-[#102A43]/70 uppercase tracking-wider">
-                              {t.routinesStep} {step.stepNumber} · {step.label}
+                              {t.routinesStep} {step.stepNumber} Â· {step.label}
                             </span>
 
                             {/* Imagen del producto (80px) */}
@@ -355,14 +355,14 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
                                           className="w-10 h-10 object-contain rounded-lg bg-white p-1 shrink-0 border border-neutral-100"
                                         />
                                         <span className="flex-1 min-w-0">
-                                          <span className="block text-[10px] font-bold uppercase tracking-wider text-[#102A43]/60 leading-tight">
+                                          <span className="block text-xs font-bold uppercase tracking-wider text-[#102A43]/60 leading-tight">
                                             {alt.brand}
                                           </span>
-                                          <span className="block text-[11px] font-semibold text-neutral-800 leading-tight line-clamp-1">
+                                          <span className="block text-xs font-semibold text-neutral-800 leading-tight line-clamp-1">
                                             {alt.name}
                                           </span>
                                         </span>
-                                        <span className="text-[11px] font-bold text-[#102A43] shrink-0">
+                                        <span className="text-xs font-bold text-[#102A43] shrink-0">
                                           {formatCurrency(alt.price)}
                                         </span>
                                       </button>
@@ -372,7 +372,7 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
                               </div>
                             )}
 
-                            {/* Nota clínica del paso */}
+                            {/* Nota clÃ­nica del paso */}
                             {stepNote && (
                               <p className="text-xs text-neutral-500 italic leading-tight mt-1">
                                 {stepNote}
@@ -403,7 +403,7 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
                       </div>
                     )}
 
-                    {/* Botón Agregar Rutina al Carrito */}
+                    {/* BotÃ³n Agregar Rutina al Carrito */}
                     {onAddRoutineToCart && (() => {
                       const routineProducts = getRoutineProducts(routine);
                       const total = getRoutineTotal(routine);
@@ -434,7 +434,7 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
                           >
                             <ShoppingBag className="w-4 h-4" />
                             {isAdded
-                              ? `✓ ${t.routineAddedMsg}`
+                              ? `âœ“ ${t.routineAddedMsg}`
                               : t.routineAddCta.replace('{count}', String(routineProducts.length))}
                           </button>
                         </div>

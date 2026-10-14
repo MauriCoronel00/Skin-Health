@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { motion, AnimatePresence } from 'motion/react';
 import { Eye, Plus, Check } from 'lucide-react';
@@ -22,7 +22,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const { formatCurrency, language, t } = useLanguage();
 
   const labels = {
-    es: { lowStock: '¡Pocas unidades!', variants: 'variantes', inCart: 'en carrito' },
+    es: { lowStock: 'Â¡Pocas unidades!', variants: 'variantes', inCart: 'en carrito' },
     pt: { lowStock: 'Poucas unidades!', variants: 'variantes', inCart: 'no carrinho' },
     en: { lowStock: 'Low stock!', variants: 'variants', inCart: 'in cart' },
   };
@@ -88,26 +88,26 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       <div className="flex items-center justify-between gap-2 mb-3 h-6">
         <div className="flex items-center gap-1 flex-1 min-w-0">
           {product.badge ? (
-            <span className="inline-block text-[10px] sm:text-xs font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full bg-[#102A43]/5 text-[#102A43] truncate">
+            <span className="inline-block text-xs sm:text-xs font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full bg-[#102A43]/5 text-[#102A43] truncate">
               {product.badge}
             </span>
           ) : (
-            <span className="inline-block text-xs text-transparent select-none">·</span>
+            <span className="inline-block text-xs text-transparent select-none">Â·</span>
           )}
           {product.stock !== undefined && product.stock > 0 && product.stock <= 5 && (
-            <span className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-100 animate-pulse">
+            <span className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-100 animate-pulse">
               <span className="w-1.5 h-1.5 rounded-full bg-amber-500" aria-hidden="true"></span>
               {L.lowStock}
             </span>
           )}
           {product.variants && product.variants.length > 1 && (
-            <span className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full bg-[#102A43]/5 text-[#102A43]">
+            <span className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full bg-[#102A43]/5 text-[#102A43]">
               {product.variants.length} {L.variants}
             </span>
           )}
           <button
             onClick={handleToggleWishlist}
-            className={`inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full transition-colors ${
+            className={`inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full transition-colors ${
               isInWishlist
                 ? 'bg-amber-50 text-amber-700 border border-amber-100 hover:border-amber-200'
                 : 'bg-white text-neutral-700 border border-neutral-200 hover:border-neutral-300'
@@ -144,7 +144,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         {product.image && !imgError ? (
           <img
             src={productImageUrl(product.image, 400)}
-            alt={product.name}
+            alt={product.name.replace(/[^\p{L}\p{N}\s\p{P}]/gu, '').trim()}
             className="w-full h-full object-contain object-center mix-blend-multiply brightness-[1.06] contrast-[1.08] transition-transform duration-500 ease-out group-hover:scale-[1.05]"
             loading="lazy"
             onError={() => setImgError(true)}
@@ -162,7 +162,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <motion.span
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            className="absolute top-2 left-2 bg-[#102A43] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-md shadow-xs"
+            className="absolute top-2 left-2 bg-[#102A43] text-white text-xs font-bold px-1.5 py-0.5 rounded-md shadow-xs"
           >
             {quantityInCart} {L.inCart}
           </motion.span>
@@ -171,20 +171,20 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
       {/* Info: marca, nombre y fila de precio + agregar */}
       <div className="px-2 pt-3 pb-2">
-        <p className="text-[10px] sm:text-[11px] font-medium text-neutral-400 truncate">
+        <p className="text-xs sm:text-xs font-medium text-neutral-400 truncate">
           {product.brand}
-          {product.volume ? ` · ${product.volume}` : ''}
+          {product.volume ? ` Â· ${product.volume}` : ''}
           {product.variants?.[0]?.size && ` ${product.variants[0].size}`}
         </p>
         <h3
           onClick={() => onQuickView(product)}
-          className="font-serif text-[13px] sm:text-sm font-semibold text-[#102A43] leading-snug line-clamp-2 min-h-[2.6em] mt-0.5 cursor-pointer hover:text-[#1e3a5f] transition-colors"
+          className="font-serif text-sm sm:text-sm font-semibold text-[#102A43] leading-snug line-clamp-2 min-h-[2.6em] mt-0.5 cursor-pointer hover:text-[#1e3a5f] transition-colors"
         >
           {product.name}
         </h3>
 
         <div className="flex items-center justify-between gap-3 mt-3">
-          <span className="text-sm sm:text-[15px] font-bold text-[#102A43] tabular-nums tracking-tight">
+          <span className="text-sm sm:text-sm font-bold text-[#102A43] tabular-nums tracking-tight">
             {formatCurrency(product.price)}
           </span>
           {onAdd && (

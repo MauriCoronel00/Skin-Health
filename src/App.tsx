@@ -1,4 +1,4 @@
-import { useCart } from './contexts/CartContext';
+﻿import { useCart } from './contexts/CartContext';
 import { useProducts } from './contexts/ProductContext';
 import { getBlogPost } from './data/blog';
 import { BlogPostView } from './components/BlogPostView';
@@ -348,15 +348,6 @@ return (
                   onRetakeQuiz={handleSavedQuizRetake}
                 />
 
-                <WelcomeSection
-                  open={showWelcome}
-                  onStartQuiz={() => {
-                    dismissWelcome();
-                    setQuizOpen(true);
-                  }}
-                  onClose={dismissWelcome}
-                />
-
                 <QuizSection
                   isOpen={quizOpen}
                   onClose={() => setQuizOpen(false)}
@@ -382,7 +373,7 @@ return (
                   </div>
 
                   <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
-                    <span className="text-[11px] text-neutral-400 font-medium mr-1 hidden sm:inline">
+                    <span className="text-xs text-neutral-400 font-medium mr-1 hidden sm:inline">
                       {t.filterBrand}
                     </span>
                     {brandOptions.map((brand) => (
@@ -425,7 +416,7 @@ return (
 
                 <HowItWorksSection />
 
-                {/* Rutinas como sugerencia debajo del catálogo */}
+                {/* Rutinas como sugerencia debajo del catÃ¡logo */}
                 <RoutinesSectionWrapper
                   onAddRoutineToCart={addMultipleToCart}
                   onQuickView={setQuickViewProduct}
@@ -505,14 +496,23 @@ return (
                 onOpenCart={() => setIsCartOpen(true)}
               />
 
-              <FooterSection
-                onOpenAdminPanel={() => {
-                  if (isAdmin) setIsAdminPanelOpen(true);
-                  else showToast(t.adminZone, t.adminLoginHint, 'info');
-                }}
-                isAdmin={isAdmin}
-              />
-            </div>
+<FooterSection
+                  onOpenAdminPanel={() => {
+                    if (isAdmin) setIsAdminPanelOpen(true);
+                    else showToast(t.adminZone, t.adminLoginHint, 'info');
+                  }}
+                  isAdmin={isAdmin}
+                />
+
+                <WelcomeSection
+                  open={showWelcome}
+                  onStartQuiz={() => {
+                    dismissWelcome();
+                    setQuizOpen(true);
+                  }}
+                  onClose={dismissWelcome}
+                />
+              </div>
           </ErrorBoundary>
       );
 }

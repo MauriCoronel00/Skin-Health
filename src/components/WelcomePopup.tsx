@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+﻿import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Sparkles, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -73,8 +73,8 @@ export const WelcomePopup: React.FC<WelcomePopupProps> = ({ open, onStartQuiz, o
             >
               Ahora no
             </button>
-            <p className="text-[11px] text-neutral-400 text-center mt-1">
-              Sin registro · Te toma un minuto
+            <p className="text-xs text-neutral-400 text-center mt-1">
+              Sin registro Â· Te toma un minuto
             </p>
           </motion.div>
         </div>
@@ -82,3 +82,4 @@ export const WelcomePopup: React.FC<WelcomePopupProps> = ({ open, onStartQuiz, o
     </AnimatePresence>
   );
 };
+

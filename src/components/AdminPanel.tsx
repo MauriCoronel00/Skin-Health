@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+﻿import React, { useEffect, useState, useCallback } from 'react';
 import { motion } from 'motion/react';
 import {
   X,
@@ -65,7 +65,7 @@ const ESTADO_STYLE: Record<PedidoEstado, string> = {
   cancelado: 'bg-rose-50 text-rose-700 border-rose-200',
 };
 
-/** Siguiente acción válida según estado (flujo manual: transferencia + WhatsApp). */
+/** Siguiente acciÃ³n vÃ¡lida segÃºn estado (flujo manual: transferencia + WhatsApp). */
 function nextActions(estado: PedidoEstado): { label: string; to: PedidoEstado; icon: React.ReactNode; form?: boolean }[] {
   if (estado === 'pendiente')
     return [
@@ -160,7 +160,7 @@ const PriceEditor: React.FC<{
       type="text"
       inputMode="numeric"
       disabled={saving}
-      value={draft ?? formatGuarani(row.precio_gs).replace('₲', '').trim()}
+      value={draft ?? formatGuarani(row.precio_gs).replace('â‚²', '').trim()}
       onChange={(e) => setDraft(e.target.value)}
       onBlur={commit}
       onKeyDown={(e) => {
@@ -190,7 +190,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
   const [payUrl, setPayUrl] = useState('');
   const [payingBusy, setPayingBusy] = useState(false);
   const [accessDenied, setAccessDenied] = useState(false);
-  // R14: estado local para responder reseñas desde el admin
+  // R14: estado local para responder reseÃ±as desde el admin
   const [respondingId, setRespondingId] = useState<string | null>(null);
   const [respuestaText, setRespuestaText] = useState('');
   const [savingRespuesta, setSavingRespuesta] = useState(false);
@@ -200,7 +200,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
     setError(null);
     setAccessDenied(false);
     try {
-      // Defensa en profundidad: el panel nunca confía solo en el botón oculto
+      // Defensa en profundidad: el panel nunca confÃ­a solo en el botÃ³n oculto
       if (!(await isCurrentUserAdmin())) {
         setAccessDenied(true);
         return;
@@ -216,7 +216,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
       setPendingReviews(revs.filter((r) => r.status === 'pending'));
       setAuditLog(logs);
     } catch {
-      setError('No se pudieron cargar los datos. Verificá tu sesión de administrador.');
+      setError('No se pudieron cargar los datos. VerificÃ¡ tu sesiÃ³n de administrador.');
     } finally {
       setLoading(false);
     }
@@ -236,7 +236,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" onClick={onClose}>
         <div className="bg-white rounded-3xl p-8 max-w-sm w-full text-center" onClick={(e) => e.stopPropagation()}>
           <h3 className="font-semibold text-neutral-900 mb-1">Zona de administradores</h3>
-          <p className="text-sm text-neutral-500 mb-5">Iniciá sesión con una cuenta administradora.</p>
+          <p className="text-sm text-neutral-500 mb-5">IniciÃ¡ sesiÃ³n con una cuenta administradora.</p>
           <button
             onClick={onClose}
             className="px-6 py-2.5 bg-[#102A43] text-white text-sm font-semibold rounded-full cursor-pointer"
@@ -259,7 +259,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
         const items = await fetchPedidoItems(pedido.id);
         setItemsCache((prev) => ({ ...prev, [pedido.id]: items }));
       } catch {
-        onShowToast('No se pudieron cargar los ítems', undefined, 'error');
+        onShowToast('No se pudieron cargar los Ã­tems', undefined, 'error');
       }
     }
   };
@@ -270,7 +270,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
       setPedidos((prev) => prev.map((p) => (p.id === pedido.id ? { ...p, estado: to } : p)));
       onShowToast(
         `Pedido ${to}`,
-        to === 'pagado' ? 'Se descontó stock automáticamente.' : undefined,
+        to === 'pagado' ? 'Se descontÃ³ stock automÃ¡ticamente.' : undefined,
         'success'
       );
     } catch {
@@ -297,7 +297,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
       setPayingId(null);
       setPayRef('');
       setPayUrl('');
-      onShowToast('Pago registrado', 'Se descontó stock automáticamente.', 'success');
+      onShowToast('Pago registrado', 'Se descontÃ³ stock automÃ¡ticamente.', 'success');
     } catch {
       onShowToast('No se pudo registrar el pago', undefined, 'error');
     } finally {
@@ -309,7 +309,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
     try {
       await setReviewStatus(id, 'approved');
       setPendingReviews((prev) => prev.filter((r) => r.id !== id));
-      onShowToast('Reseña aprobada', undefined, 'success');
+      onShowToast('ReseÃ±a aprobada', undefined, 'success');
     } catch {
       onShowToast('No se pudo aprobar', undefined, 'error');
     }
@@ -319,7 +319,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
     try {
       await setReviewStatus(id, 'hidden');
       setPendingReviews((prev) => prev.filter((r) => r.id !== id));
-      onShowToast('Reseña ocultada', undefined, 'info');
+      onShowToast('ReseÃ±a ocultada', undefined, 'info');
     } catch {
       onShowToast('No se pudo ocultar', undefined, 'error');
     }
@@ -421,9 +421,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-neutral-200 mb-4">
           <div>
-            <h3 className="font-semibold text-lg text-[#102A43]">Panel de administración</h3>
+            <h3 className="font-semibold text-lg text-[#102A43]">Panel de administraciÃ³n</h3>
             <p className="text-xs text-neutral-500 mt-0.5">
-              Pedidos, stock y reseñas pendientes de moderación.
+              Pedidos, stock y reseÃ±as pendientes de moderaciÃ³n.
             </p>
           </div>
           <button
@@ -441,8 +441,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
             [
               { id: 'pedidos', label: `Pedidos (${pedidos.length})`, icon: <Package className="w-4 h-4" /> },
               { id: 'stock', label: 'Stock', icon: <Boxes className="w-4 h-4" /> },
-              { id: 'reviews', label: `Reseñas (${pendingReviews.length})`, icon: <MessageSquareText className="w-4 h-4" /> },
-              { id: 'audit_log', label: `Auditoría (${auditLog.length})`, icon: <CheckCircle2 className="w-4 h-4" /> },
+              { id: 'reviews', label: `ReseÃ±as (${pendingReviews.length})`, icon: <MessageSquareText className="w-4 h-4" /> },
+              { id: 'audit_log', label: `AuditorÃ­a (${auditLog.length})`, icon: <CheckCircle2 className="w-4 h-4" /> },
             ] as { id: Tab; label: string; icon: React.ReactNode }[]
           ).map((t) => (
             <button
@@ -471,7 +471,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
           {loading ? (
             <div className="flex items-center justify-center py-14 text-neutral-500 text-sm gap-2">
               <Loader2 className="w-4 h-4 animate-spin" />
-              <span>Cargando…</span>
+              <span>Cargandoâ€¦</span>
             </div>
           ) : error ? (
             <div className="flex items-start gap-2 text-xs text-rose-700 bg-rose-50 p-3 rounded-xl border border-rose-100">
@@ -486,7 +486,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
                     <button
                       key={e}
                       onClick={() => setEstadoFilter(e)}
-                      className={`px-2.5 py-1 rounded-full text-[11px] font-semibold whitespace-nowrap cursor-pointer ${
+                      className={`px-2.5 py-1 rounded-full text-xs font-semibold whitespace-nowrap cursor-pointer ${
                         estadoFilter === e
                           ? 'bg-[#102A43] text-white'
                           : 'bg-white text-neutral-500 border border-neutral-200'
@@ -517,7 +517,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
                           </span>
                         </div>
                         <div className="text-neutral-500 mt-0.5 truncate">
-                          {p.cliente_nombre} · {p.cliente_telefono} ·{' '}
+                          {p.cliente_nombre} Â· {p.cliente_telefono} Â·{' '}
                           {new Date(p.creado_en).toLocaleDateString('es-PY', {
                             day: '2-digit',
                             month: 'short',
@@ -525,7 +525,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
                         </div>
                       </div>
                       <span
-                        className={`text-[11px] font-bold px-2 py-0.5 rounded-full border shrink-0 ${ESTADO_STYLE[p.estado]}`}
+                        className={`text-xs font-bold px-2 py-0.5 rounded-full border shrink-0 ${ESTADO_STYLE[p.estado]}`}
                       >
                         {ESTADO_LABEL[p.estado]}
                       </span>
@@ -536,7 +536,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
                         {(itemsCache[p.id] ?? []).map((it) => (
                           <div key={it.id} className="flex items-center justify-between text-neutral-700">
                             <span>
-                              {it.producto_nombre ?? it.producto_id} × {it.cantidad}
+                              {it.producto_nombre ?? it.producto_id} Ã— {it.cantidad}
                             </span>
                             <span className="font-semibold">
                               {formatGuarani(it.precio_unitario_gs * it.cantidad)}
@@ -544,16 +544,16 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
                           </div>
                         ))}
                         <div className="flex items-center justify-between text-neutral-500">
-                          <span>Envío</span>
+                          <span>EnvÃ­o</span>
                           <span className="font-semibold">
                             {formatGuarani(p.costo_envio_gs ?? 0)}
                           </span>
                         </div>
                         {p.direccion_envio && (
-                          <p className="text-neutral-500">📍 {p.direccion_envio}</p>
+                          <p className="text-neutral-500">ðŸ“ {p.direccion_envio}</p>
                         )}
                         {p.referencia_pago && (
-                          <p className="text-neutral-500">🧾 Ref: {p.referencia_pago}</p>
+                          <p className="text-neutral-500">ðŸ§¾ Ref: {p.referencia_pago}</p>
                         )}
                         {p.comprobante_url && (
                           <a
@@ -566,7 +566,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
                           </a>
                         )}
                         {p.confirmado_por && (
-                          <p className="text-neutral-500">✅ Confirmado por: {p.confirmado_por}</p>
+                          <p className="text-neutral-500">âœ… Confirmado por: {p.confirmado_por}</p>
                         )}
                         <div className="flex items-center gap-2 pt-1 flex-wrap">
                           {nextActions(p.estado).map((a) => (
@@ -618,11 +618,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
                             (() => {
                               const primero = (p.cliente_nombre ?? '').trim().split(' ')[0] || 'hola';
                               const estadoTxt =
-                                p.estado === 'pagado' ? 'confirmado el pago ✅' :
-                                p.estado === 'enviado' ? 'va en camino 🛵' : 'fue entregado 📦';
+                                p.estado === 'pagado' ? 'confirmado el pago âœ…' :
+                                p.estado === 'enviado' ? 'va en camino ðŸ›µ' : 'fue entregado ðŸ“¦';
                               const link = linkRecuperacion(
                                 p.cliente_telefono,
-                                `Hola ${primero}, somos Skin Health 💙 tu pedido ${p.codigo_pedido ?? p.id.slice(0, 8)} ${estadoTxt}. Seguilo en vivo acá: ${trackingLink(p.codigo_pedido ?? p.id.slice(0, 8))}`
+                                `Hola ${primero}, somos Skin Health ðŸ’™ tu pedido ${p.codigo_pedido ?? p.id.slice(0, 8)} ${estadoTxt}. Seguilo en vivo acÃ¡: ${trackingLink(p.codigo_pedido ?? p.id.slice(0, 8))}`
                               );
                               if (!link) return null;
                               return (
@@ -645,7 +645,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
                               type="text"
                               value={payRef}
                               onChange={(e) => setPayRef(e.target.value)}
-                              placeholder="Referencia / N° de comprobante (opcional)"
+                              placeholder="Referencia / NÂ° de comprobante (opcional)"
                               className="w-full px-3 py-2 rounded-xl border border-neutral-300 text-xs focus:outline-none focus:border-[#102A43]"
                             />
                             <input
@@ -661,7 +661,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
                                 disabled={payingBusy}
                                 className="px-3 py-1.5 rounded-xl bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700 disabled:opacity-50 cursor-pointer"
                               >
-                                {payingBusy ? 'Guardando…' : 'Confirmar pago'}
+                                {payingBusy ? 'Guardandoâ€¦' : 'Confirmar pago'}
                               </button>
                               <button
                                 onClick={() => setPayingId(null)}
@@ -695,7 +695,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
                         <span className="font-semibold text-neutral-800">{s.nombre}</span>
                         <span className="text-neutral-400 ml-1.5">{s.marca}</span>
                         {!s.activo && (
-                          <span className="ml-1.5 text-[10px] bg-neutral-200 text-neutral-600 px-1.5 py-0.5 rounded font-semibold">
+                          <span className="ml-1.5 text-xs bg-neutral-200 text-neutral-600 px-1.5 py-0.5 rounded font-semibold">
                             Inactivo
                           </span>
                         )}
@@ -723,7 +723,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
               <div className="space-y-3">
                 {auditLog.length === 0 ? (
                   <p className="text-center text-xs text-neutral-400 py-10">
-                    Sin acciones en el auditorío. ¡Todo limpio! 🎉
+                    Sin acciones en el auditorÃ­o. Â¡Todo limpio! ðŸŽ‰
                   </p>
                 ) : (
                   auditLog.map((entry) => (
@@ -759,7 +759,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
               <div className="space-y-3">
               {pendingReviews.length === 0 ? (
                 <p className="text-center text-xs text-neutral-400 py-10">
-                  No hay reseñas pendientes. ¡Todo moderado! 🎉
+                  No hay reseÃ±as pendientes. Â¡Todo moderado! ðŸŽ‰
                 </p>
               ) : (
                 pendingReviews.map((r) => (
@@ -767,7 +767,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
                     <div className="flex items-center justify-between gap-3 mb-1.5">
                       <span className="font-semibold text-neutral-900">
                         {r.author.name}{' '}
-                        <span className="text-amber-500 font-bold">★ {r.rating}</span>
+                        <span className="text-amber-500 font-bold">â˜… {r.rating}</span>
                         {r.isVerifiedPurchase && (
                           <span className="ml-1.5 inline-block text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 font-semibold px-1.5 py-0.5 rounded-md">
                             Compra verificada
@@ -785,7 +785,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
                           <img
                             key={url}
                             src={url}
-                            alt="Foto de reseña"
+                            alt="Foto de reseÃ±a"
                             className="w-14 h-14 object-cover rounded-lg border border-neutral-200"
                             loading="lazy"
                           />
@@ -808,7 +808,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
                         <textarea
                           rows={3}
                           maxLength={1000}
-                          placeholder="Tu respuesta pública como Skin Health…"
+                          placeholder="Tu respuesta pÃºblica como Skin Healthâ€¦"
                           value={respuestaText}
                           onChange={(e) => setRespuestaText(e.target.value)}
                           className="w-full p-2 rounded-lg border border-neutral-300 text-xs focus:outline-none focus:border-[#102A43]"
@@ -820,7 +820,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
                             onClick={() => void saveResponder()}
                             className="px-3 py-1.5 rounded-lg bg-[#102A43] text-white text-xs font-semibold hover:bg-[#102A43]/90 disabled:opacity-50 cursor-pointer"
                           >
-                            {savingRespuesta ? 'Guardando…' : 'Publicar respuesta'}
+                            {savingRespuesta ? 'Guardandoâ€¦' : 'Publicar respuesta'}
                           </button>
                           <button
                             type="button"
@@ -869,3 +869,4 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
     </div>
   );
 };
+

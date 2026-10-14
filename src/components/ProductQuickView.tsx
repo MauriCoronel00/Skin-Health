@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { motion } from 'motion/react';
 import { X, Star, Plus, Check, Sparkles, Droplets, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
@@ -41,27 +41,27 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
 
   const labels = {
     es: {
-      description: 'Descripción',
+      description: 'DescripciÃ³n',
       benefits: 'Beneficios Principales',
       ingredients: 'Ingredientes Activos Clave',
       skinType: 'Tipo de Piel',
       howToUse: 'Modo de Uso',
       unitPrice: 'Precio Unitario',
-      lowStock: (n: number) => `¡Quedan solo ${n} unidades! Alta demanda`,
+      lowStock: (n: number) => `Â¡Quedan solo ${n} unidades! Alta demanda`,
       addToCart: 'Agregar al Pedido',
-      added: 'Agregado ✓',
+      added: 'Agregado âœ“',
       addToCartWithCount: (n: number) => `Agregar otro (+${n} en carrito)`,
     },
     pt: {
-      description: 'Descrição',
-      benefits: 'Benefícios Principais',
+      description: 'DescriÃ§Ã£o',
+      benefits: 'BenefÃ­cios Principais',
       ingredients: 'Ingredientes Ativos Chave',
       skinType: 'Tipo de Pele',
       howToUse: 'Modo de Uso',
-      unitPrice: 'Preço Unitário',
+      unitPrice: 'PreÃ§o UnitÃ¡rio',
       lowStock: (n: number) => `Restam apenas ${n} unidades! Alta procura`,
       addToCart: 'Adicionar ao Pedido',
-      added: 'Adicionado ✓',
+      added: 'Adicionado âœ“',
       addToCartWithCount: (n: number) => `Adicionar outro (+${n} no carrinho)`,
     },
     en: {
@@ -73,7 +73,7 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
       unitPrice: 'Unit Price',
       lowStock: (n: number) => `Only ${n} left! High demand`,
       addToCart: 'Add to Cart',
-      added: 'Added ✓',
+      added: 'Added âœ“',
       addToCartWithCount: (n: number) => `Add another (+${n} in cart)`,
     },
   };
@@ -263,7 +263,7 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
                 <span className="text-xs font-bold uppercase tracking-widest text-[#102A43]">
                   {product.brand}
                 </span>
-                <span className="text-neutral-300">•</span>
+                <span className="text-neutral-300">â€¢</span>
                 <span className="text-xs text-neutral-500">{product.volume}</span>
                 {product.variants?.[0]?.size && (
                   <span className="flex items-center gap-1">
@@ -300,14 +300,14 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
                     >
                       ({product.reviewsCount} opiniones de clientes)
                     </button>
-                    <span className="text-neutral-300">•</span>
+                    <span className="text-neutral-300">â€¢</span>
                   </>
                 ) : (
                   <>
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-100">
+                    <span className="text-xs font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-100">
                       {t.newArrival}
                     </span>
-                    <span className="text-neutral-300">•</span>
+                    <span className="text-neutral-300">â€¢</span>
                   </>
                 )}
                 <button
@@ -436,7 +436,7 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
         {/* Modal Action footer */}
         <div className="p-4 sm:p-5 bg-[#FAF8F5] border-t border-neutral-200 flex items-center justify-between gap-4">
           <div>
-            <span className="text-[11px] text-neutral-500 uppercase tracking-wider block">
+            <span className="text-xs text-neutral-500 uppercase tracking-wider block">
               {L.unitPrice}
             </span>
 <span className="text-lg font-bold text-[#102A43]">
@@ -498,3 +498,4 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
     </div>
   );
 };
+

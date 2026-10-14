@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { Star } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -90,11 +90,11 @@ export const StarRatingInput: React.FC<StarRatingInputProps> = ({
                 : 'text-rose-600'
             }`}
           >
-            {currentDisplay} {currentDisplay === 1 ? t.starCount.replace(/s$/, '') : t.starCount} —{' '}
+            {currentDisplay} {currentDisplay === 1 ? t.starCount.replace(/s$/, '') : t.starCount} â€”{' '}
             <span className="capitalize">{RATING_LABELS[currentDisplay]}</span>
           </motion.span>
         ) : (
-          <span className="text-[11px] text-neutral-400 font-normal">
+          <span className="text-xs text-neutral-400 font-normal">
             {t.starHint}
           </span>
         )}
@@ -102,3 +102,4 @@ export const StarRatingInput: React.FC<StarRatingInputProps> = ({
     </div>
   );
 };
+

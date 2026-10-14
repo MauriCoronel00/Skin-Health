@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+﻿import React, { useEffect } from 'react';
 import { ArrowLeft, Clock, Calendar, ChevronRight } from 'lucide-react';
 import { BlogPost } from '../data/blog';
 import { useProducts } from '../contexts/ProductContext';
@@ -77,7 +77,7 @@ export const BlogPostView: React.FC<BlogPostViewProps> = ({ post, onBack, onProd
                           />
                         )}
                         <div className="flex-1 min-w-0">
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-[#102A43]/60">
+                          <span className="text-xs font-bold uppercase tracking-wider text-[#102A43]/60">
                             {prod.brand}
                           </span>
                           <span className="block text-xs font-semibold text-neutral-800 truncate">
@@ -118,3 +118,4 @@ export const BlogPostView: React.FC<BlogPostViewProps> = ({ post, onBack, onProd
     </div>
   );
 };
+

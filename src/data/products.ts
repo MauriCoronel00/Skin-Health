@@ -14,7 +14,7 @@ export const formatPriceWithRate = (
   amountGs: number,
   language: 'es' | 'pt' | 'en'
 ): string => {
-  if (!amountGs || amountGs <= 0) return '--';
+  if (!amountGs || amountGs <= 0 || Number.isNaN(amountGs)) return '--';
 
   const amountUsd = Math.round((amountGs / BASE_RATE) * 100) / 100;
 

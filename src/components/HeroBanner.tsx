@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { motion } from 'motion/react';
 import { Star, ArrowDown, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -18,11 +18,11 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog, onOpe
 
   return (
     <section className="relative overflow-hidden rounded-3xl bg-[#102A43] text-white shadow-sm my-4 sm:my-6 border border-[#102A43]/20 flex flex-col">
-      {/* Foto: florece a la derecha en desktop, velo en móvil */}
+      {/* Foto: florece a la derecha en desktop, velo en mÃ³vil */}
       <div className="absolute inset-0 sm:left-auto sm:right-0 sm:w-[48%] z-0 pointer-events-none">
         <img
           src={heroRadiantBg}
-          alt="Skin Health · Rutinas de skincare importado en Paraguay"
+          alt="Skin Health Â· Rutinas de skincare importado en Paraguay"
           width={1200}
           height={670}
           className="w-full h-full object-cover object-[75%_center] opacity-40 sm:opacity-95 sm:[mask-image:linear-gradient(to_right,transparent,black_38%)]"
@@ -32,20 +32,20 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog, onOpe
         <div className="absolute inset-0 bg-gradient-to-r from-[#102A43] via-[#102A43]/85 to-transparent sm:hidden" />
       </div>
 
-      {/* Marca de agua en hangul: lengua vernácula del producto */}
+      {/* Marca de agua en hangul: lengua vernÃ¡cula del producto */}
       <div
         aria-hidden="true"
-        className="absolute -right-3 top-4 sm:top-8 z-0 select-none leading-none font-bold text-white/[0.05] text-[130px] sm:text-[190px] pointer-events-none"
+        className="absolute -right-3 top-4 sm:top-8 z-0 select-none leading-none font-bold text-white/[0.05] text-\[8\.125rem\] sm:text-\[11\.875rem\] pointer-events-none"
       >
-        피부
+        í”¼ë¶€
       </div>
 
-      {/* Contenido: una sola revelación orquestada */}
+      {/* Contenido: una sola revelaciÃ³n orquestada */}
       <motion.div
         initial={{ opacity: 0, y: 18 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-        className="relative z-10 p-6 sm:p-10 md:p-12 flex items-center min-h-[440px] sm:min-h-[480px]"
+        className="relative z-10 p-6 sm:p-10 md:p-12 flex items-center min-h-\[27\.5rem\] sm:min-h-\[30rem\]"
       >
         <div className="max-w-xl flex flex-col justify-center">
           {/* Pill de contexto */}
@@ -63,7 +63,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog, onOpe
             {t.heroSubtitle}
           </p>
 
-          {/* CTAs: quiz en ámbar (acción que vende) + catálogo fantasma */}
+          {/* CTAs: quiz en Ã¡mbar (acciÃ³n que vende) + catÃ¡logo fantasma */}
           <div className="flex flex-wrap items-center gap-3 mb-6">
             {onOpenQuiz && (
               <button
@@ -125,7 +125,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog, onOpe
             {BRAND_MARKS.map((brand, i) => (
               <React.Fragment key={brand}>
                 {i > 0 && (
-                  <span className="hidden sm:inline text-white/30 select-none" aria-hidden="true">·</span>
+                  <span className="hidden sm:inline text-white/30 select-none" aria-hidden="true">Â·</span>
                 )}
                 <span className="text-base sm:text-lg font-serif font-semibold text-white tracking-tight">
                   {brand}
@@ -138,3 +138,4 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog, onOpe
     </section>
   );
 };
+
