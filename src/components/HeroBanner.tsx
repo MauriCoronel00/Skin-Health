@@ -68,7 +68,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog, onOpe
             {onOpenQuiz && (
               <button
                 onClick={onOpenQuiz}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#C98A2C] text-white text-sm font-bold hover:bg-[#B57A25] transition-all shadow-md cursor-pointer"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-[#102A43] text-sm font-bold hover:bg-white/90 transition-all shadow-sm cursor-pointer"
               >
                 <span>{t.heroCtaQuiz}</span>
                 <ArrowRight className="w-4 h-4" />
