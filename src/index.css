@@ -13,8 +13,8 @@
   }
 
   body {
-    background-color: #F1F4EF;
-    color: #1A202C;
+    background-color: var(--bg-app);
+    color: var(--text-main);
     overflow-x: hidden;
     letter-spacing: 0.01em;
     overscroll-behavior: none;
@@ -74,6 +74,16 @@
     --color-success: #059669;
     --color-danger: #DC2626;
     --color-warning: #D97706;
+
+    /* Amina · superficies aireadas (mapeadas a identidad Skin Health) */
+    --bg-app: #F1F4EF; /* porcelana de marca como fondo general */
+    --surface: #FFFFFF; /* blanco puro para tarjetas */
+    --surface-soft: #F5F6F8; /* gris perla para pozos de imagen */
+    --border-subtle: rgba(16, 42, 67, 0.1); /* bordes sutiles tinta */
+    --text-main: #102A43; /* tinta de marca */
+    --text-muted: #6B7280; /* gris secundario */
+    --elevation-soft: 0 8px 30px rgba(16, 42, 67, 0.06);
+    --elevation-lift: 0 12px 36px rgba(16, 42, 67, 0.1);
   }
 
   h1, h2, h3, .font-serif {

@@ -1,7 +1,7 @@
 ﻿import React, { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { motion } from 'motion/react';
-import { X, Star, Plus, Check, Sparkles, Droplets, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
+import { X, Star, Plus, Check, Sparkles, Droplets, ChevronLeft, ChevronRight, ZoomIn, Heart } from 'lucide-react';
 import { Product, ProductReview, ReviewUser } from '../types';
 import { productImageUrl } from '../data/productImage';
 import { trackAddToCart } from '../utils/analytics';
@@ -37,6 +37,7 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
 }) => {
   const [justAdded, setJustAdded] = useState(false);
   const [zoomOpen, setZoomOpen] = useState(false);
+  const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
   const { formatCurrency, language, t } = useLanguage();
 
   const labels = {
@@ -263,7 +264,7 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
                 <span className="text-xs font-bold uppercase tracking-widest text-[#102A43]">
                   {product.brand}
                 </span>
-                <span className="text-neutral-300">â€¢</span>
+                <span className="text-neutral-300">•</span>
                 <span className="text-xs text-neutral-500">{product.volume}</span>
                 {product.variants?.[0]?.size && (
                   <span className="flex items-center gap-1">
@@ -300,14 +301,14 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
                     >
                       ({product.reviewsCount} opiniones de clientes)
                     </button>
-                    <span className="text-neutral-300">â€¢</span>
+                    <span className="text-neutral-300">•</span>
                   </>
                 ) : (
                   <>
                     <span className="text-xs font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-100">
                       {t.newArrival}
                     </span>
-                    <span className="text-neutral-300">â€¢</span>
+                    <span className="text-neutral-300">•</span>
                   </>
                 )}
                 <button
@@ -322,9 +323,39 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
               {/* Price */}
               <div className="text-2xl font-bold text-[#102A43]">
                 {formatCurrency(product.price)}
-              </div>
+</div>
+          </div>
+        </div>
+
+        {/* Variant Pills */}
+        {product.variants && product.variants.length > 1 && (
+          <div className="pt-4 border-t border-neutral-100">
+            <h4 className="text-xs font-semibold uppercase tracking-wider text-[#102A43] mb-3">
+              {language === 'es' ? 'Tamaño' : language === 'pt' ? 'Tamanho' : 'Size'}
+            </h4>
+            <div className="flex flex-wrap gap-2">
+              {product.variants.map((v) => {
+                const label = v.size || v.volume || v.pack || v.id;
+                const isSelected = selectedVariant === label;
+                return (
+                  <button
+                    key={v.id}
+                    type="button"
+                    onClick={() => setSelectedVariant(label)}
+                    className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                      isSelected
+                        ? 'bg-[#102A43] text-white shadow-sm'
+                        : 'bg-white text-neutral-700 border border-neutral-200 hover:border-[#102A43]/40 hover:bg-[#FAF8F5]'
+                    }`}
+                    aria-pressed={isSelected}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
             </div>
           </div>
+        )}
 
           {/* Description */}
           {product.description && (
@@ -423,7 +454,7 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
           </div>
         </div>
 
-        {/* Low stock alert */}
+{/* Low stock alert */}
         {product.stock !== undefined && product.stock > 0 && product.stock <= 5 && (
           <div className="px-4 sm:px-6 py-2">
             <div className="inline-flex items-center gap-1.5 px-3 py-2 bg-amber-50 text-amber-700 border border-amber-100 rounded-xl animate-pulse">
@@ -432,45 +463,6 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
             </div>
           </div>
         )}
-
-        {/* Modal Action footer */}
-        <div className="p-4 sm:p-5 bg-[#FAF8F5] border-t border-neutral-200 flex items-center justify-between gap-4">
-          <div>
-            <span className="text-xs text-neutral-500 uppercase tracking-wider block">
-              {L.unitPrice}
-            </span>
-<span className="text-lg font-bold text-[#102A43]">
-                {formatCurrency(product.price)}
-              </span>
-          </div>
-
-          <motion.button
-            whileTap={!justAdded ? { scale: 0.95 } : {}}
-            onClick={handleAdd}
-            disabled={justAdded}
-            className={`flex-1 max-w-xs py-3 px-5 rounded-2xl font-bold text-sm sm:text-base flex items-center justify-center gap-2 cursor-pointer shadow-md transition-all ${
-              justAdded
-                ? 'bg-emerald-600 text-white'
-                : 'bg-[#102A43] hover:bg-[#102A43]/90 text-white'
-            }`}
-          >
-            {justAdded ? (
-              <>
-                <Check className="w-5 h-5" />
-                <span>{t.addedExclaim}</span>
-              </>
-            ) : (
-              <>
-                <Plus className="w-5 h-5" />
-                <span>
-                  {quantityInCart > 0
-                    ? L.addToCartWithCount(quantityInCart)
-                    : L.addToCart}
-                </span>
-              </>
-            )}
-          </motion.button>
-        </div>
 
         {/* Zoom de imagen: lectura de etiqueta e ingredientes */}
         {zoomOpen && (
@@ -494,6 +486,52 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
             />
           </div>
         )}
+      </motion.div>
+
+      {/* Floating Action Bar - Pill style */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 20 }}
+        transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+        className="fixed bottom-4 left-4 right-4 max-w-xl mx-auto z-20 sm:relative sm:fixed sm:bottom-4 sm:left-auto sm:right-auto sm:max-w-none sm:mx-0"
+      >
+        <div className="bg-white/90 backdrop-blur-lg border border-neutral-100 shadow-[0_10px_30px_rgba(16,42,67,0.08)] rounded-full px-6 py-3 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <span className="text-xs text-neutral-500 uppercase tracking-wider">
+              {L.unitPrice}
+            </span>
+            <span className="text-lg font-bold text-[#102A43]">
+              {formatCurrency(product.price)}
+            </span>
+          </div>
+          <motion.button
+            whileTap={!justAdded ? { scale: 0.95 } : {}}
+            onClick={handleAdd}
+            disabled={justAdded}
+            className={`flex-shrink-0 py-2.5 px-6 rounded-full font-bold text-sm flex items-center justify-center gap-2 cursor-pointer shadow-md transition-all ${
+              justAdded
+                ? 'bg-[var(--brand-accent)] text-[var(--brand-accent-ink)]'
+                : 'bg-[#102A43] hover:bg-[#1e3a5f] text-white'
+            }`}
+          >
+            {justAdded ? (
+              <>
+                <Check className="w-5 h-5" />
+                <span>{t.addedExclaim}</span>
+              </>
+            ) : (
+              <>
+                <Plus className="w-5 h-5" />
+                <span>
+                  {quantityInCart > 0
+                    ? L.addToCartWithCount(quantityInCart)
+                    : L.addToCart}
+                </span>
+              </>
+            )}
+          </motion.button>
+        </div>
       </motion.div>
     </div>
   );

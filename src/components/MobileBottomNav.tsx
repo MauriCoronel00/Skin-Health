@@ -96,9 +96,9 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
       animate={{ y: 0, opacity: 1 }}
       exit={{ y: 100, opacity: 0 }}
       transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-      className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-xl border-t border-neutral-100 sm:hidden pb-safe pl-safe pr-safe"
+      className="fixed bottom-4 left-4 right-4 z-40 sm:hidden max-w-md mx-auto"
     >
-      <div className="flex items-center justify-around h-14 px-2 safe-area-bottom">
+      <div className="bg-white/90 backdrop-blur-lg border border-neutral-100 shadow-[0_10px_30px_rgba(16,42,67,0.08)] rounded-full px-6 py-3 flex items-center justify-between">
         {tabs.map((tab) => {
           const isActive = activeTab === tab.id;
           const showBadge = tab.id === 'cart' && cartCount > 0;
@@ -108,8 +108,10 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
               key={tab.id}
               onClick={() => handleTabClick(tab.id)}
               whileTap={{ scale: 0.92 }}
-              className={`flex flex-col items-center justify-center gap-1 flex-1 min-w-0 cursor-pointer relative active:scale-90 transition-transform duration-100 ${
-                isActive ? 'text-[#102A43]' : 'text-neutral-400'
+              className={`flex flex-col items-center justify-center gap-1 flex-1 min-w-0 cursor-pointer relative active:scale-90 transition-all duration-200 ${
+                isActive
+                  ? 'text-white bg-[#102A43] px-4 rounded-full shadow-sm'
+                  : 'text-neutral-400 hover:text-neutral-600'
               }`}
               aria-current={isActive ? 'page' : undefined}
               aria-label={labels[tab.id]}
@@ -133,16 +135,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
               }`}>
                 {labels[tab.id]}
               </span>
-              {/* Active indicator */}
-              <motion.div
-                layoutId="active-indicator"
-                className={`absolute top-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#102A43] ${
-                  isActive ? 'opacity-100' : 'opacity-0 scale-0'
-                }`}
-                initial={false}
-                transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-              />
-            </motion.button>
+              </motion.button>
           );
         })}
       </div>
