@@ -22,7 +22,7 @@ src/
 ├── i18n/               # Diccionarios por idioma (ES/PT/EN) + tipos y formato moneda
 ├── lib/                # supabaseClient
 ├── utils/              # analytics, envio, seo, productLink, quizWhatsApp,
-│                       # recuperacion, reviewsStorage, exchangeRate (+*.test.ts)
+│                       # recuperacion, reviewsStorage (+*.test.ts)
 ├── assets/             # Imagen hero + imágenes empaquetadas
 └── test/               # setup vitest
 ```

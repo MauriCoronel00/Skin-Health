@@ -8,7 +8,6 @@ import {
   MessageCircle,
   ShoppingBag,
   Check,
-  MapPin,
   User,
   Phone,
   Link2,
@@ -16,7 +15,6 @@ import {
   Truck,
   Loader2,
   AlertCircle,
-  CheckCircle2,
 } from 'lucide-react';
 import { CartItem } from '../types';
 import { productImageUrl } from '../data/productImage';
@@ -117,7 +115,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     try {
       const saved = localStorage.getItem('skinhealth_customer_data_v1');
       if (saved) return !!JSON.parse(saved).googleMapsUrl;
-    } catch {}
+    } catch {
+      // ignore: sin Maps guardado se usa el valor por defecto
+    }
     return false;
   });
   /** Honeypot anti-bots: los humanos nunca lo completan (campo oculto). */
@@ -247,7 +247,6 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     // Throttle por dispositivo: frena rÃ¡fagas de pedidos duplicados/spam
     try {
       const last = Number(localStorage.getItem(ORDER_THROTTLE_KEY) || 0);
-      // eslint-disable-next-line react-hooks/purity
       const now = lastOrderTimeRef.current || Date.now();
       if (now - last < ORDER_MIN_GAP_SECONDS * 1000) {
         onShowToast(
@@ -325,7 +324,6 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     const { codigo: orderId, totalGs: serverTotal, costoEnvioGs: serverEnvio, whatsappUrl } = receipt;
 
     try {
-      // eslint-disable-next-line react-hooks/purity
       const now = Date.now();
       lastOrderTimeRef.current = now;
       localStorage.setItem(ORDER_THROTTLE_KEY, String(now));

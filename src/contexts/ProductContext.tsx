@@ -74,17 +74,11 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
   }, []);
 
+  // Carga inicial del catálogo al montar o cambiar idioma (fetch legítimo en efecto).
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch inicial, no render en cascada
     void loadCatalog(language);
   }, [language, loadCatalog]);
-
-  useEffect(() => {
-    const handleLanguageChange = () => {
-      void loadCatalog(language);
-    };
-    // El idioma ya viene del contexto, no necesito suscribirme a cambios adicionales
-    // ya que language ya viene de useLanguage() arriba
-  }, [language]);
 
   const filteredProducts = useMemo(() => {
     const skinFilters = getSkinFilters(t);

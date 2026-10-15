@@ -651,7 +651,6 @@ URLs no-Storage pasan sin cambio.
 | Recovery WA | `src/utils/recuperacion.ts` |
 | Analytics | `src/utils/analytics.ts` |
 | SEO | `src/utils/seo.ts` |
-| Exchange rate | `src/utils/exchangeRate.ts` |
 | Product links | `src/utils/productLink.ts` |
 | Review storage | `src/utils/reviewsStorage.ts` |
 | Cart drawer | `src/components/CartDrawer.tsx` |
