@@ -12,7 +12,7 @@ interface Testimonio {
   productName: string;
 }
 
-/** ReseÃ±as destacadas (is_featured = true) aprobadas, con nombre del producto. */
+/** Reseñas destacadas (is_featured = true) aprobadas, con nombre del producto. */
 export async function fetchTestimonios(limit = 4): Promise<Testimonio[]> {
   const { data, error } = await supabase
     .from('reviews')
@@ -84,12 +84,12 @@ export const TestimoniosSection: React.FC = () => {
               ))}
             </div>
             <blockquote className="text-sm text-neutral-700 leading-relaxed flex-1 min-h-[60px]">
-              â€œ{item.comment}â€
+              “{item.comment}”
             </blockquote>
             <figcaption className="mt-3 pt-3 border-t border-neutral-100 text-xs space-y-0.5">
               <span className="font-semibold text-neutral-900 flex items-center gap-1.5">
                 {item.author}
-                {item.city && <span className="text-neutral-400">â€” {item.city}</span>}
+                {item.city && <span className="text-neutral-400">— {item.city}</span>}
               </span>
             </figcaption>
           </figure>

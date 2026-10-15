@@ -35,7 +35,7 @@ interface SkincareRoutine {
 interface CollapsibleRoutinesProps {
   onAddRoutineToCart?: (products: Product[]) => void;
   onQuickView?: (product: Product) => void;
-  /** NÃºmero ("01".."05") a expandir y mostrar (viene del quiz). */
+  /** Número ("01".."05") a expandir y mostrar (viene del quiz). */
   focusNumber?: string | null;
 }
 
@@ -59,7 +59,7 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
           .from('skincare_routines')
           .select('*'),
         fetchProducts().catch((e) => {
-          console.error('âš ï¸ Error cargando productos:', e);
+          console.error('⚠️ Error cargando productos:', e);
           return [] as Product[];
         }),
       ]);
@@ -69,20 +69,20 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
         throw routinesRes.error;
       }
 
-      // Mapa productId â†’ Product completo
+      // Mapa productId → Product completo
       const lookup: ProductLookup = {};
       productsList.forEach((p) => {
         lookup[p.id] = p;
       });
 
-      // Sort client-side por number numÃ©rico (tolerante a espacios/formato)
+      // Sort client-side por number numérico (tolerante a espacios/formato)
       const sortedRoutines = [...(routinesRes.data || [])].sort((a, b) => {
         const na = parseInt(String(a.number || '').trim(), 10) || 0;
         const nb = parseInt(String(b.number || '').trim(), 10) || 0;
         return na - nb;
       });
 
-      // Mapear campos multilingÃ¼es
+      // Mapear campos multilingües
       const localizedRoutines = sortedRoutines.map((r) => ({
         ...r,
         title: r[`title_${language}`] || r.title,
@@ -95,7 +95,7 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
       setLoading(false);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : t.errUnexpected;
-      console.error('âŒ ExcepciÃ³n al fetch:', message);
+      console.error('❌ Excepción al fetch:', message);
       setError(message);
       setLoading(false);
     }
@@ -159,7 +159,7 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
     return <RoutinesSectionSkeleton />;
   }
 
-  // Si hubo error, mostrar mensaje Ãºtil
+  // Si hubo error, mostrar mensaje útil
   if (error && !loading) {
     return (
       <div className="text-center py-12 text-red-600">
@@ -290,7 +290,7 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
                           >
                             {/* Paso */}
                             <span className="text-xs font-bold text-[#102A43]/70 uppercase tracking-wider">
-                              {t.routinesStep} {step.stepNumber} Â· {step.label}
+                              {t.routinesStep} {step.stepNumber} · {step.label}
                             </span>
 
                             {/* Imagen del producto (80px) */}
@@ -370,7 +370,7 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
                               </div>
                             )}
 
-                            {/* Nota clÃ­nica del paso */}
+                            {/* Nota clínica del paso */}
                             {stepNote && (
                               <p className="text-xs text-neutral-500 italic leading-tight mt-1">
                                 {stepNote}
@@ -401,7 +401,7 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
                       </div>
                     )}
 
-                    {/* BotÃ³n Agregar Rutina al Carrito */}
+                    {/* Botón Agregar Rutina al Carrito */}
                     {onAddRoutineToCart && (() => {
                       const routineProducts = getRoutineProducts(routine);
                       const total = getRoutineTotal(routine);
@@ -432,7 +432,7 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
                           >
                             <ShoppingBag className="w-4 h-4" />
                             {isAdded
-                              ? `âœ“ ${t.routineAddedMsg}`
+                              ? `✓ ${t.routineAddedMsg}`
                               : t.routineAddCta.replace('{count}', String(routineProducts.length))}
                           </button>
                         </div>

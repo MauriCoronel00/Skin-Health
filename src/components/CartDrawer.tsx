@@ -30,7 +30,7 @@ import {
 import { useLanguage } from '../contexts/LanguageContext';
 
 const CUSTOMER_DATA_KEY = 'skinhealth_customer_data_v1';
-/** Anti-spam: segundos mÃ­nimos entre pedidos desde el mismo dispositivo. */
+/** Anti-spam: segundos mínimos entre pedidos desde el mismo dispositivo. */
 const ORDER_THROTTLE_KEY = 'skinhealth_last_order_ts';
 const ORDER_MIN_GAP_SECONDS = 45;
 
@@ -57,7 +57,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 }) => {
   const { t, formatCurrency, dateLocale } = useLanguage();
 
-  /** DescripciÃ³n del error de pedido localizada por cÃ³digo. */
+  /** Descripción del error de pedido localizada por código. */
   const pedErrDesc = (err: PedidoError): string => {
     switch (err.code) {
       case 'EMPTY': return t.pedErrEmpty;
@@ -241,10 +241,10 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       : null;
 
   const handleOrderWhatsApp = async () => {
-    // Honeypot: bot detectado â†’ salida silenciosa
+    // Honeypot: bot detectado → salida silenciosa
     if (website.trim()) return;
 
-    // Throttle por dispositivo: frena rÃ¡fagas de pedidos duplicados/spam
+    // Throttle por dispositivo: frena ráfagas de pedidos duplicados/spam
     try {
       const last = Number(localStorage.getItem(ORDER_THROTTLE_KEY) || 0);
       const now = lastOrderTimeRef.current || Date.now();
@@ -463,7 +463,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               </div>
             ) : (
               <>
-                {/* Datos para el envÃ­o (Casillas de completado) */}
+                {/* Datos para el envío (Casillas de completado) */}
                 <div className="p-4 bg-[#FAF8F5] rounded-2xl border border-neutral-200/80 space-y-3.5 shadow-2xs">
                   {/* Honeypot anti-bots: invisible para humanos */}
                   <input
@@ -509,7 +509,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                       )}
                     </div>
 
-                    {/* 2. TelÃ©fono de contacto */}
+                    {/* 2. Teléfono de contacto */}
                     <div>
                       <label className="block text-xs font-semibold text-neutral-700 mb-1">
                         {t.cartPhoneLabel} <span className="text-rose-500">*</span>
@@ -567,7 +567,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                           />
                           <Link2 className="w-3.5 h-3.5 text-neutral-400 absolute left-2 top-1/2 -translate-y-1/2" />
                           <p className="text-xs text-neutral-500 mt-1">
-                            ðŸ’¡ {t.cartMapsHint}
+                            💡 {t.cartMapsHint}
                           </p>
                         </div>
                       )}
@@ -618,10 +618,10 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     )}
                   </div>
 
-                  {/* 6. MÃ©todo de Pago */}
+                  {/* 6. Método de Pago */}
                   <div className="space-y-1.5">
                     <label className="block text-xs font-semibold text-neutral-700">
-                      MÃ©todo de Pago <span className="text-rose-500">*</span>
+                      Método de Pago <span className="text-rose-500">*</span>
                     </label>
                     <div className="space-y-2">
                       {METODOS_PAGO.map((metodo) => {
@@ -773,7 +773,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 </div>
                 <p className="text-xs text-neutral-400">
                   {zonaActual.tiempoEstimado}
-                  {!zonaActual.permiteEfectivoContraEntrega && ' â€” Solo pago previo'}
+                  {!zonaActual.permiteEfectivoContraEntrega && ' — Solo pago previo'}
                 </p>
                 <div className="flex justify-between items-baseline pt-1.5 border-t border-neutral-100">
                   <span className="font-semibold text-sm sm:text-base text-neutral-900">
@@ -832,7 +832,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 </div>
               </div>
 
-              {/* AtenciÃ³n oficial */}
+              {/* Atención oficial */}
               <div className="flex items-center text-xs pt-0.5">
                 <span className="text-neutral-400">{t.cartOfficialCare}</span>
               </div>

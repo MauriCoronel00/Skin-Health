@@ -22,7 +22,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const { formatCurrency, language, t } = useLanguage();
 
   const labels = {
-    es: { lowStock: 'Â¡Pocas unidades!', variants: 'variantes', inCart: 'en carrito' },
+    es: { lowStock: '¡Pocas unidades!', variants: 'variantes', inCart: 'en carrito' },
     pt: { lowStock: 'Poucas unidades!', variants: 'variantes', inCart: 'no carrinho' },
     en: { lowStock: 'Low stock!', variants: 'variants', inCart: 'in cart' },
   };
@@ -92,7 +92,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               {product.badge}
             </span>
           ) : (
-            <span className="inline-block text-xs text-transparent select-none">Â·</span>
+            <span className="inline-block text-xs text-transparent select-none">·</span>
           )}
           {product.stock !== undefined && product.stock > 0 && product.stock <= 5 && (
             <span className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-100 animate-pulse">
@@ -173,7 +173,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       <div className="px-2 pt-3 pb-2">
         <p className="text-xs sm:text-xs font-medium text-neutral-400 truncate">
           {product.brand}
-          {product.volume ? ` Â· ${product.volume}` : ''}
+          {product.volume ? ` · ${product.volume}` : ''}
           {product.variants?.[0]?.size && ` ${product.variants[0].size}`}
         </p>
         <h3

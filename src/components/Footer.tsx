@@ -100,7 +100,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdminPanel, isAdmin }) => 
 
         {/* Bottom copyright */}
         <div className="pt-6 border-t border-white/10 text-center text-xs text-white/50 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span>Â© {new Date().getFullYear()} Skin Health. {t.footerRights}</span>
+          <span>© {new Date().getFullYear()} Skin Health. {t.footerRights}</span>
           <div className="flex items-center gap-4">
             <span className="inline-flex items-center gap-1 text-white/60">
                 {t.footerKbeauty} <Heart className="w-3.5 h-3.5 text-rose-400 fill-rose-400" /> {t.footerKbeautyTail}

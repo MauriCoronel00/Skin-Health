@@ -54,11 +54,11 @@ export const AdminReviewsModal: React.FC<AdminReviewsModalProps> = ({
                 <ShieldCheck className="w-4 h-4" />
               </span>
               <h3 className="font-semibold text-lg text-[#102A43]">
-                Panel de ModeraciÃ³n de ReseÃ±as
+                Panel de Moderación de Reseñas
               </h3>
             </div>
             <p className="text-xs text-neutral-500 mt-0.5">
-              Gestiona, aprueba, oculta o elimina opiniones enviadas por clientes y contenido de demostraciÃ³n.
+              Gestiona, aprueba, oculta o elimina opiniones enviadas por clientes y contenido de demostración.
             </p>
           </div>
 
@@ -100,7 +100,7 @@ export const AdminReviewsModal: React.FC<AdminReviewsModalProps> = ({
                 : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
             }`}
           >
-            Contenido DemostraciÃ³n ({reviews.filter((r) => !!r.isExample).length})
+            Contenido Demostración ({reviews.filter((r) => !!r.isExample).length})
           </button>
           <button
             onClick={() => setFilter('hidden')}
@@ -128,7 +128,7 @@ export const AdminReviewsModal: React.FC<AdminReviewsModalProps> = ({
         <div className="overflow-y-auto flex-1 space-y-3 pr-1">
           {filteredReviews.length === 0 ? (
             <div className="text-center py-10 text-neutral-400 text-xs">
-              No hay reseÃ±as en esta categorÃ­a.
+              No hay reseñas en esta categoría.
             </div>
           ) : (
             filteredReviews.map((rev) => (
@@ -144,7 +144,7 @@ export const AdminReviewsModal: React.FC<AdminReviewsModalProps> = ({
                   <div className="flex items-center gap-2">
                     <span className="font-semibold text-neutral-900">{rev.author.name}</span>
                     <span className="text-amber-500 font-bold flex items-center gap-0.5">
-                      â˜… {rev.rating}
+                      ★ {rev.rating}
                     </span>
                     {rev.isExample ? (
                       <span className="text-xs bg-sky-50 text-sky-700 px-1.5 py-0.5 rounded font-medium border border-sky-100">
@@ -205,7 +205,7 @@ export const AdminReviewsModal: React.FC<AdminReviewsModalProps> = ({
                       type="button"
                       onClick={() => onDeleteReview(rev.id)}
                       className="p-1.5 rounded-lg text-neutral-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
-                      title="Eliminar reseÃ±a"
+                      title="Eliminar reseña"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>

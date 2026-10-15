@@ -15,7 +15,7 @@ interface GoogleAuthButtonProps {
 
 /**
  * Identidad con OAuth real (Supabase + Google). Sin formularios manuales:
- * el nombre visible sale de la sesiÃ³n, nunca de texto libre.
+ * el nombre visible sale de la sesión, nunca de texto libre.
  */
 export const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({
   onUserAuthenticated,

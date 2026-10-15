@@ -74,7 +74,7 @@ export const WelcomePopup: React.FC<WelcomePopupProps> = ({ open, onStartQuiz, o
               Ahora no
             </button>
             <p className="text-xs text-neutral-400 text-center mt-1">
-              Sin registro Â· Te toma un minuto
+              Sin registro · Te toma un minuto
             </p>
           </motion.div>
         </div>

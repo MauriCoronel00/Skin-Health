@@ -105,7 +105,7 @@ export const FloatingCart: React.FC<FloatingCartProps> = ({
                 </div>
               </div>
 
-              {/* Total amount formatted in GuaranÃ­es */}
+              {/* Total amount formatted in Guaraníes */}
               <div className="text-right">
                 <motion.span
                   key={totalAmount}
@@ -118,7 +118,7 @@ export const FloatingCart: React.FC<FloatingCartProps> = ({
               </div>
             </div>
 
-            {/* Bottom Row / CTA button: "Ver pedido â†’" */}
+            {/* Bottom Row / CTA button: "Ver pedido →" */}
             <motion.button
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.98 }}

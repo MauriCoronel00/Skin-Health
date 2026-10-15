@@ -41,27 +41,27 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
 
   const labels = {
     es: {
-      description: 'DescripciÃ³n',
+      description: 'Descripción',
       benefits: 'Beneficios Principales',
       ingredients: 'Ingredientes Activos Clave',
       skinType: 'Tipo de Piel',
       howToUse: 'Modo de Uso',
       unitPrice: 'Precio Unitario',
-      lowStock: (n: number) => `Â¡Quedan solo ${n} unidades! Alta demanda`,
+      lowStock: (n: number) => `¡Quedan solo ${n} unidades! Alta demanda`,
       addToCart: 'Agregar al Pedido',
-      added: 'Agregado âœ“',
+      added: 'Agregado ✓',
       addToCartWithCount: (n: number) => `Agregar otro (+${n} en carrito)`,
     },
     pt: {
-      description: 'DescriÃ§Ã£o',
-      benefits: 'BenefÃ­cios Principais',
+      description: 'Descrição',
+      benefits: 'Benefícios Principais',
       ingredients: 'Ingredientes Ativos Chave',
       skinType: 'Tipo de Pele',
       howToUse: 'Modo de Uso',
-      unitPrice: 'PreÃ§o UnitÃ¡rio',
+      unitPrice: 'Preço Unitário',
       lowStock: (n: number) => `Restam apenas ${n} unidades! Alta procura`,
       addToCart: 'Adicionar ao Pedido',
-      added: 'Adicionado âœ“',
+      added: 'Adicionado ✓',
       addToCartWithCount: (n: number) => `Adicionar outro (+${n} no carrinho)`,
     },
     en: {
@@ -73,7 +73,7 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
       unitPrice: 'Unit Price',
       lowStock: (n: number) => `Only ${n} left! High demand`,
       addToCart: 'Add to Cart',
-      added: 'Added âœ“',
+      added: 'Added ✓',
       addToCartWithCount: (n: number) => `Add another (+${n} in cart)`,
     },
   };

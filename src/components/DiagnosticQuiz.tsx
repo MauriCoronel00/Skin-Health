@@ -24,7 +24,7 @@ interface DiagnosticQuizProps {
 
 type Step = 1 | 2 | 3 | 4 | 'result';
 
-/** Scoring por prioridad: sensible/rojez > acnÃ©/poros > manchas > lÃ­neas > hidrataciÃ³n. */
+/** Scoring por prioridad: sensible/rojez > acné/poros > manchas > líneas > hidratación. */
 function matchRoutine(skin: string, concerns: string[]): string {
   const c = new Set(concerns);
   if (skin === 'sensible' || c.has('rojez')) return 'hidratacion-sensible';

@@ -413,7 +413,7 @@ return (
 
                 <HowItWorksSection />
 
-                {/* Rutinas como sugerencia debajo del catÃ¡logo */}
+                {/* Rutinas como sugerencia debajo del catálogo */}
                 <RoutinesSectionWrapper
                   onAddRoutineToCart={addMultipleToCart}
                   onQuickView={setQuickViewProduct}

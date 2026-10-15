@@ -67,7 +67,7 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
       envioAConfirmar: order.envioAConfirmar,
       nombre: order.customerName,
       telefono: order.customerPhone ?? '',
-      direccion: `${order.customerAddress}${order.googleMapsUrl ? ' â€” ' + order.googleMapsUrl : ''}`,
+      direccion: `${order.customerAddress}${order.googleMapsUrl ? ' — ' + order.googleMapsUrl : ''}`,
     });
 
     const encoded = encodeURIComponent(message);
@@ -76,7 +76,7 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
 
   const requestReview = () => {
     const firstName = order.customerName.trim().split(' ')[0] || 'hola';
-    const message = `Hola ${firstName}! ðŸ’™ Gracias por tu pedido ${order.orderId} en Skin Health. Â¿CÃ³mo te fue con los productos? Si tenÃ©s un minuto, contanos tu experiencia y ayudÃ¡ a otras personas a elegir su rutina. PodÃ©s dejar tu opiniÃ³n directamente en la tienda: https://skin-health-three.vercel.app/`;
+    const message = `Hola ${firstName}! 💙 Gracias por tu pedido ${order.orderId} en Skin Health. ¿Cómo te fue con los productos? Si tenés un minuto, contanos tu experiencia y ayudá a otras personas a elegir su rutina. Podés dejar tu opinión directamente en la tienda: https://skin-health-three.vercel.app/`;
     const encoded = encodeURIComponent(message);
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encoded}`, '_blank', 'noopener,noreferrer');
   };
