@@ -31,7 +31,7 @@ StrictMode > MotionConfig > LanguageProvider > AuthProvider > ProductProvider > 
 
 **Path alias:** `@/*` → raíz del proyecto.
 
-**Code splitting:** chunks `vendor-react`, `vendor-motion`, `vendor-supabase`, `vendor-icons`.
+**Code splitting:** chunks `vendor-react`, `vendor-motion`, `vendor-supabase`, `vendor-icons` + 8 módulos diferidos con `React.lazy` (CartDrawer, ProductQuickView, AdminPanel, ReviewFormModal, DiagnosticQuiz, TrackingView, BlogPostView, OrderConfirmationModal) + diccionarios `translations.pt/en` por `import()` dinámico (ES en bundle inicial). Índice: 486,6 KB → 359,2 KB raw (114,7 KB gzip), medido oct-2026. Ver `docs/fachada-frontend.md` §2.
 
 ### Backend & Base de Datos
 
