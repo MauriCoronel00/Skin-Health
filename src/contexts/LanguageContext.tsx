@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Language } from '../types';
-import { translations, Translations, GS_PER_USD, GS_PER_BRL } from '../i18n/translations';
+import es from '../i18n/translations.es';
+import { Translations, GS_PER_USD, GS_PER_BRL } from '../i18n/translations';
 
 interface LanguageContextValue {
   language: Language;
@@ -15,6 +16,13 @@ interface LanguageContextValue {
 }
 
 const LOCAL_STORAGE_KEY = 'skinhealth_language_v1';
+
+// ES viaja en el bundle inicial (idioma por defecto); PT/EN se cargan bajo demanda.
+const localeLoaders: Record<Language, () => Promise<{ default: Translations }>> = {
+  es: () => Promise.resolve({ default: es }),
+  pt: () => import('../i18n/translations.pt'),
+  en: () => import('../i18n/translations.en'),
+};
 
 const LanguageContext = createContext<LanguageContextValue | undefined>(undefined);
 
@@ -31,13 +39,26 @@ const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children })
     const stored = localStorage.getItem(LOCAL_STORAGE_KEY) as Language | null;
     return stored ? stored : 'es';
   });
+  const [dictionaries, setDictionaries] = useState<Partial<Record<Language, Translations>>>({ es });
 
   useEffect(() => {
     localStorage.setItem(LOCAL_STORAGE_KEY, language);
-  }, [language]);
+    if (dictionaries[language]) return;
+    let cancelled = false;
+    localeLoaders[language]()
+      .then((m) => {
+        if (!cancelled) setDictionaries((prev) => ({ ...prev, [language]: m.default }));
+      })
+      .catch(() => {
+        if (!cancelled) setDictionaries((prev) => ({ ...prev, [language]: es }));
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [language, dictionaries]);
 
-  const getTranslations = (lang: Language): Translations => translations[lang] || translations.es;
-  const t = getTranslations(language);
+  // Mientras carga el diccionario, se muestra español: mismas claves, sin saltos.
+  const t = dictionaries[language] ?? es;
 
   return (
     <LanguageContext.Provider value={{
