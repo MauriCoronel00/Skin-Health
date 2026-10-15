@@ -183,7 +183,7 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
         <div className="text-center max-w-2xl mx-auto mb-8">
           <div className="inline-flex items-center gap-2 mb-2">
             <span className="w-1.5 h-1.5 rounded-full bg-[#C98A2C]" aria-hidden="true" />
-            <span className="text-sm font-semibold text-[#1E4D3B]">{t.routinesBadge}</span>
+            <span className="text-sm font-semibold text-[#102A43]">{t.routinesBadge}</span>
           </div>
           <h2 className="font-serif text-3xl sm:text-4xl font-semibold text-[#102A43] tracking-tight">
             {t.routinesTitle}

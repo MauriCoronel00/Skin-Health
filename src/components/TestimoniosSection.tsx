@@ -54,7 +54,7 @@ export const TestimoniosSection: React.FC = () => {
   return (
     <section className="mt-14">
       <div className="text-center mb-6">
-        <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#1E4D3B]">
+        <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#102A43]">
           <BadgeCheck className="w-4 h-4" />
           <span>{t.testimonialsTitle}</span>
         </span>

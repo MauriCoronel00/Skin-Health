@@ -382,7 +382,7 @@ export const DiagnosticQuiz: React.FC<DiagnosticQuizProps> = ({
               <motion.button
                 whileTap={{ scale: 0.97 }}
                 onClick={handleViewRoutine}
-                className="w-full py-3.5 px-6 bg-[#25D366] text-white font-bold text-base rounded-2xl hover:bg-[#25D366]/90 transition-all shadow-lg"
+                className="w-full py-3.5 px-6 bg-[#102A43] text-white font-bold text-base rounded-2xl hover:bg-[#102A43]/90 transition-all shadow-lg"
               >
                 <MessageCircle className="w-5 h-5 inline-block mr-2" />
                 {t.quizWhatsCta}

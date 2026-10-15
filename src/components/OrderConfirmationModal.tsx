@@ -241,9 +241,9 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
           </a>
           <button
             onClick={reOpenWhatsApp}
-            className="w-full sm:flex-1 py-3 px-4 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-md shadow-emerald-500/20"
+            className="w-full sm:flex-1 py-3 px-4 rounded-xl bg-[#102A43] hover:bg-[#1e3a5f] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-md shadow-[#102A43]/20"
           >
-            <MessageCircle className="w-4 h-4 fill-white text-[#25D366]" />
+            <MessageCircle className="w-4 h-4 fill-white text-white" />
             <span>{t.orderReopenWhats}</span>
           </button>
 

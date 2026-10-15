@@ -69,9 +69,9 @@ export const ToastContainer: React.FC<ToastProps> = ({ toasts, onDismiss }) => {
                   href={`https://wa.me/${STORE_PHONE_NUMBER}?text=Hola%20Skin%20Health%2C%20necesito%20asistencia%20con%20mi%20pedido`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#25D366] text-white text-xs font-bold hover:bg-[#20bd5a] transition-colors"
+                  className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#102A43] text-white text-xs font-bold hover:bg-[#102A43]/90 transition-colors"
                 >
-                  <MessageCircle className="w-3.5 h-3.5 fill-white text-[#25D366]" />
+                  <MessageCircle className="w-3.5 h-3.5 fill-white text-white" />
                   <span>{t.toastWhatsCta}</span>
                 </a>
               )}

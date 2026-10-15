@@ -4,9 +4,6 @@ import { Star, ArrowDown, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import heroRadiantBg from '../assets/images/woman_applying_skincare_cream_1789318644556.jpg';
 
-// Logos textuales de marcas oficiales (refuerzo de legitimidad)
-const BRAND_MARKS = ['Anua', 'Beauty of Joseon', 'COSRX', 'SKIN1004', 'Laneige', 'Medicube'];
-
 interface HeroBannerProps {
   onScrollToCatalog: () => void;
   onOpenQuiz?: () => void;
@@ -115,26 +112,6 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog, onOpe
         </div>
       </div>
 
-      {/* Fila de marcas oficiales */}
-      <div className="relative z-10 border-t border-white/20 bg-black/25 backdrop-blur-md px-6 py-5">
-        <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-8">
-          <span className="text-xs font-semibold text-white/60 shrink-0">
-            {t.officialBrands}
-          </span>
-          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 sm:gap-x-5">
-            {BRAND_MARKS.map((brand, i) => (
-              <React.Fragment key={brand}>
-                {i > 0 && (
-                  <span className="hidden sm:inline text-white/30 select-none" aria-hidden="true">·</span>
-                )}
-                <span className="text-base sm:text-lg font-serif font-semibold text-white tracking-tight">
-                  {brand}
-                </span>
-              </React.Fragment>
-            ))}
-          </div>
-        </div>
-      </div>
     </section>
   );
 };

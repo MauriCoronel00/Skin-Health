@@ -39,17 +39,10 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   const searchInputClass =
-    'w-full h-10 pl-10 pr-9 rounded-full bg-white/80 border border-[#102A43]/10 text-sm text-[#102A43] placeholder:text-[#102A43]/40 outline-none focus:bg-white focus:border-[#1E4D3B]/50 focus:ring-2 focus:ring-[#1E4D3B]/15 transition-all shadow-sm';
+    'w-full h-10 pl-10 pr-9 rounded-full bg-white/80 border border-[#102A43]/10 text-sm text-[#102A43] placeholder:text-[#102A43]/40 outline-none focus:bg-white focus:border-[#102A43]/50 focus:ring-2 focus:ring-[#102A43]/15 transition-all shadow-sm';
 
   return (
     <header className="sticky top-0 z-30 bg-[#F1F4EF]/90 backdrop-blur-xl border-b border-[#102A43]/10 shadow-[0_1px_12px_rgba(16,42,67,0.06)]">
-      {/* Announcement bar — pine gradient, refined micro-type */}
-      <div className="bg-gradient-to-r from-[#183E30] via-[#1E4D3B] to-[#183E30] text-white/95 text-[11px] py-2 px-4 text-center font-medium uppercase tracking-[0.18em] flex justify-center items-center gap-2">
-        <span className="inline-block w-1 h-1 rounded-full bg-[#C98A2C]" aria-hidden="true" />
-        {t.announcement}
-        <span className="inline-block w-1 h-1 rounded-full bg-[#C98A2C]" aria-hidden="true" />
-      </div>
-
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 sm:h-[4.5rem] flex items-center justify-between gap-2 sm:gap-4">
         {/* Logo - LEFT */}
         <div className="cursor-pointer flex-shrink-0" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
@@ -58,7 +51,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Search (desktop) - CENTER */}
         <div className="hidden md:flex flex-1 max-w-md relative mx-4">
-          <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#1E4D3B]/40 pointer-events-none" />
+          <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#102A43]/40 pointer-events-none" />
           <input
             type="search"
             value={searchQuery}
@@ -89,7 +82,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               onClick={() => setShowLanguageMenu((prev) => !prev)}
               aria-label={t.navChangeLanguage}
               aria-expanded={showLanguageMenu}
-              className={`flex items-center gap-1.5 rounded-full px-2.5 py-2 text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-[#1E4D3B]/20 ${
+              className={`flex items-center gap-1.5 rounded-full px-2.5 py-2 text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-[#102A43]/20 ${
                 showLanguageMenu
                   ? 'bg-white text-[#102A43] shadow-sm ring-1 ring-[#102A43]/10'
                   : 'text-[#102A43]/70 hover:text-[#102A43] hover:bg-white/70'
@@ -122,7 +115,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                           aria-label={t.navSwitchTo.replace('{lang}', flagLabels[lang])}
                           className={`w-full flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-colors ${
                             isCurrent
-                              ? 'bg-[#1E4D3B] text-white font-medium'
+                              ? 'bg-[#102A43] text-white font-medium'
                               : 'text-[#102A43]/80 hover:bg-[#F1F4EF]'
                           }`}
                         >
@@ -149,8 +142,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             whileTap={{ scale: 0.95 }}
             className={`relative flex items-center gap-2 px-3.5 py-2 rounded-full font-medium text-sm transition-all shadow-sm ${
               totalItems > 0
-                ? 'bg-[#1E4D3B] text-white hover:bg-[#183E30]'
-                : 'bg-white text-[#1E4D3B] ring-1 ring-[#1E4D3B]/20 hover:ring-[#1E4D3B]/40 hover:bg-[#F1F4EF]/50'
+                ? 'bg-[#102A43] text-white hover:bg-[#1e3a5f]'
+                : 'bg-white text-[#102A43] ring-1 ring-[#102A43]/20 hover:ring-[#102A43]/40 hover:bg-[#F1F4EF]/50'
             }`}
           >
             <div className="relative">
@@ -181,7 +174,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Search (mobile) */}
       <div className="md:hidden px-4 pb-3 relative">
-        <Search className="w-4 h-4 absolute left-7 top-1/2 -translate-y-[calc(50%+6px)] text-[#1E4D3B]/40 pointer-events-none" />
+        <Search className="w-4 h-4 absolute left-7 top-1/2 -translate-y-[calc(50%+6px)] text-[#102A43]/40 pointer-events-none" />
         <input
           id="mobile-search-input"
           type="search"
