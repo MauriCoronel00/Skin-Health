@@ -1,7 +1,10 @@
-import { Suspense } from 'react';
+import { Suspense, lazy } from 'react';
 import { ErrorBoundary } from '../ErrorBoundary';
-import { OrderConfirmationModal } from '../OrderConfirmationModal';
-import { OrderDetails } from '../OrderConfirmationModal';
+import type { OrderDetails } from '../OrderConfirmationModal';
+
+const OrderConfirmationModal = lazy(() =>
+  import('../OrderConfirmationModal').then((m) => ({ default: m.OrderConfirmationModal }))
+);
 
 interface OrderConfirmationSectionProps {
   confirmedOrder: OrderDetails | null;

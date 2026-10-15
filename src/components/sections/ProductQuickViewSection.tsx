@@ -1,7 +1,8 @@
-import { Suspense } from 'react';
+import { Suspense, lazy } from 'react';
 import { ErrorBoundary } from '../ErrorBoundary';
-import { ProductQuickView } from '../ProductQuickView';
-import { Product, ProductReview, ReviewUser } from '../../types';
+import type { Product, ProductReview, ReviewUser } from '../../types';
+
+const ProductQuickView = lazy(() => import('../ProductQuickView').then((m) => ({ default: m.ProductQuickView })));
 
 interface ProductQuickViewSectionProps {
   quickViewProduct: Product | null;

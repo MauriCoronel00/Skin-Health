@@ -1,7 +1,8 @@
-import { Suspense } from 'react';
+import { Suspense, lazy } from 'react';
 import { ErrorBoundary } from '../ErrorBoundary';
-import { ReviewFormModal } from '../ReviewFormModal';
-import { Product, ReviewUser, TipoPiel } from '../../types';
+import type { Product, ReviewUser, TipoPiel } from '../../types';
+
+const ReviewFormModal = lazy(() => import('../ReviewFormModal').then((m) => ({ default: m.ReviewFormModal })));
 
 interface ReviewFormSectionProps {
   reviewingProduct: Product | null;

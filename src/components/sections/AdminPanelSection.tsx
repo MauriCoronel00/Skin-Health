@@ -1,6 +1,7 @@
-import { Suspense } from 'react';
+import { Suspense, lazy } from 'react';
 import { ErrorBoundary } from '../ErrorBoundary';
-import { AdminPanel } from '../AdminPanel';
+
+const AdminPanel = lazy(() => import('../AdminPanel').then((m) => ({ default: m.AdminPanel })));
 
 interface AdminPanelSectionProps {
   isOpen: boolean;

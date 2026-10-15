@@ -1,8 +1,9 @@
-import { Suspense } from 'react';
+import { Suspense, lazy } from 'react';
 import { ErrorBoundary } from '../ErrorBoundary';
-import { CartDrawer } from '../CartDrawer';
-import { CartItem } from '../../types';
-import { OrderDetails } from '../OrderConfirmationModal';
+import type { CartItem } from '../../types';
+import type { OrderDetails } from '../OrderConfirmationModal';
+
+const CartDrawer = lazy(() => import('../CartDrawer').then((m) => ({ default: m.CartDrawer })));
 
 interface CartDrawerSectionProps {
   isOpen: boolean;

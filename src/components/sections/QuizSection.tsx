@@ -1,5 +1,7 @@
+import { lazy } from 'react';
 import { ErrorBoundary } from '../ErrorBoundary';
-import { DiagnosticQuiz } from '../DiagnosticQuiz';
+
+const DiagnosticQuiz = lazy(() => import('../DiagnosticQuiz').then((m) => ({ default: m.DiagnosticQuiz })));
 
 interface QuizSectionProps {
   isOpen: boolean;

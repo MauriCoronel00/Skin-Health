@@ -1,10 +1,12 @@
 ﻿import { useCart } from './contexts/CartContext';
 import { useProducts } from './contexts/ProductContext';
 import { getBlogPost } from './data/blog';
-import { BlogPostView } from './components/BlogPostView';
-import React, { useState, useEffect, useRef, Suspense, Component, ErrorInfo, ReactNode } from 'react';
+
+const BlogPostView = lazy(() => import('./components/BlogPostView').then((m) => ({ default: m.BlogPostView })));
+import React, { useState, useEffect, useRef, Suspense, lazy, Component, ErrorInfo, ReactNode } from 'react';
 import { InstallBanner } from './components/InstallBanner';
-import { TrackingView } from './components/TrackingView';
+
+const TrackingView = lazy(() => import('./components/TrackingView').then((m) => ({ default: m.TrackingView })));
 import { ToastMessage } from './components/Toast';
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
 
@@ -335,7 +337,9 @@ return (
 
           <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 pb-36 sm:pb-44">
             {blogPost ? (
-              <BlogPostView post={blogPost} onBack={exitBlog} onProductClick={handleBlogProductClick} />
+              <Suspense fallback={null}>
+                <BlogPostView post={blogPost} onBack={exitBlog} onProductClick={handleBlogProductClick} />
+              </Suspense>
             ) : trackCode !== null ? (
               <Suspense fallback={<div className="py-20 text-center text-neutral-500 text-sm">{t.trackLoading}</div>}>
                 <TrackingView codigoInicial={trackCode} onVolver={exitTracking} />
