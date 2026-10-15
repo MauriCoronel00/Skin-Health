@@ -80,7 +80,6 @@ import { productIdFromUrl, syncProductUrl } from './utils/productLink';
 import { setHomeSEO, injectOrganizationSchema } from './utils/seo';
 import { TabId } from './components/MobileBottomNav';
 
-import { HeroSection } from './components/sections/HeroSection';
 import { WelcomeSection } from './components/sections/WelcomeSection';
 import { QuizSection } from './components/sections/QuizSection';
 import { SavedQuizBannerSection } from './components/sections/SavedQuizBannerSection';
@@ -302,10 +301,6 @@ export default function App() {
     setBlogSlug(null);
   };
 
-  const scrollToCatalog = () => {
-    catalogRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   const handleSavedQuizRetake = () => {
     setQuizOpen(true);
   };
@@ -346,8 +341,6 @@ return (
               </Suspense>
             ) : (
               <>
-                <HeroSection onScrollToCatalog={scrollToCatalog} onOpenQuiz={() => setQuizOpen(true)} />
-
                 <SavedQuizBannerSection
                   onRetakeQuiz={handleSavedQuizRetake}
                 />
