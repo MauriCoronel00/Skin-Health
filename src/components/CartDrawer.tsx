@@ -493,10 +493,10 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                           value={customerName}
                           onChange={(e) => setCustomerName(e.target.value)}
                           onBlur={() => handleBlur('name')}
-                          className={`w-full text-xs bg-white border rounded-lg py-2 pl-7 pr-2.5 text-neutral-800 placeholder:text-neutral-400 focus:outline-none transition-colors ${
+                          className={`w-full text-xs bg-white border rounded-2xl py-2 pl-7 pr-2.5 text-neutral-800 placeholder:text-neutral-400 focus:outline-none transition-colors ${
                             nameError
                               ? 'border-rose-400 focus:border-rose-500 bg-rose-50/20'
-                              : 'border-neutral-200 focus:border-[#102A43]'
+                              : 'border-gray-200 focus:border-[#102A43]'
                           }`}
                         />
                         <User className="w-3.5 h-3.5 text-neutral-400 absolute left-2 top-1/2 -translate-y-1/2" />
@@ -525,10 +525,10 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                           value={customerPhone}
                           onChange={(e) => setCustomerPhone(e.target.value)}
                           onBlur={() => handleBlur('phone')}
-                          className={`w-full text-xs bg-white border rounded-lg py-2 pl-7 pr-2.5 text-neutral-800 placeholder:text-neutral-400 focus:outline-none transition-colors ${
+                          className={`w-full text-xs bg-white border rounded-2xl py-2 pl-7 pr-2.5 text-neutral-800 placeholder:text-neutral-400 focus:outline-none transition-colors ${
                             phoneError
                               ? 'border-rose-400 focus:border-rose-500 bg-rose-50/20'
-                              : 'border-neutral-200 focus:border-[#102A43]'
+                              : 'border-gray-200 focus:border-[#102A43]'
                           }`}
                         />
                         <Phone className="w-3.5 h-3.5 text-neutral-400 absolute left-2 top-1/2 -translate-y-1/2" />

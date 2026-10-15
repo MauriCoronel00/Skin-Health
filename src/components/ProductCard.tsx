@@ -78,7 +78,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.3 }}
-      className="group relative bg-white rounded-3xl p-4 shadow-[var(--elevation-soft)] border border-[var(--border-subtle)] transition-[border-color,box-shadow] duration-300 hover:shadow-[var(--elevation-lift)] hover:border-[#102A43]/20"
+      className="group relative bg-white rounded-3xl p-4 border border-gray-100/80 shadow-[0_4px_20px_rgb(0,0,0,0.03)] transition-[border-color,box-shadow] duration-300"
     >
       {/* Top row: badge + wishlist heart */}
       <div className="flex items-center justify-between gap-2 mb-3 h-6">
@@ -136,7 +136,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       {/* Product Image: cuadrado fijo sobre fondo neutro, zoom sutil al hover */}
       <div
         onClick={() => onQuickView(product)}
-        className="relative w-full aspect-square rounded-2xl bg-[var(--surface-soft)] cursor-pointer overflow-hidden flex items-center justify-center p-4 tap-feedback"
+        className="relative w-full aspect-square rounded-2xl bg-gray-50 cursor-pointer overflow-hidden flex items-center justify-center p-3 tap-feedback"
       >
         {product.image && !imgError ? (
           <img
