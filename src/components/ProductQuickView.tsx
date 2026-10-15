@@ -488,7 +488,7 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
               <X className="w-5 h-5" />
             </button>
             <img
-              src={productImageUrl(product.image, 1200)}
+              src={productImageUrl(product.image, 900)}
               alt={product.name}
               className="max-w-full max-h-full object-contain rounded-2xl shadow-2xl"
             />
