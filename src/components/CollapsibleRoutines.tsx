@@ -181,11 +181,9 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
     <>
       <section id="rutinas" className="my-12 sm:my-16 scroll-mt-20">
         <div className="text-center max-w-2xl mx-auto mb-8">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#102A43]/5 text-[#102A43] text-xs font-semibold tracking-wider uppercase mb-2">
-            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M12 2L2 7l10 5 10-5-10-5z" />
-            </svg>
-            <span>{t.routinesBadge}</span>
+          <div className="inline-flex items-center gap-2 mb-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#C98A2C]" aria-hidden="true" />
+            <span className="text-sm font-semibold text-[#1E4D3B]">{t.routinesBadge}</span>
           </div>
           <h2 className="font-serif text-3xl sm:text-4xl font-semibold text-[#102A43] tracking-tight">
             {t.routinesTitle}

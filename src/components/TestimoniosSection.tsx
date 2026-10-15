@@ -54,12 +54,12 @@ export const TestimoniosSection: React.FC = () => {
   return (
     <section className="mt-14">
       <div className="text-center mb-6">
-        <span className="text-xs font-bold uppercase tracking-widest text-[#102A43] bg-white px-3 py-1 rounded-full border border-[#102A43]/20 flex items-center justify-center gap-1.5 mx-auto">
-          <BadgeCheck className="w-3.5 h-3.5 text-[#102A43]" />
+        <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#1E4D3B]">
+          <BadgeCheck className="w-4 h-4" />
           <span>{t.testimonialsTitle}</span>
         </span>
         <h3 className="font-serif text-xl sm:text-2xl font-semibold text-[#102A43] mt-2">
-          Lo que dicen nuestros clientes
+          {t.testimonialsSubtitle}
         </h3>
       </div>
 

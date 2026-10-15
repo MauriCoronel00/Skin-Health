@@ -37,6 +37,8 @@ export interface Translations {
   catalogErrorHint: string;
   catalogEmpty: string;
   catalogEmptyHint: string;
+  catalogRetry: string;
+  catalogResetFilters: string;
   filterAll: string;
   filterSkin: string;
   filterPrice: string;
@@ -320,6 +322,7 @@ export interface Translations {
 
   // Testimonios
   testimonialsTitle: string;
+  testimonialsSubtitle: string;
   testimonialsAria: string;
 
   // Cart / checkout (pass 2)
@@ -498,6 +501,8 @@ export const translations: TranslationsMap = {
     catalogErrorHint: 'Revisá tu conexión e intentá de nuevo. Si sigue fallando, escribinos por WhatsApp.',
     catalogEmpty: 'No hay productos con esos filtros.',
     catalogEmptyHint: 'Intenta buscar con otro término o limpia los filtros para ver los productos disponibles.',
+    catalogRetry: 'Reintentar',
+    catalogResetFilters: 'Restablecer filtros',
     filterAll: 'Todas',
     filterSkin: 'Piel:',
     filterPrice: 'Precio:',
@@ -759,6 +764,7 @@ export const translations: TranslationsMap = {
     stepDelivered: 'Entregado',
 
     testimonialsTitle: 'Opiniones de clientas verificadas',
+    testimonialsSubtitle: 'Lo que dicen nuestros clientes',
     testimonialsAria: 'de 5 estrellas',
 
     // ——— pass 2 ———
@@ -928,6 +934,8 @@ export const translations: TranslationsMap = {
     catalogErrorHint: 'Verifique sua conexão e tente novamente. Se continuar falhando, fale conosco no WhatsApp.',
     catalogEmpty: 'Não há produtos com esses filtros.',
     catalogEmptyHint: 'Tente buscar com outro termo ou limpe os filtros para ver os produtos disponíveis.',
+    catalogRetry: 'Tentar de novo',
+    catalogResetFilters: 'Redefinir filtros',
     filterAll: 'Todas',
     filterSkin: 'Pele:',
     filterPrice: 'Preço:',
@@ -1189,6 +1197,7 @@ export const translations: TranslationsMap = {
     stepDelivered: 'Entregue',
 
     testimonialsTitle: 'Opiniões de clientes verificados',
+    testimonialsSubtitle: 'O que dizem nossas clientes',
     testimonialsAria: 'de 5 estrelas',
 
     // ——— pass 2 ———
@@ -1358,6 +1367,8 @@ export const translations: TranslationsMap = {
     catalogErrorHint: 'Check your connection and try again. If it keeps failing, message us on WhatsApp.',
     catalogEmpty: 'No products match those filters.',
     catalogEmptyHint: 'Try searching with a different term or clear the filters to see available products.',
+    catalogRetry: 'Retry',
+    catalogResetFilters: 'Reset filters',
     filterAll: 'All',
     filterSkin: 'Skin:',
     filterPrice: 'Price:',
@@ -1619,6 +1630,7 @@ export const translations: TranslationsMap = {
     stepDelivered: 'Delivered',
 
     testimonialsTitle: 'Verified customer reviews',
+    testimonialsSubtitle: 'What our customers say',
     testimonialsAria: 'out of 5 stars',
 
     // ——— pass 2 ———
