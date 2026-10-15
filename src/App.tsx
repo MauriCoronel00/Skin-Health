@@ -81,6 +81,7 @@ import { setHomeSEO, injectOrganizationSchema } from './utils/seo';
 import { TabId } from './components/MobileBottomNav';
 
 import { WelcomeSection } from './components/sections/WelcomeSection';
+import { HeroSection } from './components/sections/HeroSection';
 import { QuizSection } from './components/sections/QuizSection';
 import { SavedQuizBannerSection } from './components/sections/SavedQuizBannerSection';
 import { RoutinesSectionWrapper } from './components/sections/RoutinesSection';
@@ -352,6 +353,12 @@ return (
                     setQuizOpen(false);
                     setFocusRoutineNumber(routineId);
                   }}
+                />
+
+                <HeroSection
+                  compact
+                  onScrollToCatalog={() => catalogRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                  onOpenQuiz={() => setQuizOpen(true)}
                 />
 
                 <div

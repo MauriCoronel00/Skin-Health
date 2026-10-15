@@ -7,9 +7,10 @@ import heroRadiantBg from '../assets/images/woman_applying_skincare_cream_178931
 interface HeroBannerProps {
   onScrollToCatalog: () => void;
   onOpenQuiz?: () => void;
+  compact?: boolean;
 }
 
-export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog, onOpenQuiz }) => {
+export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog, onOpenQuiz, compact = false }) => {
   const { t } = useLanguage();
   const ritualSteps = [t.ritualCleanse, t.ritualTreat, t.ritualHydrate, t.ritualProtect];
 
@@ -42,7 +43,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog, onOpe
         initial={{ opacity: 0, y: 18 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-        className="relative z-10 p-6 sm:p-10 md:p-12 flex items-center min-h-\[27\.5rem\] sm:min-h-\[30rem\]"
+        className={`relative z-10 p-6 flex items-center ${compact ? 'min-h-[19rem] sm:min-h-[21rem] sm:p-8' : 'sm:p-10 md:p-12 min-h-[27.5rem] sm:min-h-[30rem]'}`}
       >
         <div className="max-w-xl flex flex-col justify-center">
           {/* Pill de contexto */}
@@ -52,7 +53,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog, onOpe
           </div>
 
           {/* Heading */}
-          <h1 className="hero-display font-serif text-4xl sm:text-5xl md:text-6xl font-semibold text-white leading-[1.05] mb-4">
+          <h1 className={`hero-display font-serif font-semibold text-white leading-[1.05] mb-4 ${compact ? 'text-3xl sm:text-4xl md:text-5xl' : 'text-4xl sm:text-5xl md:text-6xl'}`}>
             {t.heroTitle1}<br />{t.heroTitle2}
           </h1>
 
@@ -93,7 +94,8 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog, onOpe
         </div>
       </motion.div>
 
-      {/* Franja del ritual: capas, no tarjetas */}
+      {/* Franja del ritual: solo en versión completa */}
+      {!compact && (
       <div className="relative z-10 border-t border-white/10 bg-white/[0.04] backdrop-blur-sm px-6 sm:px-10 py-4">
         <div className="flex items-center gap-0">
           {ritualSteps.map((step, i) => (
@@ -111,6 +113,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog, onOpe
           ))}
         </div>
       </div>
+      )}
 
     </section>
   );
