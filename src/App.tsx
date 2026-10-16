@@ -1,12 +1,8 @@
 ﻿import { useCart } from './contexts/CartContext';
 import { useProducts } from './contexts/ProductContext';
 import { getBlogPost } from './data/blog';
-
-const BlogPostView = lazy(() => import('./components/BlogPostView').then((m) => ({ default: m.BlogPostView })));
-import React, { useState, useEffect, useRef, Suspense, lazy, Component, ErrorInfo, ReactNode } from 'react';
+import React, { useState, useEffect, useRef, Suspense, Component, ErrorInfo, ReactNode } from 'react';
 import { InstallBanner } from './components/InstallBanner';
-
-const TrackingView = lazy(() => import('./components/TrackingView').then((m) => ({ default: m.TrackingView })));
 import { ToastMessage } from './components/Toast';
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
 
@@ -40,7 +36,7 @@ function AppErrorFallback({ error }: { error: Error | null }) {
         )}
         <button
           onClick={() => window.location.reload()}
-          className="px-6 py-2.5 bg-[#102A43] text-white text-sm font-semibold rounded-full hover:bg-[#102A43]/90 transition-colors"
+          className="px-6 py-2.5 bg-[#34483B] text-white text-sm font-semibold rounded-full hover:bg-[#34483B]/90 transition-colors"
         >
           {t.appErrorReload}
         </button>
@@ -320,7 +316,7 @@ export default function App() {
 
 return (
     <ErrorBoundary>
-        <div className="min-h-screen bg-[#F1F4EF] text-neutral-900 flex flex-col selection:bg-[#102A43] selection:text-white">
+        <div className="min-h-screen bg-[var(--bg-app)] text-[var(--text-main)] flex flex-col selection:bg-[var(--brand-pine)] selection:text-white">
           <Navbar
             totalItems={totalItems}
             totalAmount={totalAmount}
@@ -367,10 +363,10 @@ return (
 
                 <div
                   ref={catalogRef}
-                  className="pt-4 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#102A43]/10"
+                  className="pt-4 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#34483B]/10"
                 >
                   <div>
-                    <h2 className="font-serif text-2xl sm:text-3xl font-semibold text-[#102A43]">
+                    <h2 className="font-serif text-2xl sm:text-3xl font-semibold text-[#34483B]">
                       {selectedCategory === 'all'
                         ? t.catalogTitle
                         : categories.find((c) => c.id === selectedCategory)?.label || t.catalogTitle}
@@ -390,7 +386,7 @@ return (
                         onClick={() => setSelectedBrand(brand)}
                         className={`text-xs px-3 py-1 rounded-full font-medium transition-all whitespace-nowrap cursor-pointer ${
                           selectedBrand === brand
-                            ? 'bg-[#102A43] text-white shadow-xs'
+                            ? 'bg-[#34483B] text-white shadow-xs'
                             : 'bg-white text-neutral-600 border border-neutral-200 hover:border-neutral-400'
                         }`}
                       >

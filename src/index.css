@@ -9,11 +9,13 @@
     -webkit-overflow-scrolling: touch;
     height: 100%;
     -webkit-text-size-adjust: 100%;
-    color-scheme: dark light;
+    color-scheme: light;
   }
 
   body {
     background-color: var(--bg-app);
+    background-image: radial-gradient(circle at 12% 0%, rgba(168, 183, 160, 0.22), transparent 28rem);
+    background-attachment: fixed;
     color: var(--text-main);
     overflow-x: hidden;
     letter-spacing: 0.01em;
@@ -44,8 +46,8 @@
   .pr-safe { padding-right: env(safe-area-inset-right); }
   :root {
     /* Brand primary */
-    --brand-navy: #102A43;
-    --brand-navy-hover: #1e3a5f;
+    --brand-navy: #34483B;
+    --brand-navy-hover: #26382E;
     --brand-light: #dbeafe;
 
     /* Brand accent — verde salvia sobrio, complementa navy.
@@ -76,11 +78,11 @@
     --color-warning: #D97706;
 
     /* Amina · superficies aireadas (mapeadas a identidad Skin Health) */
-    --bg-app: #F1F4EF; /* porcelana de marca como fondo general */
+    --bg-app: #F8F7F2; /* ivory editorial de marca como fondo general */
     --surface: #FFFFFF; /* blanco puro para tarjetas */
     --surface-soft: #F5F6F8; /* gris perla para pozos de imagen */
     --border-subtle: rgba(16, 42, 67, 0.1); /* bordes sutiles tinta */
-    --text-main: #102A43; /* tinta de marca */
+    --text-main: #20231F; /* tinta de marca */
     --text-muted: #6B7280; /* gris secundario */
     --elevation-soft: 0 8px 30px rgba(16, 42, 67, 0.06);
     --elevation-lift: 0 12px 36px rgba(16, 42, 67, 0.1);
