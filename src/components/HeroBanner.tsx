@@ -15,7 +15,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog, onOpe
   const ritualSteps = [t.ritualCleanse, t.ritualTreat, t.ritualHydrate, t.ritualProtect];
 
   return (
-    <section className="relative overflow-hidden rounded-3xl bg-[#102A43] text-white shadow-sm my-4 sm:my-6 border border-[#102A43]/20 flex flex-col">
+    <section className="relative overflow-hidden rounded-3xl bg-[#34483B] text-white shadow-sm my-4 sm:my-6 border border-[#34483B]/20 flex flex-col">
       {/* Foto: florece a la derecha en desktop, velo en móvil */}
       <div className="absolute inset-0 sm:left-auto sm:right-0 sm:w-[48%] z-0 pointer-events-none">
         <img
@@ -27,7 +27,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog, onOpe
           fetchPriority="high"
           decoding="async"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#102A43] via-[#102A43]/85 to-transparent sm:hidden" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#34483B] via-[#34483B]/85 to-transparent sm:hidden" />
       </div>
 
       {/* Marca de agua en hangul: lengua vernácula del producto */}
@@ -66,7 +66,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog, onOpe
             {onOpenQuiz && (
               <button
                 onClick={onOpenQuiz}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-[#102A43] text-sm font-bold hover:bg-white/90 transition-all shadow-sm cursor-pointer"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-[#34483B] text-sm font-bold hover:bg-white/90 transition-all shadow-sm cursor-pointer"
               >
                 <span>{t.heroCtaQuiz}</span>
                 <ArrowRight className="w-4 h-4" />

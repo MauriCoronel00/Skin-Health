@@ -39,10 +39,10 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   const searchInputClass =
-    'w-full h-10 pl-10 pr-9 rounded-full bg-white/80 border border-[#102A43]/10 text-sm text-[#102A43] placeholder:text-[#102A43]/40 outline-none focus:bg-white focus:border-[#102A43]/50 focus:ring-2 focus:ring-[#102A43]/15 transition-all shadow-sm';
+    'w-full h-10 pl-10 pr-9 rounded-full bg-white/80 border border-[#34483B]/10 text-sm text-[#34483B] placeholder:text-[#34483B]/40 outline-none focus:bg-white focus:border-[#34483B]/50 focus:ring-2 focus:ring-[#34483B]/15 transition-all shadow-sm';
 
   return (
-    <header className="sticky top-0 z-30 bg-[#F1F4EF]/90 backdrop-blur-xl border-b border-[#102A43]/10 shadow-[0_1px_12px_rgba(16,42,67,0.06)]">
+    <header className="sticky top-0 z-30 bg-[#F1F4EF]/90 backdrop-blur-xl border-b border-[#34483B]/10 shadow-[0_1px_12px_rgba(16,42,67,0.06)]">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 sm:h-[4.5rem] flex items-center justify-between gap-2 sm:gap-4">
         {/* Logo - LEFT */}
         <div className="cursor-pointer flex-shrink-0" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
@@ -51,7 +51,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Search (desktop) - CENTER */}
         <div className="hidden md:flex flex-1 max-w-md relative mx-4">
-          <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#102A43]/40 pointer-events-none" />
+          <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#34483B]/40 pointer-events-none" />
           <input
             type="search"
             value={searchQuery}
@@ -64,7 +64,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               onClick={() => onSearchChange('')}
               aria-label={t.navClearSearch}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-[#102A43] cursor-pointer"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-[#34483B] cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
@@ -82,10 +82,10 @@ export const Navbar: React.FC<NavbarProps> = ({
               onClick={() => setShowLanguageMenu((prev) => !prev)}
               aria-label={t.navChangeLanguage}
               aria-expanded={showLanguageMenu}
-              className={`flex items-center gap-1.5 rounded-full px-2.5 py-2 text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-[#102A43]/20 ${
+              className={`flex items-center gap-1.5 rounded-full px-2.5 py-2 text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-[#34483B]/20 ${
                 showLanguageMenu
-                  ? 'bg-white text-[#102A43] shadow-sm ring-1 ring-[#102A43]/10'
-                  : 'text-[#102A43]/70 hover:text-[#102A43] hover:bg-white/70'
+                  ? 'bg-white text-[#34483B] shadow-sm ring-1 ring-[#34483B]/10'
+                  : 'text-[#34483B]/70 hover:text-[#34483B] hover:bg-white/70'
               }`}
             >
               <img src={flagImages[language]} alt="" className="w-5 h-auto rounded-full shadow-xs" />
@@ -100,8 +100,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                   className="fixed inset-0 z-40 cursor-default bg-transparent"
                   onClick={() => setShowLanguageMenu(false)}
                 />
-                <div className="absolute right-0 top-full mt-2 w-44 rounded-xl bg-white py-1.5 px-1.5 shadow-xl ring-1 ring-[#102A43]/10 z-50">
-                  <span className="text-[10px] font-semibold text-[#102A43]/50 uppercase tracking-[0.14em] block px-2.5 pt-1 pb-1.5">
+                <div className="absolute right-0 top-full mt-2 w-44 rounded-xl bg-white py-1.5 px-1.5 shadow-xl ring-1 ring-[#34483B]/10 z-50">
+                  <span className="text-[10px] font-semibold text-[#34483B]/50 uppercase tracking-[0.14em] block px-2.5 pt-1 pb-1.5">
                     {t.navLanguageHeader}
                   </span>
                   <div className="space-y-0.5">
@@ -115,8 +115,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                           aria-label={t.navSwitchTo.replace('{lang}', flagLabels[lang])}
                           className={`w-full flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-colors ${
                             isCurrent
-                              ? 'bg-[#102A43] text-white font-medium'
-                              : 'text-[#102A43]/80 hover:bg-[#F1F4EF]'
+                              ? 'bg-[#34483B] text-white font-medium'
+                              : 'text-[#34483B]/80 hover:bg-[#F1F4EF]'
                           }`}
                         >
                           <img src={flagImages[lang]} alt="" className="w-4 h-auto rounded-full" />
@@ -142,8 +142,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             whileTap={{ scale: 0.95 }}
             className={`relative flex items-center gap-2 px-3.5 py-2 rounded-full font-medium text-sm transition-all shadow-sm ${
               totalItems > 0
-                ? 'bg-[#102A43] text-white hover:bg-[#1e3a5f]'
-                : 'bg-white text-[#102A43] ring-1 ring-[#102A43]/20 hover:ring-[#102A43]/40 hover:bg-[#F1F4EF]/50'
+                ? 'bg-[#34483B] text-white hover:bg-[#1e3a5f]'
+                : 'bg-white text-[#34483B] ring-1 ring-[#34483B]/20 hover:ring-[#34483B]/40 hover:bg-[#F1F4EF]/50'
             }`}
           >
             <div className="relative">
@@ -174,7 +174,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Search (mobile) */}
       <div className="md:hidden px-4 pb-3 relative">
-        <Search className="w-4 h-4 absolute left-7 top-1/2 -translate-y-[calc(50%+6px)] text-[#102A43]/40 pointer-events-none" />
+        <Search className="w-4 h-4 absolute left-7 top-1/2 -translate-y-[calc(50%+6px)] text-[#34483B]/40 pointer-events-none" />
         <input
           id="mobile-search-input"
           type="search"
@@ -188,7 +188,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             onClick={() => onSearchChange('')}
             aria-label={t.navClearSearch}
-            className="absolute right-6 top-1/2 -translate-y-[calc(50%+6px)] text-neutral-400 hover:text-[#102A43] cursor-pointer"
+            className="absolute right-6 top-1/2 -translate-y-[calc(50%+6px)] text-neutral-400 hover:text-[#34483B] cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
