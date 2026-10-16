@@ -6,6 +6,14 @@ import {VitePWA} from 'vite-plugin-pwa';
 
 export default defineConfig(() => {
   return {
+    // Vercel project variables are available to the Vite process, but Vite only
+    // exposes variables prefixed with VITE_ through import.meta.env when they
+    // are loaded from an env file. Define them explicitly for the preview and
+    // production builds as well.
+    define: {
+      'import.meta.env.VITE_SUPABASE_URL': JSON.stringify(process.env.VITE_SUPABASE_URL ?? ''),
+      'import.meta.env.VITE_SUPABASE_ANON_KEY': JSON.stringify(process.env.VITE_SUPABASE_ANON_KEY ?? ''),
+    },
     plugins: [
       react(),
       tailwindcss(),
