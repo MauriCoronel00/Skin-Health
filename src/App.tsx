@@ -316,7 +316,7 @@ export default function App() {
 
 return (
     <ErrorBoundary>
-        <div className="min-h-screen bg-[#F1F4EF] text-neutral-900 flex flex-col selection:bg-[#34483B] selection:text-white">
+        <div className="min-h-screen bg-[var(--bg-app)] text-[var(--text-main)] flex flex-col selection:bg-[var(--brand-pine)] selection:text-white">
           <Navbar
             totalItems={totalItems}
             totalAmount={totalAmount}

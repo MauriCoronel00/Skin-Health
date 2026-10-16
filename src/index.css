@@ -9,11 +9,13 @@
     -webkit-overflow-scrolling: touch;
     height: 100%;
     -webkit-text-size-adjust: 100%;
-    color-scheme: dark light;
+    color-scheme: light;
   }
 
   body {
     background-color: var(--bg-app);
+    background-image: radial-gradient(circle at 12% 0%, rgba(168, 183, 160, 0.22), transparent 28rem);
+    background-attachment: fixed;
     color: var(--text-main);
     overflow-x: hidden;
     letter-spacing: 0.01em;
