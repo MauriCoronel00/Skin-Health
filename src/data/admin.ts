@@ -346,6 +346,33 @@ export async function setProductoActivo(id: string, activo: boolean): Promise<vo
   if (!data || data.length === 0) throw new Error('NOT_APPLIED');
 }
 
+/**
+ * Sube una imagen de producto al bucket público `Imagenes-Productos` y devuelve
+ * su URL pública. La extensión se deriva del MIME verificado (nunca del
+ * nombre). Requiere admin (policy de la migración 016).
+ */
+export async function subirImagenProducto(file: File): Promise<string> {
+  const allowedMime = ['image/jpeg', 'image/png', 'image/webp'];
+  if (!allowedMime.includes(file.type)) throw new Error('INVALID_FILE_TYPE');
+  if (file.size > 5 * 1024 * 1024) throw new Error('FILE_TOO_LARGE');
+
+  const extByMime: Record<string, string> = {
+    'image/jpeg': 'jpg',
+    'image/png': 'png',
+    'image/webp': 'webp',
+  };
+  const ext = extByMime[file.type] ?? 'jpg';
+  const path = `skin-health-imagenes/${crypto.randomUUID()}.${ext}`;
+
+  const { error } = await supabase.storage
+    .from('Imagenes-Productos')
+    .upload(path, file, { cacheControl: '31536000', upsert: false });
+  if (error) throw error;
+
+  const { data } = supabase.storage.from('Imagenes-Productos').getPublicUrl(path);
+  return data.publicUrl;
+}
+
 /** Trae el log de acciones admin del audit_log (paginado por límite). */
 export async function fetchAuditLog(limit = 200): Promise<AuditLogEntry[]> {
   const { data, error } = await supabase

@@ -13,13 +13,15 @@ import {
   createProducto,
   updateProducto,
   setProductoActivo,
+  subirImagenProducto,
 } from './admin';
 import type { PedidoEstado, ProductoAdmin } from './admin';
 
-const { mockSupabaseAuth, mockSupabaseFrom, mockSupabaseRpc } = vi.hoisted(() => ({
+const { mockSupabaseAuth, mockSupabaseFrom, mockSupabaseRpc, mockSupabaseStorageFrom } = vi.hoisted(() => ({
   mockSupabaseAuth: vi.fn(),
   mockSupabaseFrom: vi.fn(),
   mockSupabaseRpc: vi.fn(),
+  mockSupabaseStorageFrom: vi.fn(),
 }));
 
 vi.mock('../lib/supabaseClient', () => ({
@@ -27,6 +29,7 @@ vi.mock('../lib/supabaseClient', () => ({
     auth: { getUser: mockSupabaseAuth },
     from: mockSupabaseFrom,
     rpc: mockSupabaseRpc,
+    storage: { from: mockSupabaseStorageFrom },
   },
 }));
 
@@ -376,5 +379,40 @@ describe('admin.ts - CRUD de productos', () => {
     await setProductoActivo('x', false);
     const call = mockSupabaseFrom.mock.results[0].value.update.mock.calls[0];
     expect(call[0]).toEqual({ activo: false });
+  });
+});
+
+describe('admin.ts - subirImagenProducto', () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  it('sube al bucket publico y devuelve la URL', async () => {
+    const upload = vi.fn().mockResolvedValue({ error: null });
+    const getPublicUrl = vi.fn().mockReturnValue({ data: { publicUrl: 'https://cdn.example.com/x.jpg' } });
+    mockSupabaseStorageFrom.mockReturnValue({ upload, getPublicUrl });
+
+    const file = new File(['bytes'], 'foto.jpg', { type: 'image/jpeg' });
+    const url = await subirImagenProducto(file);
+
+    expect(url).toBe('https://cdn.example.com/x.jpg');
+    expect(mockSupabaseStorageFrom).toHaveBeenCalledWith('Imagenes-Productos');
+    const path = upload.mock.calls[0][0] as string;
+    expect(path).toMatch(/^skin-health-imagenes\/[0-9a-f-]+\.jpg$/);
+  });
+
+  it('rechaza tipo de archivo no permitido', async () => {
+    const file = { type: 'image/gif', size: 100 } as unknown as File;
+    await expect(subirImagenProducto(file)).rejects.toThrow('INVALID_FILE_TYPE');
+  });
+
+  it('rechaza archivos mayores a 5 MB', async () => {
+    const file = { type: 'image/png', size: 6 * 1024 * 1024 } as unknown as File;
+    await expect(subirImagenProducto(file)).rejects.toThrow('FILE_TOO_LARGE');
+  });
+
+  it('lanza el error de storage si la subida falla', async () => {
+    const upload = vi.fn().mockResolvedValue({ error: new Error('RLS blocked') });
+    mockSupabaseStorageFrom.mockReturnValue({ upload, getPublicUrl: vi.fn() });
+    const file = new File(['bytes'], 'foto.png', { type: 'image/png' });
+    await expect(subirImagenProducto(file)).rejects.toThrow('RLS blocked');
   });
 });

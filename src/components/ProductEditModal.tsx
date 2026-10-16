@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { X, Plus, Trash2, Loader2 } from 'lucide-react';
+import { X, Plus, Trash2, Loader2, Upload } from 'lucide-react';
 import { CategoryOption } from '../types';
-import { ProductoAdmin, createProducto, updateProducto } from '../data/admin';
+import { ProductoAdmin, createProducto, updateProducto, subirImagenProducto } from '../data/admin';
 import { formatGuarani } from '../data/products';
 import { useModalA11y } from '../hooks/useModalA11y';
 
@@ -66,6 +66,7 @@ export const ProductEditModal: React.FC<ProductEditModalProps> = ({
     producto ? { ...producto, beneficios: producto.beneficios.map((b) => ({ ...b })) } : { ...EMPTY }
   );
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const ref = useModalA11y(isOpen, onClose);
 
   const isEditing = producto !== null;
@@ -104,6 +105,28 @@ export const ProductEditModal: React.FC<ProductEditModalProps> = ({
       ...prev,
       beneficios: prev.beneficios.filter((_, i) => i !== index).map((b, i) => ({ ...b, orden: i })),
     }));
+
+  const onUpload = async (file: File) => {
+    setUploading(true);
+    try {
+      const url = await subirImagenProducto(file);
+      set('imagen_url', url);
+      onShowToast('Imagen subida', undefined, 'success');
+    } catch (err) {
+      const msg = (err as { message?: string })?.message ?? '';
+      onShowToast(
+        'No se pudo subir',
+        msg.includes('INVALID_FILE_TYPE')
+          ? 'Usá JPG, PNG o WebP.'
+          : msg.includes('FILE_TOO_LARGE')
+            ? 'Máximo 5 MB.'
+            : 'Revisá la migración 016 (permisos admin) en Supabase.',
+        'error'
+      );
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const handleSave = async () => {
     if (!form.nombre.trim()) return onShowToast('Falta el nombre', undefined, 'error');
@@ -243,9 +266,49 @@ export const ProductEditModal: React.FC<ProductEditModalProps> = ({
                 ))}
               </select>
             </div>
-            <div>
-              <label className={label} htmlFor="pe-imagen">Imagen (URL)</label>
-              <input id="pe-imagen" className={field} value={form.imagen_url} onChange={(e) => set('imagen_url', e.target.value)} placeholder="https://…" />
+            <div className="sm:col-span-2">
+              <label className={label} htmlFor="pe-imagen">Imagen</label>
+              <div className="flex items-start gap-3">
+                <div className="w-16 h-16 rounded-xl border border-neutral-200 bg-white overflow-hidden shrink-0 flex items-center justify-center">
+                  {form.imagen_url ? (
+                    <img src={form.imagen_url} alt="" className="w-full h-full object-contain" />
+                  ) : (
+                    <span className="text-[10px] text-neutral-300 text-center px-1">Sin imagen</span>
+                  )}
+                </div>
+                <div className="flex-1 space-y-2">
+                  <input
+                    id="pe-imagen"
+                    className={field}
+                    value={form.imagen_url}
+                    onChange={(e) => set('imagen_url', e.target.value)}
+                    placeholder="https://…"
+                  />
+                  <label
+                    className={`inline-flex items-center gap-2 text-xs font-semibold text-[#102A43] cursor-pointer ${
+                      uploading ? 'opacity-50 pointer-events-none' : 'hover:underline'
+                    }`}
+                  >
+                    {uploading ? (
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    ) : (
+                      <Upload className="w-3.5 h-3.5" />
+                    )}
+                    {uploading ? 'Subiendo…' : 'Subir archivo (JPG, PNG o WebP, máx 5 MB)'}
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp"
+                      className="hidden"
+                      disabled={uploading}
+                      onChange={(e) => {
+                        const f = e.target.files?.[0];
+                        if (f) void onUpload(f);
+                        e.target.value = '';
+                      }}
+                    />
+                  </label>
+                </div>
+              </div>
             </div>
           </div>
 
