@@ -204,7 +204,6 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
             const id = routine.id;
             const isOpen = isRoutineOpen(id);
             const arrowIcon = isOpen ? <ChevronUp className="w-4 h-4 mt-1" /> : <ChevronDown className="w-4 h-4 mt-1" />;
-            const containerHeight = isOpen ? 'unset' : '96px';
 
             return (
               <motion.div
@@ -214,41 +213,43 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-50px' }}
                 transition={{ duration: 0.35 }}
-                className="bg-white rounded-3xl border border-[#102A43]/15 shadow-sm hover:shadow-md transition-shadow overflow-hidden"
-                role="button"
-                aria-expanded={isOpen}
-                aria-label={t.viewRoutineAria.replace('{title}', routine.title)}
-                onClick={() => toggleRoutine(id)}
+                className="bg-[var(--surface)] rounded-3xl border border-[var(--border-subtle)] shadow-sm hover:shadow-md transition-shadow overflow-hidden"
               >
-                {/* Routine Header - entire header is clickable */}
-                <div className="p-5 sm:p-6 border-b border-neutral-100 bg-[#FAF8F5]/80 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-bold text-[#102A43] bg-[#102A43]/10 px-2 py-0.5 rounded-lg">
-                        {routine.number}
-                      </span>
-                      <h3 className="text-lg sm:text-xl font-bold text-neutral-900 tracking-tight">
-                        {routine.title}
-                      </h3>
-                    </div>
+                <button
+                  type="button"
+                  id={`rutina-trigger-${id}`}
+                  onClick={() => toggleRoutine(id)}
+                  aria-expanded={isOpen}
+                  aria-controls={`rutina-panel-${id}`}
+                  className="w-full flex items-start justify-between gap-4 p-5 sm:p-6 bg-[var(--surface)] text-left cursor-pointer"
+                >
+                  <span className="flex min-w-0 items-start gap-3">
+                    <span className="text-sm font-bold text-[#102A43] bg-[#102A43]/10 px-2 py-0.5 rounded-lg shrink-0">
+                      {routine.number}
+                    </span>
+                    <span className="min-w-0 block text-lg sm:text-xl font-bold text-[var(--text-main)] tracking-tight leading-snug break-words">
+                      {routine.title}
+                    </span>
+                  </span>
+                  <span className="shrink-0 text-[var(--text-main)]" aria-hidden="true">
+                    {arrowIcon}
+                  </span>
+                </button>
 
-                    {/* Toggle arrow in top right */}
-                    <div className="flex items-center gap-2">
-                      {arrowIcon}
-                    </div>
-                  </div>
-
-                  {/* Routine Content - collapsible height */}
-                  <motion.div
-                    style={{ height: containerHeight }}
-                    transition={{
-                      type: 'spring',
-                      stiffness: 300,
-                      damping: 30,
-                      duration: isOpen ? 300 : 150,
-                    }}
-                    className="p-5 sm:p-6 border-t border-neutral-100"
-                  >
+                <motion.div
+                  id={`rutina-panel-${id}`}
+                  role="region"
+                  aria-labelledby={`rutina-trigger-${id}`}
+                  initial={false}
+                  animate={{ height: isOpen ? 'auto' : 0, opacity: isOpen ? 1 : 0 }}
+                  transition={{
+                    type: 'spring',
+                    stiffness: 300,
+                    damping: 30,
+                  }}
+                  className="overflow-hidden border-t border-neutral-100"
+                >
+                  <div className="p-5 sm:p-6">
                     {/* Steps Grid */}
                     <div className={`grid ${(routine.steps ?? []).length === 3 ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'} gap-4 relative`}>
                       {(routine.steps ?? []).map((step: RoutineStep) => {
@@ -275,7 +276,7 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.1 + step.stepNumber * 0.05, duration: 0.2 }}
-                            className={`bg-white rounded-2xl p-3 border border-neutral-200/80 hover:border-[#102A43]/30 hover:shadow-sm transition-all flex flex-col items-center text-center gap-2 ${
+                            className={`bg-[var(--surface)] rounded-2xl p-3 border border-[var(--border-subtle)] hover:border-[#102A43]/30 hover:shadow-sm transition-all flex min-w-0 flex-col items-center text-center gap-2 ${
                               canQuickView ? 'cursor-pointer' : ''
                             }`}
                             onClick={(e) => {
@@ -289,7 +290,7 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
                             }
                           >
                             {/* Paso */}
-                            <span className="text-xs font-bold text-[#102A43]/70 uppercase tracking-wider">
+                            <span className="w-full text-xs font-bold text-[#102A43]/70 uppercase tracking-wider leading-snug break-words">
                               {t.routinesStep} {step.stepNumber} · {step.label}
                             </span>
 
@@ -298,7 +299,7 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
                               <img
                                 src={productImage ? productImageUrl(productImage, 320) : productImage}
                                 alt={productName}
-                                className="w-20 h-20 object-contain rounded-full bg-[#FAF8F5] p-2 shadow-sm"
+                                className="w-20 h-20 sm:w-24 sm:h-24 object-contain rounded-full bg-[#FAF8F5] p-2 shadow-sm"
                                 loading="lazy"
                               />
                             )}
@@ -438,8 +439,8 @@ export const CollapsibleRoutines: React.FC<CollapsibleRoutinesProps> = ({ onAddR
                         </div>
                       );
                     })()}
-                  </motion.div>
-                </div>
+                  </div>
+                </motion.div>
               </motion.div>
             );
           })}

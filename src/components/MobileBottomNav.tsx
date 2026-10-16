@@ -96,9 +96,9 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
       animate={{ y: 0, opacity: 1 }}
       exit={{ y: 100, opacity: 0 }}
       transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-      className="fixed bottom-4 left-4 right-4 z-40 sm:hidden max-w-md mx-auto"
+      className="fixed bottom-4 left-4 right-4 z-40 sm:hidden max-w-md mx-auto pb-safe"
     >
-      <div className="bg-white/90 backdrop-blur-lg border border-neutral-100 shadow-[0_10px_30px_rgba(16,42,67,0.08)] rounded-full px-6 py-3 flex items-center justify-between">
+      <div className="bg-white/90 backdrop-blur-lg border border-neutral-100 shadow-[0_10px_30px_rgba(16,42,67,0.08)] rounded-full px-4 py-2.5 flex items-center justify-between gap-1 min-h-[4.25rem]">
         {tabs.map((tab) => {
           const isActive = activeTab === tab.id;
           const showBadge = tab.id === 'cart' && cartCount > 0;
@@ -108,9 +108,9 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
               key={tab.id}
               onClick={() => handleTabClick(tab.id)}
               whileTap={{ scale: 0.92 }}
-              className={`flex flex-col items-center justify-center gap-1 flex-1 min-w-0 cursor-pointer relative active:scale-90 transition-all duration-200 ${
+              className={`flex flex-col items-center justify-center gap-1 flex-1 min-w-0 cursor-pointer relative active:scale-90 transition-all duration-200 px-3 py-1.5 ${
                 isActive
-                  ? 'text-white bg-[#102A43] px-4 rounded-full shadow-sm'
+                  ? 'text-white bg-[#102A43] rounded-full shadow-sm'
                   : 'text-neutral-400 hover:text-neutral-600'
               }`}
               aria-current={isActive ? 'page' : undefined}
@@ -124,14 +124,18 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ type: 'spring', stiffness: 500, damping: 20 }}
-                    className="absolute -top-1 -right-1 bg-[#102A43] text-white text-[9px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-xs ring-2 ring-white"
+                    className={`absolute -top-1 -right-1 text-[9px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-xs ring-2 ${
+                      isActive
+                        ? 'bg-white text-[#102A43] ring-[#102A43]'
+                        : 'bg-[#102A43] text-white ring-white'
+                    }`}
                   >
                     {cartCount > 9 ? '9+' : cartCount}
                   </motion.span>
                 )}
               </div>
-              <span className={`text-xs font-medium tracking-wide transition-colors ${
-                isActive ? 'text-[#102A43]' : 'text-neutral-400'
+              <span className={`w-full max-w-full truncate text-center text-[11px] leading-none font-medium tracking-wide transition-colors ${
+                isActive ? 'text-white' : 'text-neutral-400'
               }`}>
                 {labels[tab.id]}
               </span>
