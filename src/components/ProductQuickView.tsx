@@ -227,7 +227,7 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
           </>
         )}
 
-        <div className="overflow-y-auto flex-1 p-6 sm:p-8 space-y-6">
+        <div className="overflow-y-auto overflow-x-clip flex-1 p-6 sm:p-8 space-y-6">
           {/* Breadcrumb: Tienda > producto */}
           <nav aria-label="Breadcrumb" className="text-xs text-neutral-400">
             <ol className="flex items-center gap-1.5 flex-wrap">
@@ -241,9 +241,9 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
                 </button>
               </li>
               <li aria-hidden="true">/</li>
-              <li aria-current="page" className="text-neutral-600 font-medium line-clamp-1">
-                {product.brand} {product.name}
-              </li>
+                <li aria-current="page" className="text-neutral-600 font-medium line-clamp-1">
+                  {product.name}
+                </li>
             </ol>
           </nav>
           {/* Header & Brand */}
@@ -266,8 +266,8 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
             </div>
 
             {/* Title & Info */}
-            <div className="flex-1 text-center sm:text-left">
-              <div className="flex items-center justify-center sm:justify-start gap-2 mb-1.5">
+            <div className="flex-1 min-w-0 w-full text-center sm:text-left">
+              <div className="flex items-center justify-center sm:justify-start gap-2 mb-1.5 flex-wrap">
                 <span className="text-xs font-bold uppercase tracking-widest text-[#102A43]">
                   {product.brand}
                 </span>
@@ -281,11 +281,11 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
                 )}
               </div>
 
-              <h3 className="text-xl sm:text-2xl font-semibold text-neutral-900 leading-tight mb-2">
+              <h3 className="text-xl sm:text-2xl font-semibold text-neutral-900 leading-tight mb-2 break-words">
                 {product.name}
               </h3>
 
-              <p className="text-sm text-neutral-600 mb-3 font-normal">
+              <p className="text-sm text-neutral-600 mb-3 font-normal break-words">
                 {product.subtitle}
               </p>
 
@@ -333,7 +333,7 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
               </div>
 
               {/* Tienda oficial */}
-              <div className="mt-4 flex items-center justify-between gap-3 rounded-2xl border border-neutral-100 bg-[#FAF8F5] p-3">
+              <div className="mt-4 flex items-center justify-between gap-2 rounded-2xl border border-neutral-100 bg-[#FAF8F5] p-2.5">
                 <div className="flex items-center gap-2.5 min-w-0">
                   <BrandLogo size="sm" variant="icon-only" />
                   <div className="min-w-0">
@@ -348,7 +348,7 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
                   type="button"
                   onClick={() => setIsFollowing((v) => !v)}
                   aria-pressed={isFollowing}
-                  className={`shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                  className={`shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
                     isFollowing
                       ? 'bg-[#102A43] text-white'
                       : 'bg-white text-[#102A43] border border-[#102A43]/20 hover:border-[#102A43]/50'
@@ -502,6 +502,46 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
           </div>
         )}
 
+        {/* Action footer anclado al modal */}
+        <div className="px-4 pb-4 pt-2 bg-white border-t border-neutral-100">
+          <div className="bg-white border border-neutral-100 shadow-[0_10px_30px_rgba(16,42,67,0.12)] rounded-full px-4 py-2.5 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="text-[11px] text-neutral-500 uppercase tracking-wider shrink-0">
+                {L.unitPrice}
+              </span>
+              <span className="text-base font-bold text-[#102A43] truncate">
+                {formatCurrency(product.price)}
+              </span>
+            </div>
+            <motion.button
+              whileTap={!justAdded ? { scale: 0.95 } : {}}
+              onClick={handleAdd}
+              disabled={justAdded}
+              className={`shrink-0 py-2 px-5 rounded-full font-bold text-sm flex items-center justify-center gap-2 cursor-pointer shadow-md transition-all ${
+                justAdded
+                  ? 'bg-[var(--brand-accent)] text-[var(--brand-accent-ink)]'
+                  : 'bg-[#102A43] hover:bg-[#1e3a5f] text-white'
+              }`}
+            >
+              {justAdded ? (
+                <>
+                  <Check className="w-5 h-5" />
+                  <span>{t.addedExclaim}</span>
+                </>
+              ) : (
+                <>
+                  <Plus className="w-5 h-5" />
+                  <span>
+                    {quantityInCart > 0
+                      ? L.addToCartWithCount(quantityInCart)
+                      : L.addToCart}
+                  </span>
+                </>
+              )}
+            </motion.button>
+          </div>
+        </div>
+
         {/* Zoom de imagen: lectura de etiqueta e ingredientes */}
         {zoomOpen && (
           <div
@@ -524,52 +564,6 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
             />
           </div>
         )}
-      </motion.div>
-
-      {/* Floating Action Bar - Pill style */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 20 }}
-        transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-        className="fixed bottom-4 left-4 right-4 max-w-xl mx-auto z-20 sm:relative sm:fixed sm:bottom-4 sm:left-auto sm:right-auto sm:max-w-none sm:mx-0"
-      >
-        <div className="bg-white/90 backdrop-blur-lg border border-neutral-100 shadow-[0_10px_30px_rgba(16,42,67,0.08)] rounded-full px-6 py-3 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <span className="text-xs text-neutral-500 uppercase tracking-wider">
-              {L.unitPrice}
-            </span>
-            <span className="text-lg font-bold text-[#102A43]">
-              {formatCurrency(product.price)}
-            </span>
-          </div>
-          <motion.button
-            whileTap={!justAdded ? { scale: 0.95 } : {}}
-            onClick={handleAdd}
-            disabled={justAdded}
-            className={`flex-shrink-0 py-2.5 px-6 rounded-full font-bold text-sm flex items-center justify-center gap-2 cursor-pointer shadow-md transition-all ${
-              justAdded
-                ? 'bg-[var(--brand-accent)] text-[var(--brand-accent-ink)]'
-                : 'bg-[#102A43] hover:bg-[#1e3a5f] text-white'
-            }`}
-          >
-            {justAdded ? (
-              <>
-                <Check className="w-5 h-5" />
-                <span>{t.addedExclaim}</span>
-              </>
-            ) : (
-              <>
-                <Plus className="w-5 h-5" />
-                <span>
-                  {quantityInCart > 0
-                    ? L.addToCartWithCount(quantityInCart)
-                    : L.addToCart}
-                </span>
-              </>
-            )}
-          </motion.button>
-        </div>
       </motion.div>
     </div>
   );
