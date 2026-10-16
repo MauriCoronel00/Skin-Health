@@ -83,15 +83,24 @@ export async function fetchApprovedReviews(): Promise<ProductReview[]> {
   return ((data ?? []) as ReviewRow[]).map((r) => mapRowToReview(r, usuarioUtiles));
 }
 
-/** Todas las visibles para la sesión (admin ve todo, autor ve las suyas). */
-export async function fetchAllReviews(): Promise<ProductReview[]> {
+/**
+ * Reseñas para moderación (requiere admin), filtradas por estado en el
+ * servidor. Sin `status` trae todas.
+ */
+export async function fetchReviews(
+  status?: 'approved' | 'pending' | 'hidden'
+): Promise<ProductReview[]> {
   await requireAdmin();
-  const { data, error } = await supabase
-    .from('reviews')
-    .select(SELECT)
-    .order('creado_en', { ascending: false });
+  let query = supabase.from('reviews').select(SELECT).order('creado_en', { ascending: false });
+  if (status) query = query.eq('status', status);
+  const { data, error } = await query;
   if (error) throw error;
   return ((data ?? []) as ReviewRow[]).map((r) => mapRowToReview(r));
+}
+
+/** Todas las visibles para la sesión (admin ve todo, autor ve las suyas). */
+export async function fetchAllReviews(): Promise<ProductReview[]> {
+  return fetchReviews();
 }
 
 /** Crea una review en estado pending. Requiere sesión Supabase. */
