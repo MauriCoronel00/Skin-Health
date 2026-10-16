@@ -1,12 +1,8 @@
 ﻿import { useCart } from './contexts/CartContext';
 import { useProducts } from './contexts/ProductContext';
 import { getBlogPost } from './data/blog';
-
-const BlogPostView = lazy(() => import('./components/BlogPostView').then((m) => ({ default: m.BlogPostView })));
 import React, { useState, useEffect, useRef, Suspense, lazy, Component, ErrorInfo, ReactNode } from 'react';
 import { InstallBanner } from './components/InstallBanner';
-
-const TrackingView = lazy(() => import('./components/TrackingView').then((m) => ({ default: m.TrackingView })));
 import { ToastMessage } from './components/Toast';
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
 
