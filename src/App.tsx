@@ -1,10 +1,13 @@
 ﻿import { useCart } from './contexts/CartContext';
 import { useProducts } from './contexts/ProductContext';
 import { getBlogPost } from './data/blog';
-import React, { useState, useEffect, useRef, Suspense, Component, ErrorInfo, ReactNode } from 'react';
+import React, { lazy, useState, useEffect, useRef, Suspense, Component, ErrorInfo, ReactNode } from 'react';
 import { InstallBanner } from './components/InstallBanner';
 import { ToastMessage } from './components/Toast';
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
+
+const BlogPostView = lazy(() => import('./components/BlogPostView').then((m) => ({ default: m.BlogPostView })));
+const TrackingView = lazy(() => import('./components/TrackingView').then((m) => ({ default: m.TrackingView })));
 
 interface ErrorBoundaryState {
   hasError: boolean;
