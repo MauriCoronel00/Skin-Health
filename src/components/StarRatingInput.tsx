@@ -90,7 +90,7 @@ export const StarRatingInput: React.FC<StarRatingInputProps> = ({
                 : 'text-rose-600'
             }`}
           >
-            {currentDisplay} {currentDisplay === 1 ? t.starCount.replace(/s$/, '') : t.starCount} â€”{' '}
+            {currentDisplay} {currentDisplay === 1 ? t.starCount.replace(/s$/, '') : t.starCount} ”{' '}
             <span className="capitalize">{RATING_LABELS[currentDisplay]}</span>
           </motion.span>
         ) : (
