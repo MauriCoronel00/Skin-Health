@@ -82,6 +82,8 @@ import { TabId } from './components/MobileBottomNav';
 
 import { WelcomeSection } from './components/sections/WelcomeSection';
 import { HeroSection } from './components/sections/HeroSection';
+import { OfferBannerSection } from './components/sections/OfferBannerSection';
+import { CategoryChipsSection } from './components/sections/CategoryChipsSection';
 import { QuizSection } from './components/sections/QuizSection';
 import { SavedQuizBannerSection } from './components/sections/SavedQuizBannerSection';
 import { RoutinesSectionWrapper } from './components/sections/RoutinesSection';
@@ -361,6 +363,8 @@ return (
                   onOpenQuiz={() => setQuizOpen(true)}
                 />
 
+                <OfferBannerSection onOpenQuiz={() => setQuizOpen(true)} />
+
                 <div
                   ref={catalogRef}
                   className="pt-4 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#102A43]/10"
@@ -395,6 +399,8 @@ return (
                     ))}
                   </div>
                 </div>
+
+                <CategoryChipsSection />
 
                 <CatalogFiltersSection
                   selectedSkin={selectedSkin}

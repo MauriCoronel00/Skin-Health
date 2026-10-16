@@ -169,6 +169,9 @@ export interface Translations {
   reviewsHelpful: string;
   reviewsAskHelpful: string;
   reviewsAttribution: string;
+  officialStore: string;
+  followStore: string;
+  followingStore: string;
   reviewsLeaveTitle: string;
   reviewsPhoto: string;
   skinTypeOily: string;

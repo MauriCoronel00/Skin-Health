@@ -1,7 +1,8 @@
 ﻿import React, { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { motion } from 'motion/react';
-import { X, Star, Plus, Check, Sparkles, Droplets, ChevronLeft, ChevronRight, ZoomIn, Heart } from 'lucide-react';
+import { X, Star, Plus, Check, Sparkles, Droplets, ChevronLeft, ChevronRight, ZoomIn, Heart, BadgeCheck, UserPlus } from 'lucide-react';
+import { BrandLogo } from './BrandLogo';
 import { Product, ProductReview, ReviewUser } from '../types';
 import { productImageUrl } from '../data/productImage';
 import { trackAddToCart } from '../utils/analytics';
@@ -37,6 +38,7 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
 }) => {
   const [justAdded, setJustAdded] = useState(false);
   const [zoomOpen, setZoomOpen] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(false);
   const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
   const { formatCurrency, language, t } = useLanguage();
 
@@ -88,9 +90,14 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [zoomOpen]);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsFollowing(false);
+    setSelectedVariant(null);
+  }, [product?.id]);
   const reviewsSectionRef = useRef<HTMLDivElement>(null);
-  const [dragX, setDragX] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
+  const [dragX, setDragX] = useState(0);  const [isDragging, setIsDragging] = useState(false);
   const dragStartRef = useRef<number>(0);
   const canNavigatePrev = currentIndex > 0;
   const canNavigateNext = allProducts.length > 0 && currentIndex < allProducts.length - 1;
@@ -323,7 +330,38 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
               {/* Price */}
               <div className="text-2xl font-bold text-[#102A43]">
                 {formatCurrency(product.price)}
-</div>
+              </div>
+
+              {/* Tienda oficial */}
+              <div className="mt-4 flex items-center justify-between gap-3 rounded-2xl border border-neutral-100 bg-[#FAF8F5] p-3">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <BrandLogo size="sm" variant="icon-only" />
+                  <div className="min-w-0">
+                    <p className="flex items-center gap-1 text-sm font-bold text-[#102A43] truncate">
+                      Skin Health
+                      <BadgeCheck className="w-4 h-4 shrink-0" aria-hidden="true" />
+                    </p>
+                    <p className="text-xs text-neutral-500">{t.officialStore}</p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsFollowing((v) => !v)}
+                  aria-pressed={isFollowing}
+                  className={`shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                    isFollowing
+                      ? 'bg-[#102A43] text-white'
+                      : 'bg-white text-[#102A43] border border-[#102A43]/20 hover:border-[#102A43]/50'
+                  }`}
+                >
+                  {isFollowing ? (
+                    <Check className="w-3.5 h-3.5" />
+                  ) : (
+                    <UserPlus className="w-3.5 h-3.5" />
+                  )}
+                  {isFollowing ? t.followingStore : t.followStore}
+                </button>
+              </div>
           </div>
         </div>
 
