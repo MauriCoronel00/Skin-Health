@@ -63,9 +63,20 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setIsLoadingProducts(true);
     setCatalogError(false);
     try {
-      const [prods, cats] = await Promise.all([fetchProducts(language), fetchCategories(language)]);
-      setProducts(prods);
-      setCategories(cats);
+      const [productsResult, categoriesResult] = await Promise.allSettled([
+        fetchProducts(language),
+        fetchCategories(language),
+      ]);
+
+      if (productsResult.status === 'rejected') {
+        throw productsResult.reason;
+      }
+
+      setProducts(productsResult.value);
+      setCategories(categoriesResult.status === 'fulfilled' ? categoriesResult.value : []);
+      if (categoriesResult.status === 'rejected') {
+        console.warn('[v0] Categorías no disponibles; se muestra el catálogo sin filtros de categoría.', categoriesResult.reason);
+      }
     } catch (err) {
       console.error('Error cargando el catálogo desde Supabase:', err);
       setCatalogError(true);
