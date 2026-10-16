@@ -551,7 +551,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
   const sectionErrors = [pedidosError, stockError, reviewsError, auditError].filter(Boolean) as string[];
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto p-4 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 overflow-y-auto flex items-end sm:items-center justify-center sm:p-4">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -568,10 +568,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
         initial={{ opacity: 0, scale: 0.97, y: 10 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.97, y: 10 }}
-        className="relative bg-[#FAF8F5] w-full max-w-4xl rounded-3xl p-5 sm:p-6 shadow-2xl z-10 border border-neutral-200 max-h-[88vh] flex flex-col"
+        className="relative bg-[#F1F4EF] w-full max-w-5xl rounded-t-[2rem] sm:rounded-3xl p-4 sm:p-6 shadow-2xl z-10 border border-neutral-200 max-h-[94dvh] sm:max-h-[88vh] flex flex-col"
       >
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-neutral-200 mb-4">
+        <div className="flex items-center justify-between pb-4 border-b border-[#D5DED8] mb-4">
           <div>
             <h3 id="admin-panel-title" className="font-semibold text-lg text-[#102A43]">
               Panel de administración
@@ -588,7 +588,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
         </div>
 
         {/* Tabs */}
-        <div role="tablist" className="flex items-center gap-2 mb-4">
+        <div role="tablist" aria-label="Secciones de administración" className="flex items-center gap-2 mb-4 overflow-x-auto scrollbar-none pb-1">
           {(
             [
               { id: 'pedidos', label: `Pedidos${pedidos.length ? ` (${pedidos.length}${pedidosHasMore ? '+' : ''})` : ''}`, icon: <Package className="w-4 h-4" /> },
@@ -624,15 +624,30 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
           </button>
         </div>
 
-        {sectionErrors.length > 0 && (
-          <div className="flex items-start gap-2 text-xs text-rose-700 bg-rose-50 p-3 rounded-xl border border-rose-100 mb-3">
+          <div className="grid grid-cols-3 gap-2 mb-4">
+            <div className="rounded-2xl border border-[#D5DED8] bg-white/80 p-3">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-neutral-500">Pedidos</p>
+              <p className="mt-1 text-xl font-bold text-[#1E4D3B]">{pedidos.length}{pedidosHasMore ? '+' : ''}</p>
+            </div>
+            <div className="rounded-2xl border border-[#D5DED8] bg-white/80 p-3">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-neutral-500">Stock bajo</p>
+              <p className="mt-1 text-xl font-bold text-[#C98A2C]">{stock.filter((item) => item.stock > 0 && item.stock <= 3).length}</p>
+            </div>
+            <div className="rounded-2xl border border-[#D5DED8] bg-white/80 p-3">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-neutral-500">Sin stock</p>
+              <p className="mt-1 text-xl font-bold text-rose-600">{stock.filter((item) => item.stock <= 0).length}</p>
+            </div>
+          </div>
+
+          {sectionErrors.length > 0 && (
+            <div className="flex items-start gap-2 text-xs text-rose-700 bg-rose-50 p-3 rounded-xl border border-rose-100 mb-3">
             <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
             <span>{sectionErrors.join(' ')}</span>
           </div>
         )}
 
         {/* Body */}
-        <div className="overflow-y-auto flex-1 pr-1">
+        <div className="overflow-y-auto flex-1 pr-1 native-scroll">
           {loading ? (
             <div className="flex items-center justify-center py-14 text-neutral-500 text-sm gap-2">
               <Loader2 className="w-4 h-4 animate-spin" />
