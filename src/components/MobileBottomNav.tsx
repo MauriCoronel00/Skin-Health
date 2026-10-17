@@ -62,17 +62,10 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
       return;
     }
 
-    // Buscar: scroll al top y focus en el input de búsqueda del Navbar
+    // Buscar: revelar el buscador del Navbar y enfocarlo
     if (tabId === 'search') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      // Delay para esperar el scroll antes de hacer focus
-      setTimeout(() => {
-        const input = document.getElementById('mobile-search-input') as HTMLInputElement | null;
-        if (input) {
-          input.focus();
-          input.select();
-        }
-      }, 400);
+      window.dispatchEvent(new CustomEvent('search-open'));
       onTabChange(tabId);
       return;
     }

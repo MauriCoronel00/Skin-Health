@@ -24,6 +24,7 @@ const en: Translations = {
     heroCtaQuiz: 'Start my diagnosis',
     heroCtaCatalog: 'View catalog',
     heroTagline: '· Skincare made for you',
+    heroBrandTagline: 'Real, effective advice',
     officialBrands: 'Official brands',
 
     catalogTitle: 'Full Catalog',

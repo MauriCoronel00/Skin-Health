@@ -24,6 +24,7 @@ const pt: Translations = {
     heroCtaQuiz: 'Começar meu diagnóstico',
     heroCtaCatalog: 'Ver catálogo',
     heroTagline: '· Skincare feito sob medida',
+    heroBrandTagline: 'Assessoria real e eficaz',
     officialBrands: 'Marcas oficiais',
 
     catalogTitle: 'Catálogo Completo',

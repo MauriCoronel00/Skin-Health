@@ -28,6 +28,7 @@ export interface Translations {
   heroCtaQuiz: string;
   heroCtaCatalog: string;
   heroTagline: string;
+  heroBrandTagline: string;
   officialBrands: string;
 
   // Catalog

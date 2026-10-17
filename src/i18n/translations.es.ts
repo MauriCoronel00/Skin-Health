@@ -20,6 +20,7 @@ const es: Translations = {
     heroCtaQuiz: 'Empezar mi diagnóstico',
     heroCtaCatalog: 'Ver catálogo',
     heroTagline: '· Skincare hecho a tu medida',
+    heroBrandTagline: 'Asesoría real y efectiva',
     officialBrands: 'Marcas oficiales',
 
     catalogTitle: 'Catálogo Completo',

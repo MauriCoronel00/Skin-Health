@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import { ShoppingBag, Search, X } from 'lucide-react';
 import { motion } from 'motion/react';
 import { BrandLogo } from './BrandLogo';
@@ -32,11 +32,41 @@ export const Navbar: React.FC<NavbarProps> = ({
   const flagLabels = { es: 'ES', pt: 'PT', en: 'EN' };
 
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   const handleLanguageSelect = (lang: Language) => {
     setLanguage(lang);
     setShowLanguageMenu(false);
   };
+
+  const closeSearch = () => {
+    setSearchOpen(false);
+    if (searchQuery) onSearchChange('');
+  };
+
+  const toggleSearch = () => {
+    if (searchOpen) {
+      closeSearch();
+      return;
+    }
+    setSearchOpen(true);
+  };
+
+  // Otros componentes (p. ej. la barra inferior) piden abrir el buscador con este evento.
+  useEffect(() => {
+    const open = () => {
+      setSearchOpen(true);
+      // Pequeño delay: deja que el input monte y gana el foco frente al botón pulsado.
+      setTimeout(() => {
+        const els = Array.from(document.querySelectorAll<HTMLInputElement>('[data-nav-search]'));
+        const el = els.find((e) => e.offsetParent !== null) ?? els[0];
+        el?.focus();
+        el?.select();
+      }, 90);
+    };
+    window.addEventListener('search-open', open);
+    return () => window.removeEventListener('search-open', open);
+  }, []);
 
   const searchInputClass =
     'w-full h-10 pl-10 pr-9 rounded-full bg-white/80 border border-[#102a43]/10 text-sm text-[#102a43] placeholder:text-[#102a43]/40 outline-none focus:bg-white focus:border-[#102a43]/50 focus:ring-2 focus:ring-[#102a43]/15 transition-all shadow-sm';
@@ -49,30 +79,49 @@ export const Navbar: React.FC<NavbarProps> = ({
           <BrandLogo size="sm" variant="full" />
         </div>
 
-        {/* Search (desktop) - CENTER */}
-        <div className="hidden md:flex flex-1 max-w-md relative mx-4">
-          <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#102a43]/40 pointer-events-none" />
-          <input
-            type="search"
-            value={searchQuery}
-            onChange={(e) => onSearchChange(e.target.value)}
-            placeholder={t.searchPlaceholder}
-            aria-label={t.searchPlaceholder}
-            className={searchInputClass}
-          />
-          {searchQuery && (
-            <button
-              onClick={() => onSearchChange('')}
-              aria-label={t.navClearSearch}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-[#102a43] cursor-pointer"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          )}
-        </div>
+        {/* Search (desktop) - CENTER, se revela al pulsar el botón */}
+        {searchOpen && (
+          <div className="hidden md:flex flex-1 max-w-md relative mx-4">
+            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#102a43]/40 pointer-events-none" />
+            <input
+              type="search"
+              data-nav-search
+              autoFocus
+              value={searchQuery}
+              onChange={(e) => onSearchChange(e.target.value)}
+              placeholder={t.searchPlaceholder}
+              aria-label={t.searchPlaceholder}
+              className={searchInputClass}
+            />
+            {searchQuery && (
+              <button
+                onClick={() => onSearchChange('')}
+                aria-label={t.navClearSearch}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-[#102a43] cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+        )}
 
         {/* Right Actions - Google Login + Language Dropdown + Cart */}
         <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+          {/* Buscar (desktop) */}
+          <button
+            type="button"
+            onClick={toggleSearch}
+            aria-label={searchOpen ? t.commonClose : t.navSearch}
+            aria-expanded={searchOpen}
+            className={`hidden md:inline-flex items-center justify-center rounded-full h-10 w-10 transition-all focus:outline-none focus:ring-2 focus:ring-[#102a43]/20 cursor-pointer ${
+              searchOpen
+                ? 'bg-white text-[#102a43] shadow-sm ring-1 ring-[#102a43]/10'
+                : 'text-[#102a43]/70 hover:text-[#102a43] hover:bg-white/70'
+            }`}
+          >
+            {searchOpen ? <X className="w-4 h-4" /> : <Search className="w-4 h-4" />}
+          </button>
+
           <LoginButton />
 
           {/* Language selector */}
@@ -172,28 +221,30 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
       </div>
 
-      {/* Search (mobile) */}
-      <div className="md:hidden px-4 pb-3 relative">
-        <Search className="w-4 h-4 absolute left-7 top-1/2 -translate-y-[calc(50%+6px)] text-[#102a43]/40 pointer-events-none" />
-        <input
-          id="mobile-search-input"
-          type="search"
-          value={searchQuery}
-          onChange={(e) => onSearchChange(e.target.value)}
-          placeholder={t.searchPlaceholder}
-          aria-label={t.searchPlaceholder}
-          className={searchInputClass}
-        />
-        {searchQuery && (
+      {/* Search (mobile) - se revela al pulsar el botón del buscador */}
+      {searchOpen && (
+        <div className="md:hidden px-4 pb-3 relative">
+          <Search className="w-4 h-4 absolute left-7 top-1/2 -translate-y-[calc(50%+6px)] text-[#102a43]/40 pointer-events-none" />
+          <input
+            id="mobile-search-input"
+            data-nav-search
+            autoFocus
+            type="search"
+            value={searchQuery}
+            onChange={(e) => onSearchChange(e.target.value)}
+            placeholder={t.searchPlaceholder}
+            aria-label={t.searchPlaceholder}
+            className={searchInputClass}
+          />
           <button
-            onClick={() => onSearchChange('')}
-            aria-label={t.navClearSearch}
+            onClick={closeSearch}
+            aria-label={t.commonClose}
             className="absolute right-6 top-1/2 -translate-y-[calc(50%+6px)] text-neutral-400 hover:text-[#102a43] cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
-        )}
-      </div>
+        </div>
+      )}
     </header>
   );
 };

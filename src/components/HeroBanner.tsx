@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Star, ArrowDown, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useProducts } from '../contexts/ProductContext';
+import { BrandLogo } from './BrandLogo';
 
 interface HeroBannerProps {
   onScrollToCatalog: () => void;
@@ -138,13 +139,22 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog, onOpe
             )}
           </div>
 
-          {/* Arco central */}
-          <div className="animate-reveal-up relative h-full w-[min(20rem,58vw)] shrink-0 overflow-hidden rounded-t-full bg-[#dfe8f3] ring-4 ring-[#f4f7fb]">
-            {main?.image ? (
-              <img src={main.image} alt={main.name} className="h-full w-full object-cover" fetchPriority="high" decoding="async" />
-            ) : (
-              <div className="h-full w-full bg-gradient-to-b from-[#dfe8f3] to-[#c6d4e4]" />
-            )}
+          {/* Arco central: sello de marca (reemplaza la foto de producto) */}
+          <div className="animate-reveal-up relative h-full w-[min(20rem,58vw)] shrink-0 overflow-hidden rounded-t-full bg-[#102a43] ring-4 ring-[#f4f7fb]">
+            <div className="absolute inset-0 bg-[linear-gradient(168deg,#0e2338_0%,#102a43_46%,#2f5c8f_100%)]" aria-hidden="true" />
+            <div className="absolute inset-0 bg-[radial-gradient(115%_80%_at_50%_22%,rgba(219,234,254,0.32),transparent_64%)]" aria-hidden="true" />
+            <div className="relative flex h-full w-full flex-col items-center justify-center gap-3 px-5 pt-9 pb-4 text-center sm:gap-4 sm:pt-8">
+              <span className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-[#f4f7fb] ring-1 ring-white/40 shadow-[0_8px_22px_rgba(6,20,35,0.35)]">
+                <BrandLogo variant="icon-only" size="md" />
+              </span>
+              <span className="font-sans text-[clamp(0.95rem,2.1vw,1.35rem)] font-semibold uppercase tracking-[0.24em] text-white">
+                SKIN HEALTH
+              </span>
+              <span className="h-px w-10 bg-[#9db8dc]/70" aria-hidden="true" />
+              <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-[#dbeafe] sm:text-[10px]">
+                {t.heroBrandTagline}
+              </span>
+            </div>
           </div>
 
           {/* Arco de información */}
