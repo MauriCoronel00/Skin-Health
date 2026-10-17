@@ -13,7 +13,7 @@ const en: Translations = {
     announcement: '100% original products — Shipping to all Paraguay',
     languageLabel: 'Language',
 
-    heroEyebrow: 'Imported skincare · Asunción, Paraguay',
+    heroEyebrow: 'All the best for you',
     ritualCleanse: 'Cleanse',
     ritualTreat: 'Treat',
     ritualHydrate: 'Hydrate',
