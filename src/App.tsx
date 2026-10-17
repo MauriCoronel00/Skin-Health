@@ -17,7 +17,7 @@ interface ErrorBoundaryState {
 function AppErrorFallback({ error }: { error: Error | null }) {
   const { t } = useLanguage();
   return (
-    <div className="min-h-screen bg-[#F1F4EF] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#f4f7fb] flex items-center justify-center p-4">
       <div className="max-w-md mx-auto text-center bg-white rounded-3xl border border-rose-200 p-8 shadow-lg">
         <div className="w-16 h-16 rounded-full bg-rose-50 flex items-center justify-center mx-auto mb-4">
           <svg className="w-8 h-8 text-rose-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -39,7 +39,7 @@ function AppErrorFallback({ error }: { error: Error | null }) {
         )}
         <button
           onClick={() => window.location.reload()}
-          className="px-6 py-2.5 bg-[#34483B] text-white text-sm font-semibold rounded-full hover:bg-[#34483B]/90 transition-colors"
+          className="px-6 py-2.5 bg-[#102a43] text-white text-sm font-semibold rounded-full hover:bg-[#102a43]/90 transition-colors"
         >
           {t.appErrorReload}
         </button>
@@ -366,10 +366,10 @@ return (
 
                 <div
                   ref={catalogRef}
-                  className="pt-4 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#34483B]/10"
+                  className="pt-4 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#102a43]/10"
                 >
                   <div>
-                    <h2 className="font-serif text-2xl sm:text-3xl font-semibold text-[#34483B]">
+                    <h2 className="font-serif text-2xl sm:text-3xl font-semibold text-[#102a43]">
                       {selectedCategory === 'all'
                         ? t.catalogTitle
                         : categories.find((c) => c.id === selectedCategory)?.label || t.catalogTitle}
@@ -389,7 +389,7 @@ return (
                         onClick={() => setSelectedBrand(brand)}
                         className={`text-xs px-3 py-1 rounded-full font-medium transition-all whitespace-nowrap cursor-pointer ${
                           selectedBrand === brand
-                            ? 'bg-[#34483B] text-white shadow-xs'
+                            ? 'bg-[#102a43] text-white shadow-xs'
                             : 'bg-white text-neutral-600 border border-neutral-200 hover:border-neutral-400'
                         }`}
                       >

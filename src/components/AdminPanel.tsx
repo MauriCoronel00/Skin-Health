@@ -568,10 +568,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
         initial={{ opacity: 0, scale: 0.97, y: 10 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.97, y: 10 }}
-        className="relative bg-[#F1F4EF] w-full max-w-5xl rounded-t-[2rem] sm:rounded-3xl p-4 sm:p-6 shadow-2xl z-10 border border-neutral-200 max-h-[94dvh] sm:max-h-[88vh] flex flex-col"
+        className="relative bg-[#f4f7fb] w-full max-w-5xl rounded-t-[2rem] sm:rounded-3xl p-4 sm:p-6 shadow-2xl z-10 border border-neutral-200 max-h-[94dvh] sm:max-h-[88vh] flex flex-col"
       >
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-[#D5DED8] mb-4">
+        <div className="flex items-center justify-between pb-4 border-b border-[#d5dee9] mb-4">
           <div>
             <h3 id="admin-panel-title" className="font-semibold text-lg text-[#102A43]">
               Panel de administración
@@ -625,15 +625,15 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isOpen, onClose, onShowT
         </div>
 
           <div className="grid grid-cols-3 gap-2 mb-4">
-            <div className="rounded-2xl border border-[#D5DED8] bg-white/80 p-3">
+            <div className="rounded-2xl border border-[#d5dee9] bg-white/80 p-3">
               <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-neutral-500">Pedidos</p>
-              <p className="mt-1 text-xl font-bold text-[#1E4D3B]">{pedidos.length}{pedidosHasMore ? '+' : ''}</p>
+              <p className="mt-1 text-xl font-bold text-[#102a43]">{pedidos.length}{pedidosHasMore ? '+' : ''}</p>
             </div>
-            <div className="rounded-2xl border border-[#D5DED8] bg-white/80 p-3">
+            <div className="rounded-2xl border border-[#d5dee9] bg-white/80 p-3">
               <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-neutral-500">Stock bajo</p>
               <p className="mt-1 text-xl font-bold text-[#C98A2C]">{stock.filter((item) => item.stock > 0 && item.stock <= 3).length}</p>
             </div>
-            <div className="rounded-2xl border border-[#D5DED8] bg-white/80 p-3">
+            <div className="rounded-2xl border border-[#d5dee9] bg-white/80 p-3">
               <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-neutral-500">Sin stock</p>
               <p className="mt-1 text-xl font-bold text-rose-600">{stock.filter((item) => item.stock <= 0).length}</p>
             </div>

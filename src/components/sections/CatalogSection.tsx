@@ -43,7 +43,7 @@ export function CatalogSection({
             </p>
             <button
               onClick={() => void loadCatalog()}
-              className="px-5 py-2.5 bg-[#34483B] text-white text-xs font-semibold rounded-full hover:bg-[#102A43]/90 transition-colors"
+              className="px-5 py-2.5 bg-[#102a43] text-white text-xs font-semibold rounded-full hover:bg-[#102A43]/90 transition-colors"
             >
               {t.catalogRetry}
             </button>
@@ -61,7 +61,7 @@ export function CatalogSection({
             </p>
             <button
               onClick={resetFilters}
-              className="px-5 py-2.5 bg-[#34483B] text-white text-xs font-semibold rounded-full hover:bg-[#102A43]/90 transition-colors"
+              className="px-5 py-2.5 bg-[#102a43] text-white text-xs font-semibold rounded-full hover:bg-[#102A43]/90 transition-colors"
             >
               {t.catalogResetFilters}
             </button>

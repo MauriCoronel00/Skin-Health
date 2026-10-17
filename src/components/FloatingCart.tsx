@@ -88,7 +88,7 @@ export const FloatingCart: React.FC<FloatingCartProps> = ({
                   transition={{ duration: 0.4 }}
                   className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white"
                 >
-                  <ShoppingBag className="w-4 h-4 text-[#B9CBBE]" />
+                  <ShoppingBag className="w-4 h-4 text-[#dbeafe]" />
                 </motion.div>
                 <div className="flex items-baseline gap-1.5">
                   <motion.span
@@ -111,7 +111,7 @@ export const FloatingCart: React.FC<FloatingCartProps> = ({
                   key={totalAmount}
                   initial={{ opacity: 0.5, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="font-semibold text-base sm:text-lg text-[#B9CBBE] tracking-tight"
+                  className="font-semibold text-base sm:text-lg text-[#dbeafe] tracking-tight"
                 >
                   {formatCurrency(totalAmount)}
                 </motion.span>

@@ -41,7 +41,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog, onOpe
   return (
     <section className="p-2 md:p-3">
       <div
-        className={`arc-field relative flex flex-col overflow-hidden rounded-3xl bg-[#F1F4EF] [--arc-x:-14%] ${
+        className={`arc-field relative flex flex-col overflow-hidden rounded-3xl bg-[#f4f7fb] [--arc-x:-14%] ${
           compact ? 'min-h-[max(calc(100svh-1.5rem),42rem)]' : 'min-h-[max(calc(100svh-1.5rem),48rem)]'
         }`}
       >
@@ -94,7 +94,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog, onOpe
             {onOpenQuiz && (
               <button
                 onClick={onOpenQuiz}
-                className="inline-flex h-11 items-center gap-2 rounded-full bg-[#1E4D3B] px-6 text-sm font-semibold text-white transition-all hover:bg-[#183E30] active:scale-[0.98] cursor-pointer"
+                className="inline-flex h-11 items-center gap-2 rounded-full bg-[#102a43] px-6 text-sm font-semibold text-white transition-all hover:bg-[#1e3a5f] active:scale-[0.98] cursor-pointer"
               >
                 <span>{t.heroCtaQuiz}</span>
                 <ArrowRight className="w-4 h-4" />
@@ -102,7 +102,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog, onOpe
             )}
             <button
               onClick={onScrollToCatalog}
-              className="inline-flex h-11 items-center gap-2 rounded-full bg-[#E5EDE7] px-6 text-sm font-semibold text-[#1E4D3B] transition-all hover:bg-[#D6E3DA] active:scale-[0.98] cursor-pointer"
+              className="inline-flex h-11 items-center gap-2 rounded-full bg-[#dbeafe] px-6 text-sm font-semibold text-[#102a43] transition-all hover:bg-[#d6e3f0] active:scale-[0.98] cursor-pointer"
             >
               <span>{t.heroCtaCatalog}</span>
               <ArrowDown className="w-4 h-4" />
@@ -132,23 +132,23 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog, onOpe
         {/* Banda de arcos: galería del ritual */}
         <div className="relative z-10 mx-auto flex h-[clamp(15rem,34svh,26rem)] w-full max-w-5xl shrink-0 items-end justify-center px-2">
           {/* Arco lateral izquierdo */}
-          <div className="relative -me-6 hidden h-[62%] w-44 shrink-0 overflow-hidden rounded-t-2xl bg-[#DCE9E4] ring-4 ring-[#F1F4EF] sm:block">
+          <div className="relative -me-6 hidden h-[62%] w-44 shrink-0 overflow-hidden rounded-t-2xl bg-[#dfe8f3] ring-4 ring-[#f4f7fb] sm:block">
             {side?.image && (
               <img src={side.image} alt={side.name} className="h-full w-full object-cover" loading="eager" decoding="async" />
             )}
           </div>
 
           {/* Arco central */}
-          <div className="animate-reveal-up relative h-full w-[min(20rem,58vw)] shrink-0 overflow-hidden rounded-t-full bg-[#DCE9E4] ring-4 ring-[#F1F4EF]">
+          <div className="animate-reveal-up relative h-full w-[min(20rem,58vw)] shrink-0 overflow-hidden rounded-t-full bg-[#dfe8f3] ring-4 ring-[#f4f7fb]">
             {main?.image ? (
               <img src={main.image} alt={main.name} className="h-full w-full object-cover" fetchPriority="high" decoding="async" />
             ) : (
-              <div className="h-full w-full bg-gradient-to-b from-[#DCE9E4] to-[#C6D6CC]" />
+              <div className="h-full w-full bg-gradient-to-b from-[#dfe8f3] to-[#c6d4e4]" />
             )}
           </div>
 
           {/* Arco de información */}
-          <div className="relative -ms-6 hidden h-[62%] w-44 shrink-0 flex-col justify-end rounded-t-2xl bg-white p-3 text-left ring-4 ring-[#F1F4EF] sm:flex">
+          <div className="relative -ms-6 hidden h-[62%] w-44 shrink-0 flex-col justify-end rounded-t-2xl bg-white p-3 text-left ring-4 ring-[#f4f7fb] sm:flex">
             {main ? (
               <>
                 <span className="text-[11px] font-medium text-[#6B7280]">{categoryLabel(main.category)}</span>
@@ -158,13 +158,13 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog, onOpe
                 <p className="mt-1 text-xs text-[#6B7280]">{formatCurrency(main.price)}</p>
                 <button
                   onClick={onScrollToCatalog}
-                  className="mt-2 inline-flex items-center justify-center gap-1 rounded-full bg-[#1E4D3B] px-3 py-1.5 text-[11px] font-semibold text-white transition-colors hover:bg-[#183E30] cursor-pointer"
+                  className="mt-2 inline-flex items-center justify-center gap-1 rounded-full bg-[#102a43] px-3 py-1.5 text-[11px] font-semibold text-white transition-colors hover:bg-[#1e3a5f] cursor-pointer"
                 >
                   {t.heroCtaCatalog}
                 </button>
               </>
             ) : (
-              <div className="h-full w-full rounded-2xl bg-[#DCE9E4]" />
+              <div className="h-full w-full rounded-2xl bg-[#dfe8f3]" />
             )}
           </div>
         </div>

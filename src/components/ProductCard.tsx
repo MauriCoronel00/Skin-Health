@@ -191,7 +191,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               className={`w-9 h-9 rounded-full flex items-center justify-center shadow-md active:scale-95 transition-transform duration-150 ease-out active:brightness-95 transition-colors duration-300 ${
                 justAdded
                   ? 'bg-[var(--brand-accent)] text-[var(--brand-accent-ink)]'
-                  : 'bg-[var(--text-main)] text-white hover:bg-[var(--brand-navy-hover)]'
+                  : 'bg-[#102A43] text-white hover:bg-[#1e3a5f]'
               }`}
             >
               <AnimatePresence mode="wait" initial={false}>

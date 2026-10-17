@@ -175,7 +175,7 @@ function PeekCarousel<T>({ items, keyOf, renderCard }: PeekCarouselProps<T>) {
               scale: active ? 1 : 0.93,
             }}
             transition={{ type: 'spring', stiffness: 260, damping: 26 }}
-            className="snap-center shrink-0 w-60 text-left cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1E4D3B]/40 rounded-3xl"
+            className="snap-center shrink-0 w-60 text-left cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#102a43]/40 rounded-3xl"
             aria-pressed={active}
           >
             {renderCard(item, active)}
@@ -195,7 +195,7 @@ const Chip: React.FC<{ value: string; onClick: () => void; label: string }> = ({
     type="button"
     onClick={onClick}
     aria-label={label}
-    className="group inline-flex items-center gap-1 border-b-2 border-[#1E4D3B]/40 text-[#1E4D3B] hover:border-[#C98A2C] transition-colors"
+    className="group inline-flex items-center gap-1 border-b-2 border-[#102a43]/40 text-[#102a43] hover:border-[#C98A2C] transition-colors"
   >
     <AnimatePresence mode="wait" initial={false}>
       <motion.span
@@ -213,7 +213,7 @@ const Chip: React.FC<{ value: string; onClick: () => void; label: string }> = ({
 );
 
 const Placeholder: React.FC<{ text: string }> = ({ text }) => (
-  <span className="text-[#1E4D3B]/25">{text}</span>
+  <span className="text-[#102a43]/25">{text}</span>
 );
 
 /* ------------------------------------------------------------------ */
@@ -286,8 +286,8 @@ export const RoutineStudio: React.FC = () => {
   };
 
   return (
-    <section className="relative w-full bg-[#F1F4EF] text-[#1E4D3B] py-12 sm:py-16">
-      <p className="text-center text-xs font-semibold uppercase tracking-[0.2em] text-[#1E4D3B]/50 mb-6">
+    <section className="relative w-full bg-[#f4f7fb] text-[#102a43] py-12 sm:py-16">
+      <p className="text-center text-xs font-semibold uppercase tracking-[0.2em] text-[#102a43]/50 mb-6">
         {c.eyebrow}
       </p>
       <h2 className="sr-only">{c.eyebrow}</h2>
@@ -319,7 +319,7 @@ export const RoutineStudio: React.FC = () => {
                       role="radio"
                       aria-checked={skin === s}
                       onClick={() => setSkin(s)}
-                      className="px-4 py-2 rounded-full bg-white ring-1 ring-[#1E4D3B]/15 hover:ring-[#1E4D3B]/40 text-sm font-medium transition-all cursor-pointer"
+                      className="px-4 py-2 rounded-full bg-white ring-1 ring-[#102a43]/15 hover:ring-[#102a43]/40 text-sm font-medium transition-all cursor-pointer"
                     >
                       {c.types[s]}
                     </button>
@@ -331,7 +331,7 @@ export const RoutineStudio: React.FC = () => {
                       role="radio"
                       aria-checked={concern === s.id}
                       onClick={() => setConcern(s.id)}
-                      className="px-4 py-2 rounded-full bg-white ring-1 ring-[#1E4D3B]/15 hover:ring-[#1E4D3B]/40 text-sm font-medium transition-all cursor-pointer"
+                      className="px-4 py-2 rounded-full bg-white ring-1 ring-[#102a43]/15 hover:ring-[#102a43]/40 text-sm font-medium transition-all cursor-pointer"
                     >
                       {c.concerns[s.id]}
                     </button>
@@ -343,7 +343,7 @@ export const RoutineStudio: React.FC = () => {
                       role="radio"
                       aria-checked={steps === n}
                       onClick={() => setSteps(n)}
-                      className="px-5 py-2 rounded-full bg-white ring-1 ring-[#1E4D3B]/15 hover:ring-[#1E4D3B]/40 text-sm font-medium transition-all cursor-pointer"
+                      className="px-5 py-2 rounded-full bg-white ring-1 ring-[#102a43]/15 hover:ring-[#102a43]/40 text-sm font-medium transition-all cursor-pointer"
                     >
                       {n === 2 ? c.steps2 : n === 3 ? c.steps3 : c.steps4}
                     </button>
@@ -402,16 +402,16 @@ export const RoutineStudio: React.FC = () => {
               <motion.button
                 whileTap={{ scale: 0.97 }}
                 onClick={handleAddAll}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#1E4D3B] text-white text-sm font-bold hover:bg-[#183E30] transition-all shadow-lg"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#102a43] text-white text-sm font-bold hover:bg-[#1e3a5f] transition-all shadow-lg"
               >
                 {added ? <Check className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
                 <span>{added ? c.added : c.addAll(formatCurrency(total))}</span>
               </motion.button>
               <div className="flex items-center justify-center gap-4 mt-3 text-sm">
-                <button onClick={() => setSteps(null)} className="font-medium text-[#1E4D3B] hover:text-[#C98A2C] transition-colors cursor-pointer">
+                <button onClick={() => setSteps(null)} className="font-medium text-[#102a43] hover:text-[#C98A2C] transition-colors cursor-pointer">
                   {c.changeAnswers}
                 </button>
-                <button onClick={reset} className="font-medium text-[#1E4D3B]/60 hover:text-[#1E4D3B] transition-colors cursor-pointer">
+                <button onClick={reset} className="font-medium text-[#102a43]/60 hover:text-[#102a43] transition-colors cursor-pointer">
                   {c.startOver}
                 </button>
               </div>
@@ -419,7 +419,7 @@ export const RoutineStudio: React.FC = () => {
 
             {/* Carrusel de pasos al pie: corre y se selecciona */}
             {products.length === 0 ? (
-              <p className="text-center text-sm text-[#1E4D3B]/50 py-10">{c.empty}</p>
+              <p className="text-center text-sm text-[#102a43]/50 py-10">{c.empty}</p>
             ) : (
               <div className="mt-8">
                 <PeekCarousel
@@ -428,8 +428,8 @@ export const RoutineStudio: React.FC = () => {
                   renderCard={(s) => {
                     const product = productFor(s);
                     return (
-                      <div className="rounded-3xl overflow-hidden bg-white ring-1 ring-[#1E4D3B]/10 shadow-sm">
-                        <div className="relative aspect-[3/4] bg-[#DCE9E4]">
+                      <div className="rounded-3xl overflow-hidden bg-white ring-1 ring-[#102a43]/10 shadow-sm">
+                        <div className="relative aspect-[3/4] bg-[#dfe8f3]">
                           <AnimatePresence mode="wait">
                             <motion.img
                               key={product?.id}
@@ -443,13 +443,13 @@ export const RoutineStudio: React.FC = () => {
                               className="absolute inset-0 h-full w-full object-cover"
                             />
                           </AnimatePresence>
-                          <span className="absolute top-3 left-3 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-semibold text-[#1E4D3B]">
+                          <span className="absolute top-3 left-3 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-semibold text-[#102a43]">
                             {s.num} {STEP_LABEL[s.id][language]}
                           </span>
                         </div>
                         <div className="p-3">
                           <p className="font-medium text-sm truncate">{product?.name}</p>
-                          <p className="text-xs text-[#1E4D3B]/60">{formatCurrency(product?.price ?? 0)}</p>
+                          <p className="text-xs text-[#102a43]/60">{formatCurrency(product?.price ?? 0)}</p>
                         </div>
                       </div>
                     );
@@ -475,7 +475,7 @@ export const RoutineStudio: React.FC = () => {
                       <div className="flex items-baseline gap-2 mb-3">
                         <span className="font-semibold">{s.num}</span>
                         <span className="font-semibold">{STEP_LABEL[s.id][language]}</span>
-                        <span className="text-sm text-[#1E4D3B]/55">{STEP_BLURB[s.id][language]}</span>
+                        <span className="text-sm text-[#102a43]/55">{STEP_BLURB[s.id][language]}</span>
                       </div>
                       <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-none">
                         {pool.map((p, pi) => {
@@ -495,14 +495,14 @@ export const RoutineStudio: React.FC = () => {
                               }}
                               aria-pressed={selected}
                               className={`relative shrink-0 w-36 text-left rounded-2xl overflow-hidden ring-1 transition-all cursor-pointer ${
-                                selected ? 'ring-2 ring-[#1E4D3B]' : 'ring-[#1E4D3B]/10 hover:ring-[#1E4D3B]/40'
+                                selected ? 'ring-2 ring-[#102a43]' : 'ring-[#102a43]/10 hover:ring-[#102a43]/40'
                               }`}
                             >
-                              <div className="relative aspect-square bg-[#DCE9E4]">
+                              <div className="relative aspect-square bg-[#dfe8f3]">
                                 <img src={p.image} alt={p.name} loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
                                 <span
                                   className={`absolute top-2 right-2 w-6 h-6 rounded-full flex items-center justify-center text-white ${
-                                    selected ? 'bg-[#1E4D3B]' : 'bg-[#1E4D3B]/70'
+                                    selected ? 'bg-[#102a43]' : 'bg-[#102a43]/70'
                                   }`}
                                 >
                                   {selected ? <Check className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
@@ -510,7 +510,7 @@ export const RoutineStudio: React.FC = () => {
                               </div>
                               <div className="p-2">
                                 <p className="text-xs font-medium truncate">{p.name}</p>
-                                <p className="text-[11px] text-[#1E4D3B]/60">{formatCurrency(p.price)}</p>
+                                <p className="text-[11px] text-[#102a43]/60">{formatCurrency(p.price)}</p>
                               </div>
                             </motion.button>
                           );

@@ -14,7 +14,7 @@
 
   body {
     background-color: var(--bg-app);
-    background-image: radial-gradient(circle at 12% 0%, rgba(168, 183, 160, 0.22), transparent 28rem);
+    background-image: radial-gradient(circle at 12% 0%, rgba(148, 172, 208, 0.20), transparent 28rem);
     background-attachment: fixed;
     color: var(--text-main);
     overflow-x: hidden;
@@ -46,29 +46,29 @@
   .pr-safe { padding-right: env(safe-area-inset-right); }
   :root {
     /* Brand primary */
-    --brand-navy: #34483B;
-    --brand-navy-hover: #26382E;
+    --brand-navy: #102a43;
+    --brand-navy-hover: #0e2338;
     --brand-light: #dbeafe;
 
-    /* Brand accent — verde salvia sobrio, complementa navy.
+    /* Brand accent — azul acero sobrio, complementa la tinta navy.
        Único acento decorativo de la marca:
        - --brand-accent-light: sobre fondos navy (iconos, checks)
        - --brand-accent-ink:   texto/acentos sobre fondos claros (contraste AA)
        El esmeralda queda solo para estados semánticos de confirmación
        (toasts, estados de pedido, check de copiado). */
-    --brand-accent: #93A896;
-    --brand-accent-hover: #7d9482;
-    --brand-accent-soft: #E5EDE7;
-    --brand-accent-light: #B9CBBE;
-    --brand-accent-ink: #55705E;
+    --brand-accent: #9db8dc;
+    --brand-accent-hover: #6f8cb3;
+    --brand-accent-soft: #dbeafe;
+    --brand-accent-light: #dbeafe;
+    --brand-accent-ink: #1e3a5f;
 
     /* Skin Health · identidad ritual (2026-10)
-       Superficie fría porcelana en vez de crema cálida; pino para acciones
-       primarias sobre claro; ámbar reservado al hilo quiz → rutina → WhatsApp. */
-    --surface-porcelain: #F1F4EF;
-    --surface-glass: #DCE9E4;
-    --brand-pine: #1E4D3B;
-    --brand-pine-hover: #183E30;
+       Superficie fría azulada; tinta navy para acciones primarias sobre claro;
+       ámbar reservado al hilo quiz → rutina → WhatsApp. */
+    --surface-porcelain: #f4f7fb;
+    --surface-glass: #dfe8f3;
+    --brand-pine: #102a43;
+    --brand-pine-hover: #1e3a5f;
     --brand-amber: #C98A2C;
     --brand-amber-hover: #B57A25;
 
@@ -262,7 +262,7 @@
 /* Nacre-style arc field: dos anillos concéntricos dibujados de fondo.
    Reemplaza el velo verde del hero anterior por una geometría en tinta suave. */
 .arc-field {
-  --arc-tone: rgba(30, 77, 59, 0.07);
+  --arc-tone: rgba(16, 42, 67, 0.07);
   --arc-inner: 27vw;
   --arc-outer: 35vw;
   background-image:

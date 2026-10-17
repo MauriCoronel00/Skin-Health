@@ -7,7 +7,7 @@ export function HowItWorksSection() {
     <ErrorBoundary>
       <section className="mt-14 bg-white/80 border border-[#102A43]/10 rounded-3xl p-6 sm:p-8 shadow-xs hidden sm:block">
         <div className="max-w-5xl mx-auto text-center">
-          <span className="text-xs font-bold uppercase tracking-widest text-[#55705E] bg-[#E5EDE7] px-3 py-1 rounded-full border border-[#93A896]/40">
+          <span className="text-xs font-bold uppercase tracking-widest text-[#1e3a5f] bg-[#dbeafe] px-3 py-1 rounded-full border border-[#9db8dc]/40">
             {t.howTitle}
           </span>
           <h3 className="font-serif text-xl sm:text-2xl font-semibold text-[#102A43] mt-2 mb-2">
@@ -42,7 +42,7 @@ export function HowItWorksSection() {
               </div>
             </div>
 
-            <div className="p-4 bg-[#E5EDE7]/50 rounded-2xl border border-[#93A896]/30 flex items-start gap-3">
+            <div className="p-4 bg-[#dbeafe]/50 rounded-2xl border border-[#9db8dc]/30 flex items-start gap-3">
               <span className="w-7 h-7 rounded-full bg-[#102A43] text-white text-xs font-bold flex items-center justify-center shrink-0">
                 3
               </span>
@@ -53,15 +53,15 @@ export function HowItWorksSection() {
                 </p>
                 <ul className="mt-1.5 space-y-0.5 text-xs text-neutral-700 font-medium">
                   <li className="flex items-center gap-1">
-                    <span className="w-1 h-1 rounded-full bg-[#55705E]"></span>
+                    <span className="w-1 h-1 rounded-full bg-[#1e3a5f]"></span>
                     <span>{t.howStep3Label1}</span>
                   </li>
                   <li className="flex items-center gap-1">
-                    <span className="w-1 h-1 rounded-full bg-[#55705E]"></span>
+                    <span className="w-1 h-1 rounded-full bg-[#1e3a5f]"></span>
                     <span>{t.howStep3Label2}</span>
                   </li>
                   <li className="flex items-center gap-1">
-                    <span className="w-1 h-1 rounded-full bg-[#55705E]"></span>
+                    <span className="w-1 h-1 rounded-full bg-[#1e3a5f]"></span>
                     <span>{t.mapsLinkLabel}</span>
                   </li>
                 </ul>
