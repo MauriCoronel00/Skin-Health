@@ -39,7 +39,7 @@ export const ZONAS_COBERTURA: Record<string, ZonaEnvio> = {
   },
 };
 
-export type MetodoPagoId = 'TRANSFERENCIA' | 'USDT' | 'EFECTIVO';
+export type MetodoPagoId = 'TRANSFERENCIA' | 'TARJETA' | 'USDT' | 'EFECTIVO';
 
 export interface MetodoPago {
   id: MetodoPagoId;
@@ -49,6 +49,7 @@ export interface MetodoPago {
 
 export const METODOS_PAGO: MetodoPago[] = [
   { id: 'TRANSFERENCIA', label: 'Transferencia Bancaria (SIPAAP)', requierePagoPrevio: true },
+  { id: 'TARJETA', label: 'Tarjeta de crédito/débito', requierePagoPrevio: true },
   { id: 'USDT', label: 'USDT (Crypto)', requierePagoPrevio: true },
   { id: 'EFECTIVO', label: 'Efectivo contra entrega', requierePagoPrevio: false },
 ];

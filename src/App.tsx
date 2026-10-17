@@ -91,7 +91,6 @@ import { CatalogSection } from './components/sections/CatalogSection';
 import { TestimoniosSectionWrapper } from './components/sections/TestimoniosSectionWrapper';
 import { PremiumSection } from './components/sections/PremiumSection';
 import { HowItWorksSection } from './components/sections/HowItWorksSection';
-import { FloatingCartSection } from './components/sections/FloatingCartSection';
 import { CartDrawerSection } from './components/sections/CartDrawerSection';
 import { OrderConfirmationSection } from './components/sections/OrderConfirmationSection';
 import { ToastSection } from './components/sections/ToastSection';
@@ -116,7 +115,7 @@ export default function App() {
   const [isAdminPanelOpen, setIsAdminPanelOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
 
-  const { cartItems, addToCart, addMultipleToCart, updateQuantity, removeItem, clearCart, totalItems, totalAmount, cartQuantities, lastAddedTime } = useCart();
+  const { cartItems, addToCart, addMultipleToCart, updateQuantity, removeItem, clearCart, totalItems, totalAmount, cartQuantities } = useCart();
   const { products, categories, isLoadingProducts, catalogError, loadCatalog, selectedCategory, searchQuery, setSearchQuery, selectedBrand, setSelectedBrand, selectedSkin, setSelectedSkin, selectedPrice, setSelectedPrice, filteredProducts, brandOptions, resetFilters } = useProducts();
 
   const dismissWelcome = () => {
@@ -433,14 +432,7 @@ return (
                 />
                 </>
                 )}
-              </main>
-
-              <FloatingCartSection
-                totalItems={totalItems}
-                totalAmount={totalAmount}
-                onOpenCart={() => setIsCartOpen(true)}
-                lastAddedTime={lastAddedTime}
-              />
+               </main>
 
               <CartDrawerSection
                 isOpen={isCartOpen}
