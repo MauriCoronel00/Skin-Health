@@ -81,7 +81,7 @@ import { TabId } from './components/MobileBottomNav';
 
 import { WelcomeSection } from './components/sections/WelcomeSection';
 import { HeroSection } from './components/sections/HeroSection';
-import { OfferBannerSection } from './components/sections/OfferBannerSection';
+import { RoutineStudioSection } from './components/sections/RoutineStudioSection';
 import { CategoryChipsSection } from './components/sections/CategoryChipsSection';
 import { QuizSection } from './components/sections/QuizSection';
 import { SavedQuizBannerSection } from './components/sections/SavedQuizBannerSection';
@@ -362,7 +362,7 @@ return (
                   onOpenQuiz={() => setQuizOpen(true)}
                 />
 
-                <OfferBannerSection onOpenQuiz={() => setQuizOpen(true)} />
+                <RoutineStudioSection />
 
                 <div
                   ref={catalogRef}

@@ -1,8 +1,8 @@
-﻿import React from 'react';
-import { motion } from 'motion/react';
+﻿import React, { useEffect, useMemo, useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { Star, ArrowDown, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
-import heroRadiantBg from '../assets/images/woman_applying_skincare_cream_1789318644556.jpg';
+import { useProducts } from '../contexts/ProductContext';
 
 interface HeroBannerProps {
   onScrollToCatalog: () => void;
@@ -11,62 +11,90 @@ interface HeroBannerProps {
 }
 
 export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog, onOpenQuiz, compact = false }) => {
-  const { t } = useLanguage();
+  const { t, formatCurrency } = useLanguage();
+  const { products } = useProducts();
+
   const ritualSteps = [t.ritualCleanse, t.ritualTreat, t.ritualHydrate, t.ritualProtect];
+  const [stepIdx, setStepIdx] = useState(0);
+
+  const categoryLabel = (cat?: string) => {
+    if (cat === 'cleanse') return t.ritualCleanse;
+    if (cat === 'hydrate') return t.ritualHydrate;
+    if (cat === 'protect') return t.ritualProtect;
+    return t.ritualTreat;
+  };
+
+  useEffect(() => {
+    const id = setInterval(() => setStepIdx((i) => (i + 1) % ritualSteps.length), 4000);
+    return () => clearInterval(id);
+  }, [ritualSteps.length]);
+
+  const { main, side } = useMemo(() => {
+    const withImage = products.filter((p) => p.image);
+    const findCat = (cat: string) => withImage.find((p) => p.category === cat);
+    return {
+      main: findCat('hydrate') ?? withImage[0] ?? null,
+      side: findCat('cleanse') ?? withImage[1] ?? null,
+    };
+  }, [products]);
 
   return (
-    <section className="relative overflow-hidden rounded-3xl bg-[#34483B] text-white shadow-sm my-4 sm:my-6 border border-[#34483B]/20 flex flex-col">
-      {/* Foto: florece a la derecha en desktop, velo en móvil */}
-      <div className="absolute inset-0 sm:left-auto sm:right-0 sm:w-[48%] z-0 pointer-events-none">
-        <img
-          src={heroRadiantBg}
-          alt="Skin Health · Rutinas de skincare importado en Paraguay"
-          width={1200}
-          height={670}
-          className="w-full h-full object-cover object-[75%_center] opacity-40 sm:opacity-95 sm:[mask-image:linear-gradient(to_right,transparent,black_38%)]"
-          fetchPriority="high"
-          decoding="async"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#34483B] via-[#34483B]/85 to-transparent sm:hidden" />
-      </div>
-
-      {/* Marca de agua en hangul: lengua vernácula del producto */}
+    <section className="p-2 md:p-3">
       <div
-        aria-hidden="true"
-        className="absolute -right-3 top-4 sm:top-8 z-0 select-none leading-none font-bold text-white/[0.05] text-\[8\.125rem\] sm:text-\[11\.875rem\] pointer-events-none"
+        className={`arc-field relative flex flex-col overflow-hidden rounded-3xl bg-[#F1F4EF] [--arc-x:-14%] ${
+          compact ? 'min-h-[max(calc(100svh-1.5rem),42rem)]' : 'min-h-[max(calc(100svh-1.5rem),48rem)]'
+        }`}
       >
-        피부
-      </div>
-
-      {/* Contenido: una sola revelación orquestada */}
-      <motion.div
-        initial={{ opacity: 0, y: 18 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-        className={`relative z-10 p-6 flex items-center ${compact ? 'min-h-[19rem] sm:min-h-[21rem] sm:p-8' : 'sm:p-10 md:p-12 min-h-[27.5rem] sm:min-h-[30rem]'}`}
-      >
-        <div className="max-w-xl flex flex-col justify-center">
-          {/* Pill de contexto */}
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 text-xs font-medium text-white mb-4 w-fit shadow-xs backdrop-blur-sm">
+        {/* Contenido: columna centrada, revelación escalonada */}
+        <div className="relative z-10 mx-auto flex w-full max-w-[90rem] flex-1 flex-col items-center justify-center px-4 pt-6 pb-6 text-center sm:pt-10">
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.05, ease: [0.16, 1, 0.3, 1] }}
+            className="mb-5 inline-flex items-center gap-2 text-xs font-medium text-[#6B7280]"
+          >
             <span className="w-1.5 h-1.5 rounded-full bg-[#C98A2C]" aria-hidden="true" />
-            <span>{t.heroEyebrow}</span>
+            {t.heroEyebrow}
+          </motion.p>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+            className="hero-display max-w-4xl text-5xl leading-[1.02] font-medium text-[#20231F] md:text-6xl lg:text-7xl 2xl:text-8xl"
+          >
+            {t.heroTitle1}
+            <br />
+            {t.heroTitle2}
+          </motion.h1>
+
+          {/* Línea rotativa: los cuatro pasos del ritual */}
+          <div className="mt-5 flex min-h-6 items-center justify-center md:min-h-7">
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.p
+                key={stepIdx}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                className="text-sm text-[#6B7280] md:text-lg"
+              >
+                {`0${stepIdx + 1}`} {ritualSteps[stepIdx]}.
+              </motion.p>
+            </AnimatePresence>
           </div>
 
-          {/* Heading */}
-          <h1 className={`hero-display font-serif font-semibold text-white leading-[1.05] mb-4 ${compact ? 'text-3xl sm:text-4xl md:text-5xl' : 'text-4xl sm:text-5xl md:text-6xl'}`}>
-            {t.heroTitle1}<br />{t.heroTitle2}
-          </h1>
-
-          <p className="text-sm sm:text-base md:text-lg text-white/80 leading-relaxed max-w-xl mb-5 font-light">
-            {t.heroSubtitle}
-          </p>
-
-          {/* CTAs: quiz en ámbar (acción que vende) + catálogo fantasma */}
-          <div className="flex flex-wrap items-center gap-3 mb-6">
+          {/* CTAs: primario pino + secundario salvia */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-8 flex flex-wrap justify-center gap-3"
+          >
             {onOpenQuiz && (
               <button
                 onClick={onOpenQuiz}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-[#34483B] text-sm font-bold hover:bg-white/90 transition-all shadow-sm cursor-pointer"
+                className="inline-flex h-11 items-center gap-2 rounded-full bg-[#1E4D3B] px-6 text-sm font-semibold text-white transition-all hover:bg-[#183E30] active:scale-[0.98] cursor-pointer"
               >
                 <span>{t.heroCtaQuiz}</span>
                 <ArrowRight className="w-4 h-4" />
@@ -74,48 +102,75 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({ onScrollToCatalog, onOpe
             )}
             <button
               onClick={onScrollToCatalog}
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-white/30 text-white text-sm font-semibold hover:bg-white/10 transition-all cursor-pointer"
+              className="inline-flex h-11 items-center gap-2 rounded-full bg-[#E5EDE7] px-6 text-sm font-semibold text-[#1E4D3B] transition-all hover:bg-[#D6E3DA] active:scale-[0.98] cursor-pointer"
             >
               <span>{t.heroCtaCatalog}</span>
               <ArrowDown className="w-4 h-4" />
             </button>
-          </div>
+          </motion.div>
 
-          {/* Micro-social proof */}
-          <div className="flex items-center gap-2 text-xs text-white/80">
-            <div className="flex items-center gap-0.5 text-amber-300">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star key={i} className="w-3.5 h-3.5 fill-amber-300 stroke-amber-300" />
-              ))}
-            </div>
-            <span className="font-semibold">4.9</span>
-            <span className="text-white/60">{t.heroTagline}</span>
-          </div>
+          {/* Prueba social */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="mt-6 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs text-[#6B7280]"
+          >
+            <span className="inline-flex items-center gap-1">
+              <span className="inline-flex items-center gap-0.5 text-[#C98A2C]">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star key={i} className="w-3 h-3 fill-current stroke-current" />
+                ))}
+              </span>
+              <span className="font-semibold text-[#20231F]">4.9</span>
+            </span>
+            <span aria-hidden="true">·</span>
+            <span>{t.heroTagline.replace(/^·\s*/, '')}</span>
+          </motion.div>
         </div>
-      </motion.div>
 
-      {/* Franja del ritual: solo en versión completa */}
-      {!compact && (
-      <div className="relative z-10 border-t border-white/10 bg-white/[0.04] backdrop-blur-sm px-6 sm:px-10 py-4">
-        <div className="flex items-center gap-0">
-          {ritualSteps.map((step, i) => (
-            <React.Fragment key={step}>
-              {i > 0 && (
-                <span className="flex-1 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent mx-2 sm:mx-3" aria-hidden="true" />
-              )}
-              <div className="flex items-center gap-2 shrink-0">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#C98A2C]" aria-hidden="true" />
-                <span className="text-xs sm:text-sm font-medium text-white/85 whitespace-nowrap">
-                  {step}
-                </span>
-              </div>
-            </React.Fragment>
-          ))}
+        {/* Banda de arcos: galería del ritual */}
+        <div className="relative z-10 mx-auto flex h-[clamp(15rem,34svh,26rem)] w-full max-w-5xl shrink-0 items-end justify-center px-2">
+          {/* Arco lateral izquierdo */}
+          <div className="relative -me-6 hidden h-[62%] w-44 shrink-0 overflow-hidden rounded-t-2xl bg-[#DCE9E4] ring-4 ring-[#F1F4EF] sm:block">
+            {side?.image && (
+              <img src={side.image} alt={side.name} className="h-full w-full object-cover" loading="eager" decoding="async" />
+            )}
+          </div>
+
+          {/* Arco central */}
+          <div className="animate-reveal-up relative h-full w-[min(20rem,58vw)] shrink-0 overflow-hidden rounded-t-full bg-[#DCE9E4] ring-4 ring-[#F1F4EF]">
+            {main?.image ? (
+              <img src={main.image} alt={main.name} className="h-full w-full object-cover" fetchPriority="high" decoding="async" />
+            ) : (
+              <div className="h-full w-full bg-gradient-to-b from-[#DCE9E4] to-[#C6D6CC]" />
+            )}
+          </div>
+
+          {/* Arco de información */}
+          <div className="relative -ms-6 hidden h-[62%] w-44 shrink-0 flex-col justify-end rounded-t-2xl bg-white p-3 text-left ring-4 ring-[#F1F4EF] sm:flex">
+            {main ? (
+              <>
+                <span className="text-[11px] font-medium text-[#6B7280]">{categoryLabel(main.category)}</span>
+                <p className="mt-1 line-clamp-2 font-serif text-lg font-medium leading-tight text-[#20231F]">
+                  {main.name}
+                </p>
+                <p className="mt-1 text-xs text-[#6B7280]">{formatCurrency(main.price)}</p>
+                <button
+                  onClick={onScrollToCatalog}
+                  className="mt-2 inline-flex items-center justify-center gap-1 rounded-full bg-[#1E4D3B] px-3 py-1.5 text-[11px] font-semibold text-white transition-colors hover:bg-[#183E30] cursor-pointer"
+                >
+                  {t.heroCtaCatalog}
+                </button>
+              </>
+            ) : (
+              <div className="h-full w-full rounded-2xl bg-[#DCE9E4]" />
+            )}
+          </div>
         </div>
       </div>
-      )}
-
     </section>
   );
 };
 
+export default HeroBanner;

@@ -259,6 +259,34 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* Nacre-style arc field: dos anillos concéntricos dibujados de fondo.
+   Reemplaza el velo verde del hero anterior por una geometría en tinta suave. */
+.arc-field {
+  --arc-tone: rgba(30, 77, 59, 0.07);
+  --arc-inner: 27vw;
+  --arc-outer: 35vw;
+  background-image:
+    radial-gradient(circle at var(--arc-x, -6%) 56%,
+      transparent calc(var(--arc-inner) - 1px),
+      var(--arc-tone) var(--arc-inner),
+      var(--arc-tone) var(--arc-outer),
+      transparent calc(var(--arc-outer) + 1px)),
+    radial-gradient(circle at calc(100% - var(--arc-x, -6%)) 56%,
+      transparent calc(var(--arc-inner) - 1px),
+      var(--arc-tone) var(--arc-inner),
+      var(--arc-tone) var(--arc-outer),
+      transparent calc(var(--arc-outer) + 1px));
+}
+
+/* Arco central: sube como la cortina de un escaparate. */
+@keyframes reveal-up {
+  0% { clip-path: inset(100% 0 0 0); }
+  100% { clip-path: inset(0 0 0 0); }
+}
+.animate-reveal-up {
+  animation: reveal-up 1.1s cubic-bezier(0.77, 0, 0.175, 1) both;
+}
+
 /* Staggered grid children */
 .stagger-grid > *:nth-child(1) { animation-delay: 0ms; }
 .stagger-grid > *:nth-child(2) { animation-delay: 60ms; }
